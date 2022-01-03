@@ -1,18 +1,19 @@
-#ifndef DEFAULTTILECOMPONENT_HPP
-#define DEFAULTTILECOMPONENT_HPP
+#ifndef TILEOBJECT_HPP
+#define TILEOBJECT_HPP
 
-#include "TileBehaviorComponent.hpp"
+#include <GameObject.hpp>
+#include <MeshComponent.hpp>
 
 namespace Barebones
 {
-  class DefaultTileComponent : public TileBehaviorComponent
+  class TileObject : public UrsineEngine::GameObject
   {
     public:
 
       /**
        * Constructor.
        */
-      DefaultTileComponent();
+      TileObject(const std::string& aName);
 
     protected:
 
@@ -36,6 +37,10 @@ namespace Barebones
        * @param aMesh The mesh to initialize.
        */
       void SetupShaderInfo(UrsineEngine::MeshComponent& aMesh);
+
+      double mWidth;
+      double mHeight;
+      double mLength;
   };
 }
 
