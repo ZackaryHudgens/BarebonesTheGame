@@ -1,6 +1,6 @@
 #include <Environment.hpp>
 
-#include "TileObject.hpp"
+#include "BoardBehaviorComponent.hpp"
 
 int main()
 {
@@ -12,11 +12,15 @@ int main()
 
   env.Initialize(options);
 
-  auto tile = std::make_unique<Barebones::TileObject>("tile");
-  tile->Translate(glm::vec3(0.0, 0.0, -5.0));
+  auto board = std::make_unique<UrsineEngine::GameObject>("board");
+  board->AddComponent(std::make_unique<Barebones::BoardBehaviorComponent>());
 
   UrsineEngine::Scene newScene;
-  newScene.AddObject(std::move(tile));
+  newScene.AddObject(std::move(board));
+
+  auto cam = newScene.GetDefaultCamera();
+  cam->SetPosition(glm::vec3(2.0, 7.0, 10.0));
+  cam->SetRotation(-50, glm::vec3(1.0, 0.0, 0.0));
 
   env.LoadScene(newScene);
 

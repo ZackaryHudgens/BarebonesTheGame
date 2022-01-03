@@ -1,25 +1,15 @@
-#include "TileObject.hpp"
+#include "DefaultTileComponent.hpp"
 
-using Barebones::TileObject;
+using Barebones::DefaultTileComponent;
 
 /******************************************************************************/
-TileObject::TileObject(const std::string& aName)
-  : GameObject(aName)
-  , mWidth(1.0)
-  , mHeight(1.0)
-  , mLength(1.0)
+DefaultTileComponent::DefaultTileComponent()
+  : TileBehaviorComponent()
 {
-  // Create and add the mesh.
-  auto mesh = std::make_unique<UrsineEngine::MeshComponent>();
-  SetupVertexInfo(*mesh.get());
-  SetupTextureInfo(*mesh.get());
-  SetupShaderInfo(*mesh.get());
-
-  AddComponent(std::move(mesh));
 }
 
 /******************************************************************************/
-void TileObject::SetupVertexInfo(UrsineEngine::MeshComponent& aMesh)
+void DefaultTileComponent::SetupVertexInfo(UrsineEngine::MeshComponent& aMesh)
 {
   double xVal = mWidth / 2.0;
   double yVal = mHeight / 2.0;
@@ -189,7 +179,7 @@ void TileObject::SetupVertexInfo(UrsineEngine::MeshComponent& aMesh)
 }
 
 /******************************************************************************/
-void TileObject::SetupTextureInfo(UrsineEngine::MeshComponent& aMesh)
+void DefaultTileComponent::SetupTextureInfo(UrsineEngine::MeshComponent& aMesh)
 {
   UrsineEngine::Texture defaultTexture;
   defaultTexture.CreateTextureFromFile("resources/textures/defaultTile.");
@@ -197,7 +187,7 @@ void TileObject::SetupTextureInfo(UrsineEngine::MeshComponent& aMesh)
 }
 
 /******************************************************************************/
-void TileObject::SetupShaderInfo(UrsineEngine::MeshComponent& aMesh)
+void DefaultTileComponent::SetupShaderInfo(UrsineEngine::MeshComponent& aMesh)
 {
   std::string vertexFile = "resources/shaders/TileShader.vert";
   std::string fragmentFile = "resources/shaders/TileShader.frag";
