@@ -14,9 +14,21 @@ namespace Barebones
        */
       BoardBehaviorComponent();
 
+      /**
+       * When loading, creates a number of TileObjects according to the
+       * board's row and column count.
+       */
+      void Load() override;
+
+      /**
+       * Updates the board.
+       */
+      void Update() override;
+
     private:
-      int mRows;
-      int mColumns;
+      double mScaleTime;
+
+      bool mInitialized;
   };
 }
 
