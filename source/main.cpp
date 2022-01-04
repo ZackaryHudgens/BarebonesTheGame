@@ -1,7 +1,7 @@
 #include <Environment.hpp>
 
-#include "BasicSkeletonObject.hpp"
-#include "BoardObject.hpp"
+#include "CharacterFactory.hpp"
+#include "BoardBehaviorComponent.hpp"
 
 int main()
 {
@@ -13,9 +13,10 @@ int main()
 
   env.Initialize(options);
 
-  auto skeleton = std::make_unique<Barebones::BasicSkeletonObject>("basic");
+  auto skeleton = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_SKELETON, "skeleton");
   skeleton->SetPosition(glm::vec3(0.0, 1.0, 0.0));
-  auto board = std::make_unique<Barebones::BoardObject>("board");
+  auto board = std::make_unique<UrsineEngine::GameObject>("board");
+  board->AddComponent(std::make_unique<Barebones::BoardBehaviorComponent>());
 
   UrsineEngine::Scene newScene;
   newScene.AddObject(std::move(board));

@@ -4,7 +4,7 @@ using Barebones::BasicSkeletonSpriteComponent;
 
 /******************************************************************************/
 BasicSkeletonSpriteComponent::BasicSkeletonSpriteComponent()
-  : SkeletonSpriteComponent()
+  : CharacterSpriteComponent()
 {
 }
 

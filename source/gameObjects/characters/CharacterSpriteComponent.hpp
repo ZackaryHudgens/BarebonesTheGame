@@ -1,18 +1,18 @@
-#ifndef SKELETONSPRITECOMPONENT_HPP
-#define SKELETONSPRITECOMPONENT_HPP
+#ifndef CHARACTERSPRITECOMPONENT_HPP
+#define CHARACTERSPRITECOMPONENT_HPP
 
 #include <SpriteComponent.hpp>
 
 namespace Barebones
 {
-  class SkeletonSpriteComponent : public UrsineEngine::SpriteComponent
+  class CharacterSpriteComponent : public UrsineEngine::SpriteComponent
   {
     public:
 
       /**
        * Constructor.
        */
-      SkeletonSpriteComponent();
+      CharacterSpriteComponent();
 
       /**
        * Loads the component, along with any shaders, textures,
@@ -23,17 +23,17 @@ namespace Barebones
     protected:
 
       /**
-       * Loads the shaders for this skeleton.
-       */
-      virtual void LoadShaders() {};
-
-      /**
-       * Loads the textures/spritesheets for this skeleton.
+       * Loads any necessary textures.
        */
       virtual void LoadTextures() {};
 
       /**
-       * Loads the animation data.
+       * Loads any necessary shaders.
+       */
+      virtual void LoadShaders() {};
+
+      /**
+       * Loads any animations.
        */
       virtual void LoadAnimations() {};
   };

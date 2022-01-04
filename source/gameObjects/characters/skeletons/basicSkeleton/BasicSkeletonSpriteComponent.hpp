@@ -1,11 +1,11 @@
 #ifndef BASICSKELETONSPRITECOMPONENT_HPP
 #define BASICSKELETONSPRITECOMPONENT_HPP
 
-#include "SkeletonSpriteComponent.hpp"
+#include "CharacterSpriteComponent.hpp"
 
 namespace Barebones
 {
-  class BasicSkeletonSpriteComponent : public SkeletonSpriteComponent
+  class BasicSkeletonSpriteComponent : public CharacterSpriteComponent
   {
     public:
 

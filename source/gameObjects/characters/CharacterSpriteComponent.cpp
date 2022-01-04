@@ -1,17 +1,17 @@
-#include "SkeletonSpriteComponent.hpp"
+#include "CharacterSpriteComponent.hpp"
 
-using Barebones::SkeletonSpriteComponent;
+using Barebones::CharacterSpriteComponent;
 
 /******************************************************************************/
-SkeletonSpriteComponent::SkeletonSpriteComponent()
+CharacterSpriteComponent::CharacterSpriteComponent()
   : SpriteComponent()
 {
 }
 
 /******************************************************************************/
-void SkeletonSpriteComponent::Load()
+void CharacterSpriteComponent::Load()
 {
-  LoadShaders();
   LoadTextures();
+  LoadShaders();
   LoadAnimations();
 }

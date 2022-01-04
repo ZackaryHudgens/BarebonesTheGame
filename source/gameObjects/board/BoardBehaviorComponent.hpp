@@ -28,6 +28,9 @@ namespace Barebones
     private:
       double mScaleTime;
 
+      int mRows;
+      int mColumns;
+
       bool mInitialized;
   };
 }
