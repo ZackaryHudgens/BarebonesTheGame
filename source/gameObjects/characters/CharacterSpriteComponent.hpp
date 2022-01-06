@@ -15,27 +15,27 @@ namespace Barebones
       CharacterSpriteComponent();
 
       /**
-       * Loads the component, along with any shaders, textures,
+       * Initializes the component, along with any shaders, textures,
        * and animations, by calling the protected virtual functions.
        */
-      void Load() override;
+      void Initialize() override;
 
     protected:
 
       /**
-       * Loads any necessary textures.
+       * Sets up any necessary textures.
        */
-      virtual void LoadTextures() {};
+      virtual void SetupTextures() {};
 
       /**
-       * Loads any necessary shaders.
+       * Sets up any necessary shaders.
        */
-      virtual void LoadShaders() {};
+      virtual void SetupShaders() {};
 
       /**
-       * Loads any animations.
+       * Sets up any necessary animations.
        */
-      virtual void LoadAnimations() {};
+      virtual void SetupAnimations() {};
   };
 }
 

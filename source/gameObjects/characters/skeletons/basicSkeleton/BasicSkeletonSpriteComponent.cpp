@@ -9,7 +9,7 @@ BasicSkeletonSpriteComponent::BasicSkeletonSpriteComponent()
 }
 
 /******************************************************************************/
-void BasicSkeletonSpriteComponent::LoadShaders()
+void BasicSkeletonSpriteComponent::SetupShaders()
 {
   std::string vertexFile = "resources/shaders/SpriteShader.vert";
   std::string fragmentFile = "resources/shaders/SpriteShader.frag";
@@ -19,7 +19,7 @@ void BasicSkeletonSpriteComponent::LoadShaders()
 }
 
 /******************************************************************************/
-void BasicSkeletonSpriteComponent::LoadTextures()
+void BasicSkeletonSpriteComponent::SetupTextures()
 {
   UrsineEngine::Texture spritesheet;
   spritesheet.CreateTextureFromFile("resources/sprites/skeletons/TempSprite.png");
@@ -27,6 +27,6 @@ void BasicSkeletonSpriteComponent::LoadTextures()
 }
 
 /******************************************************************************/
-void BasicSkeletonSpriteComponent::LoadAnimations()
+void BasicSkeletonSpriteComponent::SetupAnimations()
 {
 }

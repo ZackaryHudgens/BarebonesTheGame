@@ -16,10 +16,10 @@ namespace Barebones
       BoardBehaviorComponent();
 
       /**
-       * When loading, creates a number of TileObjects according to the
+       * When initializing, creates a number of TileObjects according to the
        * board's row and column count.
        */
-      void Load() override;
+      void Initialize() override;
 
       /**
        * Updates the board.
@@ -34,13 +34,13 @@ namespace Barebones
        * also returns false if the given coordinates are out of bounds.
        *
        * @param aObject The object to add.
-       * @param aRow The row to place the object in.
        * @param aColumn The column to place the object in.
+       * @param aRow The row to place the object in.
        * @return True if successful, false otherwise.
        */
       bool AddObjectAtPosition(std::unique_ptr<UrsineEngine::GameObject> aObject,
-                               int aRow,
-                               int aColumn);
+                               int aColumn,
+                               int aRow);
 
     private:
       std::vector<std::vector<UrsineEngine::GameObject*>> mTileMap;

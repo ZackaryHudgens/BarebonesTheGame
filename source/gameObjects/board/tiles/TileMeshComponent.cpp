@@ -12,9 +12,9 @@ TileMeshComponent::TileMeshComponent()
 }
 
 /******************************************************************************/
-void TileMeshComponent::Load()
+void TileMeshComponent::Initialize()
 {
-  LoadVertices();
-  LoadTextures();
-  LoadShaders();
+  SetupVertices();
+  SetupTextures();
+  SetupShaders();
 }

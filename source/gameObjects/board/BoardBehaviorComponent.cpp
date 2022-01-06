@@ -21,7 +21,7 @@ BoardBehaviorComponent::BoardBehaviorComponent()
 }
 
 /******************************************************************************/
-void BoardBehaviorComponent::Load()
+void BoardBehaviorComponent::Initialize()
 {
   auto parent = GetParent();
   if(parent != nullptr)
@@ -37,9 +37,9 @@ void BoardBehaviorComponent::Load()
         ss << "tile_" << c << "_" << r;
         auto tile = TileFactory::CreateTile(TileType::eDEFAULT, ss.str());
 
-        tile->SetPosition(glm::vec3((double)c,
+        tile->SetPosition(glm::vec3((double)c + (c * 0.5),
                                      0.0,
-                                     (double)r));
+                                     -1 * ((double)r + (r * 0.5))));
         tile->SetScale(glm::vec3(0.01,
                                  0.01,
                                  0.01));
@@ -90,8 +90,8 @@ void BoardBehaviorComponent::Update()
 
 /******************************************************************************/
 bool BoardBehaviorComponent::AddObjectAtPosition(std::unique_ptr<UrsineEngine::GameObject> aObject,
-                                                 int aRow,
-                                                 int aColumn)
+                                                 int aColumn,
+                                                 int aRow)
 {
   bool success = false;
 

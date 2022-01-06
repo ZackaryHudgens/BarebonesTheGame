@@ -17,19 +17,19 @@ namespace Barebones
     protected:
 
       /**
-       * Loads any necessary vertices.
+       * Sets up any necessary vertices.
        */
-      void LoadVertices();
+      void SetupVertices() override;
 
       /**
-       * Loads any necessary textures.
+       * Sets up any necessary textures.
        */
-      void LoadTextures();
+      void SetupTextures() override;
 
       /**
-       * Loads any necessary shaders.
+       * Sets up any necessary shaders.
        */
-      void LoadShaders();
+      void SetupShaders() override;
   };
 }
 

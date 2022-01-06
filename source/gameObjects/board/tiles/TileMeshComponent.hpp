@@ -15,10 +15,10 @@ namespace Barebones
       TileMeshComponent();
 
       /**
-       * Loads the component, along with any vertices, textures,
+       * Initializes the component, along with any vertices, textures,
        * and shaders, by calling the protected virtual functions.
        */
-      void Load() override;
+      void Initialize() override;
 
       /**
        * Returns the width of this tile in model space coordinates.
@@ -44,19 +44,19 @@ namespace Barebones
     protected:
 
       /**
-       * Loads any necessary vertices.
+       * Sets up any necessary vertices.
        */
-      virtual void LoadVertices() {};
+      virtual void SetupVertices() {};
 
       /**
-       * Loads any necessary textures.
+       * Sets up any necessary textures.
        */
-      virtual void LoadTextures() {};
+      virtual void SetupTextures() {};
 
       /**
-       * Loads any necessary shaders.
+       * Sets up any necessary shaders.
        */
-      virtual void LoadShaders() {}
+      virtual void SetupShaders() {}
 
     private:
       double mWidth;

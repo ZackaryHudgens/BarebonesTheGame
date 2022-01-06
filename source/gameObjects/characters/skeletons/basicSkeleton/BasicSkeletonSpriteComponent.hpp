@@ -17,19 +17,19 @@ namespace Barebones
     protected:
 
       /**
-       * Loads the shaders for this skeleton.
+       * Sets up any necessary shaders.
        */
-      void LoadShaders() override;
+      void SetupShaders() override;
 
       /**
-       * Loads the textures/spritesheets for this skeleton.
+       * Sets up any necessary textures.
        */
-      void LoadTextures() override;
+      void SetupTextures() override;
 
       /**
-       * Loads the animation data.
+       * Sets up any necessary animations.
        */
-      void LoadAnimations() override;
+      void SetupAnimations() override;
   };
 }
 

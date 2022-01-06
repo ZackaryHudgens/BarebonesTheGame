@@ -9,7 +9,7 @@ DefaultTileMeshComponent::DefaultTileMeshComponent()
 }
 
 /******************************************************************************/
-void DefaultTileMeshComponent::LoadVertices()
+void DefaultTileMeshComponent::SetupVertices()
 {
   double xVal = GetWidth() / 2.0;
   double yVal = GetHeight() / 2.0;
@@ -155,12 +155,12 @@ void DefaultTileMeshComponent::LoadVertices()
 }
 
 /******************************************************************************/
-void DefaultTileMeshComponent::LoadTextures()
+void DefaultTileMeshComponent::SetupTextures()
 {
 }
 
 /******************************************************************************/
-void DefaultTileMeshComponent::LoadShaders()
+void DefaultTileMeshComponent::SetupShaders()
 {
   std::string vertexFile = "resources/shaders/TileShader.vert";
   std::string fragmentFile = "resources/shaders/TileShader.frag";

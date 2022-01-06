@@ -9,9 +9,9 @@ CharacterSpriteComponent::CharacterSpriteComponent()
 }
 
 /******************************************************************************/
-void CharacterSpriteComponent::Load()
+void CharacterSpriteComponent::Initialize()
 {
-  LoadTextures();
-  LoadShaders();
-  LoadAnimations();
+  SetupTextures();
+  SetupShaders();
+  SetupAnimations();
 }
