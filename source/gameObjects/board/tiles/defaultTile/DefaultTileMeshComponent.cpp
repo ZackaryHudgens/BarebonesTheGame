@@ -11,9 +11,9 @@ DefaultTileMeshComponent::DefaultTileMeshComponent()
 /******************************************************************************/
 void DefaultTileMeshComponent::LoadVertices()
 {
-  double xVal = mWidth / 2.0;
-  double yVal = mHeight / 2.0;
-  double zVal = mLength / 2.0;
+  double xVal = GetWidth() / 2.0;
+  double yVal = GetHeight() / 2.0;
+  double zVal = GetLength() / 2.0;
 
   // Clear out any vertices that already exist.
   GetVertices().clear();

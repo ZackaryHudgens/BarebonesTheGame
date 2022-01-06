@@ -20,6 +20,27 @@ namespace Barebones
        */
       void Load() override;
 
+      /**
+       * Returns the width of this tile in model space coordinates.
+       *
+       * @return The width of this tile in model space coordinates.
+       */
+      double GetWidth() const { return mWidth; }
+
+      /**
+       * Returns the height of this tile in model space coordinates.
+       *
+       * @return The height of this tile in model space coordinates.
+       */
+      double GetHeight() const { return mHeight; }
+
+      /**
+       * Returns the width of this tile in model space coordinates.
+       *
+       * @return The width of this tile in model space coordinates.
+       */
+      double GetLength() const { return mLength; }
+
     protected:
 
       /**
@@ -37,6 +58,7 @@ namespace Barebones
        */
       virtual void LoadShaders() {}
 
+    private:
       double mWidth;
       double mHeight;
       double mLength;
