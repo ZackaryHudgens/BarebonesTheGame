@@ -2,6 +2,7 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/board/*.?pp
                        gameObjects/board/tiles/*.?pp
                        gameObjects/board/tiles/defaultTile/*.?pp
+                       gameObjects/camera/*.?pp
                        gameObjects/characters/*.?pp
                        gameObjects/characters/skeletons/basicSkeleton/*.?pp)
 
@@ -13,6 +14,7 @@ target_include_directories(barebones PUBLIC
                            gameObjects/board
                            gameObjects/board/tiles
                            gameObjects/board/tiles/defaultTile
+                           gameObjects/camera
                            gameObjects/characters
                            gameObjects/characters/skeletons/basicSkeleton)
 

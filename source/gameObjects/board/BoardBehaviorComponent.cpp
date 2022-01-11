@@ -5,6 +5,7 @@
 
 #include <GameObject.hpp>
 
+#include "CharacterBehaviorComponent.hpp"
 #include "TileFactory.hpp"
 #include "TileMeshComponent.hpp"
 
@@ -14,8 +15,9 @@ using Barebones::BoardBehaviorComponent;
 BoardBehaviorComponent::BoardBehaviorComponent()
   : Component()
   , mScaleTime(0.03)
-  , mColumns(5)
-  , mRows(5)
+  , mTileSpacing(0.2)
+  , mColumns(7)
+  , mRows(7)
   , mInitialized(false)
 {
 }
@@ -29,25 +31,29 @@ void BoardBehaviorComponent::Initialize()
     std::stringstream ss;
 
     // For each column and row in the board, create and place a tile object.
-    for(int c = 0; c < mColumns; ++c)
+    // Also add a nullptr into the characters list; as characters are added
+    // and removed from the board, the characters list will be updated
+    // as well.
+    for(int x = 0; x < mColumns; ++x)
     {
-      std::vector<UrsineEngine::GameObject*> row;
-      for(int r = 0; r < mRows; ++r)
+      for(int y = 0; y < mRows; ++y)
       {
-        ss << "tile_" << c << "_" << r;
+        ss << "tile_" << x << "_" << y;
         auto tile = TileFactory::CreateTile(TileType::eDEFAULT, ss.str());
 
-        tile->SetPosition(glm::vec3((double)c + (c * 0.5),
+        // The z-position corresponds to the y-position on a 2D grid. It's made
+        // negative so that (0, 0) on the grid is in the bottom left.
+        tile->SetPosition(glm::vec3((double)x + (mTileSpacing * x),
                                      0.0,
-                                     -1 * ((double)r + (r * 0.5))));
+                                     -1 * (double)y - (mTileSpacing * y)));
         tile->SetScale(glm::vec3(0.01,
                                  0.01,
                                  0.01));
         parent->AddChild(std::move(tile));
-        row.emplace_back(parent->GetChild(ss.str()));
+        mTiles.emplace_back(parent->GetChild(ss.str()));
+        mCharacters.emplace_back(nullptr);
         ss.str("");
       }
-      mTileMap.emplace_back(row);
     }
   }
 }
@@ -98,20 +104,49 @@ bool BoardBehaviorComponent::AddObjectAtPosition(std::unique_ptr<UrsineEngine::G
   auto parent = GetParent();
   if(parent != nullptr)
   {
-    if(aColumn < mTileMap.size())
+    int index = (aColumn * mRows) + aRow;
+    if(index < mTiles.size())
     {
-      if(aRow < mTileMap[aColumn].size())
-      {
-        auto tile = mTileMap[aColumn][aRow];
-        auto newPos = tile->GetPosition();
-        newPos.y = tile->GetFirstComponentOfType<TileMeshComponent>()->GetHeight();
-        aObject->SetPosition(newPos);
+      auto tile = mTiles[index];
+      auto newPos = tile->GetPosition();
+      newPos.y = tile->GetFirstComponentOfType<TileMeshComponent>()->GetHeight();
+      aObject->SetPosition(newPos);
 
-        parent->AddChild(std::move(aObject));
-        success = true;
-      }
+      parent->AddChild(std::move(aObject));
+      mCharacters[index] = parent->GetChildren().back();
+      success = true;
     }
   }
 
   return success;
+}
+
+/******************************************************************************/
+void BoardBehaviorComponent::RemoveObjectAtPosition(int aColumn,
+                                                    int aRow)
+{
+  int index = (aColumn * mRows) + aRow;
+  if(index < mCharacters.size())
+  {
+    auto obj = mCharacters[index];
+    if(obj != nullptr)
+    {
+      obj->ScheduleForDeletion();
+    }
+  }
+}
+
+/******************************************************************************/
+UrsineEngine::GameObject* BoardBehaviorComponent::GetObjectAtPosition(int aColumn,
+                                                                      int aRow)
+{
+  UrsineEngine::GameObject* obj = nullptr;
+
+  int index = (aColumn * mRows) + aRow;
+  if(index < mCharacters.size())
+  {
+    obj = mCharacters[index];
+  }
+
+  return obj;
 }

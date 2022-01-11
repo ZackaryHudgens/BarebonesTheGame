@@ -27,6 +27,27 @@ namespace Barebones
       void Update() override;
 
       /**
+       * Returns the number of rows on the board.
+       *
+       * @return The number of rows on the board.
+       */
+      int GetRows() const { return mRows; }
+
+      /**
+       * Returns the number of columns on the board.
+       *
+       * @return The number of columns on the board.
+       */
+      int GetColumns() const { return mColumns; }
+
+      /**
+       * Returns the amount of empty space between tiles.
+       *
+       * @return The spacing between tiles.
+       */
+      double GetTileSpacing() const { return mTileSpacing; }
+
+      /**
        * Adds a GameObject to the board at the given position. If this
        * component is attached to a GameObject, the parent takes ownership
        * of the given object as a child object. If this component isn't
@@ -42,10 +63,32 @@ namespace Barebones
                                int aColumn,
                                int aRow);
 
+      /**
+       * Removes a GameObject at the given position.
+       *
+       * @param aColumn The column to remove an object from.
+       * @param aRow The row to remove an object from.
+       */
+      void RemoveObjectAtPosition(int aColumn,
+                                  int aRow);
+
+      /**
+       * Returns a pointer to the GameObject on the board at a given position.
+       *
+       * @param aColumn The column in question.
+       * @param aRow The row in question.
+       * @return A pointer to a GameObject, or nullptr if nothing is occupying
+       *         the given space.
+       */
+      UrsineEngine::GameObject* GetObjectAtPosition(int aColumn,
+                                                    int aRow);
+
     private:
-      std::vector<std::vector<UrsineEngine::GameObject*>> mTileMap;
+      std::vector<UrsineEngine::GameObject*> mTiles;
+      std::vector<UrsineEngine::GameObject*> mCharacters;
 
       double mScaleTime;
+      double mTileSpacing;
 
       int mColumns;
       int mRows;
