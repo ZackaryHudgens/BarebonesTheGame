@@ -14,6 +14,9 @@ namespace Barebones
        */
       BasicSkeletonSpriteComponent();
 
+      /**
+       */
+
     protected:
 
       /**

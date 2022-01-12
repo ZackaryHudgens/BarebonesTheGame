@@ -20,6 +20,10 @@ BoardBehaviorComponent::BoardBehaviorComponent()
   , mRows(7)
   , mInitialized(false)
 {
+  CharacterSelected.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
+  {
+    this->HandleSelectionChanged(aCharacter);
+  });
 }
 
 /******************************************************************************/
@@ -149,4 +153,31 @@ UrsineEngine::GameObject* BoardBehaviorComponent::GetObjectAtPosition(int aColum
   }
 
   return obj;
+}
+
+/******************************************************************************/
+void BoardBehaviorComponent::HandleSelectionChanged(CharacterBehaviorComponent& aCharacter)
+{
+  // When a character is selected, highlight each of the tiles
+  // that it can move to.
+  auto charParent = aCharacter.GetParent();
+  if(charParent != nullptr)
+  {
+    auto charObj = std::find(mCharacters.begin(),
+                             mCharacters.end(),
+                             charParent);
+    if(charObj != mCharacters.end())
+    {
+      int index = charObj - mCharacters.begin();
+      
+      // Use the character's movement options to determine
+      // which tiles to highlight.
+      int column = index % mColumns;
+      int row = index - (column * mRows);
+
+      int horizontalMovement = aCharacter.GetHorizontalDistance();
+      int verticalMovement = aCharacter.GetVerticalDistance();
+      int diagonalDistance = aCharacter.GetDiagonalDistance();
+    }
+  }
 }

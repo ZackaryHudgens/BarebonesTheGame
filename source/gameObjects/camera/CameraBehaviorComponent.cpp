@@ -14,7 +14,7 @@ CameraBehaviorComponent::CameraBehaviorComponent()
 }
 
 /******************************************************************************/
-void CameraBehaviorComponent::FollowBoard(UrsineEngine::GameObject& aObject)
+void CameraBehaviorComponent::CenterOnBoard(UrsineEngine::GameObject& aObject)
 {
   auto boardComp = aObject.GetFirstComponentOfType<BoardBehaviorComponent>();
   if(boardComp != nullptr)

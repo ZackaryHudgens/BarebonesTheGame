@@ -4,6 +4,8 @@
 #include <Component.hpp>
 #include <GameObject.hpp>
 
+#include "CharacterBehaviorComponent.hpp"
+
 namespace Barebones
 {
   class BoardBehaviorComponent : public UrsineEngine::Component
@@ -84,6 +86,15 @@ namespace Barebones
                                                     int aRow);
 
     private:
+
+      /**
+       * A handler function that gets called whenever the selection
+       * status of a character changes.
+       *
+       * @param aCharacter The character that was selected.
+       */
+      void HandleSelectionChanged(CharacterBehaviorComponent& aCharacter);
+
       std::vector<UrsineEngine::GameObject*> mTiles;
       std::vector<UrsineEngine::GameObject*> mCharacters;
 

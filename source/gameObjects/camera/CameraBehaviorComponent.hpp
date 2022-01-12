@@ -19,7 +19,7 @@ namespace Barebones
        *
        * @param aObject The GameObject to center on.
        */
-      void FollowBoard(UrsineEngine::GameObject& aObject);
+      void CenterOnBoard(UrsineEngine::GameObject& aObject);
 
     private:
       double mHeight;

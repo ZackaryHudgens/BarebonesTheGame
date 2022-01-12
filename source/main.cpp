@@ -2,6 +2,7 @@
 
 #include "CameraBehaviorComponent.hpp"
 #include "CharacterFactory.hpp"
+#include "CharacterBehaviorComponent.hpp"
 #include "BoardBehaviorComponent.hpp"
 
 int main()
@@ -29,7 +30,7 @@ int main()
   boardComp->AddObjectAtPosition(std::move(skeleton), 0, 0);
   boardComp->AddObjectAtPosition(std::move(skeleton2), 0, 1);
   boardComp->AddObjectAtPosition(std::move(skeleton3), 0, 2);
-  boardComp->AddObjectAtPosition(std::move(skeleton4), 0, 3);
+  boardComp->AddObjectAtPosition(std::move(skeleton4), 3, 3);
   boardComp->AddObjectAtPosition(std::move(skeleton5), 0, 4);
   boardComp->AddObjectAtPosition(std::move(skeleton6), 0, 5);
   boardComp->AddObjectAtPosition(std::move(skeleton7), 0, 6);
@@ -39,9 +40,13 @@ int main()
   auto cam = newScene.GetDefaultCamera();
   cam->AddComponent(std::make_unique<Barebones::CameraBehaviorComponent>());
   auto camComp = cam->GetFirstComponentOfType<Barebones::CameraBehaviorComponent>();
-  camComp->FollowBoard(*board.get());
+  camComp->CenterOnBoard(*board.get());
 
   newScene.AddObject(std::move(board));
+
+  auto board2 = newScene.GetObject("board");
+  auto boardComp2 = board2->GetFirstComponentOfType<Barebones::BoardBehaviorComponent>();
+  boardComp2->GetObjectAtPosition(3, 3)->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSelected(true);
 
   env.LoadScene(newScene);
 
