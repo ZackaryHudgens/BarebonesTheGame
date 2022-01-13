@@ -95,8 +95,8 @@ namespace Barebones
        */
       void HandleSelectionChanged(CharacterBehaviorComponent& aCharacter);
 
-      std::vector<UrsineEngine::GameObject*> mTiles;
-      std::vector<UrsineEngine::GameObject*> mCharacters;
+      std::vector<std::vector<UrsineEngine::GameObject*>> mTiles;
+      std::vector<std::vector<UrsineEngine::GameObject*>> mCharacters;
 
       double mScaleTime;
       double mTileSpacing;

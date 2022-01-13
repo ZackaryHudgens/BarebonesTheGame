@@ -40,6 +40,9 @@ void BoardBehaviorComponent::Initialize()
     // as well.
     for(int x = 0; x < mColumns; ++x)
     {
+      std::vector<UrsineEngine::GameObject*> row;
+      std::vector<UrsineEngine::GameObject*> characters;
+
       for(int y = 0; y < mRows; ++y)
       {
         ss << "tile_" << x << "_" << y;
@@ -54,10 +57,13 @@ void BoardBehaviorComponent::Initialize()
                                  0.01,
                                  0.01));
         parent->AddChild(std::move(tile));
-        mTiles.emplace_back(parent->GetChild(ss.str()));
-        mCharacters.emplace_back(nullptr);
+        row.emplace_back(parent->GetChild(ss.str()));
+        characters.emplace_back(nullptr);
         ss.str("");
       }
+
+      mTiles.emplace_back(row);
+      mCharacters.emplace_back(characters);
     }
   }
 }
@@ -108,17 +114,31 @@ bool BoardBehaviorComponent::AddObjectAtPosition(std::unique_ptr<UrsineEngine::G
   auto parent = GetParent();
   if(parent != nullptr)
   {
-    int index = (aColumn * mRows) + aRow;
-    if(index < mTiles.size())
+    if(aColumn < mTiles.size() &&
+       aColumn >= 0)
     {
-      auto tile = mTiles[index];
-      auto newPos = tile->GetPosition();
-      newPos.y = tile->GetFirstComponentOfType<TileMeshComponent>()->GetHeight();
-      aObject->SetPosition(newPos);
+      if(aRow < mTiles[aColumn].size() &&
+         aRow >= 0)
+      {
+        auto tile = mTiles[aColumn][aRow];
+        auto newPos = tile->GetPosition();
+        newPos.y = tile->GetFirstComponentOfType<TileMeshComponent>()->GetHeight();
+        aObject->SetPosition(newPos);
 
-      parent->AddChild(std::move(aObject));
-      mCharacters[index] = parent->GetChildren().back();
-      success = true;
+        parent->AddChild(std::move(aObject));
+
+        // Add the object to the characters list.
+        if(aColumn < mCharacters.size() &&
+           aColumn >= 0)
+        {
+          if(aRow < mCharacters[aColumn].size() &&
+             aRow >= 0)
+          {
+            mCharacters[aColumn][aRow] = parent->GetChildren().back();
+          }
+        }
+        success = true;
+      }
     }
   }
 
@@ -129,13 +149,17 @@ bool BoardBehaviorComponent::AddObjectAtPosition(std::unique_ptr<UrsineEngine::G
 void BoardBehaviorComponent::RemoveObjectAtPosition(int aColumn,
                                                     int aRow)
 {
-  int index = (aColumn * mRows) + aRow;
-  if(index < mCharacters.size())
+  if(aColumn < mCharacters.size() &&
+     aColumn >= 0)
   {
-    auto obj = mCharacters[index];
-    if(obj != nullptr)
+    if(aRow < mCharacters[aColumn].size() &&
+       aRow >= 0)
     {
-      obj->ScheduleForDeletion();
+      auto obj = mCharacters[aColumn][aRow];
+      if(obj != nullptr)
+      {
+        obj->ScheduleForDeletion();
+      }
     }
   }
 }
@@ -146,10 +170,14 @@ UrsineEngine::GameObject* BoardBehaviorComponent::GetObjectAtPosition(int aColum
 {
   UrsineEngine::GameObject* obj = nullptr;
 
-  int index = (aColumn * mRows) + aRow;
-  if(index < mCharacters.size())
+  if(aColumn < mCharacters.size() &&
+     aColumn >= 0)
   {
-    obj = mCharacters[index];
+    if(aRow < mCharacters[aColumn].size() &&
+       aRow >= 0)
+    {
+      obj = mCharacters[aColumn][aRow];
+    }
   }
 
   return obj;
@@ -160,24 +188,44 @@ void BoardBehaviorComponent::HandleSelectionChanged(CharacterBehaviorComponent& 
 {
   // When a character is selected, highlight each of the tiles
   // that it can move to.
-  auto charParent = aCharacter.GetParent();
-  if(charParent != nullptr)
+  auto parent = aCharacter.GetParent();
+  if(parent != nullptr)
   {
-    auto charObj = std::find(mCharacters.begin(),
-                             mCharacters.end(),
-                             charParent);
-    if(charObj != mCharacters.end())
-    {
-      int index = charObj - mCharacters.begin();
-      
-      // Use the character's movement options to determine
-      // which tiles to highlight.
-      int column = index % mColumns;
-      int row = index - (column * mRows);
+    // Determine if this character is on the board. If it is,
+    // determine the column and row it's in.
+    bool onBoard = false;
+    TileLocation location;
 
-      int horizontalMovement = aCharacter.GetHorizontalDistance();
-      int verticalMovement = aCharacter.GetVerticalDistance();
-      int diagonalDistance = aCharacter.GetDiagonalDistance();
+    for(int c = 0; c < mCharacters.size(); ++c)
+    {
+      for(int r = 0; r < mCharacters[c].size(); ++r)
+      {
+        if(mCharacters[c][r] == parent)
+        {
+          location.first = c;
+          location.second = r;
+          onBoard = true;
+          break;
+        }
+      }
+    }
+
+    if(onBoard)
+    {
+      // Determine which tiles to highlight.
+      for(const auto& movement : aCharacter.GetMovements(location))
+      {
+        if(movement.first < mTiles.size() &&
+           movement.first >= 0)
+        {
+          if(movement.second < mTiles[movement.first].size() &&
+             movement.second >= 0)
+          {
+            // Highlight this tile.
+            //mTiles[movement.first][movement.second]->SetHighlighted(true);
+          }
+        }
+      }
     }
   }
 }

@@ -8,6 +8,9 @@
 
 namespace Barebones
 {
+  typedef std::pair<int, int> TileLocation;
+  typedef std::vector<std::pair<int, int>> MoveList;
+
   class CharacterBehaviorComponent : public UrsineEngine::Component
   {
     public:
@@ -16,27 +19,6 @@ namespace Barebones
        * Constructor.
        */
       CharacterBehaviorComponent();
-
-      /**
-       * Returns the horizontal distance that this character can move.
-       *
-       * @return The horizontal distance that this character can move.
-       */
-      int GetHorizontalDistance() const { return mHorizontalDistance; }
-
-      /**
-       * Returns the vertical distance that this character can move.
-       *
-       * @return The vertical distance that this character can move.
-       */
-      int GetVerticalDistance() const { return mVerticalDistance; }
-
-      /**
-       * Returns the diagonal distance that this character can move.
-       *
-       * @return The diagonal distance that this character can move.
-       */
-      int GetDiagonalDistance() const { return mDiagonalDistance; }
 
       /**
        * Sets this character as either selected or deselected.
@@ -52,6 +34,17 @@ namespace Barebones
        */
       bool IsSelected() const { return mSelected; }
 
+      /**
+       * A virtual function that returns a list of possible movements
+       * given a location on a board. The first integer of each
+       * pair corresponds to the column; the second integer corresponds
+       * to the row.
+       *
+       * @param aLocation The location to move from.
+       * @return A list of possible movements.
+       */
+      virtual MoveList GetMovements(const TileLocation& aLocation) const;
+
     private:
 
       /**
@@ -61,10 +54,6 @@ namespace Barebones
        * @param aSelected Whether this character was selected.
        */
       virtual void HandleSelectionChanged(bool aSelected) {}
-
-      int mHorizontalDistance;
-      int mVerticalDistance;
-      int mDiagonalDistance;
 
       bool mSelected;
   };
