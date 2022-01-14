@@ -164,7 +164,14 @@ void DefaultTileMeshComponent::SetupShaders()
 {
   std::string vertexFile = "resources/shaders/TileShader.vert";
   std::string fragmentFile = "resources/shaders/TileShader.frag";
-  UrsineEngine::Shader textureShader(vertexFile, fragmentFile);
-  AddShader("textureShader", textureShader);
-  SetCurrentShader("textureShader");
+  UrsineEngine::Shader tileShader(vertexFile, fragmentFile);
+
+  tileShader.Activate();
+  tileShader.SetVec4("highlightColor", glm::vec4(1.0,
+                                                 1.0,
+                                                 1.0,
+                                                 1.0));
+
+  AddShader("tileShader", tileShader);
+  SetCurrentShader("tileShader");
 }

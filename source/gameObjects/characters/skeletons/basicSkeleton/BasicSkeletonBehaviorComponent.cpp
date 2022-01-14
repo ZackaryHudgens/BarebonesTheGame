@@ -14,6 +14,8 @@ BasicSkeletonBehaviorComponent::BasicSkeletonBehaviorComponent()
   : CharacterBehaviorComponent()
   , mGlowSpeed(1.0)
   , mTimeBeganGlowing(0.0)
+  , mHorizontalMovement(2)
+  , mVerticalMovement(2)
 {
 }
 
@@ -61,6 +63,52 @@ void BasicSkeletonBehaviorComponent::Update()
       }
     }
   }
+}
+
+/******************************************************************************/
+Barebones::MoveList BasicSkeletonBehaviorComponent::GetMovements(const TileLocation& aLocation) const
+{
+  MoveList moves;
+
+  TileLocation moveLocation;
+
+  for(int h = mHorizontalMovement * 2; h > 0; --h)
+  {
+    if(h <= mHorizontalMovement)
+    {
+      // Add moves to the left.
+      moveLocation.first = aLocation.first - h;
+      moveLocation.second = aLocation.second;
+    }
+    else
+    {
+      // Add moves to the right.
+      moveLocation.first = aLocation.first + (h - mHorizontalMovement);
+      moveLocation.second = aLocation.second;
+    }
+
+    moves.emplace_back(moveLocation);
+  }
+
+  for(int v = mVerticalMovement * 2; v > 0; --v)
+  {
+    if(v <= mVerticalMovement)
+    {
+      // Add moves to the bottom.
+      moveLocation.first = aLocation.first;
+      moveLocation.second = aLocation.second - v;
+    }
+    else
+    {
+      // Add moves to the top.
+      moveLocation.first = aLocation.first;
+      moveLocation.second = aLocation.second + (v - mVerticalMovement);
+    }
+
+    moves.emplace_back(moveLocation);
+  }
+
+  return moves;
 }
 
 /******************************************************************************/

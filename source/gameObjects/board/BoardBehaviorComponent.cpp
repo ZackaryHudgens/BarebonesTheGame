@@ -7,6 +7,7 @@
 
 #include "CharacterBehaviorComponent.hpp"
 #include "TileFactory.hpp"
+#include "TileBehaviorComponent.hpp"
 #include "TileMeshComponent.hpp"
 
 using Barebones::BoardBehaviorComponent;
@@ -222,7 +223,11 @@ void BoardBehaviorComponent::HandleSelectionChanged(CharacterBehaviorComponent& 
              movement.second >= 0)
           {
             // Highlight this tile.
-            //mTiles[movement.first][movement.second]->SetHighlighted(true);
+            auto tileComp = mTiles[movement.first][movement.second]->GetFirstComponentOfType<TileBehaviorComponent>();
+            if(tileComp != nullptr)
+            {
+              tileComp->SetHighlighted(true);
+            }
           }
         }
       }
