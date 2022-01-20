@@ -98,13 +98,10 @@ namespace Barebones
       std::vector<std::vector<UrsineEngine::GameObject*>> mTiles;
       std::vector<std::vector<UrsineEngine::GameObject*>> mCharacters;
 
-      double mScaleTime;
       double mTileSpacing;
 
       int mColumns;
       int mRows;
-
-      bool mInitialized;
   };
 }
 

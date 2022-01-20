@@ -1,6 +1,8 @@
 #ifndef DEFAULTTILEBEHAVIORCOMPONENT_HPP
 #define DEFAULTTILEBEHAVIORCOMPONENT_HPP
 
+#include <GameObject.hpp>
+
 #include "TileBehaviorComponent.hpp"
 
 namespace Barebones
@@ -13,6 +15,11 @@ namespace Barebones
        * Constructor.
        */
       DefaultTileBehaviorComponent();
+
+      /**
+       * Initializes the component.
+       */
+      void Initialize() override;
 
       /**
        * Updates the component.
@@ -38,8 +45,16 @@ namespace Barebones
       void HandleHighlightChanged(bool aHighlighted) override;
 
     private:
+      glm::vec4 mHighlightColor;
+      glm::vec4 mHoverColor;
+
       double mGlowSpeed;
       double mTimeBeganGlowing;
+
+      double mScale;
+      double mScaleSpeed;
+
+      bool mScaling;
   };
 }
 

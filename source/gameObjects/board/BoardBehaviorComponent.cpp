@@ -15,11 +15,9 @@ using Barebones::BoardBehaviorComponent;
 /******************************************************************************/
 BoardBehaviorComponent::BoardBehaviorComponent()
   : Component()
-  , mScaleTime(0.03)
   , mTileSpacing(0.2)
   , mColumns(7)
   , mRows(7)
-  , mInitialized(false)
 {
   CharacterSelected.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
   {
@@ -54,9 +52,6 @@ void BoardBehaviorComponent::Initialize()
         tile->SetPosition(glm::vec3((double)x + (mTileSpacing * x),
                                      0.0,
                                      -1 * (double)y - (mTileSpacing * y)));
-        tile->SetScale(glm::vec3(0.01,
-                                 0.01,
-                                 0.01));
         parent->AddChild(std::move(tile));
         row.emplace_back(parent->GetChild(ss.str()));
         characters.emplace_back(nullptr);
@@ -72,37 +67,6 @@ void BoardBehaviorComponent::Initialize()
 /******************************************************************************/
 void BoardBehaviorComponent::Update()
 {
-  if(!mInitialized)
-  {
-    auto parent = GetParent();
-    if(parent != nullptr)
-    {
-      auto children = parent->GetChildren();
-      for(auto& child : children)
-      {
-        // For each tile, calculate their new scalar value via
-        // interpolation. Because we scale each axis evenly, we can
-        // just use the x-axis scale as our starting point ([0, 0]
-        // in the matrix).
-        if(child->GetFirstComponentOfType<TileMeshComponent>() != nullptr)
-        {
-          auto transform = child->GetScalarTransform();
-          double scalar = transform[0][0];
-          double newScalar = glm::mix(scalar, 1.0, mScaleTime);
-          newScalar = std::min(newScalar, 1.0);
-
-          child->SetScale(glm::vec3(newScalar,
-                                    newScalar,
-                                    newScalar));
-
-          if(newScalar == 1.0)
-          {
-            mInitialized = true;
-          }
-        }
-      }
-    }
-  }
 }
 
 /******************************************************************************/

@@ -10,14 +10,50 @@ using Barebones::DefaultTileBehaviorComponent;
 /******************************************************************************/
 DefaultTileBehaviorComponent::DefaultTileBehaviorComponent()
   : TileBehaviorComponent()
+  , mHighlightColor(1.0, 1.0, 0.0, 1.0)
+  , mHoverColor(0.0, 0.3, 1.0, 1.0)
   , mGlowSpeed(1.0)
   , mTimeBeganGlowing(0.0)
+  , mScale(0.1)
+  , mScaleSpeed(0.1)
+  , mScaling(false)
 {
+}
+
+/******************************************************************************/
+void DefaultTileBehaviorComponent::Initialize()
+{
+  mScaling = true;
 }
 
 /******************************************************************************/
 void DefaultTileBehaviorComponent::Update()
 {
+  // Scale the tile up to normal size.
+  if(mScaling)
+  {
+    auto parent = GetParent();
+    if(parent != nullptr)
+    {
+      // Calculate the new scalar value via interpolation.
+      // Because we scale each axis evenly, we can just use
+      // the x-axis scale as our starting point ([0, 0] in the matrix).
+      auto transform = parent->GetScalarTransform();
+      double scalar = transform[0][0];
+      double newScalar = glm::mix(scalar, 1.0, mScaleSpeed);
+      newScalar = std::min(newScalar, 1.0);
+
+      parent->SetScale(glm::vec3(newScalar,
+                                 newScalar,
+                                 newScalar));
+      if(newScalar == 1.0)
+      {
+        mScaling = false;
+      }
+    }
+  }
+
+  // Add a simple highlight effect to the tile.
   if(IsHighlighted())
   {
     auto parent = GetParent();
