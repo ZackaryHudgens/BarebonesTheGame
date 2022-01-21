@@ -10,8 +10,9 @@ out vec4 fragColor;
 // Uniform variables
 uniform sampler2D texSampler;
 uniform vec4 highlightColor;
+uniform vec4 hoverColor;
 
 void main()
 {
-  fragColor = highlightColor * vec4(vertexColor, 1.0);
+  fragColor = hoverColor * highlightColor * vec4(vertexColor, 1.0);
 }

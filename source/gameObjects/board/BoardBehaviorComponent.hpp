@@ -2,6 +2,7 @@
 #define BOARDBEHAVIORCOMPONENT_HPP
 
 #include <Component.hpp>
+#include <CoreSignals.hpp>
 #include <GameObject.hpp>
 
 #include "CharacterBehaviorComponent.hpp"
@@ -88,6 +89,16 @@ namespace Barebones
     private:
 
       /**
+       * A handler function that gets called whenever the user presses
+       * a key.
+       *
+       * @param aCode The KeyCode for the key that was pressed.
+       * @param aMods Any modifiers present when the key was pressed.
+       */
+      void HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
+                            int aMods);
+
+      /**
        * A handler function that gets called whenever the selection
        * status of a character changes.
        *
@@ -97,6 +108,10 @@ namespace Barebones
 
       std::vector<std::vector<UrsineEngine::GameObject*>> mTiles;
       std::vector<std::vector<UrsineEngine::GameObject*>> mCharacters;
+
+      UrsineEngine::GameObject* mSelectedCharacter;
+
+      TileLocation mPlayerLocation;
 
       double mTileSpacing;
 

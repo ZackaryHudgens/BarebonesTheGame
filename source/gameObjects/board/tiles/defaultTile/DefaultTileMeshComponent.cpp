@@ -171,6 +171,10 @@ void DefaultTileMeshComponent::SetupShaders()
                                                  1.0,
                                                  1.0,
                                                  1.0));
+  tileShader.SetVec4("hoverColor", glm::vec4(1.0,
+                                             1.0,
+                                             1.0,
+                                             1.0));
 
   AddShader("tileShader", tileShader);
   SetCurrentShader("tileShader");

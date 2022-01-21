@@ -15,10 +15,19 @@ using Barebones::BoardBehaviorComponent;
 /******************************************************************************/
 BoardBehaviorComponent::BoardBehaviorComponent()
   : Component()
+  , mSelectedCharacter(nullptr)
+  , mPlayerLocation(0, 0)
   , mTileSpacing(0.2)
   , mColumns(7)
   , mRows(7)
 {
+  UrsineEngine::KeyPressed.Connect(*this, [this](const UrsineEngine::KeyCode& aCode,
+                                                 int aMods)
+  {
+    this->HandleKeyPressed(aCode,
+                           aMods);
+  });
+
   CharacterSelected.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
   {
     this->HandleSelectionChanged(aCharacter);
@@ -60,6 +69,14 @@ void BoardBehaviorComponent::Initialize()
 
       mTiles.emplace_back(row);
       mCharacters.emplace_back(characters);
+    }
+
+    // Hover over the initial position.
+    auto initialTile = mTiles[mPlayerLocation.first][mPlayerLocation.second];
+    auto initialTileComp = initialTile->GetFirstComponentOfType<TileBehaviorComponent>();
+    if(initialTileComp != nullptr)
+    {
+      initialTileComp->SetHovered(true);
     }
   }
 }
@@ -149,48 +166,213 @@ UrsineEngine::GameObject* BoardBehaviorComponent::GetObjectAtPosition(int aColum
 }
 
 /******************************************************************************/
+void BoardBehaviorComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
+                                              int aMods)
+{
+  switch(aCode)
+  {
+    // Movement keys move the player's location and set the hovered
+    // property of the tile at that location.
+    case UrsineEngine::KeyCode::eKEY_UP:
+    case UrsineEngine::KeyCode::eKEY_W:
+    {
+      if(mPlayerLocation.second < mRows - 1)
+      {
+        // Un-hover the tile at the current location.
+        auto prevTile = mTiles[mPlayerLocation.first][mPlayerLocation.second];
+        auto prevTileComp = prevTile->GetFirstComponentOfType<TileBehaviorComponent>();
+        if(prevTileComp != nullptr)
+        {
+          prevTileComp->SetHovered(false);
+        }
+
+        mPlayerLocation.second += 1;
+
+        // Set the hovered property of the tile at the new location.
+        auto tile = mTiles[mPlayerLocation.first][mPlayerLocation.second];
+        auto tileComp = tile->GetFirstComponentOfType<TileBehaviorComponent>();
+        if(tileComp != nullptr)
+        {
+          tileComp->SetHovered(true);
+        }
+      }
+      break;
+    }
+    case UrsineEngine::KeyCode::eKEY_DOWN:
+    case UrsineEngine::KeyCode::eKEY_S:
+    {
+      if(mPlayerLocation.second > 0)
+      {
+        // Un-hover the tile at the current location.
+        auto prevTile = mTiles[mPlayerLocation.first][mPlayerLocation.second];
+        auto prevTileComp = prevTile->GetFirstComponentOfType<TileBehaviorComponent>();
+        if(prevTileComp != nullptr)
+        {
+          prevTileComp->SetHovered(false);
+        }
+
+        mPlayerLocation.second -= 1;
+
+        auto tile = mTiles[mPlayerLocation.first][mPlayerLocation.second];
+        auto tileComp = tile->GetFirstComponentOfType<TileBehaviorComponent>();
+        if(tileComp != nullptr)
+        {
+          tileComp->SetHovered(true);
+        }
+      }
+      break;
+    }
+    case UrsineEngine::KeyCode::eKEY_LEFT:
+    case UrsineEngine::KeyCode::eKEY_A:
+    {
+      if(mPlayerLocation.first > 0)
+      {
+        // Un-hover the tile at the current location.
+        auto prevTile = mTiles[mPlayerLocation.first][mPlayerLocation.second];
+        auto prevTileComp = prevTile->GetFirstComponentOfType<TileBehaviorComponent>();
+        if(prevTileComp != nullptr)
+        {
+          prevTileComp->SetHovered(false);
+        }
+
+        mPlayerLocation.first -= 1;
+
+        auto tile = mTiles[mPlayerLocation.first][mPlayerLocation.second];
+        auto tileComp = tile->GetFirstComponentOfType<TileBehaviorComponent>();
+        if(tileComp != nullptr)
+        {
+          tileComp->SetHovered(true);
+        }
+      }
+      break;
+    }
+    case UrsineEngine::KeyCode::eKEY_RIGHT:
+    case UrsineEngine::KeyCode::eKEY_D:
+    {
+      if(mPlayerLocation.first < mColumns - 1)
+      {
+        // Un-hover the tile at the current location.
+        auto prevTile = mTiles[mPlayerLocation.first][mPlayerLocation.second];
+        auto prevTileComp = prevTile->GetFirstComponentOfType<TileBehaviorComponent>();
+        if(prevTileComp != nullptr)
+        {
+          prevTileComp->SetHovered(false);
+        }
+
+        mPlayerLocation.first += 1;
+
+        auto tile = mTiles[mPlayerLocation.first][mPlayerLocation.second];
+        auto tileComp = tile->GetFirstComponentOfType<TileBehaviorComponent>();
+        if(tileComp != nullptr)
+        {
+          tileComp->SetHovered(true);
+        }
+      }
+      break;
+    }
+    case UrsineEngine::KeyCode::eKEY_ENTER:
+    {
+      // If there is a character at the player's current position,
+      // that character is now selected (or deselected if it's
+      // already selected).
+      auto character = mCharacters[mPlayerLocation.first][mPlayerLocation.second];
+      if(character != nullptr)
+      {
+        auto charComp = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
+        if(charComp != nullptr)
+        {
+          if(mSelectedCharacter != nullptr)
+          {
+            auto selectedComp = mSelectedCharacter->GetFirstComponentOfType<CharacterBehaviorComponent>();
+            if(selectedComp != nullptr)
+            {
+              selectedComp->SetSelected(false);
+            }
+          }
+
+          if(mSelectedCharacter == character)
+          {
+            charComp->SetSelected(false);
+            mSelectedCharacter = nullptr;
+          }
+          else
+          {
+            charComp->SetSelected(true);
+            mSelectedCharacter = character;
+          }
+        }
+      }
+      break;
+    }
+    default:
+    {
+      break;
+    }
+  }
+}
+
+/******************************************************************************/
 void BoardBehaviorComponent::HandleSelectionChanged(CharacterBehaviorComponent& aCharacter)
 {
-  // When a character is selected, highlight each of the tiles
-  // that it can move to.
-  auto parent = aCharacter.GetParent();
-  if(parent != nullptr)
+  // First, de-highlight any spaces that were previously highlighted.
+  for(auto& row : mTiles)
   {
-    // Determine if this character is on the board. If it is,
-    // determine the column and row it's in.
-    bool onBoard = false;
-    TileLocation location;
-
-    for(int c = 0; c < mCharacters.size(); ++c)
+    for(auto& column : row)
     {
-      for(int r = 0; r < mCharacters[c].size(); ++r)
+      if(column != nullptr)
       {
-        if(mCharacters[c][r] == parent)
+        auto tileComp = column->GetFirstComponentOfType<TileBehaviorComponent>();
+        if(tileComp != nullptr)
         {
-          location.first = c;
-          location.second = r;
-          onBoard = true;
-          break;
+          tileComp->SetHighlighted(false);
         }
       }
     }
+  }
 
-    if(onBoard)
+  // When a character is selected, highlight each of the tiles
+  // that it can move to.
+  if(aCharacter.IsSelected())
+  {
+    auto parent = aCharacter.GetParent();
+    if(parent != nullptr)
     {
-      // Determine which tiles to highlight.
-      for(const auto& movement : aCharacter.GetMovements(location))
+      // Determine if this character is on the board. If it is,
+      // determine the column and row it's in.
+      bool onBoard = false;
+      TileLocation location;
+
+      for(int c = 0; c < mCharacters.size(); ++c)
       {
-        if(movement.first < mTiles.size() &&
-           movement.first >= 0)
+        for(int r = 0; r < mCharacters[c].size(); ++r)
         {
-          if(movement.second < mTiles[movement.first].size() &&
-             movement.second >= 0)
+          if(mCharacters[c][r] == parent)
           {
-            // Highlight this tile.
-            auto tileComp = mTiles[movement.first][movement.second]->GetFirstComponentOfType<TileBehaviorComponent>();
-            if(tileComp != nullptr)
+            location.first = c;
+            location.second = r;
+            onBoard = true;
+            break;
+          }
+        }
+      }
+
+      if(onBoard)
+      {
+        // Determine which tiles to highlight.
+        for(const auto& movement : aCharacter.GetMovements(location))
+        {
+          if(movement.first < mTiles.size() &&
+             movement.first >= 0)
+          {
+            if(movement.second < mTiles[movement.first].size() &&
+               movement.second >= 0)
             {
-              tileComp->SetHighlighted(true);
+              // Highlight this tile.
+              auto tileComp = mTiles[movement.first][movement.second]->GetFirstComponentOfType<TileBehaviorComponent>();
+              if(tileComp != nullptr)
+              {
+                tileComp->SetHighlighted(true);
+              }
             }
           }
         }
