@@ -48,7 +48,6 @@ int main()
 
   auto board2 = newScene.GetObject("board");
   auto boardComp2 = board2->GetFirstComponentOfType<Barebones::BoardBehaviorComponent>();
-  boardComp2->GetObjectAtPosition(0, 5)->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSelected(true);
 
   env.LoadScene(newScene);
 

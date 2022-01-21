@@ -122,5 +122,22 @@ void BasicSkeletonBehaviorComponent::HandleSelectionChanged(bool aSelected)
   {
     // If this skeleton was deselected, restore the sprite component
     // to its normal color.
+    auto parent = GetParent();
+    if(parent != nullptr)
+    {
+      auto sprite = parent->GetFirstComponentOfType<CharacterSpriteComponent>();
+      if(sprite != nullptr)
+      {
+        auto shader = sprite->GetCurrentShader();
+        if(shader != nullptr)
+        {
+          shader->Activate();
+          shader->SetVec4("selectionColor", glm::vec4(1.0,
+                                                      1.0,
+                                                      1.0,
+                                                      1.0));
+        }
+      }
+    }
   }
 }

@@ -10,8 +10,8 @@ using Barebones::DefaultTileBehaviorComponent;
 /******************************************************************************/
 DefaultTileBehaviorComponent::DefaultTileBehaviorComponent()
   : TileBehaviorComponent()
-  , mHighlightColor(1.0, 1.0, 0.0, 1.0)
-  , mHoverColor(0.0, 0.3, 1.0, 1.0)
+  , mHighlightColor(0.94, 0.89, 0.51, 1.0)
+  , mHoverColor(0.43, 0.87, 0.87, 1.0)
   , mGlowSpeed(1.0)
   , mTimeBeganGlowing(0.0)
   , mScale(0.1)
@@ -23,7 +23,14 @@ DefaultTileBehaviorComponent::DefaultTileBehaviorComponent()
 /******************************************************************************/
 void DefaultTileBehaviorComponent::Initialize()
 {
-  mScaling = true;
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    parent->SetScale(glm::vec3(mScale,
+                               mScale,
+                               mScale));
+    mScaling = true;
+  }
 }
 
 /******************************************************************************/
@@ -66,11 +73,7 @@ void DefaultTileBehaviorComponent::Update()
         if(shader != nullptr)
         {
           double timeSpentGlowing = env.GetTime() - mTimeBeganGlowing;
-          glm::vec4 color = glm::vec4(1.0,
-                                      1.0,
-                                      0.0,
-                                      1.0);
-
+          glm::vec4 color = mHighlightColor;
           if(timeSpentGlowing > (mGlowSpeed / 2.0))
           {
             // The glow is fading.
@@ -100,6 +103,30 @@ void DefaultTileBehaviorComponent::Update()
 /******************************************************************************/
 void DefaultTileBehaviorComponent::HandleHoverChanged(bool aHovered)
 {
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    auto mesh = parent->GetFirstComponentOfType<TileMeshComponent>();
+    if(mesh != nullptr)
+    {
+      auto shader = mesh->GetCurrentShader();
+      if(shader != nullptr)
+      {
+        shader->Activate();
+        if(aHovered)
+        {
+          shader->SetVec4("hoverColor", mHoverColor);
+        }
+        else
+        {
+          shader->SetVec4("hoverColor", glm::vec4(1.0,
+                                                  1.0,
+                                                  1.0,
+                                                  1.0));
+        }
+      }
+    }
+  }
 }
 
 /******************************************************************************/
@@ -111,7 +138,22 @@ void DefaultTileBehaviorComponent::HandleHighlightChanged(bool aHighlighted)
   }
   else
   {
-    // If this skeleton was deselected, restore the sprite component
-    // to its normal color.
+    auto parent = GetParent();
+    if(parent != nullptr)
+    {
+      auto mesh = parent->GetFirstComponentOfType<TileMeshComponent>();
+      if(mesh != nullptr)
+      {
+        auto shader = mesh->GetCurrentShader();
+        if(shader != nullptr)
+        {
+          shader->Activate();
+          shader->SetVec4("highlightColor", glm::vec4(1.0,
+                                                      1.0,
+                                                      1.0,
+                                                      1.0));
+        }
+      }
+    }
   }
 }
