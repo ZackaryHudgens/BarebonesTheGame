@@ -3,7 +3,8 @@
 #include "CameraBehaviorComponent.hpp"
 #include "CharacterFactory.hpp"
 #include "CharacterBehaviorComponent.hpp"
-#include "BoardBehaviorComponent.hpp"
+#include "BoardInputComponent.hpp"
+#include "BoardLayoutComponent.hpp"
 
 #include <iostream>
 
@@ -18,8 +19,9 @@ int main()
   env.Initialize(options);
 
   auto board = std::make_unique<UrsineEngine::GameObject>("board");
-  board->AddComponent(std::make_unique<Barebones::BoardBehaviorComponent>());
-  auto boardComp = board->GetFirstComponentOfType<Barebones::BoardBehaviorComponent>();
+  board->AddComponent(std::make_unique<Barebones::BoardLayoutComponent>());
+  board->AddComponent(std::make_unique<Barebones::BoardInputComponent>());
+  auto boardComp = board->GetFirstComponentOfType<Barebones::BoardLayoutComponent>();
 
   auto skeleton = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_SKELETON, "skeleton");
   auto skeleton2 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_SKELETON, "skeleton2");
@@ -29,13 +31,13 @@ int main()
   auto skeleton6 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_SKELETON, "skeleton6");
   auto skeleton7 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_SKELETON, "skeleton7");
 
-  boardComp->AddObjectAtPosition(std::move(skeleton), 0, 0);
-  boardComp->AddObjectAtPosition(std::move(skeleton2), 0, 1);
-  boardComp->AddObjectAtPosition(std::move(skeleton3), 0, 2);
-  boardComp->AddObjectAtPosition(std::move(skeleton4), 4, 6);
-  boardComp->AddObjectAtPosition(std::move(skeleton5), 0, 4);
-  boardComp->AddObjectAtPosition(std::move(skeleton6), 0, 5);
-  boardComp->AddObjectAtPosition(std::move(skeleton7), 0, 6);
+  boardComp->AddCharacterAtPosition(std::move(skeleton), 0, 0);
+  boardComp->AddCharacterAtPosition(std::move(skeleton2), 0, 1);
+  boardComp->AddCharacterAtPosition(std::move(skeleton3), 0, 2);
+  boardComp->AddCharacterAtPosition(std::move(skeleton4), 4, 6);
+  boardComp->AddCharacterAtPosition(std::move(skeleton5), 0, 4);
+  boardComp->AddCharacterAtPosition(std::move(skeleton6), 0, 5);
+  boardComp->AddCharacterAtPosition(std::move(skeleton7), 0, 6);
 
   UrsineEngine::Scene newScene;
 
@@ -45,9 +47,6 @@ int main()
   camComp->CenterOnBoard(*board.get());
 
   newScene.AddObject(std::move(board));
-
-  auto board2 = newScene.GetObject("board");
-  auto boardComp2 = board2->GetFirstComponentOfType<Barebones::BoardBehaviorComponent>();
 
   env.LoadScene(newScene);
 

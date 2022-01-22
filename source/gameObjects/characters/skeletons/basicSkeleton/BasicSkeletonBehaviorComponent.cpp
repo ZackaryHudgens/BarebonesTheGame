@@ -69,7 +69,6 @@ void BasicSkeletonBehaviorComponent::Update()
 Barebones::MoveList BasicSkeletonBehaviorComponent::GetMovements(const TileLocation& aLocation) const
 {
   MoveList moves;
-
   TileLocation moveLocation;
 
   for(int h = mHorizontalMovement * 2; h > 0; --h)
