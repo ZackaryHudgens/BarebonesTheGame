@@ -167,6 +167,12 @@ UrsineEngine::GameObject* BoardLayoutComponent::GetCharacterAtPosition(int aColu
 }
 
 /******************************************************************************/
+void BoardLayoutComponent::MoveSelectedCharacter(int aXPos,
+                                                 int aYPos)
+{
+}
+
+/******************************************************************************/
 void BoardLayoutComponent::HandleSelectionChanged(CharacterBehaviorComponent& aCharacter)
 {
   // First, de-highlight any spaces that were previously highlighted.

@@ -1,16 +1,16 @@
 #include "DefaultBoardInputState.hpp"
 
-#include "BoardInputComponent.hpp"
 #include "BoardLayoutComponent.hpp"
 #include "TileBehaviorComponent.hpp"
-
-#include <iostream>
+#include "MovingCharacterBoardInputState.hpp"
 
 using Barebones::DefaultBoardInputState;
 
 /******************************************************************************/
-DefaultBoardInputState::DefaultBoardInputState(UrsineEngine::GameObject& aObject)
-  : BoardInputState(aObject)
+DefaultBoardInputState::DefaultBoardInputState(UrsineEngine::GameObject& aObject,
+                                               int aXPos,
+                                               int aYPos)
+  : BoardInputState(aObject, aXPos, aYPos)
 {
 }
 
@@ -25,8 +25,6 @@ std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::HandleKeyPre
   {
     int x = GetPlayerXLocation();
     int y = GetPlayerYLocation();
-
-    std::cout << "currently at " << x << " " << y << std::endl;
 
     switch(aCode)
     {
@@ -93,6 +91,11 @@ std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::HandleKeyPre
                 {
                   charComp->SetSelected(true);
                 }
+
+                // Finally, swap to a different state.
+                newState = std::make_unique<MovingCharacterBoardInputState>(*parent,
+                                                                            GetPlayerXLocation(),
+                                                                            GetPlayerYLocation());
               }
             }
           }
@@ -126,8 +129,6 @@ void DefaultBoardInputState::HoverOverTile(int aXPos,
       {
         int x = GetPlayerXLocation();
         int y = GetPlayerYLocation();
-
-        std::cout << "moving to " << aXPos << " " << aYPos << std::endl;
 
         // Un-hover the tile at the current location.
         auto oldTile = layout->GetTileAtPosition(x,

@@ -95,6 +95,15 @@ namespace Barebones
                                                        int aRow);
 
       /**
+       * Moves the currently selected character to the given position.
+       *
+       * @param aColumn The column to move to.
+       * @param aRow The row to move to.
+       */
+      void MoveSelectedCharacter(int aXPos,
+                                 int aYPos);
+
+      /**
        * Returns the currently selected character.
        *
        * @return A pointer the currently selected character, or nullptr

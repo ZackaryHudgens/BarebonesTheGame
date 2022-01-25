@@ -13,8 +13,12 @@ namespace Barebones
        * Constructor.
        *
        * @param aObject The parent GameObject with a BoardInputComponent.
+       * @param aXPos The initial x position of the player.
+       * @param aYPos The initial y position of the player.
        */
-      DefaultBoardInputState(UrsineEngine::GameObject& aObject);
+      DefaultBoardInputState(UrsineEngine::GameObject& aObject,
+                             int aXPos = 0,
+                             int aYPos = 0);
 
       /**
        * A handler function that gets called whenever the user presses
