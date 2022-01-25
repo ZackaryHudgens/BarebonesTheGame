@@ -1,5 +1,6 @@
 file(GLOB GAME_SOURCES main.cpp
                        gameObjects/board/*.?pp
+                       gameObjects/board/inputStates/*.?pp
                        gameObjects/board/tiles/*.?pp
                        gameObjects/board/tiles/defaultTile/*.?pp
                        gameObjects/camera/*.?pp
@@ -12,6 +13,7 @@ target_link_libraries(barebones PUBLIC
 target_include_directories(barebones PUBLIC
                            ${URSINE_INCLUDE_DIRS}
                            gameObjects/board
+                           gameObjects/board/inputStates
                            gameObjects/board/tiles
                            gameObjects/board/tiles/defaultTile
                            gameObjects/camera

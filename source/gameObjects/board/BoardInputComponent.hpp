@@ -4,6 +4,8 @@
 #include <Component.hpp>
 #include <CoreSignals.hpp>
 
+#include "BoardInputState.hpp"
+
 namespace Barebones
 {
   class BoardInputComponent : public UrsineEngine::Component
@@ -32,19 +34,7 @@ namespace Barebones
       void HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
                             int aMods);
 
-      /**
-       * Sets the hovered property of the tile at the given location
-       * (if it exists) to true and un-hovers the tile at the
-       * current location.
-       *
-       * @param aXPos The x position of the new location.
-       * @param aYPos The y position of the new location.
-       */
-      void HoverOverTile(int aXPos,
-                         int aYPos);
-
-      int mPlayerXLocation;
-      int mPlayerYLocation;
+      std::unique_ptr<BoardInputState> mState;
   };
 }
 
