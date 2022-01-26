@@ -79,6 +79,20 @@ std::unique_ptr<Barebones::BoardInputState> MovingCharacterBoardInputState::Hand
                 {
                   layout->MoveSelectedCharacter(x,
                                                 y);
+
+                  // Deselect the character.
+                  auto character = layout->GetCharacterAtPosition(x,
+                                                                  y);
+                  auto charComp = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
+                  if(charComp != nullptr)
+                  {
+                    charComp->SetSelected(false);
+                  }
+
+                  // Finally, swap back to the default state.
+                  newState = std::make_unique<DefaultBoardInputState>(*parent,
+                                                                      x,
+                                                                      y);
                 }
               }
             }

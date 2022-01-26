@@ -4,6 +4,7 @@
 #include <map>
 
 #include <Component.hpp>
+#include <GameObject.hpp>
 #include <Signal.hpp>
 
 namespace Barebones
@@ -19,6 +20,20 @@ namespace Barebones
        * Constructor.
        */
       CharacterBehaviorComponent();
+
+      /**
+       * Updates the component.
+       */
+      void Update() override;
+
+      /**
+       * Moves the character to a location in world space at the given speed.
+       *
+       * @param aPosition The position to move to.
+       * @param aSpeed The speed to move at.
+       */
+      void MoveCharacter(const glm::vec3& aPosition,
+                         double aSpeed);
 
       /**
        * Sets this character as either selected or deselected.
@@ -45,6 +60,15 @@ namespace Barebones
        */
       virtual MoveList GetMovements(const TileLocation& aLocation) const;
 
+    protected:
+
+      /**
+       * A virtual function that gets called during Update(). Should
+       * be overridden by child classes.
+       */
+      virtual void ProtectedUpdate() {}
+
+
     private:
 
       /**
@@ -55,6 +79,11 @@ namespace Barebones
        */
       virtual void HandleSelectionChanged(bool aSelected) {}
 
+      glm::vec3 mTargetPosition;
+
+      double mSpeed;
+
+      bool mMoving;
       bool mSelected;
   };
 

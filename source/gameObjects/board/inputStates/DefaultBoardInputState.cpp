@@ -4,6 +4,8 @@
 #include "TileBehaviorComponent.hpp"
 #include "MovingCharacterBoardInputState.hpp"
 
+#include <iostream>
+
 using Barebones::DefaultBoardInputState;
 
 /******************************************************************************/
@@ -74,23 +76,7 @@ std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::HandleKeyPre
               auto charComp = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
               if(charComp != nullptr)
               {
-                // Deselect the previously selected character.
-                auto selectedCharacter = layout->GetSelectedCharacter();
-                if(selectedCharacter != nullptr)
-                {
-                  auto selectedCharacterComp = selectedCharacter->GetFirstComponentOfType<CharacterBehaviorComponent>();
-                  if(selectedCharacterComp != nullptr)
-                  {
-                    selectedCharacterComp->SetSelected(false);
-                  }
-                }
-
-                // If the previously selected character and the character
-                // at the player's position are the same one, don't reselect it.
-                if(selectedCharacter != character)
-                {
-                  charComp->SetSelected(true);
-                }
+                charComp->SetSelected(true);
 
                 // Finally, swap to a different state.
                 newState = std::make_unique<MovingCharacterBoardInputState>(*parent,

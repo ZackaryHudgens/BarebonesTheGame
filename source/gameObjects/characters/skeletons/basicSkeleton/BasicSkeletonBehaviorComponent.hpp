@@ -15,11 +15,6 @@ namespace Barebones
       BasicSkeletonBehaviorComponent();
 
       /**
-       * Updates the component.
-       */
-      void Update() override;
-
-      /**
        * Returns a list of possible movements given a location on a board.
        * The first integer of each pair corresponds to the column;
        * the second integer corresponds to the row.
@@ -28,6 +23,13 @@ namespace Barebones
        * @return A list of possible movements.
        */
       MoveList GetMovements(const TileLocation& aLocation) const override;
+
+    protected:
+
+      /**
+       * Updates the component.
+       */
+      void ProtectedUpdate() override;
 
     private:
 

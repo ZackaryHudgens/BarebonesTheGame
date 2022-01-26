@@ -100,8 +100,8 @@ namespace Barebones
        * @param aColumn The column to move to.
        * @param aRow The row to move to.
        */
-      void MoveSelectedCharacter(int aXPos,
-                                 int aYPos);
+      void MoveSelectedCharacter(int aColumn,
+                                 int aRow);
 
       /**
        * Returns the currently selected character.

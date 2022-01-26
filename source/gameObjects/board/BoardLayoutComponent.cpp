@@ -3,8 +3,6 @@
 #include <algorithm>
 #include <sstream>
 
-#include <iostream>
-
 #include <GameObject.hpp>
 
 #include "CharacterBehaviorComponent.hpp"
@@ -167,9 +165,56 @@ UrsineEngine::GameObject* BoardLayoutComponent::GetCharacterAtPosition(int aColu
 }
 
 /******************************************************************************/
-void BoardLayoutComponent::MoveSelectedCharacter(int aXPos,
-                                                 int aYPos)
+void BoardLayoutComponent::MoveSelectedCharacter(int aColumn,
+                                                 int aRow)
 {
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    if(mSelectedCharacter != nullptr)
+    {
+      auto charComp = mSelectedCharacter->GetFirstComponentOfType<CharacterBehaviorComponent>();
+      if(charComp != nullptr)
+      {
+        auto tile = GetTileAtPosition(aColumn,
+                                      aRow);
+        if(tile != nullptr)
+        {
+          auto tileMesh = tile->GetFirstComponentOfType<TileMeshComponent>();
+          if(tileMesh != nullptr)
+          {
+            // Move the character into position in world space.
+            auto newPos = tile->GetPosition();
+            newPos.y = tileMesh->GetHeight();
+            charComp->MoveCharacter(newPos,
+                                    0.3);
+
+            // Update the character map.
+            bool found = false;
+            for(int column = 0; column < mCharacters.size(); ++column)
+            {
+              for(int row = 0; row < mCharacters[column].size(); ++row)
+              {
+                if(mCharacters[column][row] == mSelectedCharacter)
+                {
+                  mCharacters[aColumn][aRow] = mSelectedCharacter;
+                  mSelectedCharacter = mCharacters[aColumn][aRow];
+                  mCharacters[column][row] = nullptr;
+                  found = true;
+                  break;
+                }
+              }
+
+              if(found)
+              {
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 /******************************************************************************/
@@ -215,6 +260,11 @@ void BoardLayoutComponent::HandleSelectionChanged(CharacterBehaviorComponent& aC
             break;
           }
         }
+
+        if(onBoard)
+        {
+          break;
+        }
       }
 
       if(onBoard)
@@ -236,6 +286,13 @@ void BoardLayoutComponent::HandleSelectionChanged(CharacterBehaviorComponent& aC
               }
             }
           }
+        }
+
+        // Also highlight the currently occupied space.
+        auto tileComp = mTiles[location.first][location.second]->GetFirstComponentOfType<TileBehaviorComponent>();
+        if(tileComp != nullptr)
+        {
+          tileComp->SetHighlighted(true);
         }
       }
 
