@@ -10,7 +10,7 @@
 namespace Barebones
 {
   typedef std::pair<int, int> TileLocation;
-  typedef std::vector<std::pair<int, int>> MoveList;
+  typedef std::vector<TileLocation> MoveList;
 
   class CharacterBehaviorComponent : public UrsineEngine::Component
   {
@@ -55,10 +55,12 @@ namespace Barebones
        * pair corresponds to the column; the second integer corresponds
        * to the row.
        *
-       * @param aLocation The location to move from.
+       * @param aObject A GameObject containing a BoardLoyoutComponent.
+       * @param aLocation The initial location.
        * @return A list of possible movements.
        */
-      virtual MoveList GetMovements(const TileLocation& aLocation) const;
+      virtual MoveList GetMovements(UrsineEngine::GameObject& aObject,
+                                    const TileLocation& aLocation) const;
 
     protected:
 

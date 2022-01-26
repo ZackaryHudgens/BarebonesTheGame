@@ -3,6 +3,8 @@
 
 #include <Component.hpp>
 
+#include "TileBehaviorComponent.hpp"
+
 namespace Barebones
 {
   class CameraBehaviorComponent : public UrsineEngine::Component
@@ -15,14 +17,21 @@ namespace Barebones
       CameraBehaviorComponent();
 
       /**
-       * Centers the camera on the given board.
-       *
-       * @param aObject The GameObject to center on.
+       * Initializes the component.
        */
-      void CenterOnBoard(UrsineEngine::GameObject& aObject);
+      void Initialize() override;
 
     private:
-      double mHeight;
+
+      /**
+       * A handler function that gets called whenever a tile is
+       * hovered.
+       *
+       * @param aTile The tile that was hovered over.
+       */
+      void HandleTileHovered(TileBehaviorComponent& aTile);
+
+      double mYDistance;
       double mZDistance;
       double mRotation;
   };

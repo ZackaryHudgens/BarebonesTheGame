@@ -44,7 +44,6 @@ int main()
   auto cam = newScene.GetDefaultCamera();
   cam->AddComponent(std::make_unique<Barebones::CameraBehaviorComponent>());
   auto camComp = cam->GetFirstComponentOfType<Barebones::CameraBehaviorComponent>();
-  camComp->CenterOnBoard(*board.get());
 
   newScene.AddObject(std::move(board));
 

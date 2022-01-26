@@ -2,6 +2,7 @@
 #define TILEBEHAVIORCOMPONENT_HPP
 
 #include <Component.hpp>
+#include <CoreSignals.hpp>
 
 namespace Barebones
 {
@@ -65,6 +66,9 @@ namespace Barebones
       bool mHovered;
       bool mHilighted;
   };
+
+  typedef UrsineEngine::SignalT<TileBehaviorComponent&> TileHoveredSignal;
+  extern TileHoveredSignal TileHovered;
 }
 
 #endif

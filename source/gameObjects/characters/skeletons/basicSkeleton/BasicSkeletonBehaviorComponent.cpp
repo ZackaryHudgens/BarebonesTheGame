@@ -3,6 +3,7 @@
 #include <Environment.hpp>
 #include <GameObject.hpp>
 
+#include "BoardLayoutComponent.hpp"
 #include "CharacterSpriteComponent.hpp"
 
 #include <iostream>
@@ -20,45 +21,96 @@ BasicSkeletonBehaviorComponent::BasicSkeletonBehaviorComponent()
 }
 
 /******************************************************************************/
-Barebones::MoveList BasicSkeletonBehaviorComponent::GetMovements(const TileLocation& aLocation) const
+Barebones::MoveList BasicSkeletonBehaviorComponent::GetMovements(UrsineEngine::GameObject& aObject,
+                                                                 const TileLocation& aLocation) const
 {
   MoveList moves;
-  TileLocation moveLocation;
 
-  for(int h = mHorizontalMovement * 2; h > 0; --h)
+  auto layout = aObject.GetFirstComponentOfType<BoardLayoutComponent>();
+  if(layout != nullptr)
   {
-    if(h <= mHorizontalMovement)
-    {
-      // Add moves to the left.
-      moveLocation.first = aLocation.first - h;
-      moveLocation.second = aLocation.second;
-    }
-    else
-    {
-      // Add moves to the right.
-      moveLocation.first = aLocation.first + (h - mHorizontalMovement);
-      moveLocation.second = aLocation.second;
-    }
+    TileLocation moveLocation;
+    moveLocation.first = aLocation.first;
+    moveLocation.second = aLocation.second;
 
-    moves.emplace_back(moveLocation);
-  }
-
-  for(int v = mVerticalMovement * 2; v > 0; --v)
-  {
-    if(v <= mVerticalMovement)
+    // Determine movements to the left.
+    for(int left = 0; left < mHorizontalMovement; ++left)
     {
-      // Add moves to the bottom.
-      moveLocation.first = aLocation.first;
-      moveLocation.second = aLocation.second - v;
-    }
-    else
-    {
-      // Add moves to the top.
-      moveLocation.first = aLocation.first;
-      moveLocation.second = aLocation.second + (v - mVerticalMovement);
-    }
+      moveLocation.first = aLocation.first - left - 1;
 
-    moves.emplace_back(moveLocation);
+      if(layout->GetCharacterAtPosition(moveLocation.first,
+                                        moveLocation.second) == nullptr)
+      {
+        // Add this location to the move list.
+        moves.emplace_back(moveLocation);
+      }
+      else
+      {
+        // If there is a character at this location,
+        // we can no longer move left.
+        break;
+      }
+    }
+    moveLocation.first = aLocation.first;
+
+    // Determine movements to the right.
+    for(int right = 0; right < mHorizontalMovement; ++right)
+    {
+      moveLocation.first = aLocation.first + right + 1;
+
+      if(layout->GetCharacterAtPosition(moveLocation.first,
+                                        moveLocation.second) == nullptr)
+      {
+        // Add this location to the move list.
+        moves.emplace_back(moveLocation);
+      }
+      else
+      {
+        // If there is a character at this location,
+        // we can no longer move right.
+        break;
+      }
+    }
+    moveLocation.first = aLocation.first;
+
+    // Determine upward movements.
+    for(int up = 0; up < mVerticalMovement; ++up)
+    {
+      moveLocation.second = aLocation.second + up + 1;
+
+      if(layout->GetCharacterAtPosition(moveLocation.first,
+                                        moveLocation.second) == nullptr)
+      {
+        // Add this location to the move list.
+        moves.emplace_back(moveLocation);
+      }
+      else
+      {
+        // If there is a character at this location,
+        // we can no longer move up.
+        break;
+      }
+    }
+    moveLocation.second = aLocation.second;
+
+    // Determine downward movements.
+    for(int down = 0; down < mVerticalMovement; ++down)
+    {
+      moveLocation.second = aLocation.second - down - 1;
+
+      if(layout->GetCharacterAtPosition(moveLocation.first,
+                                        moveLocation.second) == nullptr)
+      {
+        // Add this location to the move list.
+        moves.emplace_back(moveLocation);
+      }
+      else
+      {
+        // If there is a character at this location,
+        // we can no longer move down.
+        break;
+      }
+    }
   }
 
   return moves;

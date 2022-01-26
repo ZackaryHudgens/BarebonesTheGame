@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <sstream>
 
+#include <iostream>
+
 #include <GameObject.hpp>
 
 #include "CharacterBehaviorComponent.hpp"
@@ -87,18 +89,11 @@ bool BoardLayoutComponent::AddCharacterAtPosition(std::unique_ptr<UrsineEngine::
         newPos.y = tile->GetFirstComponentOfType<TileMeshComponent>()->GetHeight();
         aObject->SetPosition(newPos);
 
+        // Add the character as a child object of the board.
         parent->AddChild(std::move(aObject));
 
         // Add the object to the characters list.
-        if(aColumn < mCharacters.size() &&
-           aColumn >= 0)
-        {
-          if(aRow < mCharacters[aColumn].size() &&
-             aRow >= 0)
-          {
-            mCharacters[aColumn][aRow] = parent->GetChildren().back();
-          }
-        }
+        mCharacters[aColumn][aRow] = parent->GetChildren().back();
         success = true;
       }
     }
@@ -120,6 +115,7 @@ void BoardLayoutComponent::RemoveCharacterAtPosition(int aColumn,
       auto obj = mCharacters[aColumn][aRow];
       if(obj != nullptr)
       {
+        // The character will be deleted on the next update.
         obj->ScheduleForDeletion();
       }
     }
@@ -168,51 +164,46 @@ UrsineEngine::GameObject* BoardLayoutComponent::GetCharacterAtPosition(int aColu
 void BoardLayoutComponent::MoveSelectedCharacter(int aColumn,
                                                  int aRow)
 {
-  auto parent = GetParent();
-  if(parent != nullptr)
+  // First, move the character to the new location in
+  // world space.
+  auto tile = GetTileAtPosition(aColumn,
+                                aRow);
+  if(tile != nullptr &&
+     mSelectedCharacter != nullptr)
   {
-    if(mSelectedCharacter != nullptr)
+    auto tileMesh = tile->GetFirstComponentOfType<TileMeshComponent>();
+    auto charComp = mSelectedCharacter->GetFirstComponentOfType<CharacterBehaviorComponent>();
+    if(tileMesh != nullptr &&
+       charComp != nullptr)
     {
-      auto charComp = mSelectedCharacter->GetFirstComponentOfType<CharacterBehaviorComponent>();
-      if(charComp != nullptr)
+      auto newPos = tile->GetPosition();
+      newPos.y = tileMesh->GetHeight();
+      charComp->MoveCharacter(newPos,
+                              0.3);
+    }
+  }
+
+  // Next, update the character map.
+  bool found = false;
+  for(int column = 0; column < mCharacters.size(); ++column)
+  {
+    for(int row = 0; row < mCharacters[column].size(); ++row)
+    {
+      if(mCharacters[column][row] == mSelectedCharacter)
       {
-        auto tile = GetTileAtPosition(aColumn,
-                                      aRow);
-        if(tile != nullptr)
-        {
-          auto tileMesh = tile->GetFirstComponentOfType<TileMeshComponent>();
-          if(tileMesh != nullptr)
-          {
-            // Move the character into position in world space.
-            auto newPos = tile->GetPosition();
-            newPos.y = tileMesh->GetHeight();
-            charComp->MoveCharacter(newPos,
-                                    0.3);
+        // Set the character at the previous position to nullptr.
+        mCharacters[column][row] = nullptr;
 
-            // Update the character map.
-            bool found = false;
-            for(int column = 0; column < mCharacters.size(); ++column)
-            {
-              for(int row = 0; row < mCharacters[column].size(); ++row)
-              {
-                if(mCharacters[column][row] == mSelectedCharacter)
-                {
-                  mCharacters[aColumn][aRow] = mSelectedCharacter;
-                  mSelectedCharacter = mCharacters[aColumn][aRow];
-                  mCharacters[column][row] = nullptr;
-                  found = true;
-                  break;
-                }
-              }
-
-              if(found)
-              {
-                break;
-              }
-            }
-          }
-        }
+        // Set the character at the new position to the selected character.
+        mCharacters[aColumn][aRow] = mSelectedCharacter;
+        found = true;
+        break;
       }
+    }
+
+    if(found)
+    {
+      break;
     }
   }
 }
@@ -270,7 +261,8 @@ void BoardLayoutComponent::HandleSelectionChanged(CharacterBehaviorComponent& aC
       if(onBoard)
       {
         // Determine which tiles to highlight.
-        for(const auto& movement : aCharacter.GetMovements(location))
+        for(const auto& movement : aCharacter.GetMovements(*GetParent(),
+                                                           location))
         {
           if(movement.first < mTiles.size() &&
              movement.first >= 0)

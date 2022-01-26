@@ -19,10 +19,12 @@ namespace Barebones
        * The first integer of each pair corresponds to the column;
        * the second integer corresponds to the row.
        *
+       * @param aObject A GameObject containing a BoardLoyoutComponent.
        * @param aLocation The location to move from.
        * @return A list of possible movements.
        */
-      MoveList GetMovements(const TileLocation& aLocation) const override;
+      MoveList GetMovements(UrsineEngine::GameObject& aObject,
+                            const TileLocation& aLocation) const override;
 
     protected:
 
