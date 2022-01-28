@@ -5,7 +5,8 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/board/tiles/defaultTile/*.?pp
                        gameObjects/camera/*.?pp
                        gameObjects/characters/*.?pp
-                       gameObjects/characters/skeletons/basicSkeleton/*.?pp)
+                       gameObjects/characters/skeletons/basicSkeleton/*.?pp
+                       gameObjects/gui/*.?pp)
 
 add_executable(barebones ${GAME_SOURCES})
 target_link_libraries(barebones PUBLIC
@@ -18,7 +19,8 @@ target_include_directories(barebones PUBLIC
                            gameObjects/board/tiles/defaultTile
                            gameObjects/camera
                            gameObjects/characters
-                           gameObjects/characters/skeletons/basicSkeleton)
+                           gameObjects/characters/skeletons/basicSkeleton
+                           gameObjects/gui)
 
 install(TARGETS barebones DESTINATION ${INSTALL_DIR})
 install(DIRECTORY resources DESTINATION ${INSTALL_DIR})

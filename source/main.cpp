@@ -6,6 +6,8 @@
 #include "BoardInputComponent.hpp"
 #include "BoardLayoutComponent.hpp"
 
+#include "FPSDisplay.hpp"
+
 #include <iostream>
 
 int main()
@@ -46,6 +48,10 @@ int main()
   auto camComp = cam->GetFirstComponentOfType<Barebones::CameraBehaviorComponent>();
 
   newScene.AddObject(std::move(board));
+
+  auto fpsObject = std::make_unique<UrsineEngine::GameObject>("fpsDisplay");
+  fpsObject->AddComponent(std::make_unique<Barebones::FPSDisplay>());
+  newScene.AddObject(std::move(fpsObject));
 
   env.LoadScene(newScene);
 

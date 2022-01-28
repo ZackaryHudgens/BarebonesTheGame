@@ -18,7 +18,7 @@ using Barebones::BoardLayoutComponent;
 BoardLayoutComponent::BoardLayoutComponent()
   : Component()
   , mTileSpacing(0.2)
-  , mColumns(5)
+  , mColumns(7)
   , mRows(7)
 {
   CharacterSelected.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)

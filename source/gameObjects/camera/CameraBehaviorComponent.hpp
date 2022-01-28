@@ -2,6 +2,7 @@
 #define CAMERABEHAVIORCOMPONENT_HPP
 
 #include <Component.hpp>
+#include <GameObject.hpp>
 
 #include "TileBehaviorComponent.hpp"
 
@@ -21,6 +22,11 @@ namespace Barebones
        */
       void Initialize() override;
 
+      /**
+       * Updates the component.
+       */
+      void Update() override;
+
     private:
 
       /**
@@ -31,9 +37,15 @@ namespace Barebones
        */
       void HandleTileHovered(TileBehaviorComponent& aTile);
 
+      glm::vec3 mTargetPosition;
+
       double mYDistance;
       double mZDistance;
       double mRotation;
+
+      double mSpeed;
+
+      bool mMoving;
   };
 }
 
