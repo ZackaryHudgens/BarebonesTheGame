@@ -137,6 +137,56 @@ std::unique_ptr<Barebones::BoardInputState> MovingCharacterBoardInputState::Hand
 }
 
 /******************************************************************************/
+std::unique_ptr<Barebones::BoardInputState> MovingCharacterBoardInputState::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
+                                                                                      int aMods)
+{
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    int x = GetPlayerXLocation();
+    int y = GetPlayerYLocation();
+
+    switch(aCode)
+    {
+      case UrsineEngine::KeyCode::eKEY_UP:
+      case UrsineEngine::KeyCode::eKEY_W:
+      {
+        HoverOverTile(x,
+                      y + 1);
+        break;
+      }
+      case UrsineEngine::KeyCode::eKEY_DOWN:
+      case UrsineEngine::KeyCode::eKEY_S:
+      {
+        HoverOverTile(x,
+                      y - 1);
+        break;
+      }
+      case UrsineEngine::KeyCode::eKEY_LEFT:
+      case UrsineEngine::KeyCode::eKEY_A:
+      {
+        HoverOverTile(x - 1,
+                      y);
+        break;
+      }
+      case UrsineEngine::KeyCode::eKEY_RIGHT:
+      case UrsineEngine::KeyCode::eKEY_D:
+      {
+        HoverOverTile(x + 1,
+                      y);
+        break;
+      }
+      default:
+      {
+        break;
+      }
+    }
+  }
+
+  return nullptr;
+}
+
+/******************************************************************************/
 void MovingCharacterBoardInputState::HoverOverTile(int aXPos,
                                            int aYPos)
 {

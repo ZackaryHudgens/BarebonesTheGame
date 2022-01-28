@@ -18,3 +18,10 @@ std::unique_ptr<BoardInputState> BoardInputState::HandleKeyPressed(const UrsineE
 {
   return nullptr;
 }
+
+/******************************************************************************/
+std::unique_ptr<BoardInputState> BoardInputState::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
+                                                                    int aMods)
+{
+  return nullptr;
+}

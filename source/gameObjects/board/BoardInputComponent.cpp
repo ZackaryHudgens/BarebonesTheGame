@@ -17,6 +17,13 @@ BoardInputComponent::BoardInputComponent()
     this->HandleKeyPressed(aCode,
                            aMods);
   });
+
+  UrsineEngine::KeyRepeated.Connect(*this, [this](const UrsineEngine::KeyCode& aCode,
+                                                  int aMods)
+  {
+    this->HandleKeyRepeated(aCode,
+                            aMods);
+  });
 }
 
 /******************************************************************************/
@@ -54,6 +61,21 @@ void BoardInputComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
   {
     auto newState = mState->HandleKeyPressed(aCode,
                                              aMods);
+    if(newState != nullptr)
+    {
+      mState.swap(newState);
+    }
+  }
+}
+
+/******************************************************************************/
+void BoardInputComponent::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
+                                            int aMods)
+{
+  if(mState != nullptr)
+  {
+    auto newState = mState->HandleKeyRepeated(aCode,
+                                              aMods);
     if(newState != nullptr)
     {
       mState.swap(newState);
