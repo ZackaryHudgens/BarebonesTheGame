@@ -1,6 +1,11 @@
 #ifndef BOARDINPUTCOMPONENT_HPP
 #define BOARDINPUTCOMPONENT_HPP
 
+// TODO: To pass control between the board and the GUI, create
+// a signal for BoardExitControl and GUIExitControl. On BoardExitControl,
+// the GUI activates, and on GUIExitControl, the board activates.
+// While one is active, the other has a nullptr for the state.
+
 #include <Component.hpp>
 #include <CoreSignals.hpp>
 

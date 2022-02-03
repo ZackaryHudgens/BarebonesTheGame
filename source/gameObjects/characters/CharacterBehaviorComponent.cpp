@@ -28,9 +28,9 @@ void CharacterBehaviorComponent::Update()
 
       // If the position is close enough to the target position,
       // move directly to the target position and stop moving.
-      if(std::abs(mTargetPosition.x - position.x) <= 0.05 &&
-         std::abs(mTargetPosition.y - position.y) <= 0.05 &&
-         std::abs(mTargetPosition.z - position.z) <= 0.05)
+      if(std::abs(mTargetPosition.x - position.x) <= 0.005 &&
+         std::abs(mTargetPosition.y - position.y) <= 0.005 &&
+         std::abs(mTargetPosition.z - position.z) <= 0.005)
       {
         parent->SetPosition(mTargetPosition);
         mMoving = false;

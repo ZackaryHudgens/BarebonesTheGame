@@ -17,7 +17,7 @@ FPSDisplay::FPSDisplay()
   SetSize(24);
   SetText("nothin' yet");
   SetColor(glm::vec4(1.0,
-                     0.0,
+                     1.0,
                      1.0,
                      1.0));
   SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);

@@ -7,7 +7,8 @@ namespace Barebones
 {
   enum class CharacterType
   {
-    eBASIC_SKELETON
+    eBASIC_SKELETON,
+    eBASIC_HUMAN
   };
 
   class CharacterFactory
