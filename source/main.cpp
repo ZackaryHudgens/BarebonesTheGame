@@ -6,10 +6,6 @@
 #include "BoardInputComponent.hpp"
 #include "BoardLayoutComponent.hpp"
 
-#include "FPSDisplay.hpp"
-
-#include <iostream>
-
 int main()
 {
   UrsineEngine::GraphicsOptions options;
