@@ -7,8 +7,6 @@
 #include "BoardLayoutComponent.hpp"
 
 #include "FPSDisplay.hpp"
-#include "CharacterMenuBehaviorComponent.hpp"
-#include "CharacterMenuMeshComponent.hpp"
 
 #include <iostream>
 
@@ -66,14 +64,6 @@ int main()
   auto camComp = cam->GetFirstComponentOfType<Barebones::CameraBehaviorComponent>();
 
   newScene.AddObject(std::move(board));
-
-  auto barObject = std::make_unique<UrsineEngine::GameObject>("menu");
-  barObject->AddComponent(std::make_unique<Barebones::CharacterMenuMeshComponent>());
-  barObject->AddComponent(std::make_unique<Barebones::CharacterMenuBehaviorComponent>());
-  barObject->SetPosition(glm::vec3(40.0,
-                                   20.0,
-                                   0.0));
-  newScene.AddObject(std::move(barObject));
 
   env.LoadScene(newScene);
 
