@@ -40,11 +40,8 @@ namespace Barebones
       /**
        * A virtual function that gets called whenever this action
        * is selected by the user.
-       *
-       * @return A pointer to a new menu or nullptr if this action
-       *         does not open a submenu.
        */
-      virtual UrsineEngine::GameObject* HandleSelectionStatusChanged() = 0;
+      virtual void HandleSelectionStatusChanged() = 0;
 
       bool mHovered;
       bool mSelected;
