@@ -15,8 +15,8 @@ MovingCharacterBoardInputState::MovingCharacterBoardInputState(UrsineEngine::Gam
 }
 
 /******************************************************************************/
-std::unique_ptr<Barebones::BoardInputState> MovingCharacterBoardInputState::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
-                                                                                     int aMods)
+std::unique_ptr<Barebones::BoardInputState> MovingCharacterBoardInputState::ProtectedHandleKeyPressed(const UrsineEngine::KeyCode& aCode,
+                                                                                                      int aMods)
 {
   std::unique_ptr<Barebones::BoardInputState> newState = nullptr;
 
@@ -137,8 +137,8 @@ std::unique_ptr<Barebones::BoardInputState> MovingCharacterBoardInputState::Hand
 }
 
 /******************************************************************************/
-std::unique_ptr<Barebones::BoardInputState> MovingCharacterBoardInputState::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
-                                                                                      int aMods)
+std::unique_ptr<Barebones::BoardInputState> MovingCharacterBoardInputState::ProtectedHandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
+                                                                                                       int aMods)
 {
   auto parent = GetParent();
   if(parent != nullptr)

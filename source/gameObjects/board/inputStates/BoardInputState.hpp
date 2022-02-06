@@ -22,7 +22,7 @@ namespace Barebones
                       int aYPos = 0);
 
       /**
-       * A virtual function that gets called whenever the user presses
+       * A handler function that gets called whenever the user presses
        * a key.
        *
        * @param aCode The KeyCode for the key that was pressed.
@@ -30,11 +30,11 @@ namespace Barebones
        * @return A pointer to a new state if this key caused the input
        *         to move to a new state, otherwise nullptr.
        */
-      virtual std::unique_ptr<BoardInputState> HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
-                                                                int aMods);
+      std::unique_ptr<BoardInputState> HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
+                                                        int aMods);
 
       /**
-       * A virtual function that gets called whenever the user holds
+       * A handler function that gets called whenever the user holds
        * a key down long enough to repeat the input.
        *
        * @param aCode The KeyCode for the key that was pressed.
@@ -42,8 +42,16 @@ namespace Barebones
        * @return A pointer to a new state if this key caused the input
        *         to move to a new state, otherwise nullptr.
        */
-      virtual std::unique_ptr<BoardInputState> HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
-                                                                 int aMods);
+      std::unique_ptr<BoardInputState> HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
+                                                         int aMods);
+
+      /**
+       * Disables this state. While disabled, none of the inputs
+       * will be handled.
+       *
+       * @param aDisabled Whether to disable this state.
+       */
+      void SetDisabled(bool aDisabled) { mDisabled = aDisabled; }
 
       /**
        * Returns the player's x location.
@@ -69,6 +77,30 @@ namespace Barebones
       UrsineEngine::GameObject* GetParent() { return mParent; }
 
       /**
+       * A virtual function that gets called whenever the user presses
+       * a key.
+       *
+       * @param aCode The KeyCode for the key that was pressed.
+       * @param aMods Any modifiers present when the key was pressed.
+       * @return A pointer to a new state if this key caused the input
+       *         to move to a new state, otherwise nullptr.
+       */
+      virtual std::unique_ptr<BoardInputState> ProtectedHandleKeyPressed(const UrsineEngine::KeyCode& aCode,
+                                                                         int aMods);
+
+      /**
+       * A virtual function that gets called whenever the user holds
+       * a key down long enough to repeat the input.
+       *
+       * @param aCode The KeyCode for the key that was pressed.
+       * @param aMods Any modifiers present when the key was pressed.
+       * @return A pointer to a new state if this key caused the input
+       *         to move to a new state, otherwise nullptr.
+       */
+      virtual std::unique_ptr<BoardInputState> ProtectedHandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
+                                                                          int aMods);
+
+      /**
        * Sets the player's x location.
        *
        * @param aXPos The player's x location.
@@ -87,6 +119,8 @@ namespace Barebones
 
       int mPlayerXLocation;
       int mPlayerYLocation;
+
+      bool mDisabled;
   };
 }
 

@@ -1,8 +1,13 @@
 #include "DefaultBoardInputState.hpp"
 
+#include <Environment.hpp>
+
+#include "ActionFactory.hpp"
 #include "BoardLayoutComponent.hpp"
+#include "CharacterSkillComponent.hpp"
+#include "MenuFactory.hpp"
+#include "MenuLayoutComponent.hpp"
 #include "TileBehaviorComponent.hpp"
-#include "MovingCharacterBoardInputState.hpp"
 
 #include <iostream>
 
@@ -17,8 +22,8 @@ DefaultBoardInputState::DefaultBoardInputState(UrsineEngine::GameObject& aObject
 }
 
 /******************************************************************************/
-std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
-                                                                                     int aMods)
+std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::ProtectedHandleKeyPressed(const UrsineEngine::KeyCode& aCode,
+                                                                                              int aMods)
 {
   std::unique_ptr<Barebones::BoardInputState> newState = nullptr;
 
@@ -61,8 +66,8 @@ std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::HandleKeyPre
       case UrsineEngine::KeyCode::eKEY_ENTER:
       {
         // If there is a character at the player's current position,
-        // that character is now selected (or deselected if it's
-        // already selected).
+        // then create a menu containing all of that character's
+        // available skills and 
         auto parent = GetParent();
         if(parent != nullptr)
         {
@@ -73,15 +78,35 @@ std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::HandleKeyPre
                                                             y);
             if(character != nullptr)
             {
-              auto charComp = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
-              if(charComp != nullptr)
+              auto skills = character->GetComponentsOfType<CharacterSkillComponent>();
+              if(!skills.empty())
               {
-                charComp->SetSelected(true);
+                // Create a new menu object.
+                auto menu = MenuFactory::CreateMenu("skillMenu");
+                auto menuLayout = menu->GetFirstComponentOfType<MenuLayoutComponent>();
+                if(menuLayout != nullptr)
+                {
+                  // Add each of this character's skills to the menu.
+                  for(auto& skill : skills)
+                  {
+                    auto action = ActionFactory::CreateAction(ActionType::eSKILL,
+                                                              skill->GetName());
+                    auto meshIcon = skill->GetIcon();
+                    action->AddComponent(std::move(meshIcon));
+                    menuLayout->AddAction(std::move(action));
+                  }
+                }
 
-                // Finally, swap to a different state.
-                newState = std::make_unique<MovingCharacterBoardInputState>(*parent,
-                                                                            GetPlayerXLocation(),
-                                                                            GetPlayerYLocation());
+                // Add the new menu to the current scene.
+                auto scene = env.GetCurrentScene();
+                if(scene != nullptr)
+                {
+                  scene->AddObject(std::move(menu));
+                }
+
+                // Finally, disable this input state until the user
+                // exits the menu.
+                SetDisabled(true);
               }
             }
           }
@@ -99,8 +124,8 @@ std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::HandleKeyPre
 }
 
 /******************************************************************************/
-std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
-                                                                                      int aMods)
+std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::ProtectedHandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
+                                                                                               int aMods)
 {
   auto parent = GetParent();
   if(parent != nullptr)

@@ -1,6 +1,6 @@
 #include "CharacterBehaviorComponent.hpp"
 
-#include <iostream>
+#include "MoveSkillComponent.hpp"
 
 using Barebones::CharacterBehaviorComponent;
 
@@ -12,6 +12,20 @@ CharacterBehaviorComponent::CharacterBehaviorComponent()
   , mMoving(false)
   , mSelected(false)
 {
+}
+
+/******************************************************************************/
+void CharacterBehaviorComponent::Initialize()
+{
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    // Add the Move skill.
+    parent->AddComponent(std::make_unique<MoveSkillComponent>());
+
+    // Add the rest of the skills.
+    AddSkills();
+  }
 }
 
 /******************************************************************************/
@@ -59,7 +73,6 @@ void CharacterBehaviorComponent::SetSelected(bool aSelected)
 {
   mSelected = aSelected;
   HandleSelectionChanged(aSelected);
-  CharacterSelected.Notify(*this);
 }
 
 /******************************************************************************/
@@ -68,6 +81,3 @@ Barebones::MoveList CharacterBehaviorComponent::GetMovements(UrsineEngine::GameO
 {
   return MoveList();
 }
-
-/******************************************************************************/
-Barebones::CharacterSelectedSignal Barebones::CharacterSelected;

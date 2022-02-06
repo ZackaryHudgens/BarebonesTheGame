@@ -5,7 +5,6 @@
 
 #include <Component.hpp>
 #include <GameObject.hpp>
-#include <Signal.hpp>
 
 namespace Barebones
 {
@@ -20,6 +19,11 @@ namespace Barebones
        * Constructor.
        */
       CharacterBehaviorComponent();
+
+      /**
+       * Initializes the component.
+       */
+      void Initialize() override;
 
       /**
        * Updates the component.
@@ -70,6 +74,14 @@ namespace Barebones
        */
       virtual void ProtectedUpdate() {}
 
+      /**
+       * A virtual function that adds all skills for this character
+       * to the parent GameObject. Note that the Move skill is added
+       * to all characters by default in Initialize().
+       *
+       * Should be overridden by child classes.
+       */
+      virtual void AddSkills() {}
 
     private:
 
@@ -88,9 +100,6 @@ namespace Barebones
       bool mMoving;
       bool mSelected;
   };
-
-  typedef UrsineEngine::SignalT<CharacterBehaviorComponent&> CharacterSelectedSignal;
-  extern CharacterSelectedSignal CharacterSelected;
 }
 
 #endif

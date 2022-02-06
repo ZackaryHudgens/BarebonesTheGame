@@ -21,10 +21,6 @@ BoardLayoutComponent::BoardLayoutComponent()
   , mColumns(7)
   , mRows(7)
 {
-  CharacterSelected.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
-  {
-    this->HandleSelectionChanged(aCharacter);
-  });
 }
 
 /******************************************************************************/
