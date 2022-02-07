@@ -1,5 +1,7 @@
 #include "DefaultBoardInputState.hpp"
 
+#include <sstream>
+
 #include <Environment.hpp>
 
 #include "ActionFactory.hpp"
@@ -8,8 +10,6 @@
 #include "MenuFactory.hpp"
 #include "MenuLayoutComponent.hpp"
 #include "TileBehaviorComponent.hpp"
-
-#include <iostream>
 
 using Barebones::DefaultBoardInputState;
 
@@ -82,18 +82,27 @@ std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::ProtectedHan
               if(!skills.empty())
               {
                 // Create a new menu object.
-                auto menu = MenuFactory::CreateMenu("skillMenu");
+                auto menu = MenuFactory::CreateMenu(MenuType::eSKILL,
+                                                    "skillMenu");
                 auto menuLayout = menu->GetFirstComponentOfType<MenuLayoutComponent>();
                 if(menuLayout != nullptr)
                 {
+                  std::stringstream skillName;
+                  int skillIindex = 0;
+
                   // Add each of this character's skills to the menu.
                   for(auto& skill : skills)
                   {
+                    skillName << skill->GetName() << "_" << skillIindex;
+
                     auto action = ActionFactory::CreateAction(ActionType::eSKILL,
-                                                              skill->GetName());
-                    auto meshIcon = skill->GetIcon();
-                    action->AddComponent(std::move(meshIcon));
+                                                              skillName.str());
+                    auto skillIcon = skill->GetIcon();
+                    action->AddComponent(std::move(skillIcon));
                     menuLayout->AddAction(std::move(action));
+
+                    skillName.str("");
+                    ++skillIindex;
                   }
                 }
 

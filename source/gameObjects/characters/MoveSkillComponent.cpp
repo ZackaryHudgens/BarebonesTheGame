@@ -24,12 +24,20 @@ std::unique_ptr<UrsineEngine::MeshComponent> MoveSkillComponent::GetIcon()
 
   // Create the shader.
   std::string vertexFile = "resources/shaders/UIShader.vert";
-  std::string fragmentFile = "resources/shaders/UIShader.frag";
+  std::string fragmentFile = "resources/shaders/SkillActionShader.frag";
   UrsineEngine::Shader shader(vertexFile,
                               fragmentFile);
-  icon->AddShader("uiShader",
+
+  // Initialize the glow color.
+  shader.Activate();
+  shader.SetVec4("glowColor",
+                 glm::vec4(1.0,
+                           1.0,
+                           1.0,
+                           1.0));
+  icon->AddShader("defaultShader",
                   shader);
-  icon->SetCurrentShader("uiShader");
+  icon->SetCurrentShader("defaultShader");
 
   // Display the icon in screen space.
   icon->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);

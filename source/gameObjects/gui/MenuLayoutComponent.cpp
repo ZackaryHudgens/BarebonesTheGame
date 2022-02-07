@@ -33,6 +33,8 @@ void MenuLayoutComponent::AddAction(std::unique_ptr<UrsineEngine::GameObject> aO
       }
     }
   }
+
+  HandleActionAdded();
 }
 
 /******************************************************************************/
@@ -92,16 +94,13 @@ void MenuLayoutComponent::HoverOverPreviousAction()
                                  mCurrentlyHoveredAction);
   if(currentAction != mActions.end())
   {
-    // If the current action is the first action, then loop around and hover
-    // over the last action. Otherwise, hover over the next action.
-    auto prevAction = std::prev(currentAction);
-    if(prevAction == mActions.begin())
+    if(currentAction == mActions.begin())
     {
-      mCurrentlyHoveredAction = mActions.back();
+      mCurrentlyHoveredAction = (*std::prev(mActions.end()));
     }
     else
     {
-      mCurrentlyHoveredAction = (*prevAction);
+      mCurrentlyHoveredAction = (*std::prev(currentAction));
     }
 
     // Set the hovered property of the action.

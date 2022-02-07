@@ -14,6 +14,11 @@ namespace Barebones
        */
       SkillActionBehaviorComponent();
 
+      /**
+       * Initializes the component.
+       */
+      void Initialize() override;
+
     protected:
 
       /**

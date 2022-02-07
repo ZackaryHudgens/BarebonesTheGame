@@ -8,6 +8,19 @@ using Barebones::MenuInputComponent;
 MenuInputComponent::MenuInputComponent()
   : Component()
 {
+  UrsineEngine::KeyPressed.Connect(*this, [this](const UrsineEngine::KeyCode& aCode,
+                                                 int aMods)
+  {
+    this->HandleKeyPressed(aCode,
+                           aMods);
+  });
+
+  UrsineEngine::KeyRepeated.Connect(*this, [this](const UrsineEngine::KeyCode& aCode,
+                                                  int aMods)
+  {
+    this->HandleKeyRepeated(aCode,
+                            aMods);
+  });
 }
 
 /******************************************************************************/

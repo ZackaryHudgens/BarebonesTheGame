@@ -22,6 +22,7 @@ void CharacterBehaviorComponent::Initialize()
   {
     // Add the Move skill.
     parent->AddComponent(std::make_unique<MoveSkillComponent>());
+    parent->AddComponent(std::make_unique<MoveSkillComponent>());
 
     // Add the rest of the skills.
     AddSkills();
