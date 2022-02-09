@@ -19,6 +19,13 @@ namespace Barebones
        */
       void Initialize() override;
 
+      /**
+       * Sets the skill that this action represents.
+       *
+       * @param aObject The skill that this action represents.
+       */
+      void SetSkill(UrsineEngine::GameObject& aObject);
+
     protected:
 
       /**
@@ -32,6 +39,9 @@ namespace Barebones
        * is selected by the user.
        */
       void HandleSelectionStatusChanged() override;
+
+    private:
+      UrsineEngine::GameObject* mSkill;
   };
 }
 

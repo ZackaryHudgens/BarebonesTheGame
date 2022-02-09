@@ -11,14 +11,24 @@ CharacterSkillComponent::CharacterSkillComponent()
 void CharacterSkillComponent::Select()
 {
   ProtectedSelect();
-  SkillSelected.Notify(*this);
+
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    SkillSelected.Notify(*parent);
+  }
 }
 
 /******************************************************************************/
 void CharacterSkillComponent::Execute()
 {
   ProtectedExecute();
-  SkillExecuted.Notify(*this);
+
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    SkillExecuted.Notify(*parent);
+  }
 }
 
 /******************************************************************************/

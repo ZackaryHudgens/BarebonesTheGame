@@ -48,6 +48,13 @@ namespace Barebones
       virtual void HandleActionAdded() {}
 
       /**
+       * A virtual function that gets called whenever an action is selected
+       * from this menu. Inheriting classes should override this function
+       * to arrange the actions accordingly.
+       */
+      virtual void HandleActionSelected() {}
+
+      /**
        * Returns the actions in this menu.
        *
        * @return A vector of actions in this menu.

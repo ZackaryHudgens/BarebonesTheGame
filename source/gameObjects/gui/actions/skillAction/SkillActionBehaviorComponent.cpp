@@ -3,11 +3,14 @@
 #include <GameObject.hpp>
 #include <MeshComponent.hpp>
 
+#include "CharacterSkillComponent.hpp"
+
 using Barebones::SkillActionBehaviorComponent;
 
 /******************************************************************************/
 SkillActionBehaviorComponent::SkillActionBehaviorComponent()
   : ActionBehaviorComponent()
+  , mSkill(nullptr)
 {
 }
 
@@ -22,6 +25,12 @@ void SkillActionBehaviorComponent::Initialize()
                                200.0,
                                1.0));
   }
+}
+
+/******************************************************************************/
+void SkillActionBehaviorComponent::SetSkill(UrsineEngine::GameObject& aObject)
+{
+  mSkill = &aObject;
 }
 
 /******************************************************************************/
@@ -63,4 +72,12 @@ void SkillActionBehaviorComponent::HandleHoveredStatusChanged()
 /******************************************************************************/
 void SkillActionBehaviorComponent::HandleSelectionStatusChanged()
 {
+  if(mSkill != nullptr)
+  {
+    auto skillComponent = mSkill->GetFirstComponentOfType<CharacterSkillComponent>();
+    if(skillComponent != nullptr)
+    {
+      skillComponent->Select();
+    }
+  }
 }

@@ -46,14 +46,6 @@ namespace Barebones
                                                          int aMods);
 
       /**
-       * Disables this state. While disabled, none of the inputs
-       * will be handled.
-       *
-       * @param aDisabled Whether to disable this state.
-       */
-      void SetDisabled(bool aDisabled) { mDisabled = aDisabled; }
-
-      /**
        * Returns the player's x location.
        *
        * @return The player's x location.
@@ -119,8 +111,6 @@ namespace Barebones
 
       int mPlayerXLocation;
       int mPlayerYLocation;
-
-      bool mDisabled;
   };
 }
 

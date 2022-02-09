@@ -15,6 +15,13 @@ namespace Barebones
        */
       MenuInputComponent();
 
+      /**
+       * Sets whether this component should process input.
+       *
+       * @param aEnabled Whether to process input.
+       */
+      void SetEnabled(bool aEnabled) { mEnabled = aEnabled; }
+
     private:
 
       /**
@@ -38,6 +45,8 @@ namespace Barebones
        */
       void HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
                              int aMods);
+
+      bool mEnabled;
   };
 }
 

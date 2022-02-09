@@ -119,5 +119,7 @@ void MenuLayoutComponent::SelectCurrentAction()
   {
     auto behaviorComp = mCurrentlyHoveredAction->GetFirstComponentOfType<ActionBehaviorComponent>();
     behaviorComp->SetSelected(true);
+
+    HandleActionSelected();
   }
 }

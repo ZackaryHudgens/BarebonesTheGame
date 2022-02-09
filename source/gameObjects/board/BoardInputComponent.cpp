@@ -10,6 +10,7 @@ using Barebones::BoardInputComponent;
 BoardInputComponent::BoardInputComponent()
   : Component()
   , mState(nullptr)
+  , mEnabled(true)
 {
   UrsineEngine::KeyPressed.Connect(*this, [this](const UrsineEngine::KeyCode& aCode,
                                                  int aMods)
@@ -57,13 +58,16 @@ void BoardInputComponent::Load()
 void BoardInputComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
                                            int aMods)
 {
-  if(mState != nullptr)
+  if(mEnabled)
   {
-    auto newState = mState->HandleKeyPressed(aCode,
-                                             aMods);
-    if(newState != nullptr)
+    if(mState != nullptr)
     {
-      mState.swap(newState);
+      auto newState = mState->HandleKeyPressed(aCode,
+                                               aMods);
+      if(newState != nullptr)
+      {
+        mState.swap(newState);
+      }
     }
   }
 }
@@ -72,13 +76,16 @@ void BoardInputComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
 void BoardInputComponent::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
                                             int aMods)
 {
-  if(mState != nullptr)
+  if(mEnabled)
   {
-    auto newState = mState->HandleKeyRepeated(aCode,
-                                              aMods);
-    if(newState != nullptr)
+    if(mState != nullptr)
     {
-      mState.swap(newState);
+      auto newState = mState->HandleKeyRepeated(aCode,
+                                                aMods);
+      if(newState != nullptr)
+      {
+        mState.swap(newState);
+      }
     }
   }
 }

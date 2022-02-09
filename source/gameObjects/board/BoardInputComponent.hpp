@@ -1,15 +1,11 @@
 #ifndef BOARDINPUTCOMPONENT_HPP
 #define BOARDINPUTCOMPONENT_HPP
 
-// TODO: To pass control between the board and the GUI, create
-// a signal for BoardExitControl and GUIExitControl. On BoardExitControl,
-// the GUI activates, and on GUIExitControl, the board activates.
-// While one is active, the other has a nullptr for the state.
-
 #include <Component.hpp>
 #include <CoreSignals.hpp>
 
 #include "BoardInputState.hpp"
+#include "CharacterSkillComponent.hpp"
 
 namespace Barebones
 {
@@ -26,6 +22,14 @@ namespace Barebones
        * Loads the component.
        */
       void Load() override;
+
+      /**
+       * Sets the enabled property of the component. While disabled,
+       * this component won't respond to player input.
+       *
+       * @param aEnabled Whether to enable this component.
+       */
+      void SetEnabled(bool aEnabled) { mEnabled = aEnabled; }
 
     private:
 
@@ -52,6 +56,8 @@ namespace Barebones
                              int aMods);
 
       std::unique_ptr<BoardInputState> mState;
+
+      bool mEnabled;
   };
 }
 

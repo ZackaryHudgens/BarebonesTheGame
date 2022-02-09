@@ -7,6 +7,7 @@ using Barebones::MenuInputComponent;
 /******************************************************************************/
 MenuInputComponent::MenuInputComponent()
   : Component()
+  , mEnabled(true)
 {
   UrsineEngine::KeyPressed.Connect(*this, [this](const UrsineEngine::KeyCode& aCode,
                                                  int aMods)
@@ -27,34 +28,37 @@ MenuInputComponent::MenuInputComponent()
 void MenuInputComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
                                           int aMods)
 {
-  auto parent = GetParent();
-  if(parent != nullptr)
+  if(mEnabled)
   {
-    auto layout = parent->GetFirstComponentOfType<MenuLayoutComponent>();
-    if(layout != nullptr)
+    auto parent = GetParent();
+    if(parent != nullptr)
     {
-      switch(aCode)
+      auto layout = parent->GetFirstComponentOfType<MenuLayoutComponent>();
+      if(layout != nullptr)
       {
-        case UrsineEngine::KeyCode::eKEY_W:
-        case UrsineEngine::KeyCode::eKEY_UP:
+        switch(aCode)
         {
-          layout->HoverOverPreviousAction();
-          break;
-        }
-        case UrsineEngine::KeyCode::eKEY_S:
-        case UrsineEngine::KeyCode::eKEY_DOWN:
-        {
-          layout->HoverOverNextAction();
-          break;
-        }
-        case UrsineEngine::KeyCode::eKEY_ENTER:
-        {
-          layout->SelectCurrentAction();
-          break;
-        }
-        default:
-        {
-          break;
+          case UrsineEngine::KeyCode::eKEY_W:
+          case UrsineEngine::KeyCode::eKEY_UP:
+          {
+            layout->HoverOverPreviousAction();
+            break;
+          }
+          case UrsineEngine::KeyCode::eKEY_S:
+          case UrsineEngine::KeyCode::eKEY_DOWN:
+          {
+            layout->HoverOverNextAction();
+            break;
+          }
+          case UrsineEngine::KeyCode::eKEY_ENTER:
+          {
+            layout->SelectCurrentAction();
+            break;
+          }
+          default:
+          {
+            break;
+          }
         }
       }
     }
@@ -65,29 +69,32 @@ void MenuInputComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
 void MenuInputComponent::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
                                            int aMods)
 {
-  auto parent = GetParent();
-  if(parent != nullptr)
+  if(mEnabled)
   {
-    auto layout = parent->GetFirstComponentOfType<MenuLayoutComponent>();
-    if(layout != nullptr)
+    auto parent = GetParent();
+    if(parent != nullptr)
     {
-      switch(aCode)
+      auto layout = parent->GetFirstComponentOfType<MenuLayoutComponent>();
+      if(layout != nullptr)
       {
-        case UrsineEngine::KeyCode::eKEY_W:
-        case UrsineEngine::KeyCode::eKEY_UP:
+        switch(aCode)
         {
-          layout->HoverOverPreviousAction();
-          break;
-        }
-        case UrsineEngine::KeyCode::eKEY_S:
-        case UrsineEngine::KeyCode::eKEY_DOWN:
-        {
-          layout->HoverOverNextAction();
-          break;
-        }
-        default:
-        {
-          break;
+          case UrsineEngine::KeyCode::eKEY_W:
+          case UrsineEngine::KeyCode::eKEY_UP:
+          {
+            layout->HoverOverPreviousAction();
+            break;
+          }
+          case UrsineEngine::KeyCode::eKEY_S:
+          case UrsineEngine::KeyCode::eKEY_DOWN:
+          {
+            layout->HoverOverNextAction();
+            break;
+          }
+          default:
+          {
+            break;
+          }
         }
       }
     }

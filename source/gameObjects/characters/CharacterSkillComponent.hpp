@@ -84,8 +84,8 @@ namespace Barebones
       std::string mName;
   };
 
-  typedef UrsineEngine::SignalT<CharacterSkillComponent&> SkillSelectedSignal;
-  typedef UrsineEngine::SignalT<CharacterSkillComponent&> SkillExecutedSignal;
+  typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> SkillSelectedSignal;
+  typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> SkillExecutedSignal;
 
   extern SkillSelectedSignal SkillSelected;
   extern SkillExecutedSignal SkillExecuted;

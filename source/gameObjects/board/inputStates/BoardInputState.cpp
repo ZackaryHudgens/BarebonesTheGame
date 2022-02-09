@@ -9,7 +9,6 @@ BoardInputState::BoardInputState(UrsineEngine::GameObject& aObject,
   : mParent(&aObject)
   , mPlayerXLocation(aXPos)
   , mPlayerYLocation(aYPos)
-  , mDisabled(false)
 {
 }
 
@@ -18,13 +17,8 @@ std::unique_ptr<BoardInputState> BoardInputState::HandleKeyPressed(const UrsineE
                                                                    int aMods)
 {
   std::unique_ptr<BoardInputState> newState = nullptr;
-
-  if(!mDisabled)
-  {
-    newState = ProtectedHandleKeyPressed(aCode,
-                                         aMods);
-  }
-
+  newState = ProtectedHandleKeyPressed(aCode,
+                                       aMods);
   return newState;
 }
 
@@ -33,13 +27,8 @@ std::unique_ptr<BoardInputState> BoardInputState::HandleKeyRepeated(const Ursine
                                                                     int aMods)
 {
   std::unique_ptr<BoardInputState> newState = nullptr;
-
-  if(!mDisabled)
-  {
-    newState = ProtectedHandleKeyRepeated(aCode,
-                                          aMods);
-  }
-
+  newState = ProtectedHandleKeyRepeated(aCode,
+                                        aMods);
   return newState;
 }
 

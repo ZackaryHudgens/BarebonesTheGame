@@ -58,6 +58,14 @@ namespace Barebones
        */
       void HoverOverTile(int aXPos,
                          int aYPos);
+
+      /**
+       * Creates a skill menu for a given character and adds it to the
+       * current scene.
+       *
+       * @param aObject The character in question.
+       */
+      void CreateSkillMenu(UrsineEngine::GameObject& aObject);
   };
 }
 

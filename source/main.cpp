@@ -1,5 +1,7 @@
 #include <Environment.hpp>
 
+#include "BoardFactory.hpp"
+
 #include "CameraBehaviorComponent.hpp"
 #include "CharacterFactory.hpp"
 #include "CharacterBehaviorComponent.hpp"
@@ -16,9 +18,7 @@ int main()
 
   env.Initialize(options);
 
-  auto board = std::make_unique<UrsineEngine::GameObject>("board");
-  board->AddComponent(std::make_unique<Barebones::BoardLayoutComponent>());
-  board->AddComponent(std::make_unique<Barebones::BoardInputComponent>());
+  auto board = Barebones::BoardFactory::CreateBoard("board");
   auto boardComp = board->GetFirstComponentOfType<Barebones::BoardLayoutComponent>();
 
   auto skeleton = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_SKELETON, "skeleton");

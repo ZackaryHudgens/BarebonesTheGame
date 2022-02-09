@@ -19,7 +19,7 @@ std::unique_ptr<UrsineEngine::MeshComponent> MoveSkillComponent::GetIcon()
 
   // Create the texture.
   UrsineEngine::Texture sprite;
-  sprite.CreateTextureFromFile("resources/sprites/menuBox.png");
+  sprite.CreateTextureFromFile("resources/sprites/bear.jpeg");
   icon->SetTexture(sprite);
 
   // Create the shader.

@@ -1,7 +1,5 @@
 #include "DefaultBoardInputState.hpp"
 
-#include <sstream>
-
 #include <Environment.hpp>
 
 #include "ActionFactory.hpp"
@@ -10,6 +8,7 @@
 #include "MenuFactory.hpp"
 #include "MenuLayoutComponent.hpp"
 #include "TileBehaviorComponent.hpp"
+#include "SkillActionBehaviorComponent.hpp"
 
 using Barebones::DefaultBoardInputState;
 
@@ -67,7 +66,7 @@ std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::ProtectedHan
       {
         // If there is a character at the player's current position,
         // then create a menu containing all of that character's
-        // available skills and 
+        // available skills.
         auto parent = GetParent();
         if(parent != nullptr)
         {
@@ -78,45 +77,7 @@ std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::ProtectedHan
                                                             y);
             if(character != nullptr)
             {
-              auto skills = character->GetComponentsOfType<CharacterSkillComponent>();
-              if(!skills.empty())
-              {
-                // Create a new menu object.
-                auto menu = MenuFactory::CreateMenu(MenuType::eSKILL,
-                                                    "skillMenu");
-                auto menuLayout = menu->GetFirstComponentOfType<MenuLayoutComponent>();
-                if(menuLayout != nullptr)
-                {
-                  std::stringstream skillName;
-                  int skillIindex = 0;
-
-                  // Add each of this character's skills to the menu.
-                  for(auto& skill : skills)
-                  {
-                    skillName << skill->GetName() << "_" << skillIindex;
-
-                    auto action = ActionFactory::CreateAction(ActionType::eSKILL,
-                                                              skillName.str());
-                    auto skillIcon = skill->GetIcon();
-                    action->AddComponent(std::move(skillIcon));
-                    menuLayout->AddAction(std::move(action));
-
-                    skillName.str("");
-                    ++skillIindex;
-                  }
-                }
-
-                // Add the new menu to the current scene.
-                auto scene = env.GetCurrentScene();
-                if(scene != nullptr)
-                {
-                  scene->AddObject(std::move(menu));
-                }
-
-                // Finally, disable this input state until the user
-                // exits the menu.
-                SetDisabled(true);
-              }
+              CreateSkillMenu(*character);
             }
           }
         }
@@ -217,6 +178,42 @@ void DefaultBoardInputState::HoverOverTile(int aXPos,
         SetPlayerXLocation(aXPos);
         SetPlayerYLocation(aYPos);
       }
+    }
+  }
+}
+
+/******************************************************************************/
+void DefaultBoardInputState::CreateSkillMenu(UrsineEngine::GameObject& aObject)
+{
+  auto skills = aObject.GetComponentsOfType<CharacterSkillComponent>();
+  if(!skills.empty())
+  {
+    // Create a new menu object.
+    auto menu = MenuFactory::CreateMenu(MenuType::eSKILL,
+                                        "skillMenu");
+    auto menuLayout = menu->GetFirstComponentOfType<MenuLayoutComponent>();
+    if(menuLayout != nullptr)
+    {
+
+      // Add each of this character's skills to the menu.
+      for(auto& skill : skills)
+      {
+        auto action = ActionFactory::CreateAction(ActionType::eSKILL,
+                                                  skill->GetName());
+        auto skillAction = action->GetFirstComponentOfType<SkillActionBehaviorComponent>();
+        skillAction->SetSkill(*skill->GetParent());
+
+        auto skillIcon = skill->GetIcon();
+        action->AddComponent(std::move(skillIcon));
+        menuLayout->AddAction(std::move(action));
+      }
+    }
+
+    // Add the new menu to the current scene.
+    auto scene = env.GetCurrentScene();
+    if(scene != nullptr)
+    {
+      scene->AddObject(std::move(menu));
     }
   }
 }

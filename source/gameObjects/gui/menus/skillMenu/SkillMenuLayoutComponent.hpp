@@ -14,6 +14,16 @@ namespace Barebones
        */
       SkillMenuLayoutComponent();
 
+      /**
+       * Initializes the component.
+       */
+      void Initialize() override;
+
+      /**
+       * Updates the component.
+       */
+      void Update() override;
+
     protected:
 
       /**
@@ -22,8 +32,18 @@ namespace Barebones
        */
       void HandleActionAdded() override;
 
+      /**
+       * A handler function that gets called whenever an action is selected
+       * from this menu.
+       */
+      void HandleActionSelected() override;
+
     private:
       double mIconSpacing;
+
+      glm::vec3 mTargetPosition;
+      double mSpeed;
+      bool mMoving;
   };
 }
 
