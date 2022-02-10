@@ -1,6 +1,5 @@
 #include "DefaultTileBehaviorComponent.hpp"
 
-#include <Environment.hpp>
 #include <GameObject.hpp>
 
 #include "TileMeshComponent.hpp"
@@ -10,10 +9,6 @@ using Barebones::DefaultTileBehaviorComponent;
 /******************************************************************************/
 DefaultTileBehaviorComponent::DefaultTileBehaviorComponent()
   : TileBehaviorComponent()
-  , mHighlightColor(0.94, 0.89, 0.51, 1.0)
-  , mHoverColor(0.43, 0.87, 0.87, 1.0)
-  , mGlowSpeed(1.0)
-  , mTimeBeganGlowing(0.0)
   , mScale(0.1)
   , mScaleSpeed(0.1)
   , mScaling(false)
@@ -60,48 +55,14 @@ void DefaultTileBehaviorComponent::Update()
     }
   }
 
-  // Add a simple highlight effect to the tile.
+  // Add a simple glow effect to the tile.
   if(IsHighlighted())
   {
-    auto parent = GetParent();
-    if(parent != nullptr)
-    {
-      auto mesh = parent->GetFirstComponentOfType<TileMeshComponent>();
-      if(mesh != nullptr)
-      {
-        auto shader = mesh->GetCurrentShader();
-        if(shader != nullptr)
-        {
-          double timeSpentGlowing = env.GetTime() - mTimeBeganGlowing;
-          glm::vec4 color = mHighlightColor;
-          if(timeSpentGlowing > (mGlowSpeed / 2.0))
-          {
-            // The glow is fading.
-            color.x = 0.8;
-            color.y = 0.8;
-          }
-          else
-          {
-            // The glow is increasing.
-            color.x = 1.0;
-            color.y = 1.0;
-          }
-
-          shader->Activate();
-          shader->SetVec4("highlightColor", color);
-
-          if(timeSpentGlowing > mGlowSpeed)
-          {
-            mTimeBeganGlowing = env.GetTime();
-          }
-        }
-      }
-    }
   }
 }
 
 /******************************************************************************/
-void DefaultTileBehaviorComponent::HandleHoverChanged(bool aHovered)
+void DefaultTileBehaviorComponent::HandleHighlightChanged(bool aHighlighted)
 {
   auto parent = GetParent();
   if(parent != nullptr)
@@ -113,46 +74,8 @@ void DefaultTileBehaviorComponent::HandleHoverChanged(bool aHovered)
       if(shader != nullptr)
       {
         shader->Activate();
-        if(aHovered)
-        {
-          shader->SetVec4("hoverColor", mHoverColor);
-        }
-        else
-        {
-          shader->SetVec4("hoverColor", glm::vec4(1.0,
-                                                  1.0,
-                                                  1.0,
-                                                  1.0));
-        }
-      }
-    }
-  }
-}
-
-/******************************************************************************/
-void DefaultTileBehaviorComponent::HandleHighlightChanged(bool aHighlighted)
-{
-  if(aHighlighted)
-  {
-    mTimeBeganGlowing = env.GetTime();
-  }
-  else
-  {
-    auto parent = GetParent();
-    if(parent != nullptr)
-    {
-      auto mesh = parent->GetFirstComponentOfType<TileMeshComponent>();
-      if(mesh != nullptr)
-      {
-        auto shader = mesh->GetCurrentShader();
-        if(shader != nullptr)
-        {
-          shader->Activate();
-          shader->SetVec4("highlightColor", glm::vec4(1.0,
-                                                      1.0,
-                                                      1.0,
-                                                      1.0));
-        }
+        shader->SetVec4("highlightColor", glm::vec4(GetHighlightColor(),
+                                                    1.0));
       }
     }
   }

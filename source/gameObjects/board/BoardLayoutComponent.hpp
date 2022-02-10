@@ -5,10 +5,11 @@
 #include <CoreSignals.hpp>
 #include <GameObject.hpp>
 
-#include "CharacterBehaviorComponent.hpp"
-
 namespace Barebones
 {
+  typedef std::pair<int, int> TileLocation;
+  typedef std::vector<TileLocation> TileList;
+
   class BoardLayoutComponent : public UrsineEngine::Component
   {
     public:
@@ -112,14 +113,6 @@ namespace Barebones
       UrsineEngine::GameObject* GetSelectedCharacter() { return mSelectedCharacter; }
 
     private:
-
-      /**
-       * A handler function that gets called whenever the selection
-       * status of a character changes.
-       *
-       * @param aCharacter The character that was selected.
-       */
-      void HandleSelectionChanged(CharacterBehaviorComponent& aCharacter);
 
       std::vector<std::vector<UrsineEngine::GameObject*>> mTiles;
       std::vector<std::vector<UrsineEngine::GameObject*>> mCharacters;

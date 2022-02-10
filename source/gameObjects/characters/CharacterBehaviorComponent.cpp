@@ -76,8 +76,8 @@ void CharacterBehaviorComponent::SetSelected(bool aSelected)
 }
 
 /******************************************************************************/
-Barebones::MoveList CharacterBehaviorComponent::GetMovements(UrsineEngine::GameObject& aObject,
+Barebones::TileList CharacterBehaviorComponent::GetMovements(UrsineEngine::GameObject& aObject,
                                                              const TileLocation& aLocation) const
 {
-  return MoveList();
+  return TileList();
 }

@@ -55,6 +55,14 @@ namespace Barebones
       void HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
                              int aMods);
 
+      /**
+       * A handler function that gets called whenever the user
+       * selects a skill to use from a menu.
+       *
+       * @param aObject The skill object that was selected.
+       */
+      void HandleSkillSelected(UrsineEngine::GameObject* aObject);
+
       std::unique_ptr<BoardInputState> mState;
 
       bool mEnabled;

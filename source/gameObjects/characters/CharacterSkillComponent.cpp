@@ -38,5 +38,12 @@ std::unique_ptr<UrsineEngine::MeshComponent> CharacterSkillComponent::GetIcon()
 }
 
 /******************************************************************************/
+Barebones::TileList CharacterSkillComponent::GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
+                                                                 const TileLocation& aLocation)
+{
+  return TileList();
+}
+
+/******************************************************************************/
 Barebones::SkillSelectedSignal Barebones::SkillSelected;
 Barebones::SkillExecutedSignal Barebones::SkillExecuted;

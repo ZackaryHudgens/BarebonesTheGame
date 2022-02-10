@@ -1,6 +1,10 @@
 #include "MoveSkillComponent.hpp"
 
+#include <algorithm>
+
 #include <SpriteComponent.hpp>
+
+#include "CharacterBehaviorComponent.hpp"
 
 using Barebones::MoveSkillComponent;
 
@@ -43,6 +47,53 @@ std::unique_ptr<UrsineEngine::MeshComponent> MoveSkillComponent::GetIcon()
   icon->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
 
   return icon;
+}
+
+/******************************************************************************/
+Barebones::TileList MoveSkillComponent::GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
+                                                            const TileLocation& aLocation)
+{
+  TileList tiles;
+
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    auto behaviorComp = parent->GetFirstComponentOfType<CharacterBehaviorComponent>();
+    if(behaviorComp != nullptr)
+    {
+      tiles = behaviorComp->GetMovements(aBoard,
+                                         aLocation);
+    }
+  }
+
+  return tiles;
+}
+
+/******************************************************************************/
+bool MoveSkillComponent::IsTileValid(UrsineEngine::GameObject& aBoard,
+                                     const TileLocation& aLocation)
+{
+  bool success = false;
+
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    auto behaviorComp = parent->GetFirstComponentOfType<CharacterBehaviorComponent>();
+    if(behaviorComp != nullptr)
+    {
+      auto movements = behaviorComp->GetMovements(aBoard,
+                                                  aLocation);
+      auto foundLocation = std::find(movements.begin(),
+                                     movements.end(),
+                                     aLocation);
+      if(foundLocation != movements.end())
+      {
+        success = true;
+      }
+    }
+  }
+
+  return success;
 }
 
 /******************************************************************************/

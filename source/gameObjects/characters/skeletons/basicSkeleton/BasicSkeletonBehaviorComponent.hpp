@@ -23,7 +23,7 @@ namespace Barebones
        * @param aLocation The location to move from.
        * @return A list of possible movements.
        */
-      MoveList GetMovements(UrsineEngine::GameObject& aObject,
+      TileList GetMovements(UrsineEngine::GameObject& aObject,
                             const TileLocation& aLocation) const override;
 
     protected:

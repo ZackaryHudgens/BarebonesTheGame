@@ -6,8 +6,6 @@
 #include "BoardLayoutComponent.hpp"
 #include "CharacterSpriteComponent.hpp"
 
-#include <iostream>
-
 using Barebones::BasicSkeletonBehaviorComponent;
 
 /******************************************************************************/
@@ -21,10 +19,10 @@ BasicSkeletonBehaviorComponent::BasicSkeletonBehaviorComponent()
 }
 
 /******************************************************************************/
-Barebones::MoveList BasicSkeletonBehaviorComponent::GetMovements(UrsineEngine::GameObject& aObject,
+Barebones::TileList BasicSkeletonBehaviorComponent::GetMovements(UrsineEngine::GameObject& aObject,
                                                                  const TileLocation& aLocation) const
 {
-  MoveList moves;
+  TileList moves;
 
   auto layout = aObject.GetFirstComponentOfType<BoardLayoutComponent>();
   if(layout != nullptr)

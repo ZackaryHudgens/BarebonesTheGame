@@ -29,28 +29,14 @@ namespace Barebones
     protected:
 
       /**
-       * A handler function that gets called whenever the hover status
-       * changes.
-       *
-       * @param aHovered Whether this tile is being hovered over.
-       */
-      void HandleHoverChanged(bool aHovered) override;
-
-      /**
        * A handler function that gets called whenever the highlight status
        * changes.
        *
-       * @param aHighlighted Whether this tile is being highlighted
+       * @param aHighlighted Whether this tile is being highlighted.
        */
       void HandleHighlightChanged(bool aHighlighted) override;
 
     private:
-      glm::vec4 mHighlightColor;
-      glm::vec4 mHoverColor;
-
-      double mGlowSpeed;
-      double mTimeBeganGlowing;
-
       double mScale;
       double mScaleSpeed;
 

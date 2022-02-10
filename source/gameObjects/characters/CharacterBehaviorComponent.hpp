@@ -6,11 +6,10 @@
 #include <Component.hpp>
 #include <GameObject.hpp>
 
+#include "BoardLayoutComponent.hpp"
+
 namespace Barebones
 {
-  typedef std::pair<int, int> TileLocation;
-  typedef std::vector<TileLocation> MoveList;
-
   class CharacterBehaviorComponent : public UrsineEngine::Component
   {
     public:
@@ -63,7 +62,7 @@ namespace Barebones
        * @param aLocation The initial location.
        * @return A list of possible movements.
        */
-      virtual MoveList GetMovements(UrsineEngine::GameObject& aObject,
+      virtual TileList GetMovements(UrsineEngine::GameObject& aObject,
                                     const TileLocation& aLocation) const;
 
     protected:

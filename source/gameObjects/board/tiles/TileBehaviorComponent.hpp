@@ -2,7 +2,7 @@
 #define TILEBEHAVIORCOMPONENT_HPP
 
 #include <Component.hpp>
-#include <CoreSignals.hpp>
+#include <GameObject.hpp>
 
 namespace Barebones
 {
@@ -16,59 +16,48 @@ namespace Barebones
       TileBehaviorComponent();
 
       /**
-       * Sets whether this tile is being hovered over by the
-       * player.
+       * Sets whether this tile should be highlighted.
        *
-       * @param aHovered Whether this tile is being hovered over by the player.
-       */
-      void SetHovered(bool aHovered);
-
-      /**
-       * Returns whether this tile is being hovered over.
-       *
-       * @return Whether this tile is being hovered over.
-       */
-      bool IsHovered() const { return mHovered; }
-
-      /**
-       * Sets whether this tile is highlighted to show a possible move.
-       *
-       * @param aHighlighted Whether this tile is highlighted.
+       * @param aHighlighted Whether this tile should be highlighted.
        */
       void SetHighlighted(bool aHighlighted);
 
       /**
-       * Returns whether this tile is being highlighted.
+       * Sets the color to use when highlighting this tile.
        *
-       * @return Whether this tile is being highlighted.
+       * @param aColor The color to use when highlighting this tile.
        */
-      bool IsHighlighted() const { return mHilighted; }
-
-    protected:
+      void SetHighlightColor(const glm::vec3& aColor) { mHighlightColor = aColor; }
 
       /**
-       * A virtual function that gets called whenever the hover status
-       * changes.
+       * Returns whether this tile is highlighted.
        *
-       * @param aHovered Whether this tile is being hovered over.
+       * @return Whether this tile is highlighted.
        */
-      virtual void HandleHoverChanged(bool aHovered) {}
+      bool IsHighlighted() const { return mHighlighted; }
+
+    protected:
 
       /**
        * A virtual function that gets called whenever the highlight status
        * changes.
        *
-       * @param aHighlighted Whether this tile is being highlighted
+       * @param aHighlighted Whether this tile is being highlighted.
        */
       virtual void HandleHighlightChanged(bool aHighlighted) {}
 
-    private:
-      bool mHovered;
-      bool mHilighted;
-  };
+      /**
+       * Returns the highlight color.
+       *
+       * @return The highlight color.
+       */
+      glm::vec3 GetHighlightColor() const { return mHighlightColor; }
 
-  typedef UrsineEngine::SignalT<TileBehaviorComponent&> TileHoveredSignal;
-  extern TileHoveredSignal TileHovered;
+    private:
+      glm::vec3 mHighlightColor;
+
+      bool mHighlighted;
+  };
 }
 
 #endif

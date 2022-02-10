@@ -5,6 +5,8 @@
 #include <CoreSignals.hpp>
 #include <MeshComponent.hpp>
 
+#include "BoardLayoutComponent.hpp"
+
 namespace Barebones
 {
   class CharacterSkillComponent : public UrsineEngine::Component
@@ -34,6 +36,29 @@ namespace Barebones
        * @return A MeshComponent to be used as an icon.
        */
       virtual std::unique_ptr<UrsineEngine::MeshComponent> GetIcon();
+
+      /**
+       * A virtual function that returns a list of tiles to highlight when
+       * using this skill. Skills should highlight tiles to either represent
+       * valid positions or to show the range/area of effect for the skill.
+       *
+       * @param aBoard A GameObject containing a BoardLayoutComponent.
+       * @param aLocation The reference position.
+       * @return A list of tiles to highlight.
+       */
+      virtual TileList GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
+                                           const TileLocation& aLocation);
+
+      /**
+       * A virtual function that returns true if the given position is a
+       * valid position for using this skill.
+       *
+       * @param aBoard A GameObject containing a BoardLayoutComponent.
+       * @param aLocation The reference position.
+       * @return True if the given position is valid, false otherwise.
+       */
+      virtual bool IsTileValid(UrsineEngine::GameObject& aBoard,
+                               const TileLocation& aLocation) { return true; }
 
       /**
        * Sets the name of the skill.

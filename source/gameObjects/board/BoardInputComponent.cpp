@@ -89,3 +89,9 @@ void BoardInputComponent::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
     }
   }
 }
+
+/******************************************************************************/
+void BoardInputComponent::HandleSkillSelected(UrsineEngine::GameObject* aObject)
+{
+  // When a skill is selected, swap to the UsingSkill state.
+}
