@@ -3,6 +3,8 @@
 
 #include "BoardInputState.hpp"
 
+#include "BoardLayoutComponent.hpp"
+
 namespace Barebones
 {
   class DefaultBoardInputState : public BoardInputState
@@ -13,14 +15,8 @@ namespace Barebones
        * Constructor.
        *
        * @param aObject The parent GameObject with a BoardInputComponent.
-       * @param aXPos The initial x position of the player.
-       * @param aYPos The initial y position of the player.
        */
-      DefaultBoardInputState(UrsineEngine::GameObject& aObject,
-                             int aXPos = 0,
-                             int aYPos = 0);
-
-    protected:
+      DefaultBoardInputState(UrsineEngine::GameObject& aObject);
 
       /**
        * A handler function that gets called whenever the user presses
@@ -31,8 +27,8 @@ namespace Barebones
        * @return A pointer to a new state if this key caused the input
        *         to move to a new state, otherwise nullptr.
        */
-      std::unique_ptr<BoardInputState> ProtectedHandleKeyPressed(const UrsineEngine::KeyCode& aCode,
-                                                                 int aMods) override;
+      std::unique_ptr<BoardInputState> HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
+                                                        int aMods) override;
 
       /**
        * A handler function that gets called whenever the user holds
@@ -43,21 +39,28 @@ namespace Barebones
        * @return A pointer to a new state if this key caused the input
        *         to move to a new state, otherwise nullptr.
        */
-      std::unique_ptr<BoardInputState> ProtectedHandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
-                                                                  int aMods) override;
+      std::unique_ptr<BoardInputState> HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
+                                                         int aMods) override;
+
+      /**
+       * A handler function that gets called whenever the player's location
+       * on the board has changed.
+       *
+       * @param aPrevLocation The previous location of the player.
+       * @param aNewLocation The new location of the player.
+       */
+      void HandlePlayerMoved(const TileLocation& aPrevLocation,
+                             const TileLocation& aNewLocation) override;
 
     private:
 
       /**
-       * Sets the hovered property of the tile at the given location
-       * (if it exists) to true and un-hovers the tile at the
-       * current location.
+       * Attempts to move the player's position to the tile at the
+       * given location.
        *
-       * @param aXPos The x position of the new location.
-       * @param aYPos The y position of the new location.
+       * @param aLocation The location of the tile to move to.
        */
-      void HoverOverTile(int aXPos,
-                         int aYPos);
+      void MoveToTile(const TileLocation& aLocation);
 
       /**
        * Creates a skill menu for a given character and adds it to the
@@ -66,6 +69,8 @@ namespace Barebones
        * @param aObject The character in question.
        */
       void CreateSkillMenu(UrsineEngine::GameObject& aObject);
+
+      glm::vec3 mHighlightColor;
   };
 }
 

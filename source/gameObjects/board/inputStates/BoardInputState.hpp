@@ -4,6 +4,8 @@
 #include <CoreSignals.hpp>
 #include <GameObject.hpp>
 
+#include "BoardLayoutComponent.hpp"
+
 namespace Barebones
 {
   class BoardInputState
@@ -14,50 +16,43 @@ namespace Barebones
        * Constructor.
        *
        * @param aObject The parent GameObject with a BoardInputComponent.
-       * @param aXPos The initial x position of the player.
-       * @paray aYPos The initial y position of the player.
        */
-      BoardInputState(UrsineEngine::GameObject& aObject,
-                      int aXPos = 0,
-                      int aYPos = 0);
+      BoardInputState(UrsineEngine::GameObject& aObject);
 
       /**
-       * A handler function that gets called whenever the user presses
-       * a key.
+       * A virtual function that gets called whenever the user presses
+       * a key. Should be overridden by inheriting state classes.
        *
        * @param aCode The KeyCode for the key that was pressed.
        * @param aMods Any modifiers present when the key was pressed.
        * @return A pointer to a new state if this key caused the input
        *         to move to a new state, otherwise nullptr.
        */
-      std::unique_ptr<BoardInputState> HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
-                                                        int aMods);
+      virtual std::unique_ptr<BoardInputState> HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
+                                                                int aMods) { return nullptr; }
 
       /**
-       * A handler function that gets called whenever the user holds
-       * a key down long enough to repeat the input.
+       * A virtual function that gets called whenever the user holds
+       * a key down long enough to repeat the input. Should be overridden
+       * by inheriting state classes.
        *
        * @param aCode The KeyCode for the key that was pressed.
        * @param aMods Any modifiers present when the key was pressed.
        * @return A pointer to a new state if this key caused the input
        *         to move to a new state, otherwise nullptr.
        */
-      std::unique_ptr<BoardInputState> HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
-                                                         int aMods);
+      virtual std::unique_ptr<BoardInputState> HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
+                                                                 int aMods) { return nullptr; }
 
       /**
-       * Returns the player's x location.
+       * A virtual function that gets called whenever the player's location
+       * on the board has changed.
        *
-       * @return The player's x location.
+       * @param aPrevLocation The previous location of the player.
+       * @param aNewLocation The new location of the player.
        */
-      int GetPlayerXLocation() const { return mPlayerXLocation; }
-
-      /**
-       * Returns the player's y location.
-       *
-       * @return The player's y location.
-       */
-      int GetPlayerYLocation() const { return mPlayerYLocation; }
+      virtual void HandlePlayerMoved(const TileLocation& aPrevLocation,
+                                     const TileLocation& aNewLocation) {}
 
     protected:
 
@@ -68,49 +63,8 @@ namespace Barebones
        */
       UrsineEngine::GameObject* GetParent() { return mParent; }
 
-      /**
-       * A virtual function that gets called whenever the user presses
-       * a key.
-       *
-       * @param aCode The KeyCode for the key that was pressed.
-       * @param aMods Any modifiers present when the key was pressed.
-       * @return A pointer to a new state if this key caused the input
-       *         to move to a new state, otherwise nullptr.
-       */
-      virtual std::unique_ptr<BoardInputState> ProtectedHandleKeyPressed(const UrsineEngine::KeyCode& aCode,
-                                                                         int aMods);
-
-      /**
-       * A virtual function that gets called whenever the user holds
-       * a key down long enough to repeat the input.
-       *
-       * @param aCode The KeyCode for the key that was pressed.
-       * @param aMods Any modifiers present when the key was pressed.
-       * @return A pointer to a new state if this key caused the input
-       *         to move to a new state, otherwise nullptr.
-       */
-      virtual std::unique_ptr<BoardInputState> ProtectedHandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
-                                                                          int aMods);
-
-      /**
-       * Sets the player's x location.
-       *
-       * @param aXPos The player's x location.
-       */
-      void SetPlayerXLocation(int aXPos) { mPlayerXLocation = aXPos; }
-
-      /**
-       * Sets the player's y location.
-       *
-       * @param aXPos The player's y location.
-       */
-      void SetPlayerYLocation(int aYPos) { mPlayerYLocation = aYPos; }
-
     private:
       UrsineEngine::GameObject* mParent;
-
-      int mPlayerXLocation;
-      int mPlayerYLocation;
   };
 }
 

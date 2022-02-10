@@ -3,8 +3,6 @@
 #include <algorithm>
 #include <sstream>
 
-#include <iostream>
-
 #include <GameObject.hpp>
 
 #include "CharacterBehaviorComponent.hpp"
@@ -64,23 +62,22 @@ void BoardLayoutComponent::Initialize()
 }
 
 /******************************************************************************/
-bool BoardLayoutComponent::AddCharacterAtPosition(std::unique_ptr<UrsineEngine::GameObject> aObject,
-                                                  int aColumn,
-                                                  int aRow)
+bool BoardLayoutComponent::AddCharacterAtLocation(std::unique_ptr<UrsineEngine::GameObject> aObject,
+                                                  const TileLocation& aLocation)
 {
   bool success = false;
 
   auto parent = GetParent();
   if(parent != nullptr)
   {
-    if(aColumn < mTiles.size() &&
-       aColumn >= 0)
+    if(aLocation.first < mTiles.size() &&
+       aLocation.first >= 0)
     {
-      if(aRow < mTiles[aColumn].size() &&
-         aRow >= 0)
+      if(aLocation.second < mTiles[aLocation.first].size() &&
+         aLocation.second >= 0)
       {
         // Move the character to stand on top of the tile.
-        auto tile = mTiles[aColumn][aRow];
+        auto tile = mTiles[aLocation.first][aLocation.second];
         auto newPos = tile->GetPosition();
         newPos.y = tile->GetFirstComponentOfType<TileMeshComponent>()->GetHeight();
         aObject->SetPosition(newPos);
@@ -89,7 +86,7 @@ bool BoardLayoutComponent::AddCharacterAtPosition(std::unique_ptr<UrsineEngine::
         parent->AddChild(std::move(aObject));
 
         // Add the object to the characters list.
-        mCharacters[aColumn][aRow] = parent->GetChildren().back();
+        mCharacters[aLocation.first][aLocation.second] = parent->GetChildren().back();
         success = true;
       }
     }
@@ -99,16 +96,15 @@ bool BoardLayoutComponent::AddCharacterAtPosition(std::unique_ptr<UrsineEngine::
 }
 
 /******************************************************************************/
-void BoardLayoutComponent::RemoveCharacterAtPosition(int aColumn,
-                                                     int aRow)
+void BoardLayoutComponent::RemoveCharacterAtLocation(const TileLocation& aLocation)
 {
-  if(aColumn < mCharacters.size() &&
-     aColumn >= 0)
+  if(aLocation.first < mCharacters.size() &&
+     aLocation.first >= 0)
   {
-    if(aRow < mCharacters[aColumn].size() &&
-       aRow >= 0)
+    if(aLocation.second < mCharacters[aLocation.first].size() &&
+       aLocation.second >= 0)
     {
-      auto obj = mCharacters[aColumn][aRow];
+      auto obj = mCharacters[aLocation.first][aLocation.second];
       if(obj != nullptr)
       {
         // The character will be deleted on the next update.
@@ -119,18 +115,17 @@ void BoardLayoutComponent::RemoveCharacterAtPosition(int aColumn,
 }
 
 /******************************************************************************/
-UrsineEngine::GameObject* BoardLayoutComponent::GetTileAtPosition(int aColumn,
-                                                                  int aRow)
+UrsineEngine::GameObject* BoardLayoutComponent::GetTileAtLocation(const TileLocation& aLocation)
 {
   UrsineEngine::GameObject* obj = nullptr;
 
-  if(aColumn < mTiles.size() &&
-     aColumn >= 0)
+  if(aLocation.first < mTiles.size() &&
+     aLocation.first >= 0)
   {
-    if(aRow < mTiles[aColumn].size() &&
-       aRow >= 0)
+    if(aLocation.second < mTiles[aLocation.first].size() &&
+       aLocation.second >= 0)
     {
-      obj = mTiles[aColumn][aRow];
+      obj = mTiles[aLocation.first][aLocation.second];
     }
   }
 
@@ -138,18 +133,17 @@ UrsineEngine::GameObject* BoardLayoutComponent::GetTileAtPosition(int aColumn,
 }
 
 /******************************************************************************/
-UrsineEngine::GameObject* BoardLayoutComponent::GetCharacterAtPosition(int aColumn,
-                                                                       int aRow)
+UrsineEngine::GameObject* BoardLayoutComponent::GetCharacterAtLocation(const TileLocation& aLocation)
 {
   UrsineEngine::GameObject* obj = nullptr;
 
-  if(aColumn < mCharacters.size() &&
-     aColumn >= 0)
+  if(aLocation.first < mCharacters.size() &&
+     aLocation.first >= 0)
   {
-    if(aRow < mCharacters[aColumn].size() &&
-       aRow >= 0)
+    if(aLocation.second < mCharacters[aLocation.first].size() &&
+       aLocation.second >= 0)
     {
-      obj = mCharacters[aColumn][aRow];
+      obj = mCharacters[aLocation.first][aLocation.second];
     }
   }
 
@@ -157,13 +151,11 @@ UrsineEngine::GameObject* BoardLayoutComponent::GetCharacterAtPosition(int aColu
 }
 
 /******************************************************************************/
-void BoardLayoutComponent::MoveSelectedCharacter(int aColumn,
-                                                 int aRow)
+void BoardLayoutComponent::MoveSelectedCharacter(const TileLocation& aLocation)
 {
-  // First, move the character to the new location in
+  // First, move the character to the new position in
   // world space.
-  auto tile = GetTileAtPosition(aColumn,
-                                aRow);
+  auto tile = GetTileAtLocation(aLocation);
   if(tile != nullptr &&
      mSelectedCharacter != nullptr)
   {
@@ -187,11 +179,11 @@ void BoardLayoutComponent::MoveSelectedCharacter(int aColumn,
     {
       if(mCharacters[column][row] == mSelectedCharacter)
       {
-        // Set the character at the previous position to nullptr.
+        // Set the character at the previous location to nullptr.
         mCharacters[column][row] = nullptr;
 
-        // Set the character at the new position to the selected character.
-        mCharacters[aColumn][aRow] = mSelectedCharacter;
+        // Set the character at the new location to the selected character.
+        mCharacters[aLocation.first][aLocation.second] = mSelectedCharacter;
         found = true;
         break;
       }
@@ -200,92 +192,6 @@ void BoardLayoutComponent::MoveSelectedCharacter(int aColumn,
     if(found)
     {
       break;
-    }
-  }
-}
-
-/******************************************************************************/
-void BoardLayoutComponent::HandleSelectionChanged(CharacterBehaviorComponent& aCharacter)
-{
-  // First, de-highlight any spaces that were previously highlighted.
-  for(auto& column : mTiles)
-  {
-    for(auto& row : column)
-    {
-      if(row != nullptr)
-      {
-        auto tileComp = row->GetFirstComponentOfType<TileBehaviorComponent>();
-        if(tileComp != nullptr)
-        {
-          tileComp->SetHighlighted(false);
-        }
-      }
-    }
-  }
-
-  // When a character is selected, highlight each of the tiles
-  // that it can move to.
-  if(aCharacter.IsSelected())
-  {
-    auto parent = aCharacter.GetParent();
-    if(parent != nullptr)
-    {
-      // Determine if this character is on the board. If it is,
-      // determine the row and column.
-      bool onBoard = false;
-      TileLocation location;
-
-      for(int column = 0; column < mCharacters.size(); ++column)
-      {
-        for(int row = 0; row < mCharacters[column].size(); ++row)
-        {
-          if(mCharacters[column][row] == parent)
-          {
-            location.first = column;
-            location.second = row;
-            onBoard = true;
-            break;
-          }
-        }
-
-        if(onBoard)
-        {
-          break;
-        }
-      }
-
-      if(onBoard)
-      {
-        // Determine which tiles to highlight.
-        for(const auto& movement : aCharacter.GetMovements(*GetParent(),
-                                                           location))
-        {
-          if(movement.first < mTiles.size() &&
-             movement.first >= 0)
-          {
-            if(movement.second < mTiles[movement.first].size() &&
-               movement.second >= 0)
-            {
-              // Highlight this tile.
-              auto tileComp = mTiles[movement.first][movement.second]->GetFirstComponentOfType<TileBehaviorComponent>();
-              if(tileComp != nullptr)
-              {
-                tileComp->SetHighlighted(true);
-              }
-            }
-          }
-        }
-
-        // Also highlight the currently occupied space.
-        auto tileComp = mTiles[location.first][location.second]->GetFirstComponentOfType<TileBehaviorComponent>();
-        if(tileComp != nullptr)
-        {
-          tileComp->SetHighlighted(true);
-        }
-      }
-
-      // Finally, update the currently selected character.
-      mSelectedCharacter = aCharacter.IsSelected() ? parent : nullptr;
     }
   }
 }

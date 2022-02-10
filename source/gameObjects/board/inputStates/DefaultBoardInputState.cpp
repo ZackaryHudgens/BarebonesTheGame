@@ -3,89 +3,93 @@
 #include <Environment.hpp>
 
 #include "ActionFactory.hpp"
-#include "BoardLayoutComponent.hpp"
-#include "CharacterSkillComponent.hpp"
 #include "MenuFactory.hpp"
 #include "MenuLayoutComponent.hpp"
-#include "TileBehaviorComponent.hpp"
 #include "SkillActionBehaviorComponent.hpp"
+
+#include "BoardInputComponent.hpp"
+
+#include "TileBehaviorComponent.hpp"
+
+#include "CharacterSkillComponent.hpp"
 
 using Barebones::DefaultBoardInputState;
 
 /******************************************************************************/
-DefaultBoardInputState::DefaultBoardInputState(UrsineEngine::GameObject& aObject,
-                                               int aXPos,
-                                               int aYPos)
-  : BoardInputState(aObject, aXPos, aYPos)
+DefaultBoardInputState::DefaultBoardInputState(UrsineEngine::GameObject& aObject)
+  : BoardInputState(aObject)
+  , mHighlightColor(0.77, 0.79, 0.36)
 {
 }
 
 /******************************************************************************/
-std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::ProtectedHandleKeyPressed(const UrsineEngine::KeyCode& aCode,
-                                                                                              int aMods)
+std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
+                                                                                     int aMods)
 {
   std::unique_ptr<Barebones::BoardInputState> newState = nullptr;
 
   auto parent = GetParent();
   if(parent != nullptr)
   {
-    int x = GetPlayerXLocation();
-    int y = GetPlayerYLocation();
-
-    switch(aCode)
+    auto inputComponent = parent->GetFirstComponentOfType<BoardInputComponent>();
+    if(inputComponent != nullptr)
     {
-      case UrsineEngine::KeyCode::eKEY_UP:
-      case UrsineEngine::KeyCode::eKEY_W:
+      auto currentLocation = inputComponent->GetPlayerLocation();
+
+      switch(aCode)
       {
-        HoverOverTile(x,
-                      y + 1);
-        break;
-      }
-      case UrsineEngine::KeyCode::eKEY_DOWN:
-      case UrsineEngine::KeyCode::eKEY_S:
-      {
-        HoverOverTile(x,
-                      y - 1);
-        break;
-      }
-      case UrsineEngine::KeyCode::eKEY_LEFT:
-      case UrsineEngine::KeyCode::eKEY_A:
-      {
-        HoverOverTile(x - 1,
-                      y);
-        break;
-      }
-      case UrsineEngine::KeyCode::eKEY_RIGHT:
-      case UrsineEngine::KeyCode::eKEY_D:
-      {
-        HoverOverTile(x + 1,
-                      y);
-        break;
-      }
-      case UrsineEngine::KeyCode::eKEY_ENTER:
-      {
-        // If there is a character at the player's current position,
-        // then create a menu containing all of that character's
-        // available skills.
-        auto parent = GetParent();
-        if(parent != nullptr)
+        case UrsineEngine::KeyCode::eKEY_UP:
+        case UrsineEngine::KeyCode::eKEY_W:
         {
-          auto layout = parent->GetFirstComponentOfType<BoardLayoutComponent>();
-          if(layout != nullptr)
+          MoveToTile(TileLocation(currentLocation.first,
+                                  currentLocation.second + 1));
+          break;
+        }
+        case UrsineEngine::KeyCode::eKEY_DOWN:
+        case UrsineEngine::KeyCode::eKEY_S:
+        {
+          MoveToTile(TileLocation(currentLocation.first,
+                                  currentLocation.second - 1));
+          break;
+        }
+        case UrsineEngine::KeyCode::eKEY_LEFT:
+        case UrsineEngine::KeyCode::eKEY_A:
+        {
+          MoveToTile(TileLocation(currentLocation.first - 1,
+                                  currentLocation.second));
+          break;
+        }
+        case UrsineEngine::KeyCode::eKEY_RIGHT:
+        case UrsineEngine::KeyCode::eKEY_D:
+        {
+          MoveToTile(TileLocation(currentLocation.first + 1,
+                                  currentLocation.second));
+          break;
+        }
+        case UrsineEngine::KeyCode::eKEY_ENTER:
+        {
+          // If there is a character at the player's current location,
+          // then create a menu containing all of that character's
+          // available skills.
+          auto parent = GetParent();
+          if(parent != nullptr)
           {
-            auto character = layout->GetCharacterAtPosition(x,
-                                                            y);
-            if(character != nullptr)
+            auto layout = parent->GetFirstComponentOfType<BoardLayoutComponent>();
+            if(layout != nullptr)
             {
-              CreateSkillMenu(*character);
+              auto character = layout->GetCharacterAtLocation(currentLocation);
+              if(character != nullptr)
+              {
+                CreateSkillMenu(*character);
+              }
             }
           }
+          break;
         }
-        break;
-      }
-      default:
-      {
-        break;
+        default:
+        {
+          break;
+        }
       }
     }
   }
@@ -94,89 +98,80 @@ std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::ProtectedHan
 }
 
 /******************************************************************************/
-std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::ProtectedHandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
-                                                                                               int aMods)
+std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
+                                                                                      int aMods)
 {
-  auto parent = GetParent();
-  if(parent != nullptr)
-  {
-    int x = GetPlayerXLocation();
-    int y = GetPlayerYLocation();
+  std::unique_ptr<Barebones::BoardInputState> newState = nullptr;
 
-    switch(aCode)
+  switch(aCode)
+  {
+    case UrsineEngine::KeyCode::eKEY_ENTER:
     {
-      case UrsineEngine::KeyCode::eKEY_UP:
-      case UrsineEngine::KeyCode::eKEY_W:
-      {
-        HoverOverTile(x,
-                      y + 1);
-        break;
-      }
-      case UrsineEngine::KeyCode::eKEY_DOWN:
-      case UrsineEngine::KeyCode::eKEY_S:
-      {
-        HoverOverTile(x,
-                      y - 1);
-        break;
-      }
-      case UrsineEngine::KeyCode::eKEY_LEFT:
-      case UrsineEngine::KeyCode::eKEY_A:
-      {
-        HoverOverTile(x - 1,
-                      y);
-        break;
-      }
-      case UrsineEngine::KeyCode::eKEY_RIGHT:
-      case UrsineEngine::KeyCode::eKEY_D:
-      {
-        HoverOverTile(x + 1,
-                      y);
-        break;
-      }
-      default:
-      {
-        break;
-      }
+      break;
+    }
+    default:
+    {
+      newState = HandleKeyPressed(aCode,
+                                  aMods);
+      break;
     }
   }
 
-  return nullptr;
+  return newState;
 }
 
 /******************************************************************************/
-void DefaultBoardInputState::HoverOverTile(int aXPos,
-                                           int aYPos)
+void DefaultBoardInputState::HandlePlayerMoved(const TileLocation& aPrevLocation,
+                                               const TileLocation& aNewLocation)
 {
   auto parent = GetParent();
   if(parent != nullptr)
   {
-    auto layout = parent->GetFirstComponentOfType<BoardLayoutComponent>();
-    if(layout != nullptr)
+    auto layoutComponent = parent->GetFirstComponentOfType<BoardLayoutComponent>();
+    if(layoutComponent != nullptr)
     {
-      // If a tile exists at the given location, set that tile to hovered.
-      auto newTile = layout->GetTileAtPosition(aXPos,
-                                               aYPos);
+      // Un-highlight the tile at the previous location.
+      auto prevTile = layoutComponent->GetTileAtLocation(aPrevLocation);
+      if(prevTile != nullptr)
+      {
+        auto prevTileBehaviorComp = prevTile->GetFirstComponentOfType<TileBehaviorComponent>();
+        if(prevTileBehaviorComp != nullptr)
+        {
+          prevTileBehaviorComp->SetHighlighted(false);
+        }
+      }
+
+      // Highlight the tile at the new location.
+      auto newTile = layoutComponent->GetTileAtLocation(aNewLocation);
       if(newTile != nullptr)
       {
-        int x = GetPlayerXLocation();
-        int y = GetPlayerYLocation();
-
-        // Un-hover the tile at the current location.
-        auto oldTile = layout->GetTileAtPosition(x,
-                                                 y);
-        auto oldTileComp = oldTile->GetFirstComponentOfType<TileBehaviorComponent>();
-        if(oldTileComp != nullptr)
+        auto newTileBehaviorComp = newTile->GetFirstComponentOfType<TileBehaviorComponent>();
+        if(newTileBehaviorComp != nullptr)
         {
-          oldTileComp->SetHovered(false);
+          newTileBehaviorComp->SetHighlighted(true,
+                                              mHighlightColor);
         }
+      }
+    }
+  }
+}
 
-        // Set the hovered property of the tile at the new location.
-        auto newTileComp = newTile->GetFirstComponentOfType<TileBehaviorComponent>();
-        newTileComp->SetHovered(true);
-
-        // Finally, update the player position.
-        SetPlayerXLocation(aXPos);
-        SetPlayerYLocation(aYPos);
+/******************************************************************************/
+void DefaultBoardInputState::MoveToTile(const TileLocation& aLocation)
+{
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    auto layoutComponent = parent->GetFirstComponentOfType<BoardLayoutComponent>();
+    auto inputComponent = parent->GetFirstComponentOfType<BoardInputComponent>();
+    if(layoutComponent != nullptr &&
+       inputComponent != nullptr)
+    {
+      // If a tile exists at the given location, move to that tile.
+      auto newTile = layoutComponent->GetTileAtLocation(aLocation);
+      if(newTile != nullptr)
+      {
+        inputComponent->SetPlayerLocation(aLocation);
       }
     }
   }

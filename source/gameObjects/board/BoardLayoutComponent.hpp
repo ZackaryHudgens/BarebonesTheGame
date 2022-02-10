@@ -26,83 +26,47 @@ namespace Barebones
       void Initialize() override;
 
       /**
-       * Returns the number of rows on the board.
-       *
-       * @return The number of rows on the board.
-       */
-      int GetRows() const { return mRows; }
-
-      /**
-       * Returns the number of columns on the board.
-       *
-       * @return The number of columns on the board.
-       */
-      int GetColumns() const { return mColumns; }
-
-      /**
-       * Returns the amount of empty space between tiles.
-       *
-       * @return The spacing between tiles.
-       */
-      double GetTileSpacing() const { return mTileSpacing; }
-
-      /**
-       * Adds a character to the board at the given position.
-       *
-       * If this component is attached to a GameObject, the parent
-       * takes ownership of the given object as a child object.
-       * If this component isn't attached to a GameObject, this
-       * function returns false. This function also returns false
-       * if the given coordinates are out of bounds.
+       * Adds a character to the board at the given location by taking
+       * ownership of it and adding it as a child GameObject.
        *
        * @param aObject The character to add.
-       * @param aColumn The column to place the object in.
-       * @param aRow The row to place the object in.
+       * @param aLocation The location to add the character to.
        * @return True if successful, false otherwise.
        */
-      bool AddCharacterAtPosition(std::unique_ptr<UrsineEngine::GameObject> aObject,
-                                  int aColumn,
-                                  int aRow);
+      bool AddCharacterAtLocation(std::unique_ptr<UrsineEngine::GameObject> aObject,
+                                  const TileLocation& aLocation);
 
       /**
-       * Removes a character at the given position.
+       * Removes a character at the given location.
        *
-       * @param aColumn The column to remove an object from.
-       * @param aRow The row to remove an object from.
+       * @param aLocation The location to remove a character from.
        */
-      void RemoveCharacterAtPosition(int aColumn,
-                                     int aRow);
+      void RemoveCharacterAtLocation(const TileLocation& aLocation);
 
       /**
-       * Returns a pointer to the tile on the board at a given position.
+       * Returns a pointer to the tile on the board at a given location.
        *
-       * @param aColumn The column to access.
-       * @param aRow The row to access.
-       * @return A pointer to a GameObject, or nullptr if the given position
+       * @param aLocation The location to access.
+       * @return A pointer to a GameObject, or nullptr if the given location
        *         is out of bounds.
        */
-      UrsineEngine::GameObject* GetTileAtPosition(int aColumn,
-                                                  int aRow);
+      UrsineEngine::GameObject* GetTileAtLocation(const TileLocation& aLocation);
 
       /**
-       * Returns a pointer to the character on the board at a given position.
+       * Returns a pointer to the character on the board at a given location.
        *
-       * @param aColumn The column to access.
-       * @param aRow The row to access.
+       * @param aLocation The location to access.
        * @return A pointer to a GameObject, or nullptr if no character
        *         is occupying the given space.
        */
-      UrsineEngine::GameObject* GetCharacterAtPosition(int aColumn,
-                                                       int aRow);
+      UrsineEngine::GameObject* GetCharacterAtLocation(const TileLocation& aLocation);
 
       /**
-       * Moves the currently selected character to the given position.
+       * Moves the currently selected character to the given location.
        *
-       * @param aColumn The column to move to.
-       * @param aRow The row to move to.
+       * @param aLocation The location to move the currently selected character to.
        */
-      void MoveSelectedCharacter(int aColumn,
-                                 int aRow);
+      void MoveSelectedCharacter(const TileLocation& aLocation);
 
       /**
        * Returns the currently selected character.

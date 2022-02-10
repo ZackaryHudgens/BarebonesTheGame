@@ -62,7 +62,7 @@ void DefaultTileBehaviorComponent::Update()
 }
 
 /******************************************************************************/
-void DefaultTileBehaviorComponent::HandleHighlightChanged(bool aHighlighted)
+void DefaultTileBehaviorComponent::HandleHighlightChanged()
 {
   auto parent = GetParent();
   if(parent != nullptr)
@@ -74,8 +74,19 @@ void DefaultTileBehaviorComponent::HandleHighlightChanged(bool aHighlighted)
       if(shader != nullptr)
       {
         shader->Activate();
-        shader->SetVec4("highlightColor", glm::vec4(GetHighlightColor(),
-                                                    1.0));
+
+        if(IsHighlighted())
+        {
+          shader->SetVec4("highlightColor", glm::vec4(GetHighlightColor(),
+                                                      1.0));
+        }
+        else
+        {
+          shader->SetVec4("highlightColor", glm::vec4(1.0,
+                                                      1.0,
+                                                      1.0,
+                                                      1.0));
+        }
       }
     }
   }

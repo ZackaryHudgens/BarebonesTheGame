@@ -10,6 +10,7 @@ using Barebones::BoardInputComponent;
 BoardInputComponent::BoardInputComponent()
   : Component()
   , mState(nullptr)
+  , mPlayerLocation(0, 0)
   , mEnabled(true)
 {
   UrsineEngine::KeyPressed.Connect(*this, [this](const UrsineEngine::KeyCode& aCode,
@@ -35,20 +36,28 @@ void BoardInputComponent::Load()
   {
     // Initialize the state at position (0, 0).
     mState = std::make_unique<DefaultBoardInputState>(*parent);
+  }
+}
 
-    // Highlight the tile at the player's initial position.
-    auto layout = parent->GetFirstComponentOfType<BoardLayoutComponent>();
-    if(layout != nullptr)
+/******************************************************************************/
+void BoardInputComponent::SetPlayerLocation(const TileLocation& aLocation)
+{
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    auto layoutComponent = parent->GetFirstComponentOfType<BoardLayoutComponent>();
+    if(layoutComponent != nullptr)
     {
-      auto tile = layout->GetTileAtPosition(mState->GetPlayerXLocation(),
-                                            mState->GetPlayerYLocation());
+      // Only move to this location if there is a tile there.
+      auto tile = layoutComponent->GetTileAtLocation(aLocation);
       if(tile != nullptr)
       {
-        auto tileComp = tile->GetFirstComponentOfType<TileBehaviorComponent>();
-        if(tileComp != nullptr)
-        {
-          tileComp->SetHovered(true);
-        }
+        auto prevLocation = mPlayerLocation;
+        mPlayerLocation = aLocation;
+
+        mState->HandlePlayerMoved(prevLocation,
+                                  mPlayerLocation);
+        PlayerMoved.Notify(mPlayerLocation);
       }
     }
   }
@@ -95,3 +104,6 @@ void BoardInputComponent::HandleSkillSelected(UrsineEngine::GameObject* aObject)
 {
   // When a skill is selected, swap to the UsingSkill state.
 }
+
+/******************************************************************************/
+Barebones::PlayerMovedSignal Barebones::PlayerMoved;

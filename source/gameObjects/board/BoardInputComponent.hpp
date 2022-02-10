@@ -5,7 +5,7 @@
 #include <CoreSignals.hpp>
 
 #include "BoardInputState.hpp"
-#include "CharacterSkillComponent.hpp"
+#include "BoardLayoutComponent.hpp"
 
 namespace Barebones
 {
@@ -24,12 +24,29 @@ namespace Barebones
       void Load() override;
 
       /**
-       * Sets the enabled property of the component. While disabled,
-       * this component won't respond to player input.
+       * Enables or disables this component. While disabled, this component
+       * won't process any input events.
        *
        * @param aEnabled Whether to enable this component.
        */
       void SetEnabled(bool aEnabled) { mEnabled = aEnabled; }
+
+      /**
+       * Sets the player's location on the board. Note that this may be overridden
+       * by the input state.
+       *
+       * @param aLocation The new location of the player on the board.
+       */
+      void SetPlayerLocation(const TileLocation& aLocation);
+
+      /**
+       * Returns the player's location on the board. The first integer
+       * corresponds to the column and the second integer corresponds to
+       * the row.
+       *
+       * @return The location of the player on the board.
+       */
+      TileLocation GetPlayerLocation() const { return mPlayerLocation; }
 
     private:
 
@@ -65,8 +82,13 @@ namespace Barebones
 
       std::unique_ptr<BoardInputState> mState;
 
+      TileLocation mPlayerLocation;
+
       bool mEnabled;
   };
+
+  typedef UrsineEngine::SignalT<const TileLocation&> PlayerMovedSignal;
+  extern PlayerMovedSignal PlayerMoved;
 }
 
 #endif

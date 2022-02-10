@@ -16,18 +16,23 @@ namespace Barebones
       TileBehaviorComponent();
 
       /**
-       * Sets whether this tile should be highlighted.
+       * Sets whether the tile should be highlighted and with what color.
        *
-       * @param aHighlighted Whether this tile should be highlighted.
-       */
-      void SetHighlighted(bool aHighlighted);
-
-      /**
-       * Sets the color to use when highlighting this tile.
-       *
+       * @param aHighlight Whether the tile should be highlighted.
        * @param aColor The color to use when highlighting this tile.
        */
-      void SetHighlightColor(const glm::vec3& aColor) { mHighlightColor = aColor; }
+      void SetHighlighted(bool aHighlight,
+                          const glm::vec3& aColor = glm::vec3(1.0,
+                                                              1.0,
+                                                              1.0));
+
+    protected:
+
+      /**
+       * A virtual function that gets called whenever the highlight status
+       * of this tile changes.
+       */
+      virtual void HandleHighlightChanged() {}
 
       /**
        * Returns whether this tile is highlighted.
@@ -35,16 +40,6 @@ namespace Barebones
        * @return Whether this tile is highlighted.
        */
       bool IsHighlighted() const { return mHighlighted; }
-
-    protected:
-
-      /**
-       * A virtual function that gets called whenever the highlight status
-       * changes.
-       *
-       * @param aHighlighted Whether this tile is being highlighted.
-       */
-      virtual void HandleHighlightChanged(bool aHighlighted) {}
 
       /**
        * Returns the highlight color.
