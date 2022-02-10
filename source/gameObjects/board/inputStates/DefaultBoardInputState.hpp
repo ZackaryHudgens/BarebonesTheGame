@@ -48,9 +48,11 @@ namespace Barebones
        *
        * @param aPrevLocation The previous location of the player.
        * @param aNewLocation The new location of the player.
+       * @return A pointer to a new state if this movement caused the input
+       *         to move to a new state, otherwise nullptr.
        */
-      void HandlePlayerMoved(const TileLocation& aPrevLocation,
-                             const TileLocation& aNewLocation) override;
+      std::unique_ptr<BoardInputState> HandlePlayerMoved(const TileLocation& aPrevLocation,
+                                                         const TileLocation& aNewLocation) override;
 
     private:
 

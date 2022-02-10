@@ -78,7 +78,7 @@ namespace Barebones
        *
        * @param aObject The skill object that was selected.
        */
-      void HandleSkillSelected(UrsineEngine::GameObject* aObject);
+      void HandleSkillSelected(UrsineEngine::GameObject& aObject);
 
       std::unique_ptr<BoardInputState> mState;
 

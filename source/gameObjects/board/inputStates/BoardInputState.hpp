@@ -21,7 +21,7 @@ namespace Barebones
 
       /**
        * A virtual function that gets called whenever the user presses
-       * a key. Should be overridden by inheriting state classes.
+       * a key. Should be overridden by inheriting states.
        *
        * @param aCode The KeyCode for the key that was pressed.
        * @param aMods Any modifiers present when the key was pressed.
@@ -34,7 +34,7 @@ namespace Barebones
       /**
        * A virtual function that gets called whenever the user holds
        * a key down long enough to repeat the input. Should be overridden
-       * by inheriting state classes.
+       * by inheriting states.
        *
        * @param aCode The KeyCode for the key that was pressed.
        * @param aMods Any modifiers present when the key was pressed.
@@ -46,13 +46,24 @@ namespace Barebones
 
       /**
        * A virtual function that gets called whenever the player's location
-       * on the board has changed.
+       * on the board has changed. Should be overridden by inheriting states.
        *
        * @param aPrevLocation The previous location of the player.
        * @param aNewLocation The new location of the player.
+       * @return A pointer to a new state if this movement caused the input
+       *         to move to a new state, otherwise nullptr.
        */
-      virtual void HandlePlayerMoved(const TileLocation& aPrevLocation,
-                                     const TileLocation& aNewLocation) {}
+      virtual std::unique_ptr<BoardInputState> HandlePlayerMoved(const TileLocation& aPrevLocation,
+                                                                 const TileLocation& aNewLocation) { return nullptr; }
+
+      /**
+       * A virtual function that gets called whenever the user
+       * selects a skill to use from a menu. Should be overridden by
+       * inheriting states.
+       *
+       * @param aObject The skill object that was selected.
+       */
+      virtual std::unique_ptr<BoardInputState> HandleSkillSelected(UrsineEngine::GameObject* aObject) { return nullptr; }
 
     protected:
 

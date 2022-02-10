@@ -1,7 +1,12 @@
 #include "BoardInputComponent.hpp"
 
 #include "DefaultBoardInputState.hpp"
+#include "UsingSkillBoardInputState.hpp"
+
+#include "CharacterSkillComponent.hpp"
+
 #include "BoardLayoutComponent.hpp"
+
 #include "TileBehaviorComponent.hpp"
 
 using Barebones::BoardInputComponent;
@@ -25,6 +30,11 @@ BoardInputComponent::BoardInputComponent()
   {
     this->HandleKeyRepeated(aCode,
                             aMods);
+  });
+
+  SkillSelected.Connect(*this, [this](UrsineEngine::GameObject& aObject)
+  {
+    this->HandleSkillSelected(aObject);
   });
 }
 
@@ -55,8 +65,13 @@ void BoardInputComponent::SetPlayerLocation(const TileLocation& aLocation)
         auto prevLocation = mPlayerLocation;
         mPlayerLocation = aLocation;
 
-        mState->HandlePlayerMoved(prevLocation,
-                                  mPlayerLocation);
+        auto newState = mState->HandlePlayerMoved(prevLocation,
+                                                  mPlayerLocation);
+        if(newState != nullptr)
+        {
+          mState.swap(newState);
+        }
+
         PlayerMoved.Notify(mPlayerLocation);
       }
     }
@@ -100,9 +115,15 @@ void BoardInputComponent::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
 }
 
 /******************************************************************************/
-void BoardInputComponent::HandleSkillSelected(UrsineEngine::GameObject* aObject)
+void BoardInputComponent::HandleSkillSelected(UrsineEngine::GameObject& aObject)
 {
   // When a skill is selected, swap to the UsingSkill state.
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    mState = std::make_unique<UsingSkillBoardInputState>(*parent,
+                                                         aObject);
+  }
 }
 
 /******************************************************************************/

@@ -121,9 +121,11 @@ std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::HandleKeyRep
 }
 
 /******************************************************************************/
-void DefaultBoardInputState::HandlePlayerMoved(const TileLocation& aPrevLocation,
-                                               const TileLocation& aNewLocation)
+std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::HandlePlayerMoved(const TileLocation& aPrevLocation,
+                                                                                      const TileLocation& aNewLocation)
 {
+  std::unique_ptr<BoardInputState> newState = nullptr;
+
   auto parent = GetParent();
   if(parent != nullptr)
   {
@@ -154,6 +156,8 @@ void DefaultBoardInputState::HandlePlayerMoved(const TileLocation& aPrevLocation
       }
     }
   }
+
+  return newState;
 }
 
 /******************************************************************************/
