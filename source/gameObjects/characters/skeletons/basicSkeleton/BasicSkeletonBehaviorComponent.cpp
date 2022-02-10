@@ -11,8 +11,6 @@ using Barebones::BasicSkeletonBehaviorComponent;
 /******************************************************************************/
 BasicSkeletonBehaviorComponent::BasicSkeletonBehaviorComponent()
   : CharacterBehaviorComponent()
-  , mGlowSpeed(1.0)
-  , mTimeBeganGlowing(0.0)
   , mHorizontalMovement(2)
   , mVerticalMovement(2)
 {
@@ -27,17 +25,14 @@ Barebones::TileList BasicSkeletonBehaviorComponent::GetMovements(UrsineEngine::G
   auto layout = aObject.GetFirstComponentOfType<BoardLayoutComponent>();
   if(layout != nullptr)
   {
-    TileLocation moveLocation;
-    moveLocation.first = aLocation.first;
-    moveLocation.second = aLocation.second;
+    TileLocation moveLocation = aLocation;
 
     // Determine movements to the left.
     for(int left = 0; left < mHorizontalMovement; ++left)
     {
       moveLocation.first = aLocation.first - left - 1;
 
-      if(layout->GetCharacterAtPosition(moveLocation.first,
-                                        moveLocation.second) == nullptr)
+      if(layout->GetCharacterAtLocation(moveLocation) == nullptr)
       {
         // Add this location to the move list.
         moves.emplace_back(moveLocation);
@@ -56,8 +51,7 @@ Barebones::TileList BasicSkeletonBehaviorComponent::GetMovements(UrsineEngine::G
     {
       moveLocation.first = aLocation.first + right + 1;
 
-      if(layout->GetCharacterAtPosition(moveLocation.first,
-                                        moveLocation.second) == nullptr)
+      if(layout->GetCharacterAtLocation(moveLocation) == nullptr)
       {
         // Add this location to the move list.
         moves.emplace_back(moveLocation);
@@ -76,8 +70,7 @@ Barebones::TileList BasicSkeletonBehaviorComponent::GetMovements(UrsineEngine::G
     {
       moveLocation.second = aLocation.second + up + 1;
 
-      if(layout->GetCharacterAtPosition(moveLocation.first,
-                                        moveLocation.second) == nullptr)
+      if(layout->GetCharacterAtLocation(moveLocation) == nullptr)
       {
         // Add this location to the move list.
         moves.emplace_back(moveLocation);
@@ -96,8 +89,7 @@ Barebones::TileList BasicSkeletonBehaviorComponent::GetMovements(UrsineEngine::G
     {
       moveLocation.second = aLocation.second - down - 1;
 
-      if(layout->GetCharacterAtPosition(moveLocation.first,
-                                        moveLocation.second) == nullptr)
+      if(layout->GetCharacterAtLocation(moveLocation) == nullptr)
       {
         // Add this location to the move list.
         moves.emplace_back(moveLocation);
@@ -117,76 +109,4 @@ Barebones::TileList BasicSkeletonBehaviorComponent::GetMovements(UrsineEngine::G
 /******************************************************************************/
 void BasicSkeletonBehaviorComponent::ProtectedUpdate()
 {
-  if(IsSelected())
-  {
-    auto parent = GetParent();
-    if(parent != nullptr)
-    {
-      auto sprite = parent->GetFirstComponentOfType<CharacterSpriteComponent>();
-      if(sprite != nullptr)
-      {
-        auto shader = sprite->GetCurrentShader();
-        if(shader != nullptr)
-        {
-          double timeSpentGlowing = env.GetTime() - mTimeBeganGlowing;
-          glm::vec4 color = glm::vec4(1.0,
-                                      1.0,
-                                      0.0,
-                                      1.0);
-
-          if(timeSpentGlowing > (mGlowSpeed / 2.0))
-          {
-            // The glow is fading.
-            color.x = 0.8;
-            color.y = 0.8;
-          }
-          else
-          {
-            // The glow is increasing.
-            color.x = 1.0;
-            color.y = 1.0;
-          }
-
-          shader->Activate();
-          shader->SetVec4("selectionColor", color);
-
-          if(timeSpentGlowing > mGlowSpeed)
-          {
-            mTimeBeganGlowing = env.GetTime();
-          }
-        }
-      }
-    }
-  }
-}
-
-/******************************************************************************/
-void BasicSkeletonBehaviorComponent::HandleSelectionChanged(bool aSelected)
-{
-  if(aSelected)
-  {
-    mTimeBeganGlowing = env.GetTime();
-  }
-  else
-  {
-    // If this skeleton was deselected, restore the sprite component
-    // to its normal color.
-    auto parent = GetParent();
-    if(parent != nullptr)
-    {
-      auto sprite = parent->GetFirstComponentOfType<CharacterSpriteComponent>();
-      if(sprite != nullptr)
-      {
-        auto shader = sprite->GetCurrentShader();
-        if(shader != nullptr)
-        {
-          shader->Activate();
-          shader->SetVec4("selectionColor", glm::vec4(1.0,
-                                                      1.0,
-                                                      1.0,
-                                                      1.0));
-        }
-      }
-    }
-  }
 }

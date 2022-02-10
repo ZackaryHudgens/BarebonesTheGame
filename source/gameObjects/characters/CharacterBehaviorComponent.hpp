@@ -30,27 +30,13 @@ namespace Barebones
       void Update() override;
 
       /**
-       * Moves the character to a location in world space at the given speed.
+       * Moves the character to a position in world space at the given speed.
        *
        * @param aPosition The position to move to.
        * @param aSpeed The speed to move at.
        */
-      void MoveCharacter(const glm::vec3& aPosition,
-                         double aSpeed);
-
-      /**
-       * Sets this character as either selected or deselected.
-       *
-       * @param aSelected Whether this character should be selected.
-       */
-      void SetSelected(bool aSelected);
-
-      /**
-       * Returns whether this character is selected.
-       *
-       * @return Whether this character is selected.
-       */
-      bool IsSelected() const { return mSelected; }
+      void MoveToPosition(const glm::vec3& aPosition,
+                          double aSpeed);
 
       /**
        * A virtual function that returns a list of possible movements
@@ -83,21 +69,11 @@ namespace Barebones
       virtual void AddSkills() {}
 
     private:
-
-      /**
-       * A virtual function that gets called whenever the selection
-       * status of this character changes.
-       *
-       * @param aSelected Whether this character was selected.
-       */
-      virtual void HandleSelectionChanged(bool aSelected) {}
-
       glm::vec3 mTargetPosition;
 
       double mSpeed;
 
       bool mMoving;
-      bool mSelected;
   };
 }
 

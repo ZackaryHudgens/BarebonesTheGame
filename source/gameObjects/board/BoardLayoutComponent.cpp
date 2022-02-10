@@ -151,47 +151,32 @@ UrsineEngine::GameObject* BoardLayoutComponent::GetCharacterAtLocation(const Til
 }
 
 /******************************************************************************/
-void BoardLayoutComponent::MoveSelectedCharacter(const TileLocation& aLocation)
+void BoardLayoutComponent::MoveCharacter(const TileLocation& aCurrentLocation,
+                                         const TileLocation& aNewLocation)
 {
-  // First, move the character to the new position in
-  // world space.
-  auto tile = GetTileAtLocation(aLocation);
-  if(tile != nullptr &&
-     mSelectedCharacter != nullptr)
+  auto character = GetCharacterAtLocation(aCurrentLocation);
+  auto newTile = GetTileAtLocation(aNewLocation);
+  if(character != nullptr &&
+     newTile != nullptr)
   {
-    auto tileMesh = tile->GetFirstComponentOfType<TileMeshComponent>();
-    auto charComp = mSelectedCharacter->GetFirstComponentOfType<CharacterBehaviorComponent>();
-    if(tileMesh != nullptr &&
-       charComp != nullptr)
+    // First, check if there is already a character in the new location.
+    if(GetCharacterAtLocation(aNewLocation) == nullptr)
     {
-      auto newPos = tile->GetPosition();
-      newPos.y = tileMesh->GetHeight();
-      charComp->MoveCharacter(newPos,
-                              0.3);
-    }
-  }
-
-  // Next, update the character map.
-  bool found = false;
-  for(int column = 0; column < mCharacters.size(); ++column)
-  {
-    for(int row = 0; row < mCharacters[column].size(); ++row)
-    {
-      if(mCharacters[column][row] == mSelectedCharacter)
+      // Next, move the character to the new position in world space.
+      auto tileMesh = newTile->GetFirstComponentOfType<TileMeshComponent>();
+      auto charBehaviorComp = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
+      if(tileMesh != nullptr &&
+         charBehaviorComp != nullptr)
       {
-        // Set the character at the previous location to nullptr.
-        mCharacters[column][row] = nullptr;
-
-        // Set the character at the new location to the selected character.
-        mCharacters[aLocation.first][aLocation.second] = mSelectedCharacter;
-        found = true;
-        break;
+        auto newPosition = newTile->GetPosition();
+        newPosition.y = tileMesh->GetHeight();
+        charBehaviorComp->MoveToPosition(newPosition,
+                                         0.3);
       }
-    }
 
-    if(found)
-    {
-      break;
+      // Finally, update the character map.
+      mCharacters[aCurrentLocation.first][aCurrentLocation.second] = nullptr;
+      mCharacters[aNewLocation.first][aNewLocation.second] = character;
     }
   }
 }

@@ -37,29 +37,31 @@ int main()
   auto human6 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_HUMAN, "human6");
   auto human7 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_HUMAN, "human7");
 
-  boardComp->AddCharacterAtPosition(std::move(skeleton), 0, 0);
-  boardComp->AddCharacterAtPosition(std::move(skeleton2), 0, 1);
-  boardComp->AddCharacterAtPosition(std::move(skeleton3), 0, 2);
-  boardComp->AddCharacterAtPosition(std::move(skeleton4), 0, 3);
-  boardComp->AddCharacterAtPosition(std::move(skeleton5), 0, 4);
-  boardComp->AddCharacterAtPosition(std::move(skeleton6), 0, 5);
-  boardComp->AddCharacterAtPosition(std::move(skeleton7), 0, 6);
+  boardComp->AddCharacterAtLocation(std::move(skeleton), Barebones::TileLocation(0, 0));
+  boardComp->AddCharacterAtLocation(std::move(skeleton2), Barebones::TileLocation(0, 1));
+  boardComp->AddCharacterAtLocation(std::move(skeleton3), Barebones::TileLocation(0, 2));
+  boardComp->AddCharacterAtLocation(std::move(skeleton4), Barebones::TileLocation(0, 3));
+  boardComp->AddCharacterAtLocation(std::move(skeleton5), Barebones::TileLocation(0, 4));
+  boardComp->AddCharacterAtLocation(std::move(skeleton6), Barebones::TileLocation(0, 5));
+  boardComp->AddCharacterAtLocation(std::move(skeleton7), Barebones::TileLocation(0, 6));
 
-  boardComp->AddCharacterAtPosition(std::move(human), 6, 0);
-  boardComp->AddCharacterAtPosition(std::move(human2), 6, 1);
-  boardComp->AddCharacterAtPosition(std::move(human3), 6, 2);
-  boardComp->AddCharacterAtPosition(std::move(human4), 6, 3);
-  boardComp->AddCharacterAtPosition(std::move(human5), 6, 4);
-  boardComp->AddCharacterAtPosition(std::move(human6), 6, 5);
-  boardComp->AddCharacterAtPosition(std::move(human7), 6, 6);
+  boardComp->AddCharacterAtLocation(std::move(human), Barebones::TileLocation(6, 0));
+  boardComp->AddCharacterAtLocation(std::move(human2), Barebones::TileLocation(6, 1));
+  boardComp->AddCharacterAtLocation(std::move(human3), Barebones::TileLocation(6, 2));
+  boardComp->AddCharacterAtLocation(std::move(human4), Barebones::TileLocation(6, 3));
+  boardComp->AddCharacterAtLocation(std::move(human5), Barebones::TileLocation(6, 4));
+  boardComp->AddCharacterAtLocation(std::move(human6), Barebones::TileLocation(6, 5));
+  boardComp->AddCharacterAtLocation(std::move(human7), Barebones::TileLocation(6, 6));
 
   UrsineEngine::Scene newScene;
 
   auto cam = newScene.GetDefaultCamera();
   cam->AddComponent(std::make_unique<Barebones::CameraBehaviorComponent>());
-  auto camComp = cam->GetFirstComponentOfType<Barebones::CameraBehaviorComponent>();
 
   newScene.AddObject(std::move(board));
+
+  auto camComp = cam->GetFirstComponentOfType<Barebones::CameraBehaviorComponent>();
+  camComp->FollowBoard(*newScene.GetObject("board"));
 
   env.LoadScene(newScene);
 

@@ -10,7 +10,6 @@ CharacterBehaviorComponent::CharacterBehaviorComponent()
   , mTargetPosition(0.0, 0.0, 0.0)
   , mSpeed(0.0)
   , mMoving(false)
-  , mSelected(false)
 {
 }
 
@@ -60,19 +59,12 @@ void CharacterBehaviorComponent::Update()
 }
 
 /******************************************************************************/
-void CharacterBehaviorComponent::MoveCharacter(const glm::vec3& aPosition,
-                                               double aSpeed)
+void CharacterBehaviorComponent::MoveToPosition(const glm::vec3& aPosition,
+                                                double aSpeed)
 {
   mTargetPosition = aPosition;
   mSpeed = aSpeed;
   mMoving = true;
-}
-
-/******************************************************************************/
-void CharacterBehaviorComponent::SetSelected(bool aSelected)
-{
-  mSelected = aSelected;
-  HandleSelectionChanged(aSelected);
 }
 
 /******************************************************************************/

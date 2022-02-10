@@ -4,7 +4,7 @@
 #include <Component.hpp>
 #include <GameObject.hpp>
 
-#include "TileBehaviorComponent.hpp"
+#include "BoardLayoutComponent.hpp"
 
 namespace Barebones
 {
@@ -27,15 +27,24 @@ namespace Barebones
        */
       void Update() override;
 
+      /**
+       * Makes this component follow the given board.
+       *
+       * @param aBoard A GameObject with a BoardLayoutComponent.
+       */
+      void FollowBoard(UrsineEngine::GameObject& aBoard);
+
     private:
 
       /**
-       * A handler function that gets called whenever a tile is
-       * hovered.
+       * A handler function that gets called whenever the player's
+       * location on the board changes.
        *
-       * @param aTile The tile that was hovered over.
+       * @param aLocation The new location on the board.
        */
-      void HandleTileHovered(TileBehaviorComponent& aTile);
+      void HandlePlayerMoved(const TileLocation& aLocation);
+
+      UrsineEngine::GameObject* mFollowedBoard;
 
       glm::vec3 mTargetPosition;
 

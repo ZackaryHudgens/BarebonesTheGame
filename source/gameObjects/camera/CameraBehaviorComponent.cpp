@@ -2,21 +2,41 @@
 
 #include <GameObject.hpp>
 
+#include "BoardInputComponent.hpp"
+
 using Barebones::CameraBehaviorComponent;
 
 /******************************************************************************/
 CameraBehaviorComponent::CameraBehaviorComponent()
   : Component()
+  , mFollowedBoard(nullptr)
+  , mTargetPosition(0.0, 0.0, 0.0)
   , mYDistance(3.0)
   , mZDistance(3.0)
   , mRotation(-40.0)
   , mSpeed(0.3)
   , mMoving(false)
 {
-  TileHovered.Connect(*this, [this](TileBehaviorComponent& aTile)
+  PlayerMoved.Connect(*this, [this](const TileLocation& aLocation)
   {
-    this->HandleTileHovered(aTile);
+    this->HandlePlayerMoved(aLocation);
   });
+}
+
+/******************************************************************************/
+void CameraBehaviorComponent::Initialize()
+{
+  // Initialize the camera position and orientation.
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    parent->SetPosition(glm::vec3(0.0,
+                                  mYDistance,
+                                  mZDistance));
+    parent->SetRotation(mRotation, glm::vec3(1.0,
+                                             0.0,
+                                             0.0));
+  }
 }
 
 /******************************************************************************/
@@ -49,35 +69,34 @@ void CameraBehaviorComponent::Update()
 }
 
 /******************************************************************************/
-void CameraBehaviorComponent::Initialize()
+void CameraBehaviorComponent::FollowBoard(UrsineEngine::GameObject& aBoard)
 {
-  // Initialize the camera position and orientation.
-  auto cameraParent = GetParent();
-  if(cameraParent != nullptr)
-  {
-    cameraParent->SetPosition(glm::vec3(0.0,
-                                        mYDistance,
-                                        mZDistance));
-    cameraParent->SetRotation(mRotation, glm::vec3(1.0,
-                                                   0.0,
-                                                   0.0));
-  }
+  mFollowedBoard = &aBoard;
+  HandlePlayerMoved(TileLocation(0,
+                                 0));
 }
 
 /******************************************************************************/
-void CameraBehaviorComponent::HandleTileHovered(TileBehaviorComponent& aTile)
+void CameraBehaviorComponent::HandlePlayerMoved(const TileLocation& aLocation)
 {
-  auto cameraParent = GetParent();
-  auto tileParent = aTile.GetParent();
-  if(cameraParent != nullptr &&
-     tileParent != nullptr)
+  if(mFollowedBoard != nullptr)
   {
-    // Calculate the new position for the camera.
-    auto newPos = tileParent->GetPosition();
-    newPos.y += mYDistance;
-    newPos.z += mZDistance;
+    auto boardLayoutComponent = mFollowedBoard->GetFirstComponentOfType<BoardLayoutComponent>();
+    if(boardLayoutComponent != nullptr)
+    {
+      auto tile = boardLayoutComponent->GetTileAtLocation(aLocation);
+      auto parent = GetParent();
+      if(tile != nullptr &&
+         parent != nullptr)
+      {
+        // Calculate the new position for the camera.
+        auto newPos = tile->GetPosition();
+        newPos.y += mYDistance;
+        newPos.z += mZDistance;
 
-    mTargetPosition = newPos;
-    mMoving = true;
+        mTargetPosition = newPos;
+        mMoving = true;
+      }
+    }
   }
 }

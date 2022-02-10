@@ -62,26 +62,18 @@ namespace Barebones
       UrsineEngine::GameObject* GetCharacterAtLocation(const TileLocation& aLocation);
 
       /**
-       * Moves the currently selected character to the given location.
+       * Moves a character at the first location to the second location.
        *
-       * @param aLocation The location to move the currently selected character to.
+       * @param aCurrentLocation The current location of the character.
+       * @param aNewLocation The new location for the character.
        */
-      void MoveSelectedCharacter(const TileLocation& aLocation);
-
-      /**
-       * Returns the currently selected character.
-       *
-       * @return A pointer the currently selected character, or nullptr
-       *         if no character is selected.
-       */
-      UrsineEngine::GameObject* GetSelectedCharacter() { return mSelectedCharacter; }
+      void MoveCharacter(const TileLocation& aCurrentLocation,
+                         const TileLocation& aNewLocation);
 
     private:
 
       std::vector<std::vector<UrsineEngine::GameObject*>> mTiles;
       std::vector<std::vector<UrsineEngine::GameObject*>> mCharacters;
-
-      UrsineEngine::GameObject* mSelectedCharacter;
 
       double mTileSpacing;
 

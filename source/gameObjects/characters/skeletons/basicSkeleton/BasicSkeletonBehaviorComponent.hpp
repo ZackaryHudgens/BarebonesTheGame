@@ -34,18 +34,6 @@ namespace Barebones
       void ProtectedUpdate() override;
 
     private:
-
-      /**
-       * A handler function that gets called whenever the selection
-       * status of this character changes.
-       *
-       * @param aSelected Whether this character was selected.
-       */
-      void HandleSelectionChanged(bool aSelected) override;
-
-      double mGlowSpeed;
-      double mTimeBeganGlowing;
-
       int mHorizontalMovement;
       int mVerticalMovement;
   };
