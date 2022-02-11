@@ -180,3 +180,44 @@ void BoardLayoutComponent::MoveCharacter(const TileLocation& aCurrentLocation,
     }
   }
 }
+
+/******************************************************************************/
+Barebones::TileLocation BoardLayoutComponent::GetLocationOfCharacter(const std::string& aName)
+{
+  TileLocation tile(-1, -1);
+
+  int x = 0;
+  int y = 0;
+  bool found = false;
+  for(const auto& column : mCharacters)
+  {
+    y = 0;
+    for(const auto& character : column)
+    {
+      if(character != nullptr)
+      {
+        if(character->GetName() == aName)
+        {
+          found = true;
+          tile.first = x;
+          tile.second = y;
+
+          break;
+        }
+      }
+
+      ++y;
+    }
+
+    if(found)
+    {
+      break;
+    }
+    else
+    {
+      ++x;
+    }
+  }
+
+  return tile;
+}

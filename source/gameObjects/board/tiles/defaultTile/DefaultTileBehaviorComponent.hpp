@@ -31,8 +31,18 @@ namespace Barebones
       /**
        * A handler function that gets called whenever the highlight status
        * of this tile changes.
+       *
+       * @param aHighlight Whether this tile should be highlighted.
        */
-      void HandleHighlightChanged() override;
+      void HandleHighlightChanged(bool aHighlight) override;
+
+      /**
+       * A handler function that gets called whenever the hover status
+       * of this tile changes.
+       *
+       * @param aHover Whether this tile is hovered.
+       */
+      void HandleHoverChanged(bool aHover) override;
 
     private:
       double mScale;

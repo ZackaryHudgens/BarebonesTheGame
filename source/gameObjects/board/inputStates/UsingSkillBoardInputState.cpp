@@ -8,6 +8,8 @@
 
 #include "TileBehaviorComponent.hpp"
 
+#include <iostream>
+
 using Barebones::UsingSkillBoardInputState;
 
 /******************************************************************************/
@@ -40,8 +42,10 @@ UsingSkillBoardInputState::UsingSkillBoardInputState(UrsineEngine::GameObject& a
           auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
           if(tileBehaviorComponent != nullptr)
           {
-            tileBehaviorComponent->SetHighlighted(true,
-                                                  glm::vec3(0.5, 0.5, 0.5));
+            tileBehaviorComponent->SetHighlightColor(skillComponent->GetHighlightColor());
+            tileBehaviorComponent->SetHighlighted(true);
+
+            mHighlightedTiles.emplace_back(tile);
           }
         }
       }
@@ -109,9 +113,19 @@ std::unique_ptr<Barebones::BoardInputState> UsingSkillBoardInputState::HandleKey
                 if(skillComponent->IsTileValid(*parent,
                                                inputComponent->GetPlayerLocation()))
                 {
-                  skillComponent->Execute();
-
+                  skillComponent->Execute(*parent,
+                                          inputComponent->GetPlayerLocation());
                   newState = std::make_unique<DefaultBoardInputState>(*parent);
+
+                  // Finally, un-highlight all the tiles that were highlighted.
+                  for(auto& tile : mHighlightedTiles)
+                  {
+                    auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
+                    if(tileBehaviorComponent != nullptr)
+                    {
+                      tileBehaviorComponent->SetHighlighted(false);
+                    }
+                  }
                 }
               }
             }
@@ -162,28 +176,43 @@ std::unique_ptr<Barebones::BoardInputState> UsingSkillBoardInputState::HandlePla
   if(parent != nullptr)
   {
     auto layoutComponent = parent->GetFirstComponentOfType<BoardLayoutComponent>();
-    if(layoutComponent != nullptr)
+    auto inputComponent = parent->GetFirstComponentOfType<BoardInputComponent>();
+    if(layoutComponent != nullptr &&
+       inputComponent != nullptr)
     {
-      // Un-highlight the tile at the previous location.
+      // Un-hover the tile at the previous location.
       auto prevTile = layoutComponent->GetTileAtLocation(aPrevLocation);
       if(prevTile != nullptr)
       {
         auto prevTileBehaviorComp = prevTile->GetFirstComponentOfType<TileBehaviorComponent>();
         if(prevTileBehaviorComp != nullptr)
         {
-          prevTileBehaviorComp->SetHighlighted(false);
+          if(mSkill != nullptr)
+          {
+            auto skillComp = mSkill->GetFirstComponentOfType<CharacterSkillComponent>();
+            if(skillComp != nullptr)
+            {
+              prevTileBehaviorComp->SetHovered(false);
+            }
+          }
         }
       }
 
-      // Highlight the tile at the new location.
+      // Hover over the tile at the new location.
       auto newTile = layoutComponent->GetTileAtLocation(aNewLocation);
       if(newTile != nullptr)
       {
         auto newTileBehaviorComp = newTile->GetFirstComponentOfType<TileBehaviorComponent>();
         if(newTileBehaviorComp != nullptr)
         {
-          newTileBehaviorComp->SetHighlighted(true,
-                                              glm::vec3(0.5, 0.5, 0.5));
+          if(mSkill != nullptr)
+          {
+            auto skillComp = mSkill->GetFirstComponentOfType<CharacterSkillComponent>();
+            if(skillComp != nullptr)
+            {
+              newTileBehaviorComp->SetHovered(true);
+            }
+          }
         }
       }
     }

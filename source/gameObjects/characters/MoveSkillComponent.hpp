@@ -52,8 +52,12 @@ namespace Barebones
       /**
        * A handler function that gets called whenever the user executes
        * this skill.
+       *
+       * @param aBoard The board to execute this skill on.
+       * @param aLocation The location on the board to execute this skill.
        */
-      void ProtectedExecute() override;
+      void ProtectedExecute(UrsineEngine::GameObject& aBoard,
+                            const TileLocation& aLocation) override;
   };
 }
 

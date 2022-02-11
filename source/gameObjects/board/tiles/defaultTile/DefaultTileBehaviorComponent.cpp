@@ -62,7 +62,7 @@ void DefaultTileBehaviorComponent::Update()
 }
 
 /******************************************************************************/
-void DefaultTileBehaviorComponent::HandleHighlightChanged()
+void DefaultTileBehaviorComponent::HandleHighlightChanged(bool aHighlight)
 {
   auto parent = GetParent();
   if(parent != nullptr)
@@ -75,7 +75,7 @@ void DefaultTileBehaviorComponent::HandleHighlightChanged()
       {
         shader->Activate();
 
-        if(IsHighlighted())
+        if(aHighlight)
         {
           shader->SetVec4("highlightColor", glm::vec4(GetHighlightColor(),
                                                       1.0));
@@ -86,6 +86,37 @@ void DefaultTileBehaviorComponent::HandleHighlightChanged()
                                                       1.0,
                                                       1.0,
                                                       1.0));
+        }
+      }
+    }
+  }
+}
+
+/******************************************************************************/
+void DefaultTileBehaviorComponent::HandleHoverChanged(bool aHover)
+{
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    auto mesh = parent->GetFirstComponentOfType<TileMeshComponent>();
+    if(mesh != nullptr)
+    {
+      auto shader = mesh->GetCurrentShader();
+      if(shader != nullptr)
+      {
+        shader->Activate();
+
+        if(aHover)
+        {
+          shader->SetVec4("hoverColor", glm::vec4(GetHoverColor(),
+                                                  1.0));
+        }
+        else
+        {
+          shader->SetVec4("hoverColor", glm::vec4(1.0,
+                                                  1.0,
+                                                  1.0,
+                                                  1.0));
         }
       }
     }

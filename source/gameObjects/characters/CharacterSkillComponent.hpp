@@ -25,8 +25,12 @@ namespace Barebones
 
       /**
        * Executes this skill.
+       *
+       * @param aBoard The board to execute this skill on.
+       * @param aLocation The location on the board to execute this skill.
        */
-      void Execute();
+      void Execute(UrsineEngine::GameObject& aBoard,
+                   const TileLocation& aLocation);
 
       /**
        * A virtual function that returns a MeshComponent to be used as an icon
@@ -88,6 +92,13 @@ namespace Barebones
        */
       std::string GetDescription() const { return mDescription; }
 
+      /**
+       * Returns the color to use when highlighting tiles for this skill.
+       *
+       * @return The color to use when highlighting tiles for this skill.
+       */
+      glm::vec3 GetHighlightColor() const { return mHighlightColor; }
+
     protected:
 
       /**
@@ -101,10 +112,23 @@ namespace Barebones
        * A virtual function that gets called whenever the user executes
        * this skill. Inheriting skills should override this function
        * to provide the desired behavior.
+       *
+       * @param aBoard The board to execute this skill on.
+       * @param aLocation The location on the board to execute this skill.
        */
-      virtual void ProtectedExecute() {};
+      virtual void ProtectedExecute(UrsineEngine::GameObject& aBoard,
+                                    const TileLocation& aLocation) {};
+
+      /**
+       * Sets the color to use when highlighting tiles for this skill.
+       *
+       * @param aColor The color to use when highlighting tiles for this skill.
+       */
+      void SetHighlightColor(const glm::vec3& aColor) { mHighlightColor = aColor; }
 
     private:
+      glm::vec3 mHighlightColor;
+
       std::string mDescription;
       std::string mName;
   };

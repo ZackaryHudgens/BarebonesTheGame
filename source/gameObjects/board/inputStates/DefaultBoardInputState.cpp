@@ -20,9 +20,8 @@ using Barebones::DefaultBoardInputState;
 /******************************************************************************/
 DefaultBoardInputState::DefaultBoardInputState(UrsineEngine::GameObject& aObject)
   : BoardInputState(aObject)
-  , mHighlightColor(0.77, 0.79, 0.36)
 {
-  // Upon entering this state, highlight the tile at the player's location.
+  // Upon entering this state, hover over the tile at the player's location.
   auto parent = GetParent();
   if(parent != nullptr)
   {
@@ -37,8 +36,7 @@ DefaultBoardInputState::DefaultBoardInputState(UrsineEngine::GameObject& aObject
         auto newTileBehaviorComp = newTile->GetFirstComponentOfType<TileBehaviorComponent>();
         if(newTileBehaviorComp != nullptr)
         {
-          newTileBehaviorComp->SetHighlighted(true,
-                                              mHighlightColor);
+          newTileBehaviorComp->SetHovered(true);
         }
       }
     }
@@ -155,26 +153,29 @@ std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::HandlePlayer
     auto layoutComponent = parent->GetFirstComponentOfType<BoardLayoutComponent>();
     if(layoutComponent != nullptr)
     {
-      // Un-highlight the tile at the previous location.
+      // Un-hover the tile at the previous location.
       auto prevTile = layoutComponent->GetTileAtLocation(aPrevLocation);
       if(prevTile != nullptr)
       {
         auto prevTileBehaviorComp = prevTile->GetFirstComponentOfType<TileBehaviorComponent>();
         if(prevTileBehaviorComp != nullptr)
         {
-          prevTileBehaviorComp->SetHighlighted(false);
+          prevTileBehaviorComp->SetHovered(false);
         }
       }
 
-      // Highlight the tile at the new location.
+      // Hover over the tile at the new location.
       auto newTile = layoutComponent->GetTileAtLocation(aNewLocation);
       if(newTile != nullptr)
       {
         auto newTileBehaviorComp = newTile->GetFirstComponentOfType<TileBehaviorComponent>();
         if(newTileBehaviorComp != nullptr)
         {
-          newTileBehaviorComp->SetHighlighted(true,
-                                              mHighlightColor);
+          auto inputComponent = parent->GetFirstComponentOfType<BoardInputComponent>();
+          if(inputComponent != nullptr)
+          {
+            newTileBehaviorComp->SetHovered(true);
+          }
         }
       }
     }

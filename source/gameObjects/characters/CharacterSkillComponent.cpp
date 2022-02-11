@@ -4,6 +4,7 @@ using Barebones::CharacterSkillComponent;
 
 /******************************************************************************/
 CharacterSkillComponent::CharacterSkillComponent()
+  : mHighlightColor(1.0, 1.0, 1.0)
 {
 }
 
@@ -20,9 +21,11 @@ void CharacterSkillComponent::Select()
 }
 
 /******************************************************************************/
-void CharacterSkillComponent::Execute()
+void CharacterSkillComponent::Execute(UrsineEngine::GameObject& aBoard,
+                                      const TileLocation& aLocation)
 {
-  ProtectedExecute();
+  ProtectedExecute(aBoard,
+                   aLocation);
 
   auto parent = GetParent();
   if(parent != nullptr)

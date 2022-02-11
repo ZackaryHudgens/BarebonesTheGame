@@ -58,6 +58,8 @@ namespace Barebones
 
     private:
       UrsineEngine::GameObject* mSkill;
+
+      std::vector<UrsineEngine::GameObject*> mHighlightedTiles;
   };
 }
 

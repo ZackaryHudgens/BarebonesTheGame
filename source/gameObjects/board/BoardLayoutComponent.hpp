@@ -70,8 +70,17 @@ namespace Barebones
       void MoveCharacter(const TileLocation& aCurrentLocation,
                          const TileLocation& aNewLocation);
 
-    private:
+      /**
+       * Returns the location of the character with the given name, or
+       * (-1, -1) if there is no character with the given name.
+       *
+       * @param aName The name of the GameObject for the desired character.
+       * @return The location of the corresponding character, or (-1, -1)
+       *         if no character was found.
+       */
+      TileLocation GetLocationOfCharacter(const std::string& aName);
 
+    private:
       std::vector<std::vector<UrsineEngine::GameObject*>> mTiles;
       std::vector<std::vector<UrsineEngine::GameObject*>> mCharacters;
 

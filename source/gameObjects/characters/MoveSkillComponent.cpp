@@ -14,6 +14,9 @@ MoveSkillComponent::MoveSkillComponent()
 {
   SetName("Move");
   SetDescription("Moves the character.");
+  SetHighlightColor(glm::vec3(1.0,
+                              1.0,
+                              0.0));
 }
 
 /******************************************************************************/
@@ -79,10 +82,12 @@ bool MoveSkillComponent::IsTileValid(UrsineEngine::GameObject& aBoard,
   if(parent != nullptr)
   {
     auto behaviorComp = parent->GetFirstComponentOfType<CharacterBehaviorComponent>();
+    auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
     if(behaviorComp != nullptr)
     {
+      auto currentLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
       auto movements = behaviorComp->GetMovements(aBoard,
-                                                  aLocation);
+                                                  currentLocation);
       auto foundLocation = std::find(movements.begin(),
                                      movements.end(),
                                      aLocation);
@@ -102,6 +107,23 @@ void MoveSkillComponent::ProtectedSelect()
 }
 
 /******************************************************************************/
-void MoveSkillComponent::ProtectedExecute()
+void MoveSkillComponent::ProtectedExecute(UrsineEngine::GameObject& aBoard,
+                                          const TileLocation& aLocation)
 {
+  // Move this character to the given location on the board if it's valid.
+  if(IsTileValid(aBoard,
+                 aLocation))
+  {
+    auto parent = GetParent();
+    if(parent != nullptr)
+    {
+      auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
+      if(boardLayoutComponent != nullptr)
+      {
+        auto initialLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
+        boardLayoutComponent->MoveCharacter(initialLocation,
+                                            aLocation);
+      }
+    }
+  }
 }

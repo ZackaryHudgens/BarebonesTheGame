@@ -71,8 +71,6 @@ namespace Barebones
        * @param aObject The character in question.
        */
       void CreateSkillMenu(UrsineEngine::GameObject& aObject);
-
-      glm::vec3 mHighlightColor;
   };
 }
 
