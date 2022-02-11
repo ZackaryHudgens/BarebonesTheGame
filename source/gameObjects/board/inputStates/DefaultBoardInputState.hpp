@@ -54,15 +54,15 @@ namespace Barebones
       std::unique_ptr<BoardInputState> HandlePlayerMoved(const TileLocation& aPrevLocation,
                                                          const TileLocation& aNewLocation) override;
 
-    private:
-
       /**
-       * Attempts to move the player's position to the tile at the
-       * given location.
+       * A handler function that gets called whenever the player
+       * selects a skill to use from a menu.
        *
-       * @param aLocation The location of the tile to move to.
+       * @param aObject The skill object that was selected.
        */
-      void MoveToTile(const TileLocation& aLocation);
+      std::unique_ptr<BoardInputState> HandleSkillSelected(UrsineEngine::GameObject& aObject) override;
+
+    private:
 
       /**
        * Creates a skill menu for a given character and adds it to the

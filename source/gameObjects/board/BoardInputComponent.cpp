@@ -117,12 +117,14 @@ void BoardInputComponent::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
 /******************************************************************************/
 void BoardInputComponent::HandleSkillSelected(UrsineEngine::GameObject& aObject)
 {
-  // When a skill is selected, swap to the UsingSkill state.
-  auto parent = GetParent();
-  if(parent != nullptr)
+  if(mState != nullptr)
   {
-    mState = std::make_unique<UsingSkillBoardInputState>(*parent,
-                                                         aObject);
+    auto newState = mState->HandleSkillSelected(aObject);
+
+    if(newState != nullptr)
+    {
+      mState.swap(newState);
+    }
   }
 }
 

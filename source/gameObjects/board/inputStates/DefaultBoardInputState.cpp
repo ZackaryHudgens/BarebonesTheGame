@@ -2,6 +2,8 @@
 
 #include <Environment.hpp>
 
+#include "UsingSkillBoardInputState.hpp"
+
 #include "ActionFactory.hpp"
 #include "MenuFactory.hpp"
 #include "MenuLayoutComponent.hpp"
@@ -20,6 +22,27 @@ DefaultBoardInputState::DefaultBoardInputState(UrsineEngine::GameObject& aObject
   : BoardInputState(aObject)
   , mHighlightColor(0.77, 0.79, 0.36)
 {
+  // Upon entering this state, highlight the tile at the player's location.
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    auto layoutComponent = parent->GetFirstComponentOfType<BoardLayoutComponent>();
+    auto inputComponent = parent->GetFirstComponentOfType<BoardInputComponent>();
+    if(layoutComponent != nullptr &&
+       inputComponent != nullptr)
+    {
+      auto newTile = layoutComponent->GetTileAtLocation(inputComponent->GetPlayerLocation());
+      if(newTile != nullptr)
+      {
+        auto newTileBehaviorComp = newTile->GetFirstComponentOfType<TileBehaviorComponent>();
+        if(newTileBehaviorComp != nullptr)
+        {
+          newTileBehaviorComp->SetHighlighted(true,
+                                              mHighlightColor);
+        }
+      }
+    }
+  }
 }
 
 /******************************************************************************/
@@ -41,29 +64,29 @@ std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::HandleKeyPre
         case UrsineEngine::KeyCode::eKEY_UP:
         case UrsineEngine::KeyCode::eKEY_W:
         {
-          MoveToTile(TileLocation(currentLocation.first,
-                                  currentLocation.second + 1));
+          inputComponent->SetPlayerLocation(TileLocation(currentLocation.first,
+                                                         currentLocation.second + 1));
           break;
         }
         case UrsineEngine::KeyCode::eKEY_DOWN:
         case UrsineEngine::KeyCode::eKEY_S:
         {
-          MoveToTile(TileLocation(currentLocation.first,
-                                  currentLocation.second - 1));
+          inputComponent->SetPlayerLocation(TileLocation(currentLocation.first,
+                                                         currentLocation.second - 1));
           break;
         }
         case UrsineEngine::KeyCode::eKEY_LEFT:
         case UrsineEngine::KeyCode::eKEY_A:
         {
-          MoveToTile(TileLocation(currentLocation.first - 1,
-                                  currentLocation.second));
+          inputComponent->SetPlayerLocation(TileLocation(currentLocation.first - 1,
+                                                         currentLocation.second));
           break;
         }
         case UrsineEngine::KeyCode::eKEY_RIGHT:
         case UrsineEngine::KeyCode::eKEY_D:
         {
-          MoveToTile(TileLocation(currentLocation.first + 1,
-                                  currentLocation.second));
+          inputComponent->SetPlayerLocation(TileLocation(currentLocation.first + 1,
+                                                         currentLocation.second));
           break;
         }
         case UrsineEngine::KeyCode::eKEY_ENTER:
@@ -161,24 +184,19 @@ std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::HandlePlayer
 }
 
 /******************************************************************************/
-void DefaultBoardInputState::MoveToTile(const TileLocation& aLocation)
+std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::HandleSkillSelected(UrsineEngine::GameObject& aObject)
 {
+  // When a skill is selected, switch to the Using Skill state.
+  std::unique_ptr<BoardInputState> newState = nullptr;
+
   auto parent = GetParent();
   if(parent != nullptr)
   {
-    auto layoutComponent = parent->GetFirstComponentOfType<BoardLayoutComponent>();
-    auto inputComponent = parent->GetFirstComponentOfType<BoardInputComponent>();
-    if(layoutComponent != nullptr &&
-       inputComponent != nullptr)
-    {
-      // If a tile exists at the given location, move to that tile.
-      auto newTile = layoutComponent->GetTileAtLocation(aLocation);
-      if(newTile != nullptr)
-      {
-        inputComponent->SetPlayerLocation(aLocation);
-      }
-    }
+    newState = std::make_unique<UsingSkillBoardInputState>(*parent,
+                                                           aObject);
   }
+
+  return newState;
 }
 
 /******************************************************************************/

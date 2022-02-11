@@ -57,15 +57,6 @@ namespace Barebones
                                                          const TileLocation& aNewLocation) override;
 
     private:
-
-      /**
-       * Attempts to move the player's position to the tile at the
-       * given location.
-       *
-       * @param aLocation The location of the tile to move to.
-       */
-      void MoveToTile(const TileLocation& aLocation);
-
       UrsineEngine::GameObject* mSkill;
   };
 }

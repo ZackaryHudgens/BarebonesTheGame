@@ -16,6 +16,37 @@ UsingSkillBoardInputState::UsingSkillBoardInputState(UrsineEngine::GameObject& a
   : BoardInputState(aObject)
   , mSkill(&aSkill)
 {
+  // Upon entering this state, highlight all pertinent tiles as
+  // dictated by the skill.
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    auto inputComponent = parent->GetFirstComponentOfType<BoardInputComponent>();
+    auto layoutComponent = parent->GetFirstComponentOfType<BoardLayoutComponent>();
+    auto skillComponent = aSkill.GetFirstComponentOfType<CharacterSkillComponent>();
+    if(inputComponent != nullptr &&
+       layoutComponent != nullptr &&
+       skillComponent != nullptr)
+    {
+      auto currentLocation = inputComponent->GetPlayerLocation();
+      auto tilesToHighlight = skillComponent->GetTilesToHighlight(*parent,
+                                                                  currentLocation);
+
+      for(const auto& tileLocation : tilesToHighlight)
+      {
+        auto tile = layoutComponent->GetTileAtLocation(tileLocation);
+        if(tile != nullptr)
+        {
+          auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
+          if(tileBehaviorComponent != nullptr)
+          {
+            tileBehaviorComponent->SetHighlighted(true,
+                                                  glm::vec3(0.5, 0.5, 0.5));
+          }
+        }
+      }
+    }
+  }
 }
 
 /******************************************************************************/
@@ -37,29 +68,29 @@ std::unique_ptr<Barebones::BoardInputState> UsingSkillBoardInputState::HandleKey
         case UrsineEngine::KeyCode::eKEY_UP:
         case UrsineEngine::KeyCode::eKEY_W:
         {
-          MoveToTile(TileLocation(currentLocation.first,
-                                  currentLocation.second + 1));
+          inputComponent->SetPlayerLocation(TileLocation(currentLocation.first,
+                                                         currentLocation.second + 1));
           break;
         }
         case UrsineEngine::KeyCode::eKEY_DOWN:
         case UrsineEngine::KeyCode::eKEY_S:
         {
-          MoveToTile(TileLocation(currentLocation.first,
-                                  currentLocation.second - 1));
+          inputComponent->SetPlayerLocation(TileLocation(currentLocation.first,
+                                                         currentLocation.second - 1));
           break;
         }
         case UrsineEngine::KeyCode::eKEY_LEFT:
         case UrsineEngine::KeyCode::eKEY_A:
         {
-          MoveToTile(TileLocation(currentLocation.first - 1,
-                                  currentLocation.second));
+          inputComponent->SetPlayerLocation(TileLocation(currentLocation.first - 1,
+                                                         currentLocation.second));
           break;
         }
         case UrsineEngine::KeyCode::eKEY_RIGHT:
         case UrsineEngine::KeyCode::eKEY_D:
         {
-          MoveToTile(TileLocation(currentLocation.first + 1,
-                                  currentLocation.second));
+          inputComponent->SetPlayerLocation(TileLocation(currentLocation.first + 1,
+                                                         currentLocation.second));
           break;
         }
         case UrsineEngine::KeyCode::eKEY_ENTER:
@@ -159,25 +190,4 @@ std::unique_ptr<Barebones::BoardInputState> UsingSkillBoardInputState::HandlePla
   }
 
   return nullptr;
-}
-
-/******************************************************************************/
-void UsingSkillBoardInputState::MoveToTile(const TileLocation& aLocation)
-{
-  auto parent = GetParent();
-  if(parent != nullptr)
-  {
-    auto layoutComponent = parent->GetFirstComponentOfType<BoardLayoutComponent>();
-    auto inputComponent = parent->GetFirstComponentOfType<BoardInputComponent>();
-    if(layoutComponent != nullptr &&
-       inputComponent != nullptr)
-    {
-      // If a tile exists at the given location, move to that tile.
-      auto newTile = layoutComponent->GetTileAtLocation(aLocation);
-      if(newTile != nullptr)
-      {
-        inputComponent->SetPlayerLocation(aLocation);
-      }
-    }
-  }
 }
