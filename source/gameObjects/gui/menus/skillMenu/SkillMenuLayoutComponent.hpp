@@ -3,6 +3,8 @@
 
 #include "MenuLayoutComponent.hpp"
 
+#include <TextComponent.hpp>
+
 namespace Barebones
 {
   class SkillMenuLayoutComponent : public MenuLayoutComponent
@@ -33,12 +35,21 @@ namespace Barebones
       void HandleActionAdded() override;
 
       /**
+       * A handler function that gets called whenever the currently hovered
+       * action changes.
+       */
+      void HandleActionHovered() override;
+
+      /**
        * A handler function that gets called whenever an action is selected
        * from this menu.
        */
       void HandleActionSelected() override;
 
     private:
+      UrsineEngine::TextComponent* mSkillNameText;
+      UrsineEngine::TextComponent* mSkillDescriptionText;
+
       double mIconSpacing;
 
       glm::vec3 mTargetPosition;

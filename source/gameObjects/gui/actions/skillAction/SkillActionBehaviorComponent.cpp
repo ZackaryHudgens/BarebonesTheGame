@@ -34,6 +34,40 @@ void SkillActionBehaviorComponent::SetSkill(UrsineEngine::GameObject& aObject)
 }
 
 /******************************************************************************/
+std::string SkillActionBehaviorComponent::GetSkillName() const
+{
+  std::string name;
+
+  if(mSkill != nullptr)
+  {
+    auto skillComponent = mSkill->GetFirstComponentOfType<CharacterSkillComponent>();
+    if(skillComponent != nullptr)
+    {
+      name = skillComponent->GetName();
+    }
+  }
+
+  return name;
+}
+
+/******************************************************************************/
+std::string SkillActionBehaviorComponent::GetSkillDescription() const
+{
+  std::string description;
+
+  if(mSkill != nullptr)
+  {
+    auto skillComponent = mSkill->GetFirstComponentOfType<CharacterSkillComponent>();
+    if(skillComponent != nullptr)
+    {
+      description = skillComponent->GetDescription();
+    }
+  }
+
+  return description;
+}
+
+/******************************************************************************/
 void SkillActionBehaviorComponent::HandleHoveredStatusChanged()
 {
   // When hovered, update the glow color of the icon's shader.

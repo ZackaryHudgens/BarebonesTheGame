@@ -48,6 +48,12 @@ namespace Barebones
       virtual void HandleActionAdded() {}
 
       /**
+       * A virtual function that gets called whenever the currently hovered
+       * action changes.
+       */
+      virtual void HandleActionHovered() {}
+
+      /**
        * A virtual function that gets called whenever an action is selected
        * from this menu. Inheriting classes should override this function
        * to arrange the actions accordingly.
@@ -60,6 +66,13 @@ namespace Barebones
        * @return A vector of actions in this menu.
        */
       std::vector<UrsineEngine::GameObject*> GetActions() { return mActions; }
+
+      /**
+       * Returns the currently selected action.
+       *
+       * @return The currently selected action.
+       */
+      UrsineEngine::GameObject* GetCurrentlyHoveredAction() { return mCurrentlyHoveredAction; }
 
     private:
       std::vector<UrsineEngine::GameObject*> mActions;

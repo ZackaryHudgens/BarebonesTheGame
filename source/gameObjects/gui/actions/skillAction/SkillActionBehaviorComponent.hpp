@@ -26,6 +26,20 @@ namespace Barebones
        */
       void SetSkill(UrsineEngine::GameObject& aObject);
 
+      /**
+       * Returns the name of the current skill.
+       *
+       * @return The name of the current skill.
+       */
+      std::string GetSkillName() const;
+
+      /**
+       * Returns the description of the current skill.
+       *
+       * @return The description of the current skill.
+       */
+      std::string GetSkillDescription() const;
+
     protected:
 
       /**

@@ -22,6 +22,8 @@ void MenuLayoutComponent::AddAction(std::unique_ptr<UrsineEngine::GameObject> aO
     parent->AddChild(std::move(aObject));
     mActions.emplace_back(parent->GetChildren().back());
 
+    HandleActionAdded();
+
     // If no action is currently hovered over, hover over this one.
     if(mCurrentlyHoveredAction == nullptr)
     {
@@ -31,10 +33,10 @@ void MenuLayoutComponent::AddAction(std::unique_ptr<UrsineEngine::GameObject> aO
       {
         behaviorComp->SetHovered(true);
       }
+
+      HandleActionHovered();
     }
   }
-
-  HandleActionAdded();
 }
 
 /******************************************************************************/
@@ -73,6 +75,8 @@ void MenuLayoutComponent::HoverOverNextAction()
     {
       behaviorComp->SetHovered(true);
     }
+
+    HandleActionHovered();
   }
 }
 
@@ -109,6 +113,8 @@ void MenuLayoutComponent::HoverOverPreviousAction()
     {
       behaviorComp->SetHovered(true);
     }
+
+    HandleActionHovered();
   }
 }
 

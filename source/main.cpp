@@ -1,4 +1,5 @@
 #include <Environment.hpp>
+#include <TextComponent.hpp>
 
 #include "BoardFactory.hpp"
 
@@ -17,6 +18,8 @@ int main()
   options.mWidth = 1280;
 
   env.Initialize(options);
+
+  UrsineEngine::TextComponent::LoadFont("resources/Roboto-Regular.ttf");
 
   auto board = Barebones::BoardFactory::CreateBoard("board");
   auto boardComp = board->GetFirstComponentOfType<Barebones::BoardLayoutComponent>();
