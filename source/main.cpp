@@ -16,6 +16,8 @@ int main()
   options.mTitle = "Barebones";
   options.mHeight = 720;
   options.mWidth = 1280;
+  options.mOverlayHeight = 1080;
+  options.mOverlayWidth = 1920;
 
   env.Initialize(options);
 

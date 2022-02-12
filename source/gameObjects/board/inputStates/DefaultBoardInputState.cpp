@@ -15,6 +15,8 @@
 
 #include "CharacterSkillComponent.hpp"
 
+#include <iostream>
+
 using Barebones::DefaultBoardInputState;
 
 /******************************************************************************/
@@ -219,7 +221,7 @@ void DefaultBoardInputState::CreateSkillMenu(UrsineEngine::GameObject& aObject)
         auto action = ActionFactory::CreateAction(ActionType::eSKILL,
                                                   skill->GetName());
         auto skillAction = action->GetFirstComponentOfType<SkillActionBehaviorComponent>();
-        skillAction->SetSkill(*skill->GetParent());
+        skillAction->SetSkill(*skill);
 
         auto skillIcon = skill->GetIcon();
         action->AddComponent(std::move(skillIcon));

@@ -1,7 +1,6 @@
 #include "MenuLayoutComponent.hpp"
 
 #include <algorithm>
-#include <iostream>
 
 #include "ActionBehaviorComponent.hpp"
 

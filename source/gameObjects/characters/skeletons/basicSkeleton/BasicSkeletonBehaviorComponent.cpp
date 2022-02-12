@@ -6,6 +6,8 @@
 #include "BoardLayoutComponent.hpp"
 #include "CharacterSpriteComponent.hpp"
 
+#include "SlashSkillComponent.hpp"
+
 using Barebones::BasicSkeletonBehaviorComponent;
 
 /******************************************************************************/
@@ -109,4 +111,14 @@ Barebones::TileList BasicSkeletonBehaviorComponent::GetMovements(UrsineEngine::G
 /******************************************************************************/
 void BasicSkeletonBehaviorComponent::ProtectedUpdate()
 {
+}
+
+/******************************************************************************/
+void BasicSkeletonBehaviorComponent::AddSkills()
+{
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    parent->AddComponent(std::make_unique<SlashSkillComponent>());
+  }
 }

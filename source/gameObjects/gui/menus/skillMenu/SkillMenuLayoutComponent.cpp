@@ -6,8 +6,6 @@
 
 #include "SkillActionBehaviorComponent.hpp"
 
-#include <iostream>
-
 using Barebones::SkillMenuLayoutComponent;
 
 /******************************************************************************/
@@ -151,10 +149,10 @@ void SkillMenuLayoutComponent::HandleActionHovered()
       double descriptionXPosition = middle - (double)mSkillDescriptionText->GetWidth() / 2.0;
 
       mSkillNameText->GetParent()->SetPosition(glm::vec3(nameXPosition,
-                                                         nameYPosition,
+                                                         0.0,//nameYPosition,
                                                          0.0));
       mSkillDescriptionText->GetParent()->SetPosition(glm::vec3(descriptionXPosition,
-                                                                -150.0,
+                                                                25.0,//-150.0,
                                                                 0.0));
     }
   }

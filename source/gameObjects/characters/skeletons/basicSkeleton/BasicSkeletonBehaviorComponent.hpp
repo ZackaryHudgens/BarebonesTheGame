@@ -33,6 +33,12 @@ namespace Barebones
        */
       void ProtectedUpdate() override;
 
+      /**
+       * A handler function that adds all skills for this character
+       * to the parent GameObject.
+       */
+      void AddSkills() override;
+
     private:
       int mHorizontalMovement;
       int mVerticalMovement;

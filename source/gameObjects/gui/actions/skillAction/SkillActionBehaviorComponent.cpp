@@ -28,9 +28,9 @@ void SkillActionBehaviorComponent::Initialize()
 }
 
 /******************************************************************************/
-void SkillActionBehaviorComponent::SetSkill(UrsineEngine::GameObject& aObject)
+void SkillActionBehaviorComponent::SetSkill(CharacterSkillComponent& aSkill)
 {
-  mSkill = &aObject;
+  mSkill = &aSkill;
 }
 
 /******************************************************************************/
@@ -40,11 +40,7 @@ std::string SkillActionBehaviorComponent::GetSkillName() const
 
   if(mSkill != nullptr)
   {
-    auto skillComponent = mSkill->GetFirstComponentOfType<CharacterSkillComponent>();
-    if(skillComponent != nullptr)
-    {
-      name = skillComponent->GetName();
-    }
+    name = mSkill->GetName();
   }
 
   return name;
@@ -57,11 +53,7 @@ std::string SkillActionBehaviorComponent::GetSkillDescription() const
 
   if(mSkill != nullptr)
   {
-    auto skillComponent = mSkill->GetFirstComponentOfType<CharacterSkillComponent>();
-    if(skillComponent != nullptr)
-    {
-      description = skillComponent->GetDescription();
-    }
+    description = mSkill->GetDescription();
   }
 
   return description;
@@ -108,10 +100,6 @@ void SkillActionBehaviorComponent::HandleSelectionStatusChanged()
 {
   if(mSkill != nullptr)
   {
-    auto skillComponent = mSkill->GetFirstComponentOfType<CharacterSkillComponent>();
-    if(skillComponent != nullptr)
-    {
-      skillComponent->Select();
-    }
+    mSkill->Select();
   }
 }

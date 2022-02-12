@@ -3,6 +3,8 @@
 
 #include "ActionBehaviorComponent.hpp"
 
+#include "CharacterSkillComponent.hpp"
+
 namespace Barebones
 {
   class SkillActionBehaviorComponent : public ActionBehaviorComponent
@@ -22,9 +24,9 @@ namespace Barebones
       /**
        * Sets the skill that this action represents.
        *
-       * @param aObject The skill that this action represents.
+       * @param aSkill The skill that this action represents.
        */
-      void SetSkill(UrsineEngine::GameObject& aObject);
+      void SetSkill(CharacterSkillComponent& aSkill);
 
       /**
        * Returns the name of the current skill.
@@ -55,7 +57,7 @@ namespace Barebones
       void HandleSelectionStatusChanged() override;
 
     private:
-      UrsineEngine::GameObject* mSkill;
+      CharacterSkillComponent* mSkill;
   };
 }
 

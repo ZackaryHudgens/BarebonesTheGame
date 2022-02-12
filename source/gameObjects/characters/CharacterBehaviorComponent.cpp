@@ -19,7 +19,7 @@ void CharacterBehaviorComponent::Initialize()
   auto parent = GetParent();
   if(parent != nullptr)
   {
-    // Add the Move skill.
+    // All characters have the Move skill by default.
     parent->AddComponent(std::make_unique<MoveSkillComponent>());
 
     // Add the rest of the skills.
