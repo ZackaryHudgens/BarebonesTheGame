@@ -97,6 +97,7 @@ void SkillMenuLayoutComponent::HandleActionAdded()
 
   // First, calculate the total width of all actions and padding.
   double totalWidth = 0;
+  int numIcons = 0;
   for(auto& action : actions)
   {
     auto actionMesh = action->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
@@ -105,13 +106,13 @@ void SkillMenuLayoutComponent::HandleActionAdded()
       // Calculate the width taking any scalar transforms into account.
       auto xScalar = action->GetScalarTransform()[0][0];
       totalWidth += (actionMesh->GetWidth() * xScalar);
-      totalWidth += xPadding;
+      totalWidth += numIcons * xPadding;
     }
   }
 
   // Next, place each icon accordingly.
   double distanceFromLeft = (overlayWidth - totalWidth) / 2.0;
-  int numIcons = 0;
+  numIcons = 0;
   for(auto& action : actions)
   {
     auto actionMesh = action->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
