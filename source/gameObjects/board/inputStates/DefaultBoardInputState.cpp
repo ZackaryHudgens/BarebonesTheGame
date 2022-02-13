@@ -187,7 +187,7 @@ std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::HandlePlayer
 }
 
 /******************************************************************************/
-std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::HandleSkillSelected(UrsineEngine::GameObject& aObject)
+std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::HandleSkillSelected(CharacterSkillComponent& aSkill)
 {
   // When a skill is selected, switch to the Using Skill state.
   std::unique_ptr<BoardInputState> newState = nullptr;
@@ -196,7 +196,7 @@ std::unique_ptr<Barebones::BoardInputState> DefaultBoardInputState::HandleSkillS
   if(parent != nullptr)
   {
     newState = std::make_unique<UsingSkillBoardInputState>(*parent,
-                                                           aObject);
+                                                           aSkill);
   }
 
   return newState;
@@ -214,7 +214,6 @@ void DefaultBoardInputState::CreateSkillMenu(UrsineEngine::GameObject& aObject)
     auto menuLayout = menu->GetFirstComponentOfType<MenuLayoutComponent>();
     if(menuLayout != nullptr)
     {
-
       // Add each of this character's skills to the menu.
       for(auto& skill : skills)
       {

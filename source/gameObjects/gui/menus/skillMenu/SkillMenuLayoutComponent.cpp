@@ -4,8 +4,6 @@
 #include <GameObject.hpp>
 #include <MeshComponent.hpp>
 
-#include <iostream>
-
 #include "SkillActionBehaviorComponent.hpp"
 
 using Barebones::SkillMenuLayoutComponent;
@@ -22,14 +20,15 @@ SkillMenuLayoutComponent::SkillMenuLayoutComponent()
 /******************************************************************************/
 void SkillMenuLayoutComponent::Initialize()
 {
-  // Create and add text components to child GameObjects.
   auto parent = GetParent();
   if(parent != nullptr)
   {
+    double overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
+    double overlayHeight = env.GetGraphicsOptions().mOverlayHeight;
+
     // Add the name text.
     auto skillName = std::make_unique<UrsineEngine::TextComponent>();
     skillName->SetFont("Alagard", "Medium");
-    skillName->SetColor(glm::vec4(1.0, 0.0, 0.0, 1.0));
     skillName->SetSize(48);
     skillName->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
 
@@ -38,13 +37,12 @@ void SkillMenuLayoutComponent::Initialize()
     parent->AddChild(std::move(nameObject));
     mSkillNameText = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::TextComponent>();
     mSkillNameText->GetParent()->SetPosition(glm::vec3(0.0,
-                                                       (env.GetGraphicsOptions().mOverlayHeight / 2.0) - 150.0,
+                                                       (overlayHeight / 2.0) - 150.0,
                                                        0.0));
 
     // Add the description text.
     auto skillDescription = std::make_unique<UrsineEngine::TextComponent>();
     skillDescription->SetFont("Alagard", "Medium");
-    skillDescription->SetColor(glm::vec4(1.0, 0.0, 0.0, 1.0));
     skillDescription->SetSize(32);
     skillDescription->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
 
@@ -53,8 +51,57 @@ void SkillMenuLayoutComponent::Initialize()
     parent->AddChild(std::move(descriptionObject));
     mSkillDescriptionText = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::TextComponent>();
     mSkillDescriptionText->GetParent()->SetPosition(glm::vec3(0.0,
-                                                              (env.GetGraphicsOptions().mOverlayHeight / 2.0) - 170.0,
+                                                              (overlayHeight / 2.0) - 170.0,
                                                               0.0));
+
+    // Add the transparent black background.
+    auto background = std::make_unique<UrsineEngine::MeshComponent>();
+    background->SetHasTransparency(true);
+    background->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
+
+    UrsineEngine::MeshVertex vertex;
+    vertex.mColor = glm::vec3(0.0,
+                              0.0,
+                              0.0);
+
+    vertex.mPosition = glm::vec3(0.0,
+                                 0.0,
+                                 -0.1);
+    background->AddVertex(vertex);
+    vertex.mPosition = glm::vec3(overlayWidth,
+                                 0.0,
+                                 -0.1);
+    background->AddVertex(vertex);
+    vertex.mPosition = glm::vec3(overlayWidth,
+                                 overlayHeight,
+                                 -0.1);
+    background->AddVertex(vertex);
+    vertex.mPosition = glm::vec3(0.0,
+                                 overlayHeight,
+                                 -0.1);
+    background->AddVertex(vertex);
+
+    background->AddIndex(0);
+    background->AddIndex(1);
+    background->AddIndex(3);
+    background->AddIndex(3);
+    background->AddIndex(1);
+    background->AddIndex(2);
+
+    std::string uiVert = "resources/shaders/UIShader.vert";
+    std::string uiFrag = "resources/shaders/UIShader.frag";
+    UrsineEngine::Shader shader(uiVert,
+                                uiFrag);
+    shader.Activate();
+    shader.SetFloat("opacity",
+                    0.3f);
+    background->AddShader("defaultShader",
+                          shader);
+    background->SetCurrentShader("defaultShader");
+
+    auto backgroundObject = std::make_unique<UrsineEngine::GameObject>("skillMenuBackground");
+    backgroundObject->AddComponent(std::move(background));
+    parent->AddChild(std::move(backgroundObject));
   }
 }
 

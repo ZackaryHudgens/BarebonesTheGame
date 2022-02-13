@@ -6,8 +6,8 @@ layout (location = 1) in vec3 aVertexColor;
 layout (location = 2) in vec2 aTexCoords;
 
 // Output variables
-out vec2 texCoords;
 out vec3 vertexColor;
+out vec2 texCoords;
 
 // Uniform variables
 uniform mat4 modelMatrix;
@@ -15,8 +15,8 @@ uniform mat4 projectionMatrix;
 
 void main()
 {
-  texCoords = aTexCoords;
   vertexColor = aVertexColor;
+  texCoords = aTexCoords;
 
   gl_Position = projectionMatrix * modelMatrix * vec4(aPosition, 1.0);
 }

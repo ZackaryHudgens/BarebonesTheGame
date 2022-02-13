@@ -7,6 +7,8 @@
 #include "BoardInputState.hpp"
 #include "BoardLayoutComponent.hpp"
 
+#include "CharacterSkillComponent.hpp"
+
 namespace Barebones
 {
   class BoardInputComponent : public UrsineEngine::Component
@@ -76,9 +78,9 @@ namespace Barebones
        * A handler function that gets called whenever the user
        * selects a skill to use from a menu.
        *
-       * @param aObject The skill object that was selected.
+       * @param aSkill The skill component that was selected.
        */
-      void HandleSkillSelected(UrsineEngine::GameObject& aObject);
+      void HandleSkillSelected(CharacterSkillComponent& aSkill);
 
       std::unique_ptr<BoardInputState> mState;
 

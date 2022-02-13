@@ -3,6 +3,8 @@
 
 #include "BoardInputState.hpp"
 
+#include "CharacterSkillComponent.hpp"
+
 namespace Barebones
 {
   class UsingSkillBoardInputState : public BoardInputState
@@ -13,12 +15,12 @@ namespace Barebones
        * Constructor.
        *
        * @param aObject The parent GameObject with a BoardInputComponent.
-       * @param aSkill A GameObject with a CharacterSkillComponent.
+       * @param aSkill The skill that was selected.
        * @param aXPos The initial x position of the player.
        * @param aYPos The initial y position of the player.
        */
       UsingSkillBoardInputState(UrsineEngine::GameObject& aObject,
-                                UrsineEngine::GameObject& aSkill);
+                                CharacterSkillComponent& aSkill);
 
       /**
        * A handler function that gets called whenever the user presses
@@ -57,7 +59,7 @@ namespace Barebones
                                                          const TileLocation& aNewLocation) override;
 
     private:
-      UrsineEngine::GameObject* mSkill;
+      CharacterSkillComponent* mSkill;
 
       std::vector<UrsineEngine::GameObject*> mHighlightedTiles;
   };

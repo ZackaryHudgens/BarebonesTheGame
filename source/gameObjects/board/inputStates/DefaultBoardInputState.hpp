@@ -58,9 +58,9 @@ namespace Barebones
        * A handler function that gets called whenever the player
        * selects a skill to use from a menu.
        *
-       * @param aObject The skill object that was selected.
+       * @param aSkill The skill that was selected.
        */
-      std::unique_ptr<BoardInputState> HandleSkillSelected(UrsineEngine::GameObject& aObject) override;
+      std::unique_ptr<BoardInputState> HandleSkillSelected(CharacterSkillComponent& aSkill) override;
 
     private:
 

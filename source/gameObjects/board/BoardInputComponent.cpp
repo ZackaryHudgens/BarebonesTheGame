@@ -32,9 +32,9 @@ BoardInputComponent::BoardInputComponent()
                             aMods);
   });
 
-  SkillSelected.Connect(*this, [this](UrsineEngine::GameObject& aObject)
+  SkillSelected.Connect(*this, [this](CharacterSkillComponent& aSkill)
   {
-    this->HandleSkillSelected(aObject);
+    this->HandleSkillSelected(aSkill);
   });
 }
 
@@ -115,11 +115,11 @@ void BoardInputComponent::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
 }
 
 /******************************************************************************/
-void BoardInputComponent::HandleSkillSelected(UrsineEngine::GameObject& aObject)
+void BoardInputComponent::HandleSkillSelected(CharacterSkillComponent& aSkill)
 {
   if(mState != nullptr)
   {
-    auto newState = mState->HandleSkillSelected(aObject);
+    auto newState = mState->HandleSkillSelected(aSkill);
 
     if(newState != nullptr)
     {

@@ -11,13 +11,7 @@ CharacterSkillComponent::CharacterSkillComponent()
 /******************************************************************************/
 void CharacterSkillComponent::Select()
 {
-  ProtectedSelect();
-
-  auto parent = GetParent();
-  if(parent != nullptr)
-  {
-    SkillSelected.Notify(*parent);
-  }
+  SkillSelected.Notify(*this);
 }
 
 /******************************************************************************/
@@ -26,12 +20,7 @@ void CharacterSkillComponent::Execute(UrsineEngine::GameObject& aBoard,
 {
   ProtectedExecute(aBoard,
                    aLocation);
-
-  auto parent = GetParent();
-  if(parent != nullptr)
-  {
-    SkillExecuted.Notify(*parent);
-  }
+  SkillExecuted.Notify(*this);
 }
 
 /******************************************************************************/

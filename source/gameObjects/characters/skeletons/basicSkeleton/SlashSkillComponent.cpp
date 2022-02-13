@@ -11,7 +11,7 @@ SlashSkillComponent::SlashSkillComponent()
   SetName("Slash");
   SetDescription("Does some damage? I dunno.");
   SetHighlightColor(glm::vec3(1.0,
-                              1.0,
+                              0.0,
                               0.0));
 }
 
@@ -52,7 +52,17 @@ std::unique_ptr<UrsineEngine::MeshComponent> SlashSkillComponent::GetIcon()
 Barebones::TileList SlashSkillComponent::GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
                                                              const TileLocation& aLocation)
 {
-  return TileList();
+  TileList tiles;
+
+  tiles.emplace_back(TileLocation(aLocation.first + 1,
+                                  aLocation.second));
+  tiles.emplace_back(TileLocation(aLocation.first - 1,
+                                  aLocation.second));
+  tiles.emplace_back(TileLocation(aLocation.first,
+                                  aLocation.second + 1));
+  tiles.emplace_back(TileLocation(aLocation.first,
+                                  aLocation.second - 1));
+  return tiles;
 }
 
 /******************************************************************************/

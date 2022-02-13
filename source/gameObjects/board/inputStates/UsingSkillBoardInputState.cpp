@@ -14,7 +14,7 @@ using Barebones::UsingSkillBoardInputState;
 
 /******************************************************************************/
 UsingSkillBoardInputState::UsingSkillBoardInputState(UrsineEngine::GameObject& aObject,
-                                                     UrsineEngine::GameObject& aSkill)
+                                                     CharacterSkillComponent& aSkill)
   : BoardInputState(aObject)
   , mSkill(&aSkill)
 {
@@ -25,14 +25,12 @@ UsingSkillBoardInputState::UsingSkillBoardInputState(UrsineEngine::GameObject& a
   {
     auto inputComponent = parent->GetFirstComponentOfType<BoardInputComponent>();
     auto layoutComponent = parent->GetFirstComponentOfType<BoardLayoutComponent>();
-    auto skillComponent = aSkill.GetFirstComponentOfType<CharacterSkillComponent>();
     if(inputComponent != nullptr &&
-       layoutComponent != nullptr &&
-       skillComponent != nullptr)
+       layoutComponent != nullptr)
     {
       auto currentLocation = inputComponent->GetPlayerLocation();
-      auto tilesToHighlight = skillComponent->GetTilesToHighlight(*parent,
-                                                                  currentLocation);
+      auto tilesToHighlight = mSkill->GetTilesToHighlight(*parent,
+                                                          currentLocation);
 
       for(const auto& tileLocation : tilesToHighlight)
       {
@@ -42,7 +40,7 @@ UsingSkillBoardInputState::UsingSkillBoardInputState(UrsineEngine::GameObject& a
           auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
           if(tileBehaviorComponent != nullptr)
           {
-            tileBehaviorComponent->SetHighlightColor(skillComponent->GetHighlightColor());
+            tileBehaviorComponent->SetHighlightColor(mSkill->GetHighlightColor());
             tileBehaviorComponent->SetHighlighted(true);
 
             mHighlightedTiles.emplace_back(tile);
@@ -101,8 +99,7 @@ std::unique_ptr<Barebones::BoardInputState> UsingSkillBoardInputState::HandleKey
         {
           // If the current position is valid for executing the skill,
           // execute it and revert to a default board input state.
-          auto skillComponent = mSkill->GetFirstComponentOfType<CharacterSkillComponent>();
-          if(skillComponent != nullptr)
+          if(mSkill != nullptr)
           {
             auto parent = GetParent();
             if(parent != nullptr)
@@ -110,11 +107,11 @@ std::unique_ptr<Barebones::BoardInputState> UsingSkillBoardInputState::HandleKey
               auto inputComponent = parent->GetFirstComponentOfType<BoardInputComponent>();
               if(inputComponent != nullptr)
               {
-                if(skillComponent->IsTileValid(*parent,
-                                               inputComponent->GetPlayerLocation()))
+                if(mSkill->IsTileValid(*parent,
+                                       inputComponent->GetPlayerLocation()))
                 {
-                  skillComponent->Execute(*parent,
-                                          inputComponent->GetPlayerLocation());
+                  mSkill->Execute(*parent,
+                                  inputComponent->GetPlayerLocation());
                   newState = std::make_unique<DefaultBoardInputState>(*parent);
 
                   // Finally, un-highlight all the tiles that were highlighted.
@@ -187,14 +184,7 @@ std::unique_ptr<Barebones::BoardInputState> UsingSkillBoardInputState::HandlePla
         auto prevTileBehaviorComp = prevTile->GetFirstComponentOfType<TileBehaviorComponent>();
         if(prevTileBehaviorComp != nullptr)
         {
-          if(mSkill != nullptr)
-          {
-            auto skillComp = mSkill->GetFirstComponentOfType<CharacterSkillComponent>();
-            if(skillComp != nullptr)
-            {
-              prevTileBehaviorComp->SetHovered(false);
-            }
-          }
+          prevTileBehaviorComp->SetHovered(false);
         }
       }
 
@@ -205,14 +195,7 @@ std::unique_ptr<Barebones::BoardInputState> UsingSkillBoardInputState::HandlePla
         auto newTileBehaviorComp = newTile->GetFirstComponentOfType<TileBehaviorComponent>();
         if(newTileBehaviorComp != nullptr)
         {
-          if(mSkill != nullptr)
-          {
-            auto skillComp = mSkill->GetFirstComponentOfType<CharacterSkillComponent>();
-            if(skillComp != nullptr)
-            {
-              newTileBehaviorComp->SetHovered(true);
-            }
-          }
+          newTileBehaviorComp->SetHovered(true);
         }
       }
     }

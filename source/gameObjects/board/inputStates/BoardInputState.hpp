@@ -6,6 +6,8 @@
 
 #include "BoardLayoutComponent.hpp"
 
+#include "CharacterSkillComponent.hpp"
+
 namespace Barebones
 {
   class BoardInputState
@@ -61,9 +63,9 @@ namespace Barebones
        * selects a skill to use from a menu. Should be overridden by
        * inheriting states.
        *
-       * @param aObject The skill object that was selected.
+       * @param aSkill The skill that was selected.
        */
-      virtual std::unique_ptr<BoardInputState> HandleSkillSelected(UrsineEngine::GameObject& aObject) { return nullptr; }
+      virtual std::unique_ptr<BoardInputState> HandleSkillSelected(CharacterSkillComponent& aObject) { return nullptr; }
 
     protected:
 
