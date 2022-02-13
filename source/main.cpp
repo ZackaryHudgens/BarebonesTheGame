@@ -21,7 +21,7 @@ int main()
 
   env.Initialize(options);
 
-  UrsineEngine::TextComponent::LoadFont("resources/Roboto-Regular.ttf");
+  UrsineEngine::TextComponent::LoadFont("resources/alagard.ttf");
 
   auto board = Barebones::BoardFactory::CreateBoard("board");
   auto boardComp = board->GetFirstComponentOfType<Barebones::BoardLayoutComponent>();

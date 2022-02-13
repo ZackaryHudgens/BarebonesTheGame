@@ -4,6 +4,8 @@
 #include <GameObject.hpp>
 #include <MeshComponent.hpp>
 
+#include <iostream>
+
 #include "SkillActionBehaviorComponent.hpp"
 
 using Barebones::SkillMenuLayoutComponent;
@@ -13,90 +15,67 @@ SkillMenuLayoutComponent::SkillMenuLayoutComponent()
   : MenuLayoutComponent()
   , mSkillNameText(nullptr)
   , mSkillDescriptionText(nullptr)
-  , mIconSpacing(100.0)
-  , mTargetPosition(0.0, 0.0, 0.0)
-  , mSpeed(0.3)
-  , mMoving(false)
+  , mIconSpacing(20.0)
 {
 }
 
 /******************************************************************************/
 void SkillMenuLayoutComponent::Initialize()
 {
-  double targetHeight = (double)env.GetGraphicsOptions().mOverlayHeight / 2.0;
-  mTargetPosition = glm::vec3(0.0,
-                              targetHeight,
-                              0.0);
-  mMoving = true;
-
   // Create and add text components to child GameObjects.
   auto parent = GetParent();
   if(parent != nullptr)
   {
+    // Add the name text.
     auto skillName = std::make_unique<UrsineEngine::TextComponent>();
-    skillName->SetFont("Roboto", "Regular");
+    skillName->SetFont("Alagard", "Medium");
     skillName->SetColor(glm::vec4(1.0, 0.0, 0.0, 1.0));
-    skillName->SetSize(32);
+    skillName->SetSize(48);
     skillName->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
 
     auto nameObject = std::make_unique<UrsineEngine::GameObject>("skillName");
     nameObject->AddComponent(std::move(skillName));
     parent->AddChild(std::move(nameObject));
     mSkillNameText = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::TextComponent>();
+    mSkillNameText->GetParent()->SetPosition(glm::vec3(0.0,
+                                                       (env.GetGraphicsOptions().mOverlayHeight / 2.0) - 150.0,
+                                                       0.0));
 
+    // Add the description text.
     auto skillDescription = std::make_unique<UrsineEngine::TextComponent>();
-    skillDescription->SetFont("Roboto", "Regular");
+    skillDescription->SetFont("Alagard", "Medium");
     skillDescription->SetColor(glm::vec4(1.0, 0.0, 0.0, 1.0));
-    skillDescription->SetSize(24);
+    skillDescription->SetSize(32);
     skillDescription->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
 
     auto descriptionObject = std::make_unique<UrsineEngine::GameObject>("skillDescription");
     descriptionObject->AddComponent(std::move(skillDescription));
     parent->AddChild(std::move(descriptionObject));
     mSkillDescriptionText = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::TextComponent>();
+    mSkillDescriptionText->GetParent()->SetPosition(glm::vec3(0.0,
+                                                              (env.GetGraphicsOptions().mOverlayHeight / 2.0) - 170.0,
+                                                              0.0));
   }
 }
 
 /******************************************************************************/
 void SkillMenuLayoutComponent::Update()
 {
-  if(mMoving)
-  {
-    auto parent = GetParent();
-    if(parent != nullptr)
-    {
-      auto position = glm::mix(parent->GetPosition(),
-                               mTargetPosition,
-                               mSpeed);
-
-      // If the position is close enough to the target position,
-      // move directly to the target position and stop moving.
-      if(std::abs(mTargetPosition.x - position.x) <= 0.005 &&
-         std::abs(mTargetPosition.y - position.y) <= 0.005 &&
-         std::abs(mTargetPosition.z - position.z) <= 0.005)
-      {
-        parent->SetPosition(mTargetPosition);
-        mMoving = false;
-      }
-      else
-      {
-        parent->SetPosition(position);
-      }
-    }
-  }
 }
 
 /******************************************************************************/
 void SkillMenuLayoutComponent::HandleActionAdded()
 {
-  auto actions = GetActions();
+  // When an action gets added to the menu, center the skill icons
+  // horizontally and vertically.
   double overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
-  int xPadding = 50;
+  double overlayHeight = env.GetGraphicsOptions().mOverlayHeight;
+  double iconXPos = 0.0;
+  double iconYPos = overlayHeight / 2.0;
 
   // First, calculate the total width of all actions and padding.
   double totalWidth = 0;
-  int numIcons = 0;
-  for(auto& action : actions)
+  for(auto& action : GetActions())
   {
     auto actionMesh = action->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
     if(actionMesh != nullptr)
@@ -104,29 +83,25 @@ void SkillMenuLayoutComponent::HandleActionAdded()
       // Calculate the width taking any scalar transforms into account.
       auto xScalar = action->GetScalarTransform()[0][0];
       totalWidth += (actionMesh->GetWidth() * xScalar);
-      totalWidth += numIcons * xPadding;
     }
   }
 
   // Next, place each icon accordingly.
-  double distanceFromLeft = (overlayWidth - totalWidth) / 2.0;
-  numIcons = 0;
-  for(auto& action : actions)
+  iconXPos = (overlayWidth - totalWidth) / 2.0;
+  for(auto& action : GetActions())
   {
+    action->SetPosition(glm::vec3(iconXPos,
+                                  iconYPos,
+                                  0.0));
+
     auto actionMesh = action->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
     if(actionMesh != nullptr)
     {
-      // The origin of the icon is in the center, so calculate how far
-      // the left edge of the icon is from the origin.
       auto xScalar = action->GetScalarTransform()[0][0];
-      double halfWidth = (actionMesh->GetWidth() * xScalar) / 2.0;
-
-      double xPos = distanceFromLeft + halfWidth + (numIcons * xPadding);
-      action->SetPosition(glm::vec3(xPos,
-                                    0.0,
-                                    0.0));
-      ++numIcons;
+      iconXPos += ((actionMesh->GetWidth() * 2) * xScalar);
     }
+
+    iconXPos += mIconSpacing;
   }
 }
 
@@ -137,22 +112,37 @@ void SkillMenuLayoutComponent::HandleActionHovered()
   if(action != nullptr)
   {
     auto skillActionComponent = action->GetFirstComponentOfType<SkillActionBehaviorComponent>();
-    if(skillActionComponent != nullptr)
+    auto skillIconComponent = action->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
+    if(skillActionComponent != nullptr &&
+       skillIconComponent != nullptr)
     {
+      // Update the text to reflect the hovered skill.
       mSkillNameText->SetText(skillActionComponent->GetSkillName());
       mSkillDescriptionText->SetText(skillActionComponent->GetSkillDescription());
 
-      // Align the text objects.
-      double middle = (double)env.GetGraphicsOptions().mOverlayWidth / 2.0;
-      double nameXPosition = middle - (double)mSkillNameText->GetWidth() / 2.0;
-      double nameYPosition = (double)mSkillDescriptionText->GetHeight() - 135;
-      double descriptionXPosition = middle - (double)mSkillDescriptionText->GetWidth() / 2.0;
+      // Update the text position to be centered horizontally and
+      // placed beneath the current icon.
+      double overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
 
-      mSkillNameText->GetParent()->SetPosition(glm::vec3(nameXPosition,
-                                                         0.0,//nameYPosition,
+      auto iconPos = action->GetPosition();
+      auto iconYScalar = action->GetScalarTransform()[1][1];
+      double iconHeight = skillIconComponent->GetHeight() * iconYScalar;
+
+      double nameWidth = mSkillNameText->GetWidth();
+      double nameHeight = mSkillNameText->GetHeight();
+      double descriptionWidth = mSkillDescriptionText->GetWidth();
+      double descriptionHeight = mSkillDescriptionText->GetHeight();
+
+      double nameXPos = (overlayWidth - nameWidth) / 2.0;
+      double nameYPos = iconPos.y - (iconHeight / 2.0) - nameHeight - (mIconSpacing * 3);
+      double descriptionXPos = (overlayWidth - descriptionWidth) / 2.0;
+      double descriptionYPos = nameYPos - descriptionHeight - mIconSpacing;
+
+      mSkillNameText->GetParent()->SetPosition(glm::vec3(nameXPos,
+                                                         nameYPos,
                                                          0.0));
-      mSkillDescriptionText->GetParent()->SetPosition(glm::vec3(descriptionXPosition,
-                                                                25.0,//-150.0,
+      mSkillDescriptionText->GetParent()->SetPosition(glm::vec3(descriptionXPos,
+                                                                descriptionYPos,
                                                                 0.0));
     }
   }

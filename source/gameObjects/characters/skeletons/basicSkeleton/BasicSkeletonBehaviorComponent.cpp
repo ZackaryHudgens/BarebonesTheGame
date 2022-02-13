@@ -6,6 +6,7 @@
 #include "BoardLayoutComponent.hpp"
 #include "CharacterSpriteComponent.hpp"
 
+#include "DefendSkillComponent.hpp"
 #include "SlashSkillComponent.hpp"
 
 using Barebones::BasicSkeletonBehaviorComponent;
@@ -120,5 +121,6 @@ void BasicSkeletonBehaviorComponent::AddSkills()
   if(parent != nullptr)
   {
     parent->AddComponent(std::make_unique<SlashSkillComponent>());
+    parent->AddComponent(std::make_unique<DefendSkillComponent>());
   }
 }

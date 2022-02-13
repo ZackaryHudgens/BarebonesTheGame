@@ -51,10 +51,6 @@ namespace Barebones
       UrsineEngine::TextComponent* mSkillDescriptionText;
 
       double mIconSpacing;
-
-      glm::vec3 mTargetPosition;
-      double mSpeed;
-      bool mMoving;
   };
 }
 
