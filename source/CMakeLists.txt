@@ -10,7 +10,8 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/gui/actions/*.?pp
                        gameObjects/gui/actions/skillAction/*.?pp
                        gameObjects/gui/menus/*.?pp
-                       gameObjects/gui/menus/skillMenu/*.?pp)
+                       gameObjects/gui/menus/skillMenu/*.?pp
+                       gameObjects/util/*.?pp)
 
 add_executable(barebones ${GAME_SOURCES})
 target_link_libraries(barebones PUBLIC
@@ -28,7 +29,8 @@ target_include_directories(barebones PUBLIC
                            gameObjects/gui/actions
                            gameObjects/gui/actions/skillAction
                            gameObjects/gui/menus
-                           gameObjects/gui/menus/skillMenu)
+                           gameObjects/gui/menus/skillMenu
+                           gameObjects/util)
 
 install(TARGETS barebones DESTINATION ${INSTALL_DIR})
 install(DIRECTORY resources DESTINATION ${INSTALL_DIR})

@@ -1,18 +1,24 @@
-#ifndef MENUINPUTCOMPONENT_HPP
-#define MENUINPUTCOMPONENT_HPP
+#ifndef INPUTMANAGERCOMPONENT_HPP
+#define INPUTMANAGERCOMPONENT_HPP
+
+#include <stack>
+
+#include <Component.hpp>
 
 #include "InputComponent.hpp"
 
 namespace Barebones
 {
-  class MenuInputComponent : public InputComponent
+  class InputManagerComponent : public UrsineEngine::Component
   {
     public:
 
       /**
        * Constructor.
        */
-      MenuInputComponent();
+      InputManagerComponent();
+
+    private:
 
       /**
        * A handler function that gets called whenever the user presses
@@ -22,7 +28,7 @@ namespace Barebones
        * @param aMods Any modifiers present when the key was pressed.
        */
       void HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
-                            int aMods) override;
+                            int aMods);
 
       /**
        * A handler function that gets called whenever the user holds
@@ -34,7 +40,17 @@ namespace Barebones
        *         to move to a new state, otherwise nullptr.
        */
       void HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
-                             int aMods) override;
+                             int aMods);
+
+      /**
+       * A handler function that gets called whenever a GameObject is
+       * about to be deleted.
+       *
+       * @param aObject The GameObject about to be deleted.
+       */
+      void HandleObjectPendingDeletion(UrsineEngine::GameObject& aObject);
+
+      std::stack<InputComponent*> mInputStack;
   };
 }
 

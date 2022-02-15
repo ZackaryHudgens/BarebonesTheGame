@@ -13,25 +13,10 @@ using Barebones::BoardInputComponent;
 
 /******************************************************************************/
 BoardInputComponent::BoardInputComponent()
-  : Component()
+  : InputComponent()
   , mState(nullptr)
   , mPlayerLocation(0, 0)
-  , mEnabled(true)
 {
-  UrsineEngine::KeyPressed.Connect(*this, [this](const UrsineEngine::KeyCode& aCode,
-                                                 int aMods)
-  {
-    this->HandleKeyPressed(aCode,
-                           aMods);
-  });
-
-  UrsineEngine::KeyRepeated.Connect(*this, [this](const UrsineEngine::KeyCode& aCode,
-                                                  int aMods)
-  {
-    this->HandleKeyRepeated(aCode,
-                            aMods);
-  });
-
   SkillSelected.Connect(*this, [this](CharacterSkillComponent& aSkill)
   {
     this->HandleSkillSelected(aSkill);
@@ -82,16 +67,13 @@ void BoardInputComponent::SetPlayerLocation(const TileLocation& aLocation)
 void BoardInputComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
                                            int aMods)
 {
-  if(mEnabled)
+  if(mState != nullptr)
   {
-    if(mState != nullptr)
+    auto newState = mState->HandleKeyPressed(aCode,
+                                             aMods);
+    if(newState != nullptr)
     {
-      auto newState = mState->HandleKeyPressed(aCode,
-                                               aMods);
-      if(newState != nullptr)
-      {
-        mState.swap(newState);
-      }
+      mState.swap(newState);
     }
   }
 }
@@ -100,16 +82,13 @@ void BoardInputComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
 void BoardInputComponent::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
                                             int aMods)
 {
-  if(mEnabled)
+  if(mState != nullptr)
   {
-    if(mState != nullptr)
+    auto newState = mState->HandleKeyRepeated(aCode,
+                                              aMods);
+    if(newState != nullptr)
     {
-      auto newState = mState->HandleKeyRepeated(aCode,
-                                                aMods);
-      if(newState != nullptr)
-      {
-        mState.swap(newState);
-      }
+      mState.swap(newState);
     }
   }
 }

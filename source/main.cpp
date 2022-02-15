@@ -9,6 +9,8 @@
 #include "BoardInputComponent.hpp"
 #include "BoardLayoutComponent.hpp"
 
+#include "InputManagerComponent.hpp"
+
 int main()
 {
   UrsineEngine::GraphicsOptions options;
@@ -22,6 +24,9 @@ int main()
   env.Initialize(options);
 
   UrsineEngine::TextComponent::LoadFont("resources/alagard.ttf");
+
+  auto inputManager = std::make_unique<UrsineEngine::GameObject>("inputManager");
+  inputManager->AddComponent(std::make_unique<Barebones::InputManagerComponent>());
 
   auto board = Barebones::BoardFactory::CreateBoard("board");
   auto boardComp = board->GetFirstComponentOfType<Barebones::BoardLayoutComponent>();
@@ -59,6 +64,8 @@ int main()
   boardComp->AddCharacterAtLocation(std::move(human7), Barebones::TileLocation(6, 6));
 
   UrsineEngine::Scene newScene;
+
+  newScene.AddObject(std::move(inputManager));
 
   auto cam = newScene.GetDefaultCamera();
   cam->AddComponent(std::make_unique<Barebones::CameraBehaviorComponent>());

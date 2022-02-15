@@ -1,6 +1,5 @@
 #include "MenuFactory.hpp"
 
-#include "MenuBehaviorComponent.hpp"
 #include "MenuInputComponent.hpp"
 #include "SkillMenuLayoutComponent.hpp"
 
@@ -15,7 +14,6 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
   {
     case MenuType::eSKILL:
     {
-      newMenu->AddComponent(std::make_unique<MenuBehaviorComponent>());
       newMenu->AddComponent(std::make_unique<MenuInputComponent>());
       newMenu->AddComponent(std::make_unique<SkillMenuLayoutComponent>());
       break;
