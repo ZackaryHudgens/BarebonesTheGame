@@ -31,3 +31,6 @@ void TileBehaviorComponent::SetHovered(bool aHover)
   mHovered = aHover;
   HandleHoverChanged(mHovered);
 }
+
+/******************************************************************************/
+Barebones::TileReadyForUseSignal Barebones::TileReadyForUse;

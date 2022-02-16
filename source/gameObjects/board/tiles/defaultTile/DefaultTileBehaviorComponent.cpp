@@ -51,6 +51,7 @@ void DefaultTileBehaviorComponent::Update()
       if(newScalar == 1.0)
       {
         mScaling = false;
+        TileReadyForUse.Notify(*parent);
       }
     }
   }

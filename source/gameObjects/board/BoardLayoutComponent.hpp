@@ -81,6 +81,15 @@ namespace Barebones
       TileLocation GetLocationOfCharacter(const std::string& aName);
 
     private:
+
+      /**
+       * A handler function that gets called whenever a tile finishes
+       * its intro animation and is ready for use.
+       *
+       * @param aTile The tile in question.
+       */
+      void HandleTileReadyForUse(UrsineEngine::GameObject& aTile);
+
       std::vector<std::vector<UrsineEngine::GameObject*>> mTiles;
       std::vector<std::vector<UrsineEngine::GameObject*>> mCharacters;
 
@@ -88,7 +97,12 @@ namespace Barebones
 
       int mColumns;
       int mRows;
+
+      int mFinishedTiles;
   };
+
+  typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> BoardReadyForUseSignal;
+  extern BoardReadyForUseSignal BoardReadyForUse;
 }
 
 #endif

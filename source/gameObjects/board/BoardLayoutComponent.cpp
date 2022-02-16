@@ -18,7 +18,12 @@ BoardLayoutComponent::BoardLayoutComponent()
   , mTileSpacing(0.2)
   , mColumns(7)
   , mRows(7)
+  , mFinishedTiles(0)
 {
+  TileReadyForUse.Connect(*this, [this](UrsineEngine::GameObject& aTile)
+  {
+    this->HandleTileReadyForUse(aTile);
+  });
 }
 
 /******************************************************************************/
@@ -221,3 +226,21 @@ Barebones::TileLocation BoardLayoutComponent::GetLocationOfCharacter(const std::
 
   return tile;
 }
+
+/******************************************************************************/
+void BoardLayoutComponent::HandleTileReadyForUse(UrsineEngine::GameObject& aTile)
+{
+  ++mFinishedTiles;
+
+  if(mFinishedTiles == (mRows * mColumns))
+  {
+    auto parent = GetParent();
+    if(parent != nullptr)
+    {
+      BoardReadyForUse.Notify(*parent);
+    }
+  }
+}
+
+/******************************************************************************/
+Barebones::BoardReadyForUseSignal Barebones::BoardReadyForUse;

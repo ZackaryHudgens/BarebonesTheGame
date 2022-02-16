@@ -94,7 +94,7 @@ void SkillMenuLayoutComponent::Initialize()
                                 uiFrag);
     shader.Activate();
     shader.SetFloat("opacity",
-                    0.3f);
+                    0.6f);
     background->AddShader("defaultShader",
                           shader);
     background->SetCurrentShader("defaultShader");
