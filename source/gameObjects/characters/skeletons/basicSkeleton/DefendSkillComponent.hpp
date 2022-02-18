@@ -22,16 +22,6 @@ namespace Barebones
       std::unique_ptr<UrsineEngine::MeshComponent> GetIcon() override;
 
       /**
-       * Returns a list of tiles to highlight when using this skill.
-       *
-       * @param aBoard A GameObject containing a BoardLayoutComponent.
-       * @param aLocation The reference position.
-       * @return A list of tiles to highlight.
-       */
-      TileList GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
-                                   const TileLocation& aLocation) override;
-
-      /**
        * Returns true if the given position is valid for using this skill.
        *
        * @param aBoard A GameObject containing a BoardLayoutComponent.

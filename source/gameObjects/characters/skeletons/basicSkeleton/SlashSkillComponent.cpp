@@ -49,23 +49,6 @@ std::unique_ptr<UrsineEngine::MeshComponent> SlashSkillComponent::GetIcon()
 }
 
 /******************************************************************************/
-Barebones::TileList SlashSkillComponent::GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
-                                                             const TileLocation& aLocation)
-{
-  TileList tiles;
-
-  tiles.emplace_back(TileLocation(aLocation.first + 1,
-                                  aLocation.second));
-  tiles.emplace_back(TileLocation(aLocation.first - 1,
-                                  aLocation.second));
-  tiles.emplace_back(TileLocation(aLocation.first,
-                                  aLocation.second + 1));
-  tiles.emplace_back(TileLocation(aLocation.first,
-                                  aLocation.second - 1));
-  return tiles;
-}
-
-/******************************************************************************/
 bool SlashSkillComponent::IsTileValid(UrsineEngine::GameObject& aBoard,
                                       const TileLocation& aLocation)
 {

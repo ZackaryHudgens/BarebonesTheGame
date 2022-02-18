@@ -42,18 +42,6 @@ namespace Barebones
       virtual std::unique_ptr<UrsineEngine::MeshComponent> GetIcon();
 
       /**
-       * A virtual function that returns a list of tiles to highlight when
-       * using this skill. Skills should highlight tiles to either represent
-       * valid positions or to show the range/area of effect for the skill.
-       *
-       * @param aBoard A GameObject containing a BoardLayoutComponent.
-       * @param aLocation The reference position.
-       * @return A list of tiles to highlight.
-       */
-      virtual TileList GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
-                                           const TileLocation& aLocation);
-
-      /**
        * A virtual function that returns true if the given position is a
        * valid position for using this skill.
        *

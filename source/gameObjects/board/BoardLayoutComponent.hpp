@@ -26,6 +26,22 @@ namespace Barebones
       void Initialize() override;
 
       /**
+       * Sets the player's location on the board.
+       *
+       * @param aLocation The new location of the player on the board.
+       */
+      void SetPlayerLocation(const TileLocation& aLocation);
+
+      /**
+       * Returns the player's location on the board. The first integer
+       * corresponds to the column and the second integer corresponds to
+       * the row.
+       *
+       * @return The location of the player on the board.
+       */
+      TileLocation GetPlayerLocation() const { return mPlayerLocation; }
+
+      /**
        * Adds a character to the board at the given location by taking
        * ownership of it and adding it as a child GameObject.
        *
@@ -93,6 +109,8 @@ namespace Barebones
       std::vector<std::vector<UrsineEngine::GameObject*>> mTiles;
       std::vector<std::vector<UrsineEngine::GameObject*>> mCharacters;
 
+      TileLocation mPlayerLocation;
+
       double mTileSpacing;
 
       int mColumns;
@@ -102,7 +120,10 @@ namespace Barebones
   };
 
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> BoardReadyForUseSignal;
+  typedef UrsineEngine::SignalT<TileLocation&>             PlayerMovedSignal;
+
   extern BoardReadyForUseSignal BoardReadyForUse;
+  extern PlayerMovedSignal      PlayerMoved;
 }
 
 #endif

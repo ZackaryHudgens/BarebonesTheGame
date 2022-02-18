@@ -1,28 +1,31 @@
-#ifndef BOARDINPUTCOMPONENT_HPP
-#define BOARDINPUTCOMPONENT_HPP
+#ifndef HUMANPLAYERINPUTCOMPONENT_HPP
+#define HUMANPLAYERINPUTCOMPONENT_HPP
 
-#include "InputComponent.hpp"
-
-#include "BoardInputState.hpp"
-#include "BoardLayoutComponent.hpp"
+#include <Component.hpp>
 
 #include "CharacterSkillComponent.hpp"
 
+#include "HumanPlayerInputState.hpp"
+#include "InputComponent.hpp"
+
 namespace Barebones
 {
-  class BoardInputComponent : public InputComponent
+  class HumanPlayerInputComponent : public InputComponent
   {
     public:
 
       /**
        * Constructor.
        */
-      BoardInputComponent();
+      HumanPlayerInputComponent();
 
       /**
-       * Loads the component.
+       * Sets whether this component should accept input. If this component
+       * is disabled, it will not respond to input.
+       *
+       * @param aEnabled Whether to enable or disable this component.
        */
-      void Load() override;
+      void SetEnabled(bool aEnabled) { mEnabled = aEnabled; }
 
       /**
        * A handler function that gets called whenever the user presses
@@ -46,23 +49,6 @@ namespace Barebones
       void HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
                              int aMods) override;
 
-      /**
-       * Sets the player's location on the board. Note that this may be overridden
-       * by the input state.
-       *
-       * @param aLocation The new location of the player on the board.
-       */
-      void SetPlayerLocation(const TileLocation& aLocation);
-
-      /**
-       * Returns the player's location on the board. The first integer
-       * corresponds to the column and the second integer corresponds to
-       * the row.
-       *
-       * @return The location of the player on the board.
-       */
-      TileLocation GetPlayerLocation() const { return mPlayerLocation; }
-
     private:
 
       /**
@@ -73,13 +59,10 @@ namespace Barebones
        */
       void HandleSkillSelected(CharacterSkillComponent& aSkill);
 
-      std::unique_ptr<BoardInputState> mState;
+      std::unique_ptr<HumanPlayerInputState> mState;
 
-      TileLocation mPlayerLocation;
+      bool mEnabled;
   };
-
-  typedef UrsineEngine::SignalT<const TileLocation&> PlayerMovedSignal;
-  extern PlayerMovedSignal PlayerMoved;
 }
 
 #endif

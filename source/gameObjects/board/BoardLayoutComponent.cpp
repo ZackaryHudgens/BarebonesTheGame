@@ -15,6 +15,7 @@ using Barebones::BoardLayoutComponent;
 /******************************************************************************/
 BoardLayoutComponent::BoardLayoutComponent()
   : Component()
+  , mPlayerLocation(0, 0)
   , mTileSpacing(0.2)
   , mColumns(7)
   , mRows(7)
@@ -63,6 +64,50 @@ void BoardLayoutComponent::Initialize()
       mTiles.emplace_back(row);
       mCharacters.emplace_back(characters);
     }
+  }
+
+  // Finally, hover over the tile at the player's initial location.
+  auto initialTile = GetTileAtLocation(mPlayerLocation);
+  if(initialTile != nullptr)
+  {
+    auto initialTileBehaviorComponent = initialTile->GetFirstComponentOfType<TileBehaviorComponent>();
+    if(initialTileBehaviorComponent != nullptr)
+    {
+      initialTileBehaviorComponent->SetHovered(true);
+    }
+  }
+}
+
+/******************************************************************************/
+void BoardLayoutComponent::SetPlayerLocation(const TileLocation& aLocation)
+{
+  if(aLocation.first < mColumns &&
+     aLocation.second < mRows)
+  {
+    // Un-hover the tile at the previous location.
+    auto prevTile = GetTileAtLocation(mPlayerLocation);
+    if(prevTile != nullptr)
+    {
+      auto prevTileBehaviorComp = prevTile->GetFirstComponentOfType<TileBehaviorComponent>();
+      if(prevTileBehaviorComp != nullptr)
+      {
+        prevTileBehaviorComp->SetHovered(false);
+      }
+    }
+
+    // Hover over the tile at the new location.
+    auto newTile = GetTileAtLocation(aLocation);
+    if(newTile != nullptr)
+    {
+      auto newTileBehaviorComp = newTile->GetFirstComponentOfType<TileBehaviorComponent>();
+      if(newTileBehaviorComp != nullptr)
+      {
+        newTileBehaviorComp->SetHovered(true);
+      }
+    }
+
+    mPlayerLocation = aLocation;
+    PlayerMoved.Notify(mPlayerLocation);
   }
 }
 

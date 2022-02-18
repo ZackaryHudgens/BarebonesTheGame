@@ -11,6 +11,10 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/gui/actions/skillAction/*.?pp
                        gameObjects/gui/menus/*.?pp
                        gameObjects/gui/menus/skillMenu/*.?pp
+                       gameObjects/players/*.?pp
+                       gameObjects/players/aiPlayer/*.?pp
+                       gameObjects/players/humanPlayer/*.?pp
+                       gameObjects/players/humanPlayer/inputStates/*.?pp
                        gameObjects/util/*.?pp)
 
 add_executable(barebones ${GAME_SOURCES})
@@ -30,6 +34,10 @@ target_include_directories(barebones PUBLIC
                            gameObjects/gui/actions/skillAction
                            gameObjects/gui/menus
                            gameObjects/gui/menus/skillMenu
+                           gameObjects/players
+                           gameObjects/players/aiPlayer
+                           gameObjects/players/humanPlayer
+                           gameObjects/players/humanPlayer/inputStates
                            gameObjects/util)
 
 install(TARGETS barebones DESTINATION ${INSTALL_DIR})

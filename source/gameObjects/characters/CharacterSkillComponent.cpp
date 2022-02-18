@@ -11,6 +11,7 @@ CharacterSkillComponent::CharacterSkillComponent()
 /******************************************************************************/
 void CharacterSkillComponent::Select()
 {
+  ProtectedSelect();
   SkillSelected.Notify(*this);
 }
 
@@ -27,13 +28,6 @@ void CharacterSkillComponent::Execute(UrsineEngine::GameObject& aBoard,
 std::unique_ptr<UrsineEngine::MeshComponent> CharacterSkillComponent::GetIcon()
 {
   return std::make_unique<UrsineEngine::MeshComponent>();
-}
-
-/******************************************************************************/
-Barebones::TileList CharacterSkillComponent::GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
-                                                                 const TileLocation& aLocation)
-{
-  return TileList();
 }
 
 /******************************************************************************/

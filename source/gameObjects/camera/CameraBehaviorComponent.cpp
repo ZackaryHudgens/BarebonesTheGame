@@ -2,8 +2,6 @@
 
 #include <GameObject.hpp>
 
-#include "BoardInputComponent.hpp"
-
 using Barebones::CameraBehaviorComponent;
 
 /******************************************************************************/

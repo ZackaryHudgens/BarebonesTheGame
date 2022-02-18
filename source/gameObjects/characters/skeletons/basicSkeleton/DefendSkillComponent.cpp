@@ -49,13 +49,6 @@ std::unique_ptr<UrsineEngine::MeshComponent> DefendSkillComponent::GetIcon()
 }
 
 /******************************************************************************/
-Barebones::TileList DefendSkillComponent::GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
-                                                              const TileLocation& aLocation)
-{
-  return TileList();
-}
-
-/******************************************************************************/
 bool DefendSkillComponent::IsTileValid(UrsineEngine::GameObject& aBoard,
                                        const TileLocation& aLocation)
 {
