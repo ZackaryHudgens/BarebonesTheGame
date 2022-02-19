@@ -37,7 +37,8 @@ InputManagerComponent::InputManagerComponent()
 void InputManagerComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
                                              int aMods)
 {
-  if(mInputStack.top() != nullptr)
+  if(!mInputStack.empty() &&
+     mInputStack.top() != nullptr)
   {
     mInputStack.top()->HandleKeyPressed(aCode,
                                         aMods);
@@ -48,7 +49,8 @@ void InputManagerComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
 void InputManagerComponent::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
                                               int aMods)
 {
-  if(mInputStack.top() != nullptr)
+  if(!mInputStack.empty() &&
+     mInputStack.top() != nullptr)
   {
     mInputStack.top()->HandleKeyRepeated(aCode,
                                          aMods);
@@ -58,8 +60,12 @@ void InputManagerComponent::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode
 /******************************************************************************/
 void InputManagerComponent::HandleObjectPendingDeletion(UrsineEngine::GameObject& aObject)
 {
-  if(mInputStack.top()->GetParent() == &aObject)
+  if(!mInputStack.empty() &&
+     mInputStack.top() != nullptr)
   {
-    mInputStack.pop();
+    if(mInputStack.top()->GetParent() == &aObject)
+    {
+      mInputStack.pop();
+    }
   }
 }

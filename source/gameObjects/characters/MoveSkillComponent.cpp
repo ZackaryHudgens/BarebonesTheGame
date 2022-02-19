@@ -53,26 +53,6 @@ std::unique_ptr<UrsineEngine::MeshComponent> MoveSkillComponent::GetIcon()
 }
 
 /******************************************************************************/
-Barebones::TileList MoveSkillComponent::GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
-                                                            const TileLocation& aLocation)
-{
-  TileList tiles;
-
-  auto parent = GetParent();
-  if(parent != nullptr)
-  {
-    auto behaviorComp = parent->GetFirstComponentOfType<CharacterBehaviorComponent>();
-    if(behaviorComp != nullptr)
-    {
-      tiles = behaviorComp->GetMovements(aBoard,
-                                         aLocation);
-    }
-  }
-
-  return tiles;
-}
-
-/******************************************************************************/
 bool MoveSkillComponent::IsTileValid(UrsineEngine::GameObject& aBoard,
                                      const TileLocation& aLocation)
 {

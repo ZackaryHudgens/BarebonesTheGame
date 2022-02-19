@@ -43,11 +43,16 @@ void DefaultTileBehaviorComponent::Update()
       auto transform = parent->GetScalarTransform();
       double scalar = transform[0][0];
       double newScalar = glm::mix(scalar, 1.0, mScaleSpeed);
-      newScalar = std::min(newScalar, 1.0);
+
+      if((1.0 - newScalar) <= 0.005)
+      {
+        newScalar = 1.0;
+      }
 
       parent->SetScale(glm::vec3(newScalar,
                                  newScalar,
                                  newScalar));
+
       if(newScalar == 1.0)
       {
         mScaling = false;

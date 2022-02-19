@@ -119,11 +119,8 @@ namespace Barebones
       int mFinishedTiles;
   };
 
-  typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> BoardReadyForUseSignal;
-  typedef UrsineEngine::SignalT<TileLocation&>             PlayerMovedSignal;
-
-  extern BoardReadyForUseSignal BoardReadyForUse;
-  extern PlayerMovedSignal      PlayerMoved;
+  typedef UrsineEngine::SignalT<TileLocation&> PlayerMovedSignal;
+  extern PlayerMovedSignal PlayerMoved;
 }
 
 #endif

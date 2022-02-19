@@ -1,5 +1,7 @@
 #include "HumanPlayerInputComponent.hpp"
 
+#include "HumanPlayerDefaultInputState.hpp"
+
 using Barebones::HumanPlayerInputComponent;
 
 /******************************************************************************/
@@ -8,6 +10,25 @@ HumanPlayerInputComponent::HumanPlayerInputComponent()
   , mState(nullptr)
   , mEnabled(false)
 {
+  UrsineEngine::KeyPressed.Connect(*this, [this](const UrsineEngine::KeyCode& aCode,
+                                                 int aMods)
+  {
+    this->HandleKeyPressed(aCode,
+                           aMods);
+  });
+
+  UrsineEngine::KeyRepeated.Connect(*this, [this](const UrsineEngine::KeyCode& aCode,
+                                                  int aMods)
+  {
+    this->HandleKeyRepeated(aCode,
+                            aMods);
+  });
+}
+
+/******************************************************************************/
+void HumanPlayerInputComponent::SetBoard(UrsineEngine::GameObject& aBoard)
+{
+  mState = std::make_unique<HumanPlayerDefaultInputState>(aBoard);
 }
 
 /******************************************************************************/

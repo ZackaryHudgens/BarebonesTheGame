@@ -5,6 +5,8 @@
 
 #include <GameObject.hpp>
 
+#include "BoardTurnManagerComponent.hpp"
+
 #include "CharacterBehaviorComponent.hpp"
 #include "TileFactory.hpp"
 #include "TileBehaviorComponent.hpp"
@@ -282,10 +284,15 @@ void BoardLayoutComponent::HandleTileReadyForUse(UrsineEngine::GameObject& aTile
     auto parent = GetParent();
     if(parent != nullptr)
     {
-      BoardReadyForUse.Notify(*parent);
+      // The board is ready, so begin taking turns.
+      auto turnManagerComponent = parent->GetFirstComponentOfType<BoardTurnManagerComponent>();
+      if(turnManagerComponent != nullptr)
+      {
+        turnManagerComponent->Start();
+      }
     }
   }
 }
 
 /******************************************************************************/
-Barebones::BoardReadyForUseSignal Barebones::BoardReadyForUse;
+Barebones::PlayerMovedSignal      Barebones::PlayerMoved;

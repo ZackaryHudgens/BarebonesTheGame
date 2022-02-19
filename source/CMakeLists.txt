@@ -1,6 +1,9 @@
 file(GLOB GAME_SOURCES main.cpp
                        gameObjects/board/*.?pp
-                       gameObjects/board/inputStates/*.?pp
+                       gameObjects/board/players/*.?pp
+                       gameObjects/board/players/aiPlayer/*.?pp
+                       gameObjects/board/players/humanPlayer/*.?pp
+                       gameObjects/board/players/humanPlayer/inputStates/*.?pp
                        gameObjects/board/tiles/*.?pp
                        gameObjects/board/tiles/defaultTile/*.?pp
                        gameObjects/camera/*.?pp
@@ -11,10 +14,6 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/gui/actions/skillAction/*.?pp
                        gameObjects/gui/menus/*.?pp
                        gameObjects/gui/menus/skillMenu/*.?pp
-                       gameObjects/players/*.?pp
-                       gameObjects/players/aiPlayer/*.?pp
-                       gameObjects/players/humanPlayer/*.?pp
-                       gameObjects/players/humanPlayer/inputStates/*.?pp
                        gameObjects/util/*.?pp)
 
 add_executable(barebones ${GAME_SOURCES})
@@ -23,7 +22,10 @@ target_link_libraries(barebones PUBLIC
 target_include_directories(barebones PUBLIC
                            ${URSINE_INCLUDE_DIRS}
                            gameObjects/board
-                           gameObjects/board/inputStates
+                           gameObjects/board/players
+                           gameObjects/board/players/aiPlayer
+                           gameObjects/board/players/humanPlayer
+                           gameObjects/board/players/humanPlayer/inputStates
                            gameObjects/board/tiles
                            gameObjects/board/tiles/defaultTile
                            gameObjects/camera
@@ -34,10 +36,6 @@ target_include_directories(barebones PUBLIC
                            gameObjects/gui/actions/skillAction
                            gameObjects/gui/menus
                            gameObjects/gui/menus/skillMenu
-                           gameObjects/players
-                           gameObjects/players/aiPlayer
-                           gameObjects/players/humanPlayer
-                           gameObjects/players/humanPlayer/inputStates
                            gameObjects/util)
 
 install(TARGETS barebones DESTINATION ${INSTALL_DIR})

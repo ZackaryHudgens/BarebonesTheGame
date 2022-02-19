@@ -11,7 +11,7 @@ HumanPlayerBehaviorComponent::HumanPlayerBehaviorComponent()
 }
 
 /******************************************************************************/
-void HumanPlayerBehaviorComponent::TakeTurn(UrsineEngine::GameObject& aBoard)
+void HumanPlayerBehaviorComponent::ProtectedTakeTurn(UrsineEngine::GameObject& aBoard)
 {
   // Enable the input component.
   auto parent = GetParent();
@@ -21,6 +21,22 @@ void HumanPlayerBehaviorComponent::TakeTurn(UrsineEngine::GameObject& aBoard)
     if(inputComponent != nullptr)
     {
       inputComponent->SetEnabled(true);
+      inputComponent->SetBoard(aBoard);
+    }
+  }
+}
+
+/******************************************************************************/
+void HumanPlayerBehaviorComponent::ProtectedEndTurn()
+{
+  // Diable the input component.
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    auto inputComponent = parent->GetFirstComponentOfType<HumanPlayerInputComponent>();
+    if(inputComponent != nullptr)
+    {
+      inputComponent->SetEnabled(false);
     }
   }
 }

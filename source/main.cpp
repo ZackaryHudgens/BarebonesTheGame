@@ -6,10 +6,12 @@
 #include "CameraBehaviorComponent.hpp"
 #include "CharacterFactory.hpp"
 #include "CharacterBehaviorComponent.hpp"
-#include "BoardInputComponent.hpp"
 #include "BoardLayoutComponent.hpp"
+#include "BoardTurnManagerComponent.hpp"
 
 #include "InputManagerComponent.hpp"
+
+#include "PlayerFactory.hpp"
 
 int main()
 {
@@ -30,6 +32,8 @@ int main()
 
   auto board = Barebones::BoardFactory::CreateBoard("board");
   auto boardComp = board->GetFirstComponentOfType<Barebones::BoardLayoutComponent>();
+  auto turnManager = board->GetFirstComponentOfType<Barebones::BoardTurnManagerComponent>();
+  turnManager->AddPlayer(Barebones::PlayerFactory::CreatePlayer(Barebones::PlayerType::eHUMAN, "humanPlayer"));
 
   auto skeleton = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_SKELETON, "skeleton");
   auto skeleton2 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_SKELETON, "skeleton2");
