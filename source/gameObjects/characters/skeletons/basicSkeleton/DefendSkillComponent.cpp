@@ -10,9 +10,6 @@ DefendSkillComponent::DefendSkillComponent()
 {
   SetName("Defend");
   SetDescription("What a wuss.");
-  SetHighlightColor(glm::vec3(1.0,
-                              1.0,
-                              0.0));
 }
 
 /******************************************************************************/

@@ -53,20 +53,6 @@ namespace Barebones
                                const TileLocation& aLocation) { return true; }
 
       /**
-       * Sets the name of the skill.
-       *
-       * @param aName The name of the skill.
-       */
-      void SetName(const std::string& aName) { mName = aName; }
-
-      /**
-       * Sets the description of the skill.
-       *
-       * @param aDescription The description of the skill.
-       */
-      void SetDescription(const std::string& aDescription) { mDescription = aDescription; }
-
-      /**
        * Returns the name of the skill.
        *
        * @return The name of the skill.
@@ -80,14 +66,21 @@ namespace Barebones
        */
       std::string GetDescription() const { return mDescription; }
 
-      /**
-       * Returns the color to use when highlighting tiles for this skill.
-       *
-       * @return The color to use when highlighting tiles for this skill.
-       */
-      glm::vec3 GetHighlightColor() const { return mHighlightColor; }
-
     protected:
+
+      /**
+       * Sets the name of the skill.
+       *
+       * @param aName The name of the skill.
+       */
+      void SetName(const std::string& aName) { mName = aName; }
+
+      /**
+       * Sets the description of the skill.
+       *
+       * @param aDescription The description of the skill.
+       */
+      void SetDescription(const std::string& aDescription) { mDescription = aDescription; }
 
       /**
        * A virtual function that gets called whenever the user selects
@@ -107,16 +100,7 @@ namespace Barebones
       virtual void ProtectedExecute(UrsineEngine::GameObject& aBoard,
                                     const TileLocation& aLocation) {};
 
-      /**
-       * Sets the color to use when highlighting tiles for this skill.
-       *
-       * @param aColor The color to use when highlighting tiles for this skill.
-       */
-      void SetHighlightColor(const glm::vec3& aColor) { mHighlightColor = aColor; }
-
     private:
-      glm::vec3 mHighlightColor;
-
       std::string mDescription;
       std::string mName;
   };

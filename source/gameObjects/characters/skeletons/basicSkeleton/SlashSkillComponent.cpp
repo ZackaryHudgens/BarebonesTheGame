@@ -10,9 +10,6 @@ SlashSkillComponent::SlashSkillComponent()
 {
   SetName("Slash");
   SetDescription("Does some damage? I dunno.");
-  SetHighlightColor(glm::vec3(1.0,
-                              0.0,
-                              0.0));
 }
 
 /******************************************************************************/

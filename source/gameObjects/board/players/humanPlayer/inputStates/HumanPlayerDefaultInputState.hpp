@@ -29,7 +29,7 @@ namespace Barebones
                                                               int aMods) override;
 
       /**
-       * A virtual function that gets called whenever the user holds
+       * A handler function that gets called whenever the user holds
        * a key down long enough to repeat the input.
        *
        * @param aCode The KeyCode for the key that was pressed.
@@ -39,6 +39,14 @@ namespace Barebones
        */
       std::unique_ptr<HumanPlayerInputState> HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
                                                                int aMods) override;
+
+      /**
+       * A handler function that gets called whenever the user
+       * selects a skill to use from a menu.
+       *
+       * @param aSkill The skill component that was selected.
+       */
+      std::unique_ptr<HumanPlayerInputState> HandleSkillSelected(CharacterSkillComponent& aSkill) override;
 
     private:
 

@@ -4,7 +4,6 @@ using Barebones::CharacterSkillComponent;
 
 /******************************************************************************/
 CharacterSkillComponent::CharacterSkillComponent()
-  : mHighlightColor(1.0, 1.0, 1.0)
 {
 }
 

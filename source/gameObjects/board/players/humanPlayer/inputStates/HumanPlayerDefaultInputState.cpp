@@ -4,6 +4,8 @@
 
 #include "BoardLayoutComponent.hpp"
 
+#include "HumanPlayerUsingSkillInputState.hpp"
+
 #include "ActionFactory.hpp"
 #include "MenuFactory.hpp"
 #include "MenuLayoutComponent.hpp"
@@ -102,6 +104,15 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
     }
   }
 
+  return newState;
+}
+
+/******************************************************************************/
+std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::HandleSkillSelected(CharacterSkillComponent& aSkill)
+{
+  // When a skill is selected, swap to the Using Skill input state.
+  auto newState = std::make_unique<HumanPlayerUsingSkillInputState>(*GetBoard(),
+                                                                    aSkill);
   return newState;
 }
 

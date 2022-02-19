@@ -6,6 +6,8 @@
 
 #include "CharacterBehaviorComponent.hpp"
 
+#include "BoardLayoutComponent.hpp"
+
 using Barebones::MoveSkillComponent;
 
 /******************************************************************************/
@@ -14,9 +16,6 @@ MoveSkillComponent::MoveSkillComponent()
 {
   SetName("Move");
   SetDescription("Moves the character.");
-  SetHighlightColor(glm::vec3(1.0,
-                              1.0,
-                              0.0));
 }
 
 /******************************************************************************/
@@ -84,6 +83,43 @@ bool MoveSkillComponent::IsTileValid(UrsineEngine::GameObject& aBoard,
 /******************************************************************************/
 void MoveSkillComponent::ProtectedSelect()
 {
+  auto character = GetParent();
+  if(character != nullptr)
+  {
+    auto board = character->GetParent();
+    if(board != nullptr)
+    {
+      // Highlight each tile that's valid for movement.
+      auto boardLayoutComponent = board->GetFirstComponentOfType<BoardLayoutComponent>();
+      auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
+      if(boardLayoutComponent != nullptr &&
+         characterBehaviorComponent != nullptr)
+      {
+        auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(character->GetName());
+        auto locations = characterBehaviorComponent->GetMovements(*board,
+                                                                  characterLocation);
+
+        for(const auto& location : locations)
+        {
+          auto tile = boardLayoutComponent->GetTileAtLocation(location);
+          if(tile != nullptr)
+          {
+            auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
+            if(tileBehaviorComponent != nullptr)
+            {
+              tileBehaviorComponent->SetHighlightColor(glm::vec3(1.0,
+                                                                 1.0,
+                                                                 0.0));
+              tileBehaviorComponent->SetHighlighted(true);
+
+              // Keep track of highlighted tiles to un-highlight them later.
+              mHighlightedTiles.emplace_back(tileBehaviorComponent);
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 /******************************************************************************/
@@ -103,6 +139,13 @@ void MoveSkillComponent::ProtectedExecute(UrsineEngine::GameObject& aBoard,
         auto initialLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
         boardLayoutComponent->MoveCharacter(initialLocation,
                                             aLocation);
+
+        // Un-highlight each previously highlighted tile.
+        for(auto& tile : mHighlightedTiles)
+        {
+          tile->SetHighlighted(false);
+        }
+        mHighlightedTiles.clear();
       }
     }
   }

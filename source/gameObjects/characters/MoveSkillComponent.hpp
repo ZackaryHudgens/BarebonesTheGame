@@ -3,6 +3,8 @@
 
 #include "CharacterSkillComponent.hpp"
 
+#include "TileBehaviorComponent.hpp"
+
 namespace Barebones
 {
   class MoveSkillComponent : public CharacterSkillComponent
@@ -48,6 +50,8 @@ namespace Barebones
        */
       void ProtectedExecute(UrsineEngine::GameObject& aBoard,
                             const TileLocation& aLocation) override;
+
+      std::vector<TileBehaviorComponent*> mHighlightedTiles;
   };
 }
 

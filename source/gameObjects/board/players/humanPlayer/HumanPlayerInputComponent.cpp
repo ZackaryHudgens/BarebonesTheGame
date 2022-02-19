@@ -2,6 +2,8 @@
 
 #include "HumanPlayerDefaultInputState.hpp"
 
+#include "CharacterSkillComponent.hpp"
+
 using Barebones::HumanPlayerInputComponent;
 
 /******************************************************************************/
@@ -10,18 +12,9 @@ HumanPlayerInputComponent::HumanPlayerInputComponent()
   , mState(nullptr)
   , mEnabled(false)
 {
-  UrsineEngine::KeyPressed.Connect(*this, [this](const UrsineEngine::KeyCode& aCode,
-                                                 int aMods)
+  SkillSelected.Connect(*this, [this](CharacterSkillComponent& aSkill)
   {
-    this->HandleKeyPressed(aCode,
-                           aMods);
-  });
-
-  UrsineEngine::KeyRepeated.Connect(*this, [this](const UrsineEngine::KeyCode& aCode,
-                                                  int aMods)
-  {
-    this->HandleKeyRepeated(aCode,
-                            aMods);
+    this->HandleSkillSelected(aSkill);
   });
 }
 
@@ -56,6 +49,20 @@ void HumanPlayerInputComponent::HandleKeyRepeated(const UrsineEngine::KeyCode& a
   {
     auto newState = mState->HandleKeyRepeated(aCode,
                                               aMods);
+    if(newState != nullptr)
+    {
+      mState.swap(newState);
+    }
+  }
+}
+
+/******************************************************************************/
+void HumanPlayerInputComponent::HandleSkillSelected(CharacterSkillComponent& aSkill)
+{
+  if(mState != nullptr &&
+     mEnabled)
+  {
+    auto newState = mState->HandleSkillSelected(aSkill);
     if(newState != nullptr)
     {
       mState.swap(newState);

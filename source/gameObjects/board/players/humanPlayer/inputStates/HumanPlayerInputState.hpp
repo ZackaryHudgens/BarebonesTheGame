@@ -4,6 +4,8 @@
 #include <CoreSignals.hpp>
 #include <GameObject.hpp>
 
+#include "CharacterSkillComponent.hpp"
+
 namespace Barebones
 {
   class HumanPlayerInputState
@@ -41,6 +43,15 @@ namespace Barebones
        */
       virtual std::unique_ptr<HumanPlayerInputState> HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
                                                                        int aMods) { return nullptr; }
+
+      /**
+       * A virtual function that gets called whenever the user
+       * selects a skill to use from a menu. Should be overridden
+       * by inheriting states.
+       *
+       * @param aSkill The skill component that was selected.
+       */
+      virtual std::unique_ptr<HumanPlayerInputState> HandleSkillSelected(CharacterSkillComponent& aSkill) { return nullptr; }
 
     protected:
 

@@ -84,7 +84,9 @@ void BoardLayoutComponent::Initialize()
 void BoardLayoutComponent::SetPlayerLocation(const TileLocation& aLocation)
 {
   if(aLocation.first < mColumns &&
-     aLocation.second < mRows)
+     aLocation.first >= 0 &&
+     aLocation.second < mRows &&
+     aLocation.second >= 0)
   {
     // Un-hover the tile at the previous location.
     auto prevTile = GetTileAtLocation(mPlayerLocation);
