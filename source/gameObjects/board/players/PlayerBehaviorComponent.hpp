@@ -3,7 +3,6 @@
 
 #include <Component.hpp>
 #include <GameObject.hpp>
-#include <Signal.hpp>
 
 namespace Barebones
 {
@@ -17,18 +16,11 @@ namespace Barebones
       PlayerBehaviorComponent();
 
       /**
-       * Tells this component to begin taking a turn.
+       * Returns the name of the player.
        *
-       * @param aBoard The board to take a turn on.
+       * @return The name of the player.
        */
-      void TakeTurn(UrsineEngine::GameObject& aBoard);
-
-      /**
-       * Tells this component to end its turn.
-       */
-      void EndTurn();
-
-    protected:
+      std::string GetName() const { return mName; }
 
       /**
        * A virtual function that gets called whenever it becomes this
@@ -36,20 +28,31 @@ namespace Barebones
        *
        * @param aBoard The board to take a turn on.
        */
-      virtual void ProtectedTakeTurn(UrsineEngine::GameObject& aBoard) {}
+      virtual void TakeTurn(UrsineEngine::GameObject& aBoard) = 0;
+
+      /**
+       * Ends the player's turn and notifies the PlayerTurnEnded signal.
+       */
+      void EndTurn();
+
+    protected:
+
+      /**
+       * Sets the name of the player.
+       *
+       * @param aName The new name of the player.
+       */
+      void SetName(const std::string& aName) { mName = aName; }
 
       /**
        * A virtual function that gets called whenever this player's turn
        * ends. Should be overridden by inheriting classes.
        */
       virtual void ProtectedEndTurn() {}
+
+    private:
+      std::string mName;
   };
-
-  typedef UrsineEngine::SignalT<PlayerBehaviorComponent&> PlayerTurnBeganSignal;
-  typedef UrsineEngine::SignalT<PlayerBehaviorComponent&> PlayerTurnEndedSignal;
-
-  extern PlayerTurnBeganSignal   PlayerTurnBegan;
-  extern PlayerTurnEndedSignal   PlayerTurnEnded;
 }
 
 #endif

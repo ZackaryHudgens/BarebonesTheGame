@@ -8,10 +8,11 @@ using Barebones::HumanPlayerBehaviorComponent;
 HumanPlayerBehaviorComponent::HumanPlayerBehaviorComponent()
   : PlayerBehaviorComponent()
 {
+  SetName("Player");
 }
 
 /******************************************************************************/
-void HumanPlayerBehaviorComponent::ProtectedTakeTurn(UrsineEngine::GameObject& aBoard)
+void HumanPlayerBehaviorComponent::TakeTurn(UrsineEngine::GameObject& aBoard)
 {
   // Enable the input component.
   auto parent = GetParent();

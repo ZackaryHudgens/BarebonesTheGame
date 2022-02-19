@@ -16,15 +16,13 @@ namespace Barebones
        */
       HumanPlayerBehaviorComponent();
 
-    protected:
-
       /**
        * A function that gets called whenever it becomes this
        * player's turn.
        *
        * @param aBoard The board to take a turn on.
        */
-      void ProtectedTakeTurn(UrsineEngine::GameObject& aBoard) override;
+      void TakeTurn(UrsineEngine::GameObject& aBoard) override;
 
       /**
        * A function that gets called whenever this player's turn

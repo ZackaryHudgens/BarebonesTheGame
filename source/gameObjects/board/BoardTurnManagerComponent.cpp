@@ -1,6 +1,9 @@
 #include "BoardTurnManagerComponent.hpp"
 
+#include <Environment.hpp>
 #include <GameObject.hpp>
+
+#include "TurnDisplayComponent.hpp"
 
 using Barebones::BoardTurnManagerComponent;
 
@@ -8,16 +11,29 @@ using Barebones::BoardTurnManagerComponent;
 BoardTurnManagerComponent::BoardTurnManagerComponent()
   : Component()
 {
+  TurnDisplayFinished.Connect(*this, [this]()
+  {
+    this->HandleTurnDisplayFinished();
+  });
 }
 
 /******************************************************************************/
 void BoardTurnManagerComponent::Start()
 {
-  auto parent = GetParent();
-  if(!mTurnTracker.empty() &&
-     parent != nullptr)
+  if(!mTurnTracker.empty())
   {
-    mTurnTracker.front()->TakeTurn(*parent);
+    // Create a turn display and add it to the scene. When the turn display
+    // is finished, the player in the front of the turn tracker will take their turn.
+    auto turnDisplay = std::make_unique<UrsineEngine::GameObject>("turnDisplay");
+    turnDisplay->AddComponent(std::make_unique<TurnDisplayComponent>());
+
+    auto scene = env.GetCurrentScene();
+    if(scene != nullptr)
+    {
+      scene->AddObject(std::move(turnDisplay));
+    }
+
+    PlayerTurnBegan.Notify(*mTurnTracker.front());
   }
 }
 
@@ -51,12 +67,24 @@ void BoardTurnManagerComponent::HandlePlayerTurnEnded(PlayerBehaviorComponent& a
       // Remove the player at the front of the turns list.
       mTurnTracker.erase(mTurnTracker.begin());
 
-      // Finally, tell the next player to take their turn.
-      auto parent = GetParent();
-      if(parent != nullptr)
-      {
-        mTurnTracker.front()->TakeTurn(*parent);
-      }
+      // Finally, tell the turn tracker that the next player
+      // is about to begin their turn.
+      PlayerTurnBegan.Notify(*mTurnTracker.front());
     }
   }
 }
+
+/******************************************************************************/
+void BoardTurnManagerComponent::HandleTurnDisplayFinished()
+{
+  auto parent = GetParent();
+  if(!mTurnTracker.empty() &&
+     parent != nullptr)
+  {
+    mTurnTracker.front()->TakeTurn(*parent);
+  }
+}
+
+/******************************************************************************/
+Barebones::PlayerTurnBeganSignal Barebones::PlayerTurnBegan;
+Barebones::PlayerTurnEndedSignal Barebones::PlayerTurnEnded;

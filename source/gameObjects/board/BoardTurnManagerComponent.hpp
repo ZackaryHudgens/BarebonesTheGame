@@ -2,6 +2,7 @@
 #define BOARDTURNMANAGERCOMPONENT_HPP
 
 #include <Component.hpp>
+#include <Signal.hpp>
 
 #include "PlayerBehaviorComponent.hpp"
 
@@ -41,8 +42,20 @@ namespace Barebones
        */
       void HandlePlayerTurnEnded(PlayerBehaviorComponent& aPlayer);
 
+      /**
+       * A handler function that gets called whenever the turn
+       * display finishes its animation.
+       */
+      void HandleTurnDisplayFinished();
+
       std::vector<PlayerBehaviorComponent*> mTurnTracker;
   };
+
+  typedef UrsineEngine::SignalT<PlayerBehaviorComponent&> PlayerTurnBeganSignal;
+  typedef UrsineEngine::SignalT<PlayerBehaviorComponent&> PlayerTurnEndedSignal;
+
+  extern PlayerTurnBeganSignal   PlayerTurnBegan;
+  extern PlayerTurnEndedSignal   PlayerTurnEnded;
 }
 
 #endif
