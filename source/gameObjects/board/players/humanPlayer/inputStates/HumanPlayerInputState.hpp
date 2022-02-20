@@ -15,9 +15,9 @@ namespace Barebones
       /**
        * Constructor.
        *
-       * @param aBoard The board that is currently in use.
+       * @param aPlayer The player GameObject to handle input for.
        */
-      HumanPlayerInputState(UrsineEngine::GameObject& aBoard);
+      HumanPlayerInputState(UrsineEngine::GameObject& aPlayer);
 
       /**
        * A virtual function that gets called whenever the user presses
@@ -56,14 +56,14 @@ namespace Barebones
     protected:
 
       /**
-       * Returns the board GameObject.
+       * Returns the player GameObject.
        *
-       * @return The board GameObject.
+       * @return The player GameObject.
        */
-      UrsineEngine::GameObject* GetBoard() { return mBoard; }
+      UrsineEngine::GameObject* GetPlayer() { return mPlayer; }
 
     private:
-      UrsineEngine::GameObject* mBoard;
+      UrsineEngine::GameObject* mPlayer;
   };
 }
 

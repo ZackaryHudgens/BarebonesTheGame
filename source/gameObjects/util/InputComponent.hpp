@@ -41,6 +41,15 @@ namespace Barebones
        */
       virtual void HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
                                      int aMods) {}
+
+    protected:
+
+      /**
+       * A virtual function that gets called in Initialize(). Should
+       * be overridden if there is any functionality needed by inheriting
+       * classes.
+       */
+      virtual void ProtectedInitialize() {}
   };
 
   typedef UrsineEngine::SignalT<InputComponent&> InputComponentInitializedSignal;

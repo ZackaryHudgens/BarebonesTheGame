@@ -11,6 +11,13 @@ PlayerBehaviorComponent::PlayerBehaviorComponent()
 }
 
 /******************************************************************************/
+void PlayerBehaviorComponent::TakeTurn()
+{
+  ProtectedTakeTurn();
+  PlayerTurnBegan.Notify(*this);
+}
+
+/******************************************************************************/
 void PlayerBehaviorComponent::EndTurn()
 {
   ProtectedEndTurn();

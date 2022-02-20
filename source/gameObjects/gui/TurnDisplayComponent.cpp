@@ -101,7 +101,6 @@ void TurnDisplayComponent::Update()
     double totalTime = env.GetTime() - mInitialDisplayTime;
     if(totalTime >= mDisplayTime)
     {
-      TurnDisplayFinished.Notify();
       mDisplayingText = false;
 
       auto parent = GetParent();
@@ -135,6 +134,3 @@ void TurnDisplayComponent::HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlaye
     }
   }
 }
-
-/******************************************************************************/
-Barebones::TurnDisplayFinishedSignal Barebones::TurnDisplayFinished;

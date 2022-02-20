@@ -11,6 +11,7 @@ InputComponent::InputComponent()
 /******************************************************************************/
 void InputComponent::Initialize()
 {
+  ProtectedInitialize();
   InputComponentInitialized.Notify(*this);
 }
 

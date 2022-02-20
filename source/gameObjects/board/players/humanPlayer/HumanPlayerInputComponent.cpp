@@ -19,12 +19,6 @@ HumanPlayerInputComponent::HumanPlayerInputComponent()
 }
 
 /******************************************************************************/
-void HumanPlayerInputComponent::SetBoard(UrsineEngine::GameObject& aBoard)
-{
-  mState = std::make_unique<HumanPlayerDefaultInputState>(aBoard);
-}
-
-/******************************************************************************/
 void HumanPlayerInputComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
                                                  int aMods)
 {
@@ -53,6 +47,17 @@ void HumanPlayerInputComponent::HandleKeyRepeated(const UrsineEngine::KeyCode& a
     {
       mState.swap(newState);
     }
+  }
+}
+
+/******************************************************************************/
+void HumanPlayerInputComponent::ProtectedInitialize()
+{
+  // Initialize the player in the default state.
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    mState = std::make_unique<HumanPlayerDefaultInputState>(*parent);
   }
 }
 

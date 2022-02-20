@@ -14,10 +14,10 @@ namespace Barebones
       /**
        * Constructor.
        *
-       * @param aBoard The board that is currently in use.
+       * @param aPlayer The player GameObject to handle input for.
        * @param aSkill The skill that is being used.
        */
-      HumanPlayerUsingSkillInputState(UrsineEngine::GameObject& aBoard,
+      HumanPlayerUsingSkillInputState(UrsineEngine::GameObject& aPlayer,
                                       CharacterSkillComponent& aSkill);
 
       /**

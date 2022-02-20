@@ -23,15 +23,12 @@ namespace Barebones
       std::string GetName() const { return mName; }
 
       /**
-       * A virtual function that gets called whenever it becomes this
-       * player's turn. Should be overridden by inheriting classes.
-       *
-       * @param aBoard The board to take a turn on.
+       * Tells the player to take a turn.
        */
-      virtual void TakeTurn(UrsineEngine::GameObject& aBoard) = 0;
+      void TakeTurn();
 
       /**
-       * Ends the player's turn and notifies the PlayerTurnEnded signal.
+       * Ends the player's turn.
        */
       void EndTurn();
 
@@ -43,6 +40,12 @@ namespace Barebones
        * @param aName The new name of the player.
        */
       void SetName(const std::string& aName) { mName = aName; }
+
+      /**
+       * A virtual function that gets called whenever this player's turn
+       * begins. Should be overridden by inheriting classes.
+       */
+      virtual void ProtectedTakeTurn() {}
 
       /**
        * A virtual function that gets called whenever this player's turn

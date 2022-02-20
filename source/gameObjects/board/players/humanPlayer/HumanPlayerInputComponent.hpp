@@ -28,13 +28,6 @@ namespace Barebones
       void SetEnabled(bool aEnabled) { mEnabled = aEnabled; }
 
       /**
-       * Sets the board to use when handling input.
-       *
-       * @param The board to use.
-       */
-      void SetBoard(UrsineEngine::GameObject& aBoard);
-
-      /**
        * A handler function that gets called whenever the user presses
        * a key.
        *
@@ -57,6 +50,12 @@ namespace Barebones
                              int aMods) override;
 
     private:
+
+      /**
+       * A function that gets called from the InputComponent's
+       * Initialize() function.
+       */
+      void ProtectedInitialize() override;
 
       /**
        * A handler function that gets called whenever the user

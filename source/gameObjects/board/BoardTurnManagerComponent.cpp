@@ -11,10 +11,6 @@ using Barebones::BoardTurnManagerComponent;
 BoardTurnManagerComponent::BoardTurnManagerComponent()
   : Component()
 {
-  TurnDisplayFinished.Connect(*this, [this]()
-  {
-    this->HandleTurnDisplayFinished();
-  });
 }
 
 /******************************************************************************/
@@ -22,8 +18,7 @@ void BoardTurnManagerComponent::Start()
 {
   if(!mTurnTracker.empty())
   {
-    // Create a turn display and add it to the scene. When the turn display
-    // is finished, the player in the front of the turn tracker will take their turn.
+    // Create a turn display and add it to the scene.
     auto turnDisplay = std::make_unique<UrsineEngine::GameObject>("turnDisplay");
     turnDisplay->AddComponent(std::make_unique<TurnDisplayComponent>());
 
@@ -33,7 +28,8 @@ void BoardTurnManagerComponent::Start()
       scene->AddObject(std::move(turnDisplay));
     }
 
-    PlayerTurnBegan.Notify(*mTurnTracker.front());
+    // Next, start the turn tracker.
+    mTurnTracker.front()->TakeTurn();
   }
 }
 
@@ -67,21 +63,9 @@ void BoardTurnManagerComponent::HandlePlayerTurnEnded(PlayerBehaviorComponent& a
       // Remove the player at the front of the turns list.
       mTurnTracker.erase(mTurnTracker.begin());
 
-      // Finally, tell the turn tracker that the next player
-      // is about to begin their turn.
-      PlayerTurnBegan.Notify(*mTurnTracker.front());
+      // Finally, tell the next player to take their turn.
+      mTurnTracker.front()->TakeTurn();
     }
-  }
-}
-
-/******************************************************************************/
-void BoardTurnManagerComponent::HandleTurnDisplayFinished()
-{
-  auto parent = GetParent();
-  if(!mTurnTracker.empty() &&
-     parent != nullptr)
-  {
-    mTurnTracker.front()->TakeTurn(*parent);
   }
 }
 

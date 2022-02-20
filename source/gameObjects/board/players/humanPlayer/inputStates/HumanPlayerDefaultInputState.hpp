@@ -12,9 +12,9 @@ namespace Barebones
       /**
        * Constructor.
        *
-       * @param aBoard The board that is currently in use.
+       * @param aPlayer The player GameObject to handle input for.
        */
-      HumanPlayerDefaultInputState(UrsineEngine::GameObject& aBoard);
+      HumanPlayerDefaultInputState(UrsineEngine::GameObject& aPlayer);
 
       /**
        * A handler function that gets called whenever the user presses

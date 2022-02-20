@@ -3,7 +3,7 @@
 using Barebones::HumanPlayerInputState;
 
 /******************************************************************************/
-HumanPlayerInputState::HumanPlayerInputState(UrsineEngine::GameObject& aBoard)
-  : mBoard(&aBoard)
+HumanPlayerInputState::HumanPlayerInputState(UrsineEngine::GameObject& aPlayer)
+  : mPlayer(&aPlayer)
 {
 }

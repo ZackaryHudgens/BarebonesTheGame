@@ -16,8 +16,8 @@
 using Barebones::HumanPlayerDefaultInputState;
 
 /******************************************************************************/
-HumanPlayerDefaultInputState::HumanPlayerDefaultInputState(UrsineEngine::GameObject& aBoard)
-  : HumanPlayerInputState(aBoard)
+HumanPlayerDefaultInputState::HumanPlayerDefaultInputState(UrsineEngine::GameObject& aPlayer)
+  : HumanPlayerInputState(aPlayer)
 {
 }
 
@@ -27,56 +27,64 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
 {
   std::unique_ptr<HumanPlayerInputState> newState = nullptr;
 
-  auto layoutComponent = GetBoard()->GetFirstComponentOfType<BoardLayoutComponent>();
-  if(layoutComponent != nullptr)
+  auto player = GetPlayer();
+  if(player != nullptr)
   {
-    auto currentLocation = layoutComponent->GetPlayerLocation();
-
-    switch(aCode)
+    auto board = player->GetParent();
+    if(board != nullptr)
     {
-      case UrsineEngine::KeyCode::eKEY_UP:
-      case UrsineEngine::KeyCode::eKEY_W:
+      auto layoutComponent = board->GetFirstComponentOfType<BoardLayoutComponent>();
+      if(layoutComponent != nullptr)
       {
-        layoutComponent->SetPlayerLocation(TileLocation(currentLocation.first,
-                                                        currentLocation.second + 1));
-        break;
-      }
-      case UrsineEngine::KeyCode::eKEY_DOWN:
-      case UrsineEngine::KeyCode::eKEY_S:
-      {
-        layoutComponent->SetPlayerLocation(TileLocation(currentLocation.first,
-                                                        currentLocation.second - 1));
-        break;
-      }
-      case UrsineEngine::KeyCode::eKEY_LEFT:
-      case UrsineEngine::KeyCode::eKEY_A:
-      {
-        layoutComponent->SetPlayerLocation(TileLocation(currentLocation.first - 1,
-                                                        currentLocation.second));
-        break;
-      }
-      case UrsineEngine::KeyCode::eKEY_RIGHT:
-      case UrsineEngine::KeyCode::eKEY_D:
-      {
-        layoutComponent->SetPlayerLocation(TileLocation(currentLocation.first + 1,
-                                                        currentLocation.second));
-        break;
-      }
-      case UrsineEngine::KeyCode::eKEY_ENTER:
-      {
-        // If there is a character at the player's current location,
-        // then create a menu containing all of that character's
-        // available skills.
-        auto character = layoutComponent->GetCharacterAtLocation(currentLocation);
-        if(character != nullptr)
+        auto currentLocation = layoutComponent->GetPlayerLocation();
+
+        switch(aCode)
         {
-          CreateSkillMenu(*character);
+          case UrsineEngine::KeyCode::eKEY_UP:
+          case UrsineEngine::KeyCode::eKEY_W:
+          {
+            layoutComponent->SetPlayerLocation(TileLocation(currentLocation.first,
+                                                            currentLocation.second + 1));
+            break;
+          }
+          case UrsineEngine::KeyCode::eKEY_DOWN:
+          case UrsineEngine::KeyCode::eKEY_S:
+          {
+            layoutComponent->SetPlayerLocation(TileLocation(currentLocation.first,
+                                                            currentLocation.second - 1));
+            break;
+          }
+          case UrsineEngine::KeyCode::eKEY_LEFT:
+          case UrsineEngine::KeyCode::eKEY_A:
+          {
+            layoutComponent->SetPlayerLocation(TileLocation(currentLocation.first - 1,
+                                                            currentLocation.second));
+            break;
+          }
+          case UrsineEngine::KeyCode::eKEY_RIGHT:
+          case UrsineEngine::KeyCode::eKEY_D:
+          {
+            layoutComponent->SetPlayerLocation(TileLocation(currentLocation.first + 1,
+                                                            currentLocation.second));
+            break;
+          }
+          case UrsineEngine::KeyCode::eKEY_ENTER:
+          {
+            // If there is a character at the player's current location,
+            // then create a menu containing all of that character's
+            // available skills.
+            auto character = layoutComponent->GetCharacterAtLocation(currentLocation);
+            if(character != nullptr)
+            {
+              CreateSkillMenu(*character);
+            }
+            break;
+          }
+          default:
+          {
+            break;
+          }
         }
-        break;
-      }
-      default:
-      {
-        break;
       }
     }
   }
@@ -110,9 +118,16 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
 /******************************************************************************/
 std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::HandleSkillSelected(CharacterSkillComponent& aSkill)
 {
+  std::unique_ptr<HumanPlayerInputState> newState = nullptr;
+
   // When a skill is selected, swap to the Using Skill input state.
-  auto newState = std::make_unique<HumanPlayerUsingSkillInputState>(*GetBoard(),
-                                                                    aSkill);
+  auto player = GetPlayer();
+  if(player != nullptr)
+  {
+    newState = std::make_unique<HumanPlayerUsingSkillInputState>(*player,
+                                                                 aSkill);
+  }
+
   return newState;
 }
 
