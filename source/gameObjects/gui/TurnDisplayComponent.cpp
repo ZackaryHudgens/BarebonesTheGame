@@ -84,7 +84,7 @@ void TurnDisplayComponent::Initialize()
                                 uiFrag);
     shader.Activate();
     shader.SetFloat("opacity",
-                    0.6f);
+                    0.0f);
     background->AddShader("defaultShader",
                           shader);
     background->SetCurrentShader("defaultShader");
@@ -113,6 +113,7 @@ void TurnDisplayComponent::Update()
         auto shader = mBackground->GetCurrentShader();
         if(shader != nullptr)
         {
+          shader->Activate();
           shader->SetFloat("opacity",
                            0.0f);
         }
@@ -133,6 +134,7 @@ void TurnDisplayComponent::DisplayMessageForPlayer(PlayerBehaviorComponent& aPla
     ss << aPlayer.GetName() << "'s Turn";
     mNameText->SetText(ss.str());
 
+    mBackground->GetCurrentShader()->Activate();
     mBackground->GetCurrentShader()->SetFloat("opacity",
                                               0.6f);
 
