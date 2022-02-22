@@ -93,9 +93,10 @@ void BoardTurnManagerComponent::HandleTurnDisplayFinished(TurnDisplayComponent& 
   {
     if(!mTurnTracker.empty())
     {
+      mWaitingForDisplay = false;
+
       // Tell the player in front to take their turn.
       mTurnTracker.front()->TakeTurn();
-      mWaitingForDisplay = false;
     }
   }
 }
