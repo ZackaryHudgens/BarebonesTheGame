@@ -1,5 +1,6 @@
 #include "PlayerFactory.hpp"
 
+#include "AIPlayerBehaviorComponent.hpp"
 #include "HumanPlayerBehaviorComponent.hpp"
 #include "HumanPlayerInputComponent.hpp"
 
@@ -15,6 +16,7 @@ std::unique_ptr<UrsineEngine::GameObject> PlayerFactory::CreatePlayer(const Play
   {
     case PlayerType::eARTIFICIAL:
     {
+      newPlayer->AddComponent(std::make_unique<AIPlayerBehaviorComponent>());
       break;
     }
     case PlayerType::eHUMAN:

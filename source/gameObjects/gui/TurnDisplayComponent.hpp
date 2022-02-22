@@ -2,6 +2,8 @@
 #define TURNDISPLAYCOMPONENT_HPP
 
 #include <Component.hpp>
+#include <Signal.hpp>
+#include <TextComponent.hpp>
 
 #include "PlayerBehaviorComponent.hpp"
 
@@ -26,20 +28,25 @@ namespace Barebones
        */
       void Update() override;
 
-    private:
-      
       /**
-       * A handler function that gets called whenever a player's turn begins.
+       * Displays a "turn began" message for the given player.
        *
        * @param aPlayer The player whose turn began.
        */
-      void HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlayer);
+      void DisplayMessageForPlayer(PlayerBehaviorComponent& aPlayer);
+
+    private:
+      UrsineEngine::TextComponent* mNameText;
+      UrsineEngine::MeshComponent* mBackground;
 
       double mDisplayTime;
       double mInitialDisplayTime;
 
-      bool mDisplayingText;
+      bool mDisplaying;
   };
+
+  typedef UrsineEngine::SignalT<TurnDisplayComponent&> TurnDisplayFinishedSignal;
+  extern TurnDisplayFinishedSignal TurnDisplayFinished;
 }
 
 #endif

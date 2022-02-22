@@ -33,6 +33,7 @@ int main()
   auto board = Barebones::BoardFactory::CreateBoard("board");
   auto boardComp = board->GetFirstComponentOfType<Barebones::BoardLayoutComponent>();
   auto turnManager = board->GetFirstComponentOfType<Barebones::BoardTurnManagerComponent>();
+  turnManager->AddPlayer(Barebones::PlayerFactory::CreatePlayer(Barebones::PlayerType::eARTIFICIAL, "artificialPlayer"));
   turnManager->AddPlayer(Barebones::PlayerFactory::CreatePlayer(Barebones::PlayerType::eHUMAN, "humanPlayer"));
 
   auto skeleton = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_SKELETON, "skeleton");

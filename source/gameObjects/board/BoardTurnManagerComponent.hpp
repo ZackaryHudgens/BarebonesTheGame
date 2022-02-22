@@ -5,6 +5,7 @@
 #include <Signal.hpp>
 
 #include "PlayerBehaviorComponent.hpp"
+#include "TurnDisplayComponent.hpp"
 
 namespace Barebones
 {
@@ -16,6 +17,11 @@ namespace Barebones
        * Constructor.
        */
       BoardTurnManagerComponent();
+
+      /**
+       * Initializes the component.
+       */
+      void Initialize() override;
 
       /**
        * "Starts" the turn manager by making the first player take
@@ -45,10 +51,15 @@ namespace Barebones
       /**
        * A handler function that gets called whenever the turn
        * display finishes its animation.
+       *
+       * @param aDisplay The display in question.
        */
-      void HandleTurnDisplayFinished();
+      void HandleTurnDisplayFinished(TurnDisplayComponent& aDisplay);
 
       std::vector<PlayerBehaviorComponent*> mTurnTracker;
+      TurnDisplayComponent* mTurnDisplay;
+
+      bool mWaitingForDisplay;
   };
 
   typedef UrsineEngine::SignalT<PlayerBehaviorComponent&> PlayerTurnBeganSignal;

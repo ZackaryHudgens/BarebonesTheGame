@@ -8,19 +8,19 @@
 
 #include "BoardTurnManagerComponent.hpp"
 
+#include <iostream>
+
 using Barebones::TurnDisplayComponent;
 
 /******************************************************************************/
 TurnDisplayComponent::TurnDisplayComponent()
   : Component()
+  , mNameText(nullptr)
+  , mBackground(nullptr)
   , mDisplayTime(2.0)
   , mInitialDisplayTime(0.0)
-  , mDisplayingText(false)
+  , mDisplaying(false)
 {
-  PlayerTurnBegan.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
-  {
-    this->HandlePlayerTurnBegan(aPlayer);
-  });
 }
 
 /******************************************************************************/
@@ -41,6 +41,8 @@ void TurnDisplayComponent::Initialize()
     auto nameObject = std::make_unique<UrsineEngine::GameObject>("playerName");
     nameObject->AddComponent(std::move(playerName));
     parent->AddChild(std::move(nameObject));
+
+    mNameText = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::TextComponent>();
 
     // Add the transparent black background.
     auto background = std::make_unique<UrsineEngine::MeshComponent>();
@@ -90,47 +92,54 @@ void TurnDisplayComponent::Initialize()
     auto backgroundObject = std::make_unique<UrsineEngine::GameObject>("turnDisplayBackground");
     backgroundObject->AddComponent(std::move(background));
     parent->AddChild(std::move(backgroundObject));
+
+    mBackground = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
   }
 }
 
 /******************************************************************************/
 void TurnDisplayComponent::Update()
 {
-  if(mDisplayingText)
+  if(mDisplaying)
   {
     double totalTime = env.GetTime() - mInitialDisplayTime;
     if(totalTime >= mDisplayTime)
     {
-      mDisplayingText = false;
+      mDisplaying = false;
 
-      auto parent = GetParent();
-      if(parent != nullptr)
+      if(mBackground != nullptr &&
+         mNameText != nullptr)
       {
-        parent->ScheduleForDeletion();
+        auto shader = mBackground->GetCurrentShader();
+        if(shader != nullptr)
+        {
+          shader->SetFloat("opacity",
+                           0.0f);
+        }
+        mNameText->SetText("");
       }
+
+      TurnDisplayFinished.Notify(*this);
     }
   }
 }
 
 /******************************************************************************/
-void TurnDisplayComponent::HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlayer)
+void TurnDisplayComponent::DisplayMessageForPlayer(PlayerBehaviorComponent& aPlayer)
 {
-  auto parent = GetParent();
-  if(parent != nullptr)
+  if(mNameText != nullptr)
   {
-    auto playerName = parent->GetChild("playerName");
-    if(playerName != nullptr)
-    {
-      auto playerNameText = playerName->GetFirstComponentOfType<UrsineEngine::TextComponent>();
-      if(playerNameText != nullptr)
-      {
-        std::stringstream ss;
-        ss << aPlayer.GetName() << "'s Turn";
-        playerNameText->SetText(ss.str());
+    std::stringstream ss;
+    ss << aPlayer.GetName() << "'s Turn";
+    mNameText->SetText(ss.str());
 
-        mDisplayingText = true;
-        mInitialDisplayTime = env.GetTime();
-      }
-    }
+    mBackground->GetCurrentShader()->SetFloat("opacity",
+                                              0.6f);
+
+    mDisplaying = true;
+    mInitialDisplayTime = env.GetTime();
   }
 }
+
+/******************************************************************************/
+Barebones::TurnDisplayFinishedSignal Barebones::TurnDisplayFinished;
