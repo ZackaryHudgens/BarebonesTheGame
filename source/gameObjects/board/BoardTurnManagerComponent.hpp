@@ -19,9 +19,9 @@ namespace Barebones
       BoardTurnManagerComponent();
 
       /**
-       * Initializes the component.
+       * Loads the component.
        */
-      void Initialize() override;
+      void Load() override;
 
       /**
        * "Starts" the turn manager by making the first player take

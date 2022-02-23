@@ -22,18 +22,24 @@ BoardTurnManagerComponent::BoardTurnManagerComponent()
 }
 
 /******************************************************************************/
-void BoardTurnManagerComponent::Initialize()
+void BoardTurnManagerComponent::Load()
 {
   auto parent = GetParent();
-  if(parent != nullptr)
+  auto scene = env.GetCurrentScene();
+  if(parent != nullptr &&
+     scene != nullptr)
   {
     // Create a turn display and add it as a child object.
     auto turnDisplay = std::make_unique<UrsineEngine::GameObject>("turnDisplay");
     turnDisplay->AddComponent(std::make_unique<TurnDisplayComponent>());
     turnDisplay->SetPosition(glm::vec3(0.0, 0.0, 0.1));
-    parent->AddChild(std::move(turnDisplay));
 
-    mTurnDisplay = parent->GetChildren().back()->GetFirstComponentOfType<TurnDisplayComponent>();
+    auto canvas = scene->GetCanvas();
+    if(canvas != nullptr)
+    {
+      canvas->AddChild(std::move(turnDisplay));
+      mTurnDisplay = canvas->GetChildren().back()->GetFirstComponentOfType<TurnDisplayComponent>();
+    }
   }
 }
 

@@ -161,7 +161,7 @@ void HumanPlayerDefaultInputState::CreateSkillMenu(UrsineEngine::GameObject& aOb
     auto scene = env.GetCurrentScene();
     if(scene != nullptr)
     {
-      scene->AddObject(std::move(menu));
+      scene->GetCanvas()->AddChild(std::move(menu));
     }
   }
 }
