@@ -157,6 +157,9 @@ void DefaultTileMeshComponent::SetupVertices()
 /******************************************************************************/
 void DefaultTileMeshComponent::SetupTextures()
 {
+  UrsineEngine::Texture brickTexture;
+  brickTexture.CreateTextureFromFile("resources/sprites/basicBrick.png");
+  AddTexture(brickTexture);
 }
 
 /******************************************************************************/
