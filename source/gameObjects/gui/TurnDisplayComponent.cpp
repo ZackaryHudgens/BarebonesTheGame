@@ -8,8 +8,6 @@
 
 #include "BoardTurnManagerComponent.hpp"
 
-#include <iostream>
-
 using Barebones::TurnDisplayComponent;
 
 /******************************************************************************/
@@ -17,7 +15,7 @@ TurnDisplayComponent::TurnDisplayComponent()
   : Component()
   , mNameText(nullptr)
   , mBackground(nullptr)
-  , mDisplayTime(2.0)
+  , mDisplayTime(1.0)
   , mInitialDisplayTime(0.0)
   , mDisplaying(false)
 {
@@ -120,7 +118,12 @@ void TurnDisplayComponent::Update()
         mNameText->SetText("");
       }
 
-      TurnDisplayFinished.Notify(*this);
+      auto parent = GetParent();
+      if(parent != nullptr)
+      {
+        parent->ScheduleForDeletion();
+        TurnDisplayFinished.Notify(*this);
+      }
     }
   }
 }

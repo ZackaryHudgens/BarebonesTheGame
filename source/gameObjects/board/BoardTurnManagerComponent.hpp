@@ -19,9 +19,9 @@ namespace Barebones
       BoardTurnManagerComponent();
 
       /**
-       * Loads the component.
+       * Updates the turn manager.
        */
-      void Load() override;
+      void Update() override;
 
       /**
        * "Starts" the turn manager by making the first player take
@@ -39,6 +39,13 @@ namespace Barebones
       void AddPlayer(std::unique_ptr<UrsineEngine::GameObject> aPlayer);
 
     private:
+
+      /**
+       * Creates a turn display and adds it to the current scene's
+       * canvas. When the turn display finishes, the player in
+       * the front of the turn list will take their turn.
+       */
+      void CreateTurnDisplay();
 
       /**
        * A handler function that gets called whenever a player's turn
@@ -60,6 +67,7 @@ namespace Barebones
       TurnDisplayComponent* mTurnDisplay;
 
       bool mWaitingForDisplay;
+      bool mWaitingToTakeTurn;
   };
 
   typedef UrsineEngine::SignalT<PlayerBehaviorComponent&> PlayerTurnBeganSignal;

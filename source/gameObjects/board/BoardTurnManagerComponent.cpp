@@ -8,7 +8,9 @@ using Barebones::BoardTurnManagerComponent;
 /******************************************************************************/
 BoardTurnManagerComponent::BoardTurnManagerComponent()
   : Component()
+  , mTurnDisplay(nullptr)
   , mWaitingForDisplay(false)
+  , mWaitingToTakeTurn(false)
 {
   PlayerTurnEnded.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
   {
@@ -22,24 +24,17 @@ BoardTurnManagerComponent::BoardTurnManagerComponent()
 }
 
 /******************************************************************************/
-void BoardTurnManagerComponent::Load()
+void BoardTurnManagerComponent::Update()
 {
-  auto parent = GetParent();
-  auto scene = env.GetCurrentScene();
-  if(parent != nullptr &&
-     scene != nullptr)
+  // "mWaitingToTakeTurn" is used as a one-frame buffer between the turn display
+  // finishing its animation and the front player taking a turn. This way,
+  // if the player ends their turn in the same frame they started it, the turn
+  // display has already been deleted and nothing breaks.
+  if(mWaitingToTakeTurn &&
+     !mTurnTracker.empty())
   {
-    // Create a turn display and add it as a child object.
-    auto turnDisplay = std::make_unique<UrsineEngine::GameObject>("turnDisplay");
-    turnDisplay->AddComponent(std::make_unique<TurnDisplayComponent>());
-    turnDisplay->SetPosition(glm::vec3(0.0, 0.0, 0.1));
-
-    auto canvas = scene->GetCanvas();
-    if(canvas != nullptr)
-    {
-      canvas->AddChild(std::move(turnDisplay));
-      mTurnDisplay = canvas->GetChildren().back()->GetFirstComponentOfType<TurnDisplayComponent>();
-    }
+    mWaitingToTakeTurn = false;
+    mTurnTracker.front()->TakeTurn();
   }
 }
 
@@ -48,6 +43,9 @@ void BoardTurnManagerComponent::Start()
 {
   if(!mTurnTracker.empty())
   {
+    // Create a turn display and add it to the canvas.
+    CreateTurnDisplay();
+
     // Display a message for the current player. When the message stops displaying,
     // the player's turn will begin.
     if(mTurnDisplay != nullptr)
@@ -76,8 +74,31 @@ void BoardTurnManagerComponent::AddPlayer(std::unique_ptr<UrsineEngine::GameObje
 }
 
 /******************************************************************************/
+void BoardTurnManagerComponent::CreateTurnDisplay()
+{
+  auto scene = env.GetCurrentScene();
+  if(scene != nullptr)
+  {
+    auto canvas = scene->GetCanvas();
+    if(canvas != nullptr)
+    {
+      // Create a turn display and add it to the canvas.
+      auto turnDisplay = std::make_unique<UrsineEngine::GameObject>("turnDisplay");
+      turnDisplay->AddComponent(std::make_unique<TurnDisplayComponent>());
+      canvas->AddChild(std::move(turnDisplay));
+
+      // Keep a reference to the current turn display.
+      mTurnDisplay = canvas->GetChildren().back()->GetFirstComponentOfType<TurnDisplayComponent>();
+    }
+  }
+}
+
+/******************************************************************************/
 void BoardTurnManagerComponent::HandlePlayerTurnEnded(PlayerBehaviorComponent& aPlayer)
 {
+  // Create a new turn display.
+  CreateTurnDisplay();
+
   if(mTurnDisplay != nullptr)
   {
     // First, add a copy of the current player to the end of the turns list.
@@ -99,10 +120,9 @@ void BoardTurnManagerComponent::HandleTurnDisplayFinished(TurnDisplayComponent& 
   {
     if(!mTurnTracker.empty())
     {
+      mTurnDisplay = nullptr;
       mWaitingForDisplay = false;
-
-      // Tell the player in front to take their turn.
-      mTurnTracker.front()->TakeTurn();
+      mWaitingToTakeTurn = true;
     }
   }
 }
