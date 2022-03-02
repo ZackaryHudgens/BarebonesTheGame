@@ -157,11 +157,15 @@ void HumanPlayerDefaultInputState::CreateSkillMenu(UrsineEngine::GameObject& aOb
       }
     }
 
-    // Add the new menu to the current scene.
+    // Add the new menu to the foreground of the current scene.
     auto scene = env.GetCurrentScene();
     if(scene != nullptr)
     {
-      scene->GetCanvas()->AddChild(std::move(menu));
+      auto foreground = scene->GetForeground();
+      if(foreground != nullptr)
+      {
+        foreground->AddChild(std::move(menu));
+      }
     }
   }
 }

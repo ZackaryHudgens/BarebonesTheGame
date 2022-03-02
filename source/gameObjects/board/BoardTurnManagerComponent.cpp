@@ -79,16 +79,16 @@ void BoardTurnManagerComponent::CreateTurnDisplay()
   auto scene = env.GetCurrentScene();
   if(scene != nullptr)
   {
-    auto canvas = scene->GetCanvas();
-    if(canvas != nullptr)
+    auto foreground = scene->GetForeground();
+    if(foreground != nullptr)
     {
-      // Create a turn display and add it to the canvas.
+      // Create a turn display and add it to the foreground.
       auto turnDisplay = std::make_unique<UrsineEngine::GameObject>("turnDisplay");
       turnDisplay->AddComponent(std::make_unique<TurnDisplayComponent>());
-      canvas->AddChild(std::move(turnDisplay));
+      foreground->AddChild(std::move(turnDisplay));
 
       // Keep a reference to the current turn display.
-      mTurnDisplay = canvas->GetChildren().back()->GetFirstComponentOfType<TurnDisplayComponent>();
+      mTurnDisplay = foreground->GetChildren().back()->GetFirstComponentOfType<TurnDisplayComponent>();
     }
   }
 }
