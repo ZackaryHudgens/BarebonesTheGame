@@ -13,6 +13,8 @@
 
 #include "PlayerFactory.hpp"
 
+#include "BackgroundSpriteComponent.hpp"
+
 int main()
 {
   UrsineEngine::GraphicsOptions options;
@@ -29,6 +31,9 @@ int main()
 
   auto inputManager = std::make_unique<UrsineEngine::GameObject>("inputManager");
   inputManager->AddComponent(std::make_unique<Barebones::InputManagerComponent>());
+
+  auto background = std::make_unique<UrsineEngine::GameObject>("background");
+  background->AddComponent(std::make_unique<Barebones::BackgroundSpriteComponent>());
 
   auto board = Barebones::BoardFactory::CreateBoard("board");
   auto boardComp = board->GetFirstComponentOfType<Barebones::BoardLayoutComponent>();
@@ -71,6 +76,7 @@ int main()
   UrsineEngine::Scene newScene;
 
   newScene.AddObject(std::move(inputManager));
+  newScene.GetBackground()->AddChild(std::move(background));
 
   auto cam = newScene.GetDefaultCamera();
   cam->AddComponent(std::make_unique<Barebones::CameraBehaviorComponent>());

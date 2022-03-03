@@ -1,11 +1,12 @@
 file(GLOB GAME_SOURCES main.cpp
-                       gameObjects/board/*.?pp
-                       gameObjects/board/players/*.?pp
-                       gameObjects/board/players/aiPlayer/*.?pp
-                       gameObjects/board/players/humanPlayer/*.?pp
-                       gameObjects/board/players/humanPlayer/inputStates/*.?pp
-                       gameObjects/board/tiles/*.?pp
-                       gameObjects/board/tiles/defaultTile/*.?pp
+                       gameObjects/world/*.?pp
+                       gameObjects/world/board/*.?pp
+                       gameObjects/world/board/players/*.?pp
+                       gameObjects/world/board/players/aiPlayer/*.?pp
+                       gameObjects/world/board/players/humanPlayer/*.?pp
+                       gameObjects/world/board/players/humanPlayer/inputStates/*.?pp
+                       gameObjects/world/board/tiles/*.?pp
+                       gameObjects/world/board/tiles/defaultTile/*.?pp
                        gameObjects/camera/*.?pp
                        gameObjects/characters/*.?pp
                        gameObjects/characters/enemies/basicHuman/*.?pp
@@ -22,13 +23,14 @@ target_link_libraries(barebones PUBLIC
                       ${URSINE_LIBRARIES})
 target_include_directories(barebones PUBLIC
                            ${URSINE_INCLUDE_DIRS}
-                           gameObjects/board
-                           gameObjects/board/players
-                           gameObjects/board/players/aiPlayer
-                           gameObjects/board/players/humanPlayer
-                           gameObjects/board/players/humanPlayer/inputStates
-                           gameObjects/board/tiles
-                           gameObjects/board/tiles/defaultTile
+                           gameObjects/world
+                           gameObjects/world/board
+                           gameObjects/world/board/players
+                           gameObjects/world/board/players/aiPlayer
+                           gameObjects/world/board/players/humanPlayer
+                           gameObjects/world/board/players/humanPlayer/inputStates
+                           gameObjects/world/board/tiles
+                           gameObjects/world/board/tiles/defaultTile
                            gameObjects/camera
                            gameObjects/characters
                            gameObjects/characters/enemies/basicHuman
