@@ -77,6 +77,13 @@ Barebones::TileList CharacterBehaviorComponent::GetMovements(UrsineEngine::GameO
 }
 
 /******************************************************************************/
+void CharacterBehaviorComponent::DealDamage(int aDamage)
+{
+  int newHealth = GetCurrentHealth() - aDamage;
+  SetCurrentHealth(newHealth);
+}
+
+/******************************************************************************/
 void CharacterBehaviorComponent::SetMaximumHealth(int aHealth)
 {
   mMaximumHealth = aHealth;

@@ -53,6 +53,15 @@ namespace Barebones
                                     const TileLocation& aLocation) const;
 
       /**
+       * Deals the given amount of damage to this character's health.
+       * Depending on any effects on this character, the actual amount of
+       * damage may be less or more than the given value.
+       *
+       * @param aDamage The amount of damage to deal.
+       */
+      void DealDamage(int aDamage);
+
+      /**
        * Returns the maximum health value of this character.
        *
        * @return This character's maximum health.

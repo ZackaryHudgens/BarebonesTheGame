@@ -55,6 +55,14 @@ bool SlashSkillComponent::IsTileValid(UrsineEngine::GameObject& aBoard,
 /******************************************************************************/
 void SlashSkillComponent::ProtectedSelect()
 {
+  auto character = GetParent();
+  if(character != nullptr)
+  {
+    auto board = character->GetParent();
+    if(board != nullptr)
+    {
+    }
+  }
 }
 
 /******************************************************************************/

@@ -9,7 +9,9 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/world/board/tiles/defaultTile/*.?pp
                        gameObjects/camera/*.?pp
                        gameObjects/characters/*.?pp
+                       gameObjects/characters/enemies/*.?pp
                        gameObjects/characters/enemies/basicHuman/*.?pp
+                       gameObjects/characters/skeletons/*.?pp
                        gameObjects/characters/skeletons/basicSkeleton/*.?pp
                        gameObjects/gui/*.?pp
                        gameObjects/gui/actions/*.?pp
@@ -33,7 +35,9 @@ target_include_directories(barebones PUBLIC
                            gameObjects/world/board/tiles/defaultTile
                            gameObjects/camera
                            gameObjects/characters
+                           gameObjects/characters/enemies
                            gameObjects/characters/enemies/basicHuman
+                           gameObjects/characters/skeletons
                            gameObjects/characters/skeletons/basicSkeleton
                            gameObjects/gui
                            gameObjects/gui/actions
