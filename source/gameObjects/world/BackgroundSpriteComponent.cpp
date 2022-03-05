@@ -2,6 +2,8 @@
 
 #include <Environment.hpp>
 
+#include <iostream>
+
 using Barebones::BackgroundSpriteComponent;
 
 /******************************************************************************/
@@ -18,6 +20,27 @@ void BackgroundSpriteComponent::Initialize()
   texture.CreateTextureFromFile("resources/sprites/tempBG.png");
   SetTexture(texture);
 
+  GetVertices().clear();
+  auto width = env.GetGraphicsOptions().mOverlayWidth;
+  auto height = env.GetGraphicsOptions().mOverlayHeight;
+
+  UrsineEngine::MeshVertex vertex;
+  vertex.mPosition = glm::vec3(0.0, 0.0, 0.0);
+  vertex.mTexCoords = glm::vec2(0.0, 0.0);
+  AddVertex(vertex);
+
+  vertex.mPosition = glm::vec3(width, 0.0, 0.0);
+  vertex.mTexCoords = glm::vec2(1.0, 0.0);
+  AddVertex(vertex);
+
+  vertex.mPosition = glm::vec3(width, height, 0.0);
+  vertex.mTexCoords = glm::vec2(1.0, 1.0);
+  AddVertex(vertex);
+
+  vertex.mPosition = glm::vec3(0.0, height, 0.0);
+  vertex.mTexCoords = glm::vec2(0.0, 1.0);
+  AddVertex(vertex);
+
   // Set the shader.
   std::string vertexFile = "resources/shaders/BackgroundShader.vert";
   std::string fragmentFile = "resources/shaders/BackgroundShader.frag";
@@ -27,11 +50,15 @@ void BackgroundSpriteComponent::Initialize()
             defaultShader);
   SetCurrentShader("defaultShader");
 
-  GetParent()->SetScale(glm::vec3(10000.0, 10000.0, 1.0));
-
   // Disable depth testing for this mesh.
   SetRenderOption(GL_DEPTH_TEST, false);
 
   // Render this sprite in screen space.
   SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
+
+  // Finally, place it as far back on the z-axis as possible.
+  auto newPos = GetParent()->GetPosition();
+  GetParent()->SetPosition(glm::vec3(newPos.x,
+                                     newPos.y,
+                                     -0.9));
 }

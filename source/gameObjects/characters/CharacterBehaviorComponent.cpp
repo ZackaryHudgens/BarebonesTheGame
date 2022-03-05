@@ -9,6 +9,8 @@ CharacterBehaviorComponent::CharacterBehaviorComponent()
   : Component()
   , mTargetPosition(0.0, 0.0, 0.0)
   , mSpeed(0.0)
+  , mMaximumHealth(1)
+  , mCurrentHealth(1)
   , mMoving(false)
 {
 }
@@ -73,3 +75,34 @@ Barebones::TileList CharacterBehaviorComponent::GetMovements(UrsineEngine::GameO
 {
   return TileList();
 }
+
+/******************************************************************************/
+void CharacterBehaviorComponent::SetMaximumHealth(int aHealth)
+{
+  mMaximumHealth = aHealth;
+
+  if(mCurrentHealth > mMaximumHealth)
+  {
+    SetCurrentHealth(mMaximumHealth);
+  }
+}
+
+/******************************************************************************/
+void CharacterBehaviorComponent::SetCurrentHealth(int aHealth)
+{
+  mCurrentHealth = aHealth;
+
+  if(mCurrentHealth <= 0)
+  {
+    CharacterDied.Notify(*this);
+
+    auto parent = GetParent();
+    if(parent != nullptr)
+    {
+      parent->ScheduleForDeletion();
+    }
+  }
+}
+
+/******************************************************************************/
+Barebones::CharacterDiedSignal Barebones::CharacterDied;

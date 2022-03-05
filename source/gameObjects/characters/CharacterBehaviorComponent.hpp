@@ -5,6 +5,7 @@
 
 #include <Component.hpp>
 #include <GameObject.hpp>
+#include <Signal.hpp>
 
 #include "BoardLayoutComponent.hpp"
 
@@ -51,6 +52,20 @@ namespace Barebones
       virtual TileList GetMovements(UrsineEngine::GameObject& aObject,
                                     const TileLocation& aLocation) const;
 
+      /**
+       * Returns the maximum health value of this character.
+       *
+       * @return This character's maximum health.
+       */
+      int GetMaximumHealth() const { return mMaximumHealth; }
+
+      /**
+       * Returns the current health value of this character.
+       *
+       * @return This character's current health.
+       */
+      int GetCurrentHealth() const { return mCurrentHealth; }
+
     protected:
 
       /**
@@ -68,13 +83,36 @@ namespace Barebones
        */
       virtual void AddSkills() {}
 
+      /**
+       * Sets the maximum health of this character. If the maximum health is
+       * less than the current health, the current health is set equal to
+       * the given value.
+       *
+       * @param aHealth The new maximum health of this character.
+       */
+      void SetMaximumHealth(int aHealth);
+
+      /**
+       * Sets the current health of this character. If the new health value is
+       * 0 or less, this character dies.
+       *
+       * @param aHealth The new current health of this character.
+       */
+      void SetCurrentHealth(int aHealth);
+
     private:
       glm::vec3 mTargetPosition;
 
       double mSpeed;
 
+      int mMaximumHealth;
+      int mCurrentHealth;
+
       bool mMoving;
   };
+
+  typedef UrsineEngine::SignalT<CharacterBehaviorComponent&> CharacterDiedSignal;
+  extern CharacterDiedSignal CharacterDied;
 }
 
 #endif

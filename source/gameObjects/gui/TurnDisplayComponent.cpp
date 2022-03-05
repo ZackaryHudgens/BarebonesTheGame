@@ -54,19 +54,19 @@ void TurnDisplayComponent::Initialize()
 
     vertex.mPosition = glm::vec3(0.0,
                                  0.0,
-                                 -0.1);
+                                 0.0);
     background->AddVertex(vertex);
     vertex.mPosition = glm::vec3(overlayWidth,
                                  0.0,
-                                 -0.1);
+                                 0.0);
     background->AddVertex(vertex);
     vertex.mPosition = glm::vec3(overlayWidth,
                                  overlayHeight,
-                                 -0.1);
+                                 0.0);
     background->AddVertex(vertex);
     vertex.mPosition = glm::vec3(0.0,
                                  overlayHeight,
-                                 -0.1);
+                                 0.0);
     background->AddVertex(vertex);
 
     background->AddIndex(0);
@@ -89,6 +89,7 @@ void TurnDisplayComponent::Initialize()
 
     auto backgroundObject = std::make_unique<UrsineEngine::GameObject>("turnDisplayBackground");
     backgroundObject->AddComponent(std::move(background));
+    backgroundObject->SetPosition(glm::vec3(0.0, 0.0, -0.1));
     parent->AddChild(std::move(backgroundObject));
 
     mBackground = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::MeshComponent>();

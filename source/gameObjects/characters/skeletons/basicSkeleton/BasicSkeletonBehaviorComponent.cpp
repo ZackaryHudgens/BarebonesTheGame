@@ -17,6 +17,8 @@ BasicSkeletonBehaviorComponent::BasicSkeletonBehaviorComponent()
   , mHorizontalMovement(2)
   , mVerticalMovement(2)
 {
+  SetMaximumHealth(10);
+  SetCurrentHealth(10);
 }
 
 /******************************************************************************/

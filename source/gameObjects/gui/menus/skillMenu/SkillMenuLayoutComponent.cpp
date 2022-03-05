@@ -66,19 +66,19 @@ void SkillMenuLayoutComponent::Initialize()
 
     vertex.mPosition = glm::vec3(0.0,
                                  0.0,
-                                 -0.1);
+                                 0.0);
     background->AddVertex(vertex);
     vertex.mPosition = glm::vec3(overlayWidth,
                                  0.0,
-                                 -0.1);
+                                 0.0);
     background->AddVertex(vertex);
     vertex.mPosition = glm::vec3(overlayWidth,
                                  overlayHeight,
-                                 -0.1);
+                                 0.0);
     background->AddVertex(vertex);
     vertex.mPosition = glm::vec3(0.0,
                                  overlayHeight,
-                                 -0.1);
+                                 0.0);
     background->AddVertex(vertex);
 
     background->AddIndex(0);
@@ -101,6 +101,7 @@ void SkillMenuLayoutComponent::Initialize()
 
     auto backgroundObject = std::make_unique<UrsineEngine::GameObject>("skillMenuBackground");
     backgroundObject->AddComponent(std::move(background));
+    backgroundObject->SetPosition(glm::vec3(0.0, 0.0, -0.1));
     parent->AddChild(std::move(backgroundObject));
   }
 }
