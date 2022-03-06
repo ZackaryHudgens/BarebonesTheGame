@@ -24,8 +24,10 @@ namespace Barebones
 
       /**
        * Tells the player to take a turn.
+       *
+       * @param aBoard The board to take a turn on.
        */
-      void TakeTurn();
+      void TakeTurn(UrsineEngine::GameObject& aBoard);
 
       /**
        * Ends the player's turn.
@@ -44,8 +46,10 @@ namespace Barebones
       /**
        * A virtual function that gets called whenever this player's turn
        * begins. Should be overridden by inheriting classes.
+       *
+       * @param aBoard The board to take a turn on.
        */
-      virtual void ProtectedTakeTurn() {}
+      virtual void ProtectedTakeTurn(UrsineEngine::GameObject& aBoard) {}
 
       /**
        * A virtual function that gets called whenever this player's turn

@@ -30,7 +30,7 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
   auto player = GetPlayer();
   if(player != nullptr)
   {
-    auto board = player->GetParent();
+    auto board = player->GetB
     if(board != nullptr)
     {
       auto layoutComponent = board->GetFirstComponentOfType<BoardLayoutComponent>();

@@ -28,6 +28,13 @@ namespace Barebones
       void SetEnabled(bool aEnabled) { mEnabled = aEnabled; }
 
       /**
+       * Sets the board that this component should operate on.
+       *
+       * @param aBoard The board to operate on.
+       */
+      void SetBoard(UrsineEngine::GameObject& aBoard);
+
+      /**
        * A handler function that gets called whenever the user presses
        * a key.
        *
@@ -49,13 +56,14 @@ namespace Barebones
       void HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
                              int aMods) override;
 
-    private:
+    protected:
 
       /**
-       * A function that gets called from the InputComponent's
-       * Initialize() function.
+       * Initializes the component by creating a default state object.
        */
       void ProtectedInitialize() override;
+
+    private:
 
       /**
        * A handler function that gets called whenever the user
@@ -64,6 +72,8 @@ namespace Barebones
        * @param aSkill The skill component that was selected.
        */
       void HandleSkillSelected(CharacterSkillComponent& aSkill);
+
+      UrsineEngine::GameObject* mBoard;
 
       std::unique_ptr<HumanPlayerInputState> mState;
 

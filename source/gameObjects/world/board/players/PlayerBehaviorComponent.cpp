@@ -11,10 +11,10 @@ PlayerBehaviorComponent::PlayerBehaviorComponent()
 }
 
 /******************************************************************************/
-void PlayerBehaviorComponent::TakeTurn()
+void PlayerBehaviorComponent::TakeTurn(UrsineEngine::GameObject& aBoard)
 {
-  ProtectedTakeTurn();
   PlayerTurnBegan.Notify(*this);
+  ProtectedTakeTurn(aBoard);
 }
 
 /******************************************************************************/

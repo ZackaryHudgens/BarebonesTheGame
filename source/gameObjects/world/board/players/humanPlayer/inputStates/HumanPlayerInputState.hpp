@@ -20,6 +20,13 @@ namespace Barebones
       HumanPlayerInputState(UrsineEngine::GameObject& aPlayer);
 
       /**
+       * Sets the board GameObject to operate on.
+       *
+       * @param aBoard The board to operate on.
+       */
+      void SetBoard(UrsineEngine::GameObject& aBoard) { mBoard = &aBoard; }
+
+      /**
        * A virtual function that gets called whenever the user presses
        * a key. Should be overridden by inheriting states.
        *
@@ -62,8 +69,16 @@ namespace Barebones
        */
       UrsineEngine::GameObject* GetPlayer() { return mPlayer; }
 
+      /**
+       * Returns the board GameObject.
+       *
+       * @return The board GameObject.
+       */
+      UrsineEngine::GameObject* GetBoard() { return mBoard; }
+
     private:
       UrsineEngine::GameObject* mPlayer;
+      UrsineEngine::GameObject* mBoard;
   };
 }
 

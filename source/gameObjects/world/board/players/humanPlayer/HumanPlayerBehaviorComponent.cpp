@@ -12,7 +12,7 @@ HumanPlayerBehaviorComponent::HumanPlayerBehaviorComponent()
 }
 
 /******************************************************************************/
-void HumanPlayerBehaviorComponent::ProtectedTakeTurn()
+void HumanPlayerBehaviorComponent::ProtectedTakeTurn(UrsineEngine::GameObject& aBoard)
 {
   // Enable the input component.
   auto parent = GetParent();

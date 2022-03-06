@@ -20,8 +20,10 @@ namespace Barebones
 
       /**
        * A function that gets called whenever this player's turn begins.
+       *
+       * @param aBoard The board to take a turn on.
        */
-      void ProtectedTakeTurn() override;
+      void ProtectedTakeTurn(UrsineEngine::GameObject& aBoard) override;
 
       /**
        * A function that gets called whenever this player's turn

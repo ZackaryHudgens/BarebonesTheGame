@@ -5,13 +5,13 @@ using Barebones::AIPlayerBehaviorComponent;
 /******************************************************************************/
 AIPlayerBehaviorComponent::AIPlayerBehaviorComponent()
   : PlayerBehaviorComponent()
+  , mWaitingForCharacter(false)
 {
   SetName("Enemy");
 }
 
 /******************************************************************************/
-void AIPlayerBehaviorComponent::ProtectedTakeTurn()
+void AIPlayerBehaviorComponent::ProtectedTakeTurn(UrsineEngine::GameObject& aBoard)
 {
-  // For now, just end the turn immediately.
-  EndTurn();
+  // First, gather all the current enemies on the board.
 }

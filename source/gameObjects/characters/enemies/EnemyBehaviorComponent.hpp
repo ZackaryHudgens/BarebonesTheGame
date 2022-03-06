@@ -14,8 +14,14 @@ namespace Barebones
        */
       EnemyBehaviorComponent();
 
-      // TODO: create virtual function that gets called by the AI player
-      // to determine and perform the best move given the board state
+      /**
+       * A virtual function that gets called by the AI player. This function
+       * should be overridden to provide functionality when it is this
+       * character's turn.
+       *
+       * @param aBoard The board to take a turn on.
+       */
+      virtual void TakeTurn(UrsineEngine::GameObject& aBoard) = 0;
   };
 }
 

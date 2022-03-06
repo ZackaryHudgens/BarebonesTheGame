@@ -9,6 +9,7 @@ using Barebones::HumanPlayerInputComponent;
 /******************************************************************************/
 HumanPlayerInputComponent::HumanPlayerInputComponent()
   : InputComponent()
+  , mBoard(nullptr)
   , mState(nullptr)
   , mEnabled(false)
 {
@@ -16,6 +17,16 @@ HumanPlayerInputComponent::HumanPlayerInputComponent()
   {
     this->HandleSkillSelected(aSkill);
   });
+}
+
+/******************************************************************************/
+void HumanPlayerInputComponent::SetBoard(UrsineEngine::GameObject& aBoard)
+{
+  mBoard = &aBoard;
+  if(mState != nullptr)
+  {
+    mState->SetBoard(*mBoard);
+  }
 }
 
 /******************************************************************************/
