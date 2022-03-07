@@ -7,8 +7,9 @@
 using Barebones::HumanPlayerUsingSkillInputState;
 
 /******************************************************************************/
-HumanPlayerUsingSkillInputState::HumanPlayerUsingSkillInputState(CharacterSkillComponent& aSkill)
-  : HumanPlayerInputState()
+HumanPlayerUsingSkillInputState::HumanPlayerUsingSkillInputState(UrsineEngine::GameObject& aPlayer,
+                                                                 CharacterSkillComponent& aSkill)
+  : HumanPlayerInputState(aPlayer)
   , mSkill(&aSkill)
 {
 }
@@ -66,7 +67,13 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerUsingSkillInputStat
           {
             mSkill->Execute(*board,
                             layoutComponent->GetPlayerLocation());
-            newState = std::make_unique<HumanPlayerDefaultInputState>();
+
+            auto player = GetPlayer();
+            if(player != nullptr)
+            {
+              newState = std::make_unique<HumanPlayerDefaultInputState>(*player);
+              newState->SetBoard(*board);
+            }
           }
           break;
         }

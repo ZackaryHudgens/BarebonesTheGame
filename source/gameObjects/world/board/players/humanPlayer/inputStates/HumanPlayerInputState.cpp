@@ -1,9 +1,12 @@
 #include "HumanPlayerInputState.hpp"
 
+#include "HumanPlayerInputComponent.hpp"
+
 using Barebones::HumanPlayerInputState;
 
 /******************************************************************************/
-HumanPlayerInputState::HumanPlayerInputState()
-  : mBoard(nullptr)
+HumanPlayerInputState::HumanPlayerInputState(UrsineEngine::GameObject& aPlayer)
+  : mPlayer(&aPlayer)
+  , mBoard(nullptr)
 {
 }

@@ -22,6 +22,7 @@ void HumanPlayerBehaviorComponent::ProtectedTakeTurn(UrsineEngine::GameObject& a
     if(inputComponent != nullptr)
     {
       inputComponent->SetEnabled(true);
+      inputComponent->SetBoard(aBoard);
     }
   }
 }

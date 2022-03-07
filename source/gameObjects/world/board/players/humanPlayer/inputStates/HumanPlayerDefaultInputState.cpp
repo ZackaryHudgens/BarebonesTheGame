@@ -16,8 +16,8 @@
 using Barebones::HumanPlayerDefaultInputState;
 
 /******************************************************************************/
-HumanPlayerDefaultInputState::HumanPlayerDefaultInputState()
-  : HumanPlayerInputState()
+HumanPlayerDefaultInputState::HumanPlayerDefaultInputState(UrsineEngine::GameObject& aPlayer)
+  : HumanPlayerInputState(aPlayer)
 {
 }
 
@@ -117,7 +117,18 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
   std::unique_ptr<HumanPlayerInputState> newState = nullptr;
 
   // When a skill is selected, swap to the Using Skill input state.
-  newState = std::make_unique<HumanPlayerUsingSkillInputState>(aSkill);
+  auto player = GetPlayer();
+  if(player != nullptr)
+  {
+    newState = std::make_unique<HumanPlayerUsingSkillInputState>(*player,
+                                                                 aSkill);
+
+    auto board = GetBoard();
+    if(board != nullptr)
+    {
+      newState->SetBoard(*board);
+    }
+  }
 
   return newState;
 }

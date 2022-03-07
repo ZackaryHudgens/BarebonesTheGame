@@ -11,8 +11,10 @@ namespace Barebones
 
       /**
        * Constructor.
+       *
+       * @param aPlayer The player GameObject to handle input for.
        */
-      HumanPlayerDefaultInputState();
+      HumanPlayerDefaultInputState(UrsineEngine::GameObject& aPlayer);
 
       /**
        * A handler function that gets called whenever the user presses

@@ -13,5 +13,6 @@ AIPlayerBehaviorComponent::AIPlayerBehaviorComponent()
 /******************************************************************************/
 void AIPlayerBehaviorComponent::ProtectedTakeTurn(UrsineEngine::GameObject& aBoard)
 {
+  EndTurn();
   // First, gather all the current enemies on the board.
 }
