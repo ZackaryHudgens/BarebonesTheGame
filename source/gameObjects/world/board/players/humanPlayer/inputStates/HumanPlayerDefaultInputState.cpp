@@ -2,6 +2,8 @@
 
 #include <Environment.hpp>
 
+#include "PlayerBehaviorComponent.hpp"
+
 #include "BoardLayoutComponent.hpp"
 
 #include "HumanPlayerUsingSkillInputState.hpp"
@@ -75,6 +77,22 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
           {
             CreateSkillMenu(*character);
           }
+
+          break;
+        }
+        case UrsineEngine::KeyCode::eKEY_ESCAPE:
+        {
+          // End the player's turn.
+          auto player = GetPlayer();
+          if(player != nullptr)
+          {
+            auto behaviorComponent = player->GetFirstComponentOfType<PlayerBehaviorComponent>();
+            if(behaviorComponent != nullptr)
+            {
+              behaviorComponent->EndTurn();
+            }
+          }
+
           break;
         }
         default:
@@ -96,6 +114,7 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
 
   switch(aCode)
   {
+    case UrsineEngine::KeyCode::eKEY_ESCAPE:
     case UrsineEngine::KeyCode::eKEY_ENTER:
     {
       break;

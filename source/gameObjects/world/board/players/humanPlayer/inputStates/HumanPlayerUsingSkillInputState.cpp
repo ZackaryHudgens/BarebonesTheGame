@@ -77,6 +77,18 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerUsingSkillInputStat
           }
           break;
         }
+        case UrsineEngine::KeyCode::eKEY_ESCAPE:
+        {
+          // Stop using the skill and return to the default input state.
+          auto player = GetPlayer();
+          if(player != nullptr)
+          {
+            newState = std::make_unique<HumanPlayerDefaultInputState>(*player);
+            newState->SetBoard(*board);
+          }
+
+          break;
+        }
         default:
         {
           break;
@@ -96,6 +108,7 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerUsingSkillInputStat
 
   switch(aCode)
   {
+    case UrsineEngine::KeyCode::eKEY_ESCAPE:
     case UrsineEngine::KeyCode::eKEY_ENTER:
     {
       break;

@@ -33,6 +33,11 @@ namespace Barebones
                    const TileLocation& aLocation);
 
       /**
+       * Cancels the usage of this skill.
+       */
+      void Cancel();
+
+      /**
        * A virtual function that returns a MeshComponent to be used as an icon
        * for this skill. Inheriting skills should override this to provide
        * their own icons.
