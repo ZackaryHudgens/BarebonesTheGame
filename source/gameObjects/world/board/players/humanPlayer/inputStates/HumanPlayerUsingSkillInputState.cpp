@@ -7,9 +7,8 @@
 using Barebones::HumanPlayerUsingSkillInputState;
 
 /******************************************************************************/
-HumanPlayerUsingSkillInputState::HumanPlayerUsingSkillInputState(UrsineEngine::GameObject& aPlayer,
-                                                                 CharacterSkillComponent& aSkill)
-  : HumanPlayerInputState(aPlayer)
+HumanPlayerUsingSkillInputState::HumanPlayerUsingSkillInputState(CharacterSkillComponent& aSkill)
+  : HumanPlayerInputState()
   , mSkill(&aSkill)
 {
 }
@@ -20,64 +19,60 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerUsingSkillInputStat
 {
   std::unique_ptr<HumanPlayerInputState> newState = nullptr;
 
-  auto player = GetPlayer();
-  if(player != nullptr)
+  auto board = GetBoard();
+  if(board != nullptr)
   {
-    auto board = player->GetParent();
-    if(board != nullptr)
+    auto layoutComponent = board->GetFirstComponentOfType<BoardLayoutComponent>();
+    if(layoutComponent != nullptr)
     {
-      auto layoutComponent = board->GetFirstComponentOfType<BoardLayoutComponent>();
-      if(layoutComponent != nullptr)
-      {
-        auto currentLocation = layoutComponent->GetPlayerLocation();
+      auto currentLocation = layoutComponent->GetPlayerLocation();
 
-        switch(aCode)
+      switch(aCode)
+      {
+        case UrsineEngine::KeyCode::eKEY_UP:
+        case UrsineEngine::KeyCode::eKEY_W:
         {
-          case UrsineEngine::KeyCode::eKEY_UP:
-          case UrsineEngine::KeyCode::eKEY_W:
+          layoutComponent->SetPlayerLocation(TileLocation(currentLocation.first,
+                                                          currentLocation.second + 1));
+          break;
+        }
+        case UrsineEngine::KeyCode::eKEY_DOWN:
+        case UrsineEngine::KeyCode::eKEY_S:
+        {
+          layoutComponent->SetPlayerLocation(TileLocation(currentLocation.first,
+                                                          currentLocation.second - 1));
+          break;
+        }
+        case UrsineEngine::KeyCode::eKEY_LEFT:
+        case UrsineEngine::KeyCode::eKEY_A:
+        {
+          layoutComponent->SetPlayerLocation(TileLocation(currentLocation.first - 1,
+                                                          currentLocation.second));
+          break;
+        }
+        case UrsineEngine::KeyCode::eKEY_RIGHT:
+        case UrsineEngine::KeyCode::eKEY_D:
+        {
+          layoutComponent->SetPlayerLocation(TileLocation(currentLocation.first + 1,
+                                                          currentLocation.second));
+          break;
+        }
+        case UrsineEngine::KeyCode::eKEY_ENTER:
+        {
+          // If the current position is valid for executing the skill,
+          // execute it and revert to a default board input state.
+          if(mSkill->IsTileValid(*board,
+                                 layoutComponent->GetPlayerLocation()))
           {
-            layoutComponent->SetPlayerLocation(TileLocation(currentLocation.first,
-                                                            currentLocation.second + 1));
-            break;
+            mSkill->Execute(*board,
+                            layoutComponent->GetPlayerLocation());
+            newState = std::make_unique<HumanPlayerDefaultInputState>();
           }
-          case UrsineEngine::KeyCode::eKEY_DOWN:
-          case UrsineEngine::KeyCode::eKEY_S:
-          {
-            layoutComponent->SetPlayerLocation(TileLocation(currentLocation.first,
-                                                            currentLocation.second - 1));
-            break;
-          }
-          case UrsineEngine::KeyCode::eKEY_LEFT:
-          case UrsineEngine::KeyCode::eKEY_A:
-          {
-            layoutComponent->SetPlayerLocation(TileLocation(currentLocation.first - 1,
-                                                            currentLocation.second));
-            break;
-          }
-          case UrsineEngine::KeyCode::eKEY_RIGHT:
-          case UrsineEngine::KeyCode::eKEY_D:
-          {
-            layoutComponent->SetPlayerLocation(TileLocation(currentLocation.first + 1,
-                                                            currentLocation.second));
-            break;
-          }
-          case UrsineEngine::KeyCode::eKEY_ENTER:
-          {
-            // If the current position is valid for executing the skill,
-            // execute it and revert to a default board input state.
-            if(mSkill->IsTileValid(*board,
-                                   layoutComponent->GetPlayerLocation()))
-            {
-              mSkill->Execute(*board,
-                              layoutComponent->GetPlayerLocation());
-              newState = std::make_unique<HumanPlayerDefaultInputState>(*player);
-            }
-            break;
-          }
-          default:
-          {
-            break;
-          }
+          break;
+        }
+        default:
+        {
+          break;
         }
       }
     }

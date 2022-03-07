@@ -14,10 +14,8 @@ namespace Barebones
 
       /**
        * Constructor.
-       *
-       * @param aPlayer The player GameObject to handle input for.
        */
-      HumanPlayerInputState(UrsineEngine::GameObject& aPlayer);
+      HumanPlayerInputState();
 
       /**
        * Sets the board GameObject to operate on.
@@ -63,13 +61,6 @@ namespace Barebones
     protected:
 
       /**
-       * Returns the player GameObject.
-       *
-       * @return The player GameObject.
-       */
-      UrsineEngine::GameObject* GetPlayer() { return mPlayer; }
-
-      /**
        * Returns the board GameObject.
        *
        * @return The board GameObject.
@@ -77,7 +68,6 @@ namespace Barebones
       UrsineEngine::GameObject* GetBoard() { return mBoard; }
 
     private:
-      UrsineEngine::GameObject* mPlayer;
       UrsineEngine::GameObject* mBoard;
   };
 }

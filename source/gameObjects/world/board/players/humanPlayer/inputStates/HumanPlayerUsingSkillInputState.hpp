@@ -14,11 +14,9 @@ namespace Barebones
       /**
        * Constructor.
        *
-       * @param aPlayer The player GameObject to handle input for.
        * @param aSkill The skill that is being used.
        */
-      HumanPlayerUsingSkillInputState(UrsineEngine::GameObject& aPlayer,
-                                      CharacterSkillComponent& aSkill);
+      HumanPlayerUsingSkillInputState(CharacterSkillComponent& aSkill);
 
       /**
        * A handler function that gets called whenever the user presses

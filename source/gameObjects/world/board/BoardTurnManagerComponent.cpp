@@ -33,8 +33,12 @@ void BoardTurnManagerComponent::Update()
   if(mWaitingToTakeTurn &&
      !mTurnTracker.empty())
   {
-    mWaitingToTakeTurn = false;
-    mTurnTracker.front()->TakeTurn();
+    auto parent = GetParent();
+    if(parent != nullptr)
+    {
+      mWaitingToTakeTurn = false;
+      mTurnTracker.front()->TakeTurn(*parent);
+    }
   }
 }
 

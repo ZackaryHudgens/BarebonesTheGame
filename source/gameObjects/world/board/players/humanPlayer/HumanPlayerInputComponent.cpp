@@ -65,10 +65,11 @@ void HumanPlayerInputComponent::HandleKeyRepeated(const UrsineEngine::KeyCode& a
 void HumanPlayerInputComponent::ProtectedInitialize()
 {
   // Initialize the player in the default state.
-  auto parent = GetParent();
-  if(parent != nullptr)
+  mState = std::make_unique<HumanPlayerDefaultInputState>();
+
+  if(mBoard != nullptr)
   {
-    mState = std::make_unique<HumanPlayerDefaultInputState>(*parent);
+    mState->SetBoard(*mBoard);
   }
 }
 
