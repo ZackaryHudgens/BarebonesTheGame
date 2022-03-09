@@ -3,8 +3,6 @@
 #include <GameObject.hpp>
 #include <MeshComponent.hpp>
 
-#include "CharacterSkillComponent.hpp"
-
 using Barebones::SkillActionBehaviorComponent;
 
 /******************************************************************************/
@@ -17,18 +15,10 @@ SkillActionBehaviorComponent::SkillActionBehaviorComponent()
 /******************************************************************************/
 void SkillActionBehaviorComponent::Initialize()
 {
-  // Scale up the parent object for use as an icon.
-  auto parent = GetParent();
-  if(parent != nullptr)
-  {
-    parent->SetScale(glm::vec3(200.0,
-                               200.0,
-                               1.0));
-  }
 }
 
 /******************************************************************************/
-void SkillActionBehaviorComponent::SetSkill(CharacterSkillComponent& aSkill)
+void SkillActionBehaviorComponent::SetSkill(Skill& aSkill)
 {
   mSkill = &aSkill;
 }
@@ -92,14 +82,5 @@ void SkillActionBehaviorComponent::HandleHoveredStatusChanged()
         }
       }
     }
-  }
-}
-
-/******************************************************************************/
-void SkillActionBehaviorComponent::HandleSelectionStatusChanged()
-{
-  if(mSkill != nullptr)
-  {
-    mSkill->Select();
   }
 }

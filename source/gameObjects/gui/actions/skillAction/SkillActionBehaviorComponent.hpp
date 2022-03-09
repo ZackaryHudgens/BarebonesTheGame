@@ -3,7 +3,7 @@
 
 #include "ActionBehaviorComponent.hpp"
 
-#include "CharacterSkillComponent.hpp"
+#include "Skill.hpp"
 
 namespace Barebones
 {
@@ -26,7 +26,7 @@ namespace Barebones
        *
        * @param aSkill The skill that this action represents.
        */
-      void SetSkill(CharacterSkillComponent& aSkill);
+      void SetSkill(Skill& aSkill);
 
       /**
        * Returns the name of the current skill.
@@ -50,14 +50,8 @@ namespace Barebones
        */
       void HandleHoveredStatusChanged() override;
 
-      /**
-       * A handler function that gets called whenever this action
-       * is selected by the user.
-       */
-      void HandleSelectionStatusChanged() override;
-
     private:
-      CharacterSkillComponent* mSkill;
+      Skill* mSkill;
   };
 }
 

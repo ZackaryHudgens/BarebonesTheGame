@@ -9,6 +9,8 @@
 
 #include "BoardLayoutComponent.hpp"
 
+#include "Skill.hpp"
+
 namespace Barebones
 {
   class CharacterBehaviorComponent : public UrsineEngine::Component
@@ -19,11 +21,6 @@ namespace Barebones
        * Constructor.
        */
       CharacterBehaviorComponent();
-
-      /**
-       * Initializes the component.
-       */
-      void Initialize() override;
 
       /**
        * Updates the component.
@@ -40,6 +37,13 @@ namespace Barebones
                           double aSpeed);
 
       /**
+       * Returns a vector of this character's skills.
+       *
+       * @return This character's skills.
+       */
+      std::vector<Skill> GetSkills() const { return mSkills; }
+
+      /**
        * A virtual function that returns a list of possible movements
        * given a location on a board. The first integer of each
        * pair corresponds to the column; the second integer corresponds
@@ -51,15 +55,6 @@ namespace Barebones
        */
       virtual TileList GetMovements(UrsineEngine::GameObject& aObject,
                                     const TileLocation& aLocation) const;
-
-      /**
-       * Deals the given amount of damage to this character's health.
-       * Depending on any effects on this character, the actual amount of
-       * damage may be less or more than the given value.
-       *
-       * @param aDamage The amount of damage to deal.
-       */
-      void DealDamage(int aDamage);
 
       /**
        * Returns the maximum health value of this character.
@@ -78,19 +73,11 @@ namespace Barebones
     protected:
 
       /**
-       * A virtual function that gets called during Update(). Should
-       * be overridden by child classes.
-       */
-      virtual void ProtectedUpdate() {}
-
-      /**
-       * A virtual function that adds all skills for this character
-       * to the parent GameObject. Note that the Move skill is added
-       * to all characters by default in Initialize().
+       * Adds a skill to this character.
        *
-       * Should be overridden by child classes.
+       * @param aSkill The skill to add.
        */
-      virtual void AddSkills() {}
+      void AddSkill(const Skill& aSkill);
 
       /**
        * Sets the maximum health of this character. If the maximum health is
@@ -111,6 +98,8 @@ namespace Barebones
 
     private:
       glm::vec3 mTargetPosition;
+
+      std::vector<Skill> mSkills;
 
       double mSpeed;
 

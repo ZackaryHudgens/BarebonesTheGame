@@ -1,4 +1,7 @@
 file(GLOB GAME_SOURCES main.cpp
+                       gameObjects/skills/*.?pp
+                       gameObjects/skills/characterSkills/*.?pp
+                       gameObjects/skills/spellSkills/*.?pp
                        gameObjects/world/*.?pp
                        gameObjects/world/board/*.?pp
                        gameObjects/world/board/players/*.?pp
@@ -25,6 +28,9 @@ target_link_libraries(barebones PUBLIC
                       ${URSINE_LIBRARIES})
 target_include_directories(barebones PUBLIC
                            ${URSINE_INCLUDE_DIRS}
+                           gameObjects/skills
+                           gameObjects/skills/characterSkills
+                           gameObjects/skills/spellSkills
                            gameObjects/world
                            gameObjects/world/board
                            gameObjects/world/board/players

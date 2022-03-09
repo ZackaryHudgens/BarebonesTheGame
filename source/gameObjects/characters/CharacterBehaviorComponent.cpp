@@ -1,6 +1,6 @@
 #include "CharacterBehaviorComponent.hpp"
 
-#include "MoveSkillComponent.hpp"
+#include "MoveSkill.hpp"
 
 using Barebones::CharacterBehaviorComponent;
 
@@ -13,20 +13,8 @@ CharacterBehaviorComponent::CharacterBehaviorComponent()
   , mCurrentHealth(1)
   , mMoving(false)
 {
-}
-
-/******************************************************************************/
-void CharacterBehaviorComponent::Initialize()
-{
-  auto parent = GetParent();
-  if(parent != nullptr)
-  {
-    // All characters have the Move skill by default.
-    parent->AddComponent(std::make_unique<MoveSkillComponent>());
-
-    // Add the rest of the skills.
-    AddSkills();
-  }
+  // Every character comes with the Move skill.
+  AddSkill(MoveSkill());
 }
 
 /******************************************************************************/
@@ -56,8 +44,6 @@ void CharacterBehaviorComponent::Update()
       }
     }
   }
-
-  ProtectedUpdate();
 }
 
 /******************************************************************************/
@@ -77,10 +63,9 @@ Barebones::TileList CharacterBehaviorComponent::GetMovements(UrsineEngine::GameO
 }
 
 /******************************************************************************/
-void CharacterBehaviorComponent::DealDamage(int aDamage)
+void CharacterBehaviorComponent::AddSkill(const Skill& aSkill)
 {
-  int newHealth = GetCurrentHealth() - aDamage;
-  SetCurrentHealth(newHealth);
+  mSkills.emplace_back(aSkill);
 }
 
 /******************************************************************************/

@@ -26,19 +26,6 @@ namespace Barebones
       TileList GetMovements(UrsineEngine::GameObject& aObject,
                             const TileLocation& aLocation) const override;
 
-    protected:
-
-      /**
-       * Updates the component.
-       */
-      void ProtectedUpdate() override;
-
-      /**
-       * A handler function that adds all skills for this character
-       * to the parent GameObject.
-       */
-      void AddSkills() override;
-
     private:
       int mHorizontalMovement;
       int mVerticalMovement;
