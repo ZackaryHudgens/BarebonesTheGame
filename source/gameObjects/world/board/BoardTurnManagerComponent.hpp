@@ -9,6 +9,10 @@
 
 namespace Barebones
 {
+  /**
+   * The BoardTurnManagerComponent provides a means to add players
+   * to the board and allow them to take turns.
+   */
   class BoardTurnManagerComponent : public UrsineEngine::Component
   {
     public:
@@ -38,6 +42,13 @@ namespace Barebones
        */
       void AddPlayer(std::unique_ptr<UrsineEngine::GameObject> aPlayer);
 
+      /**
+       * Returns the currently active player.
+       *
+       * @return The currently active player, or nullptr if there is none.
+       */
+      UrsineEngine::GameObject* GetCurrentPlayer();
+
     private:
 
       /**
@@ -63,7 +74,7 @@ namespace Barebones
        */
       void HandleTurnDisplayFinished(TurnDisplayComponent& aDisplay);
 
-      std::vector<PlayerBehaviorComponent*> mTurnTracker;
+      std::vector<UrsineEngine::GameObject*> mTurnTracker;
       TurnDisplayComponent* mTurnDisplay;
 
       bool mWaitingForDisplay;

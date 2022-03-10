@@ -6,14 +6,13 @@
 
 #include "BoardLayoutComponent.hpp"
 
-#include "HumanPlayerUsingSkillInputState.hpp"
-
 #include "ActionFactory.hpp"
 #include "MenuFactory.hpp"
 #include "MenuLayoutComponent.hpp"
 #include "SkillActionBehaviorComponent.hpp"
 
-#include "CharacterSkillComponent.hpp"
+#include "CharacterBehaviorComponent.hpp"
+#include "Skill.hpp"
 
 using Barebones::HumanPlayerDefaultInputState;
 
@@ -131,61 +130,40 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
 }
 
 /******************************************************************************/
-std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::HandleSkillSelected(CharacterSkillComponent& aSkill)
-{
-  std::unique_ptr<HumanPlayerInputState> newState = nullptr;
-
-  // When a skill is selected, swap to the Using Skill input state.
-  auto player = GetPlayer();
-  if(player != nullptr)
-  {
-    newState = std::make_unique<HumanPlayerUsingSkillInputState>(*player,
-                                                                 aSkill);
-
-    auto board = GetBoard();
-    if(board != nullptr)
-    {
-      newState->SetBoard(*board);
-    }
-  }
-
-  return newState;
-}
-
-/******************************************************************************/
 void HumanPlayerDefaultInputState::CreateSkillMenu(UrsineEngine::GameObject& aObject)
 {
-  auto skills = aObject.GetComponentsOfType<CharacterSkillComponent>();
-  if(!skills.empty())
+  auto characterBehaviorComponent = aObject.GetFirstComponentOfType<CharacterBehaviorComponent>();
+  if(characterBehaviorComponent != nullptr)
   {
-    // Create a new menu object.
-    auto menu = MenuFactory::CreateMenu(MenuType::eSKILL,
-                                        "skillMenu");
-    auto menuLayout = menu->GetFirstComponentOfType<MenuLayoutComponent>();
-    if(menuLayout != nullptr)
+    auto skills = characterBehaviorComponent->GetSkills();
+    if(!skills.empty())
     {
-      // Add each of this character's skills to the menu.
-      for(auto& skill : skills)
+      // Create a new menu object.
+      auto menu = MenuFactory::CreateMenu(MenuType::eSKILL,
+                                          "skillMenu");
+      auto menuLayout = menu->GetFirstComponentOfType<MenuLayoutComponent>();
+      if(menuLayout != nullptr)
       {
-        auto action = ActionFactory::CreateAction(ActionType::eSKILL,
-                                                  skill->GetName());
-        auto skillAction = action->GetFirstComponentOfType<SkillActionBehaviorComponent>();
-        skillAction->SetSkill(*skill);
-
-        auto skillIcon = skill->GetIcon();
-        action->AddComponent(std::move(skillIcon));
-        menuLayout->AddAction(std::move(action));
+        // Add each of this character's skills to the menu.
+        for(auto& skill : skills)
+        {
+          auto action = ActionFactory::CreateAction(ActionType::eSKILL,
+                                                    skill.GetName());
+          auto skillAction = action->GetFirstComponentOfType<SkillActionBehaviorComponent>();
+          skillAction->SetSkill(skill);
+          menuLayout->AddAction(std::move(action));
+        }
       }
-    }
 
-    // Add the new menu to the foreground of the current scene.
-    auto scene = env.GetCurrentScene();
-    if(scene != nullptr)
-    {
-      auto foreground = scene->GetForeground();
-      if(foreground != nullptr)
+      // Add the new menu to the foreground of the current scene.
+      auto scene = env.GetCurrentScene();
+      if(scene != nullptr)
       {
-        foreground->AddChild(std::move(menu));
+        auto foreground = scene->GetForeground();
+        if(foreground != nullptr)
+        {
+          foreground->AddChild(std::move(menu));
+        }
       }
     }
   }

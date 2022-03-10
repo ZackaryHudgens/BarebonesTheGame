@@ -5,8 +5,6 @@
 #include <Signal.hpp>
 #include <TextComponent.hpp>
 
-#include "PlayerBehaviorComponent.hpp"
-
 namespace Barebones
 {
   class TurnDisplayComponent : public UrsineEngine::Component
@@ -33,7 +31,7 @@ namespace Barebones
        *
        * @param aPlayer The player whose turn began.
        */
-      void DisplayMessageForPlayer(PlayerBehaviorComponent& aPlayer);
+      void DisplayMessageForPlayer(UrsineEngine::GameObject& aPlayer);
 
     private:
       UrsineEngine::TextComponent* mNameText;

@@ -3,7 +3,7 @@
 
 #include "HumanPlayerInputState.hpp"
 
-#include "CharacterSkillComponent.hpp"
+#include "Skill.hpp"
 
 namespace Barebones
 {
@@ -18,7 +18,7 @@ namespace Barebones
        * @param aSkill The skill that is being used.
        */
       HumanPlayerUsingSkillInputState(UrsineEngine::GameObject& aPlayer,
-                                      CharacterSkillComponent& aSkill);
+                                      Skill& aSkill);
 
       /**
        * A handler function that gets called whenever the user presses
@@ -45,7 +45,7 @@ namespace Barebones
                                                                int aMods) override;
 
     private:
-      CharacterSkillComponent* mSkill;
+      Skill* mSkill;
   };
 }
 

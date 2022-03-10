@@ -8,7 +8,7 @@ using Barebones::HumanPlayerUsingSkillInputState;
 
 /******************************************************************************/
 HumanPlayerUsingSkillInputState::HumanPlayerUsingSkillInputState(UrsineEngine::GameObject& aPlayer,
-                                                                 CharacterSkillComponent& aSkill)
+                                                                 Skill& aSkill)
   : HumanPlayerInputState(aPlayer)
   , mSkill(&aSkill)
 {

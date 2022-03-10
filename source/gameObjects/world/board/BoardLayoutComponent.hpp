@@ -5,11 +5,15 @@
 #include <CoreSignals.hpp>
 #include <GameObject.hpp>
 
+#include "TileUtil.hpp"
+
 namespace Barebones
 {
-  typedef std::pair<int, int> TileLocation;
-  typedef std::vector<TileLocation> TileList;
-
+  /**
+   * The BoardLayoutComponent contains logic for creating and placing
+   * tiles in world space, as well as maintaining a collection of
+   * characters and what position they occupy on the board.
+   */
   class BoardLayoutComponent : public UrsineEngine::Component
   {
     public:

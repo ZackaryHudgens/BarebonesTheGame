@@ -3,8 +3,6 @@
 
 #include "PlayerBehaviorComponent.hpp"
 
-#include "BoardLayoutComponent.hpp"
-
 namespace Barebones
 {
   class HumanPlayerBehaviorComponent : public PlayerBehaviorComponent

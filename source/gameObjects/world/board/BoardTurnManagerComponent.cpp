@@ -3,6 +3,8 @@
 #include <Environment.hpp>
 #include <GameObject.hpp>
 
+#include "PlayerBehaviorComponent.hpp"
+
 using Barebones::BoardTurnManagerComponent;
 
 /******************************************************************************/
@@ -29,15 +31,22 @@ void BoardTurnManagerComponent::Update()
   // "mWaitingToTakeTurn" is used as a one-frame buffer between the turn display
   // finishing its animation and the front player taking a turn. This way,
   // if the player ends their turn in the same frame they started it, the turn
-  // display has already been deleted and nothing breaks.
+  // display has already been deleted.
   if(mWaitingToTakeTurn &&
      !mTurnTracker.empty())
   {
     auto parent = GetParent();
     if(parent != nullptr)
     {
-      mWaitingToTakeTurn = false;
-      mTurnTracker.front()->TakeTurn(*parent);
+      if(mTurnTracker.front() != nullptr)
+      {
+        auto playerBehaviorComponent = mTurnTracker.front()->GetFirstComponentOfType<PlayerBehaviorComponent>();
+        if(playerBehaviorComponent != nullptr)
+        {
+          mWaitingToTakeTurn = false;
+          playerBehaviorComponent->TakeTurn(*parent);
+        }
+      }
     }
   }
 }
@@ -47,12 +56,13 @@ void BoardTurnManagerComponent::Start()
 {
   if(!mTurnTracker.empty())
   {
-    // Create a turn display and add it to the canvas.
+    // Create a turn display and add it to the foreground of the scene.
     CreateTurnDisplay();
 
     // Display a message for the current player. When the message stops displaying,
     // the player's turn will begin.
-    if(mTurnDisplay != nullptr)
+    if(mTurnDisplay != nullptr &&
+       mTurnTracker.front() != nullptr)
     {
       mTurnDisplay->DisplayMessageForPlayer(*mTurnTracker.front());
       mWaitingForDisplay = true;
@@ -75,6 +85,19 @@ void BoardTurnManagerComponent::AddPlayer(std::unique_ptr<UrsineEngine::GameObje
     playerBehaviorComponent = parent->GetChildren().back()->GetFirstComponentOfType<PlayerBehaviorComponent>();
     mTurnTracker.emplace_back(playerBehaviorComponent);
   }
+}
+
+/******************************************************************************/
+UrsineEngine::GameObject* BoardTurnManagerComponent::GetCurrentPlayer()
+{
+  UrsineEngine::GameObject* player = nullptr;
+
+  if(mTurnTracker.empty())
+  {
+    player = mTurnTracker.front();
+  }
+
+  return player;
 }
 
 /******************************************************************************/

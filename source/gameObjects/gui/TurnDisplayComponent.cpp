@@ -8,6 +8,8 @@
 
 #include "BoardTurnManagerComponent.hpp"
 
+#include "PlayerBehaviorComponent.hpp"
+
 using Barebones::TurnDisplayComponent;
 
 /******************************************************************************/
@@ -130,12 +132,14 @@ void TurnDisplayComponent::Update()
 }
 
 /******************************************************************************/
-void TurnDisplayComponent::DisplayMessageForPlayer(PlayerBehaviorComponent& aPlayer)
+void TurnDisplayComponent::DisplayMessageForPlayer(UrsineEngine::GameObject& aPlayer)
 {
-  if(mNameText != nullptr)
+  auto playerBehaviorComponent = aPlayer.GetFirstComponentOfType<PlayerBehaviorComponent>();
+  if(playerBehaviorComponent != nullptr &&
+     mNameText != nullptr)
   {
     std::stringstream ss;
-    ss << aPlayer.GetName() << "'s Turn";
+    ss << playerBehaviorComponent->GetName() << "'s Turn";
     mNameText->SetText(ss.str());
 
     mBackground->GetCurrentShader()->Activate();

@@ -3,8 +3,6 @@
 
 #include <Component.hpp>
 
-#include "CharacterSkillComponent.hpp"
-
 #include "HumanPlayerInputState.hpp"
 #include "InputComponent.hpp"
 
@@ -64,14 +62,6 @@ namespace Barebones
       void ProtectedInitialize() override;
 
     private:
-
-      /**
-       * A handler function that gets called whenever the user
-       * selects a skill to use from a menu.
-       *
-       * @param aSkill The skill component that was selected.
-       */
-      void HandleSkillSelected(CharacterSkillComponent& aSkill);
 
       UrsineEngine::GameObject* mBoard;
 

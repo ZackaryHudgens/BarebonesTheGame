@@ -13,10 +13,6 @@ HumanPlayerInputComponent::HumanPlayerInputComponent()
   , mState(nullptr)
   , mEnabled(false)
 {
-  SkillSelected.Connect(*this, [this](CharacterSkillComponent& aSkill)
-  {
-    this->HandleSkillSelected(aSkill);
-  });
 }
 
 /******************************************************************************/
