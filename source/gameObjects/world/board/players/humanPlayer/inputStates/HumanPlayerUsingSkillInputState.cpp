@@ -62,6 +62,7 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerUsingSkillInputStat
         {
           // If the current position is valid for executing the skill,
           // execute it and revert to a default board input state.
+          auto tile = mSkill->GetValidTiles();
           if(mSkill->IsTileValid(*board,
                                  layoutComponent->GetPlayerLocation()))
           {

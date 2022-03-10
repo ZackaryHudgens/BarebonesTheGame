@@ -2,8 +2,6 @@
 
 #include "HumanPlayerDefaultInputState.hpp"
 
-#include "CharacterSkillComponent.hpp"
-
 using Barebones::HumanPlayerInputComponent;
 
 /******************************************************************************/
@@ -70,19 +68,5 @@ void HumanPlayerInputComponent::ProtectedInitialize()
   if(mBoard != nullptr)
   {
     mState->SetBoard(*mBoard);
-  }
-}
-
-/******************************************************************************/
-void HumanPlayerInputComponent::HandleSkillSelected(CharacterSkillComponent& aSkill)
-{
-  if(mState != nullptr &&
-     mEnabled)
-  {
-    auto newState = mState->HandleSkillSelected(aSkill);
-    if(newState != nullptr)
-    {
-      mState.swap(newState);
-    }
   }
 }

@@ -11,15 +11,13 @@ MoveSkill::MoveSkill()
 }
 
 /******************************************************************************/
-void MoveSkill::Execute(UrsineEngine::GameObject& aCharacter,
-                        UrsineEngine::GameObject& aBoard,
+void MoveSkill::Execute(UrsineEngine::GameObject& aBoard,
                         const TileLocation& aLocation)
 {
 }
 
 /******************************************************************************/
-Barebones::TileList MoveSkill::GetValidTiles(UrsineEngine::GameObject& aCharacter,
-                                             UrsineEngine::GameObject& aBoard,
+Barebones::TileList MoveSkill::GetValidTiles(UrsineEngine::GameObject& aBoard,
                                              const TileLocation& aLocation)
 {
   return TileList();

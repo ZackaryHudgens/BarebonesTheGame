@@ -50,6 +50,12 @@ namespace Barebones
        */
       void HandleHoveredStatusChanged() override;
 
+      /**
+       * A handler function that gets called whenever this action
+       * is selected by the user.
+       */
+      void HandleSelectionStatusChanged() override;
+
     private:
       Skill* mSkill;
   };

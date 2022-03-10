@@ -14,7 +14,7 @@ CharacterBehaviorComponent::CharacterBehaviorComponent()
   , mMoving(false)
 {
   // Every character comes with the Move skill.
-  AddSkill(MoveSkill());
+  AddSkill(std::make_unique<MoveSkill>());
 }
 
 /******************************************************************************/
@@ -56,6 +56,19 @@ void CharacterBehaviorComponent::MoveToPosition(const glm::vec3& aPosition,
 }
 
 /******************************************************************************/
+std::vector<Barebones::Skill*> CharacterBehaviorComponent::GetSkills()
+{
+  std::vector<Skill*> skills;
+
+  for(auto& skill : mSkills)
+  {
+    skills.emplace_back(skill.get());
+  }
+
+  return skills;
+}
+
+/******************************************************************************/
 Barebones::TileList CharacterBehaviorComponent::GetMovements(UrsineEngine::GameObject& aObject,
                                                              const TileLocation& aLocation) const
 {
@@ -63,9 +76,9 @@ Barebones::TileList CharacterBehaviorComponent::GetMovements(UrsineEngine::GameO
 }
 
 /******************************************************************************/
-void CharacterBehaviorComponent::AddSkill(const Skill& aSkill)
+void CharacterBehaviorComponent::AddSkill(std::unique_ptr<Skill> aSkill)
 {
-  mSkills.emplace_back(aSkill);
+  mSkills.emplace_back(std::move(aSkill));
 }
 
 /******************************************************************************/

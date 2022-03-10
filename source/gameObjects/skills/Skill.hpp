@@ -20,25 +20,21 @@ namespace Barebones
        * A virtual function that executes this skill. Inheriting skills should
        * override this function to provide the desired behavior.
        *
-       * @param aCharacter The character that is executing this skill.
        * @param aBoard The board to execute this skill on.
        * @param aLocation The location on the board to execute this skill.
        */
-      virtual void Execute(UrsineEngine::GameObject& aCharacter,
-                           UrsineEngine::GameObject& aBoard,
+      virtual void Execute(UrsineEngine::GameObject& aBoard,
                            const TileLocation& aLocation) = 0;
 
       /**
        * A virtual function that returns a vector of valid tile locations
        * for executing this skill.
        *
-       * @param aCharacter The character that is executing this skill.
        * @param aBoard A GameObject containing a BoardLayoutComponent.
        * @param aLocation The reference position.
        * @return True if the given position is valid, false otherwise.
        */
-      virtual TileList GetValidTiles(UrsineEngine::GameObject& aCharacter,
-                                     UrsineEngine::GameObject& aBoard,
+      virtual TileList GetValidTiles(UrsineEngine::GameObject& aBoard,
                                      const TileLocation& aLocation) { return TileList(); }
 
       /**

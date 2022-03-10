@@ -148,9 +148,9 @@ void HumanPlayerDefaultInputState::CreateSkillMenu(UrsineEngine::GameObject& aOb
         for(auto& skill : skills)
         {
           auto action = ActionFactory::CreateAction(ActionType::eSKILL,
-                                                    skill.GetName());
+                                                    skill->GetName());
           auto skillAction = action->GetFirstComponentOfType<SkillActionBehaviorComponent>();
-          skillAction->SetSkill(skill);
+          skillAction->SetSkill(*skill);
           menuLayout->AddAction(std::move(action));
         }
       }

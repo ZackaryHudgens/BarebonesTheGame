@@ -84,3 +84,8 @@ void SkillActionBehaviorComponent::HandleHoveredStatusChanged()
     }
   }
 }
+
+/******************************************************************************/
+void SkillActionBehaviorComponent::HandleSelectionStatusChanged()
+{
+}

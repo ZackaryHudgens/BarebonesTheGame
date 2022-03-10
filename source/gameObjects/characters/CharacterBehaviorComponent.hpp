@@ -41,7 +41,7 @@ namespace Barebones
        *
        * @return This character's skills.
        */
-      std::vector<Skill> GetSkills() const { return mSkills; }
+      std::vector<Skill*> GetSkills();
 
       /**
        * A virtual function that returns a list of possible movements
@@ -77,7 +77,7 @@ namespace Barebones
        *
        * @param aSkill The skill to add.
        */
-      void AddSkill(const Skill& aSkill);
+      void AddSkill(std::unique_ptr<Skill> aSkill);
 
       /**
        * Sets the maximum health of this character. If the maximum health is
@@ -99,7 +99,7 @@ namespace Barebones
     private:
       glm::vec3 mTargetPosition;
 
-      std::vector<Skill> mSkills;
+      std::vector<std::unique_ptr<Skill>> mSkills;
 
       double mSpeed;
 
