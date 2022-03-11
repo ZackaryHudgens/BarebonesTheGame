@@ -13,8 +13,6 @@ CharacterBehaviorComponent::CharacterBehaviorComponent()
   , mCurrentHealth(1)
   , mMoving(false)
 {
-  // Every character comes with the Move skill.
-  AddSkill(std::make_unique<MoveSkill>());
 }
 
 /******************************************************************************/

@@ -13,8 +13,10 @@ namespace Barebones
 
       /**
        * Constructor.
+       *
+       * @param aCharacter The character that owns this skill.
        */
-      Skill();
+      Skill(UrsineEngine::GameObject& aCharacter);
 
       /**
        * A virtual function that executes this skill. Inheriting skills should
@@ -31,11 +33,8 @@ namespace Barebones
        * for executing this skill.
        *
        * @param aBoard A GameObject containing a BoardLayoutComponent.
-       * @param aLocation The reference position.
-       * @return True if the given position is valid, false otherwise.
        */
-      virtual TileList GetValidTiles(UrsineEngine::GameObject& aBoard,
-                                     const TileLocation& aLocation) { return TileList(); }
+      virtual TileList GetValidTiles(UrsineEngine::GameObject& aBoard) { return TileList(); }
 
       /**
        * Returns the name of the skill.
@@ -54,6 +53,13 @@ namespace Barebones
     protected:
 
       /**
+       * Returns the character that owns this skill.
+       *
+       * @return The character that owns this skill.
+       */
+      UrsineEngine::GameObject* GetCharacter() { return mCharacter; }
+
+      /**
        * Sets the name of the skill.
        *
        * @param aName The name of the skill.
@@ -68,6 +74,8 @@ namespace Barebones
       void SetDescription(const std::string& aDescription) { mDescription = aDescription; }
 
     private:
+      UrsineEngine::GameObject* mCharacter;
+
       std::string mDescription;
       std::string mName;
   };

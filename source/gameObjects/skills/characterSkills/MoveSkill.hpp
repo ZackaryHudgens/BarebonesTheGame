@@ -11,8 +11,10 @@ namespace Barebones
 
       /**
        * Constructor.
+       *
+       * @param aCharacter The character that owns this skill.
        */
-      MoveSkill();
+      MoveSkill(UrsineEngine::GameObject& aCharacter);
 
       /**
        * Executes this skill.
@@ -27,11 +29,8 @@ namespace Barebones
        * Returns a vector of valid tile locations for executing this skill.
        *
        * @param aBoard A GameObject containing a BoardLayoutComponent.
-       * @param aLocation The reference position.
-       * @return True if the given position is valid, false otherwise.
        */
-      TileList GetValidTiles(UrsineEngine::GameObject& aBoard,
-                             const TileLocation& aLocation) override;
+      TileList GetValidTiles(UrsineEngine::GameObject& aBoard) override;
   };
 }
 
