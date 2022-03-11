@@ -21,6 +21,11 @@ CameraBehaviorComponent::CameraBehaviorComponent()
   {
     this->HandlePlayerMoved(aPlayer);
   });
+
+  PlayerTurnBegan.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
+  {
+    this->HandlePlayerTurnBegan(aPlayer);
+  });
 }
 
 /******************************************************************************/
@@ -120,4 +125,10 @@ void CameraBehaviorComponent::HandlePlayerMoved(PlayerBehaviorComponent& aPlayer
       }
     }
   }
+}
+
+/******************************************************************************/
+void CameraBehaviorComponent::HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlayer)
+{
+  HandlePlayerMoved(aPlayer);
 }

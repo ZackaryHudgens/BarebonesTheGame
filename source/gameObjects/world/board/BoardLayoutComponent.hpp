@@ -104,6 +104,13 @@ namespace Barebones
        */
       void HandlePlayerMoved(PlayerBehaviorComponent& aPlayer);
 
+      /**
+       * A handler function that gets called whenever a player's turn begins.
+       *
+       * @param aPlayer The player whose turn began.
+       */
+      void HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlayer);
+
       std::vector<std::vector<UrsineEngine::GameObject*>> mTiles;
       std::vector<std::vector<UrsineEngine::GameObject*>> mCharacters;
 

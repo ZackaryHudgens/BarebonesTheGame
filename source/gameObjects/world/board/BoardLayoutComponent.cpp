@@ -32,6 +32,11 @@ BoardLayoutComponent::BoardLayoutComponent()
   {
     this->HandlePlayerMoved(aPlayer);
   });
+
+  PlayerTurnBegan.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
+  {
+    this->HandlePlayerTurnBegan(aPlayer);
+  });
 }
 
 /******************************************************************************/
@@ -70,53 +75,6 @@ void BoardLayoutComponent::Initialize()
 
       mTiles.emplace_back(row);
       mCharacters.emplace_back(characters);
-    }
-  }
-}
-
-/******************************************************************************/
-void BoardLayoutComponent::HandlePlayerMoved(PlayerBehaviorComponent& aPlayer)
-{
-  // Only change the currently hovered tile if the player that moved is the
-  // current player in the turn manager.
-  auto parent = GetParent();
-  if(parent != nullptr)
-  {
-    auto turnManager = parent->GetFirstComponentOfType<BoardTurnManagerComponent>();
-    if(turnManager != nullptr)
-    {
-      if(aPlayer.GetParent() == turnManager->GetCurrentPlayer())
-      {
-        auto location = aPlayer.GetLocation();
-        if(location.first < mColumns &&
-           location.first >= 0 &&
-           location.second < mRows &&
-           location.second >= 0)
-        {
-          // Un-hover the tile at the previous location.
-          if(mHoveredTile != nullptr)
-          {
-            auto prevTileBehaviorComp = mHoveredTile->GetFirstComponentOfType<TileBehaviorComponent>();
-            if(prevTileBehaviorComp != nullptr)
-            {
-              prevTileBehaviorComp->SetHovered(false);
-            }
-          }
-
-          // Hover over the tile at the new location.
-          auto newTile = GetTileAtLocation(location);
-          if(newTile != nullptr)
-          {
-            auto newTileBehaviorComp = newTile->GetFirstComponentOfType<TileBehaviorComponent>();
-            if(newTileBehaviorComp != nullptr)
-            {
-              newTileBehaviorComp->SetHovered(true);
-            }
-
-            mHoveredTile = newTile;
-          }
-        }
-      }
     }
   }
 }
@@ -300,4 +258,57 @@ void BoardLayoutComponent::HandleTileReadyForUse(UrsineEngine::GameObject& aTile
       }
     }
   }
+}
+
+/******************************************************************************/
+void BoardLayoutComponent::HandlePlayerMoved(PlayerBehaviorComponent& aPlayer)
+{
+  // Only change the currently hovered tile if the player that moved is the
+  // current player in the turn manager.
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    auto turnManager = parent->GetFirstComponentOfType<BoardTurnManagerComponent>();
+    if(turnManager != nullptr)
+    {
+      if(aPlayer.GetParent() == turnManager->GetCurrentPlayer())
+      {
+        auto location = aPlayer.GetLocation();
+        if(location.first < mColumns &&
+           location.first >= 0 &&
+           location.second < mRows &&
+           location.second >= 0)
+        {
+          // Un-hover the tile at the previous location.
+          if(mHoveredTile != nullptr)
+          {
+            auto prevTileBehaviorComp = mHoveredTile->GetFirstComponentOfType<TileBehaviorComponent>();
+            if(prevTileBehaviorComp != nullptr)
+            {
+              prevTileBehaviorComp->SetHovered(false);
+            }
+          }
+
+          // Hover over the tile at the new location.
+          auto newTile = GetTileAtLocation(location);
+          if(newTile != nullptr)
+          {
+            auto newTileBehaviorComp = newTile->GetFirstComponentOfType<TileBehaviorComponent>();
+            if(newTileBehaviorComp != nullptr)
+            {
+              newTileBehaviorComp->SetHovered(true);
+            }
+
+            mHoveredTile = newTile;
+          }
+        }
+      }
+    }
+  }
+}
+
+/******************************************************************************/
+void BoardLayoutComponent::HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlayer)
+{
+  HandlePlayerMoved(aPlayer);
 }
