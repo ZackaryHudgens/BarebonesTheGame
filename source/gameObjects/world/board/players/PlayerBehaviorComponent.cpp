@@ -7,6 +7,7 @@ using Barebones::PlayerBehaviorComponent;
 /******************************************************************************/
 PlayerBehaviorComponent::PlayerBehaviorComponent()
   : Component()
+  , mLocation(0, 0)
 {
 }
 
@@ -23,3 +24,15 @@ void PlayerBehaviorComponent::EndTurn()
   ProtectedEndTurn();
   PlayerTurnEnded.Notify(*this);
 }
+
+/******************************************************************************/
+void PlayerBehaviorComponent::SetLocation(const TileLocation& aLocation)
+{
+  mLocation = aLocation;
+  PlayerMoved.Notify(*this);
+}
+
+/******************************************************************************/
+Barebones::PlayerMovedSignal Barebones::PlayerMoved;
+Barebones::PlayerTurnBeganSignal Barebones::PlayerTurnBegan;
+Barebones::PlayerTurnEndedSignal Barebones::PlayerTurnEnded;

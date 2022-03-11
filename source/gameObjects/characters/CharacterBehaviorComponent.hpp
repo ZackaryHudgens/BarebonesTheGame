@@ -23,11 +23,6 @@ namespace Barebones
       CharacterBehaviorComponent();
 
       /**
-       * Initializes the component.
-       */
-      void Initialize() override;
-
-      /**
        * Updates the component.
        */
       void Update() override;

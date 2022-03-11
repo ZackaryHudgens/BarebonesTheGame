@@ -6,6 +6,8 @@
 
 #include "BoardLayoutComponent.hpp"
 
+#include "PlayerBehaviorComponent.hpp"
+
 namespace Barebones
 {
   class CameraBehaviorComponent : public UrsineEngine::Component
@@ -37,12 +39,12 @@ namespace Barebones
     private:
 
       /**
-       * A handler function that gets called whenever the player's
-       * location on the board changes.
+       * A handler function that gets called whenever a player's
+       * location changes.
        *
-       * @param aLocation The new location on the board.
+       * @param aPlayer The player that moved.
        */
-      void HandlePlayerMoved(const TileLocation& aLocation);
+      void HandlePlayerMoved(PlayerBehaviorComponent& aPlayer);
 
       UrsineEngine::GameObject* mFollowedBoard;
 

@@ -91,7 +91,7 @@ UrsineEngine::GameObject* BoardTurnManagerComponent::GetCurrentPlayer()
 {
   UrsineEngine::GameObject* player = nullptr;
 
-  if(mTurnTracker.empty())
+  if(!mTurnTracker.empty())
   {
     player = mTurnTracker.front();
   }
@@ -152,7 +152,3 @@ void BoardTurnManagerComponent::HandleTurnDisplayFinished(TurnDisplayComponent& 
     }
   }
 }
-
-/******************************************************************************/
-Barebones::PlayerTurnBeganSignal Barebones::PlayerTurnBegan;
-Barebones::PlayerTurnEndedSignal Barebones::PlayerTurnEnded;

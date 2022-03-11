@@ -3,6 +3,7 @@
 using Barebones::Skill;
 
 /******************************************************************************/
-Skill::Skill()
+Skill::Skill(UrsineEngine::GameObject& aCharacter)
+  : mCharacter(&aCharacter)
 {
 }

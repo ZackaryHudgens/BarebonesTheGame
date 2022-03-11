@@ -30,7 +30,7 @@ void HumanPlayerBehaviorComponent::ProtectedTakeTurn(UrsineEngine::GameObject& a
 /******************************************************************************/
 void HumanPlayerBehaviorComponent::ProtectedEndTurn()
 {
-  // Diable the input component.
+  // Disable the input component.
   auto parent = GetParent();
   if(parent != nullptr)
   {

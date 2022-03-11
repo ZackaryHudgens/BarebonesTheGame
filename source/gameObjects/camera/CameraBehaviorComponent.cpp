@@ -2,6 +2,8 @@
 
 #include <GameObject.hpp>
 
+#include "BoardTurnManagerComponent.hpp"
+
 using Barebones::CameraBehaviorComponent;
 
 /******************************************************************************/
@@ -15,9 +17,9 @@ CameraBehaviorComponent::CameraBehaviorComponent()
   , mSpeed(0.3)
   , mMoving(false)
 {
-  PlayerMoved.Connect(*this, [this](const TileLocation& aLocation)
+  PlayerMoved.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
   {
-    this->HandlePlayerMoved(aLocation);
+    this->HandlePlayerMoved(aPlayer);
   });
 }
 
@@ -70,30 +72,51 @@ void CameraBehaviorComponent::Update()
 void CameraBehaviorComponent::FollowBoard(UrsineEngine::GameObject& aBoard)
 {
   mFollowedBoard = &aBoard;
-  HandlePlayerMoved(TileLocation(0,
-                                 0));
+
+  auto turnManager = aBoard.GetFirstComponentOfType<BoardTurnManagerComponent>();
+  if(turnManager != nullptr)
+  {
+    auto player = turnManager->GetCurrentPlayer();
+    if(player != nullptr)
+    {
+      auto playerBehaviorComponent = player->GetFirstComponentOfType<PlayerBehaviorComponent>();
+      if(playerBehaviorComponent != nullptr)
+      {
+        HandlePlayerMoved(*playerBehaviorComponent);
+      }
+    }
+  }
 }
 
 /******************************************************************************/
-void CameraBehaviorComponent::HandlePlayerMoved(const TileLocation& aLocation)
+void CameraBehaviorComponent::HandlePlayerMoved(PlayerBehaviorComponent& aPlayer)
 {
   if(mFollowedBoard != nullptr)
   {
-    auto boardLayoutComponent = mFollowedBoard->GetFirstComponentOfType<BoardLayoutComponent>();
-    if(boardLayoutComponent != nullptr)
+    auto turnManager = mFollowedBoard->GetFirstComponentOfType<BoardTurnManagerComponent>();
+    if(turnManager != nullptr)
     {
-      auto tile = boardLayoutComponent->GetTileAtLocation(aLocation);
-      auto parent = GetParent();
-      if(tile != nullptr &&
-         parent != nullptr)
+      // Only move the camera if the player that moved is the current player
+      // on the board.
+      if(aPlayer.GetParent() == turnManager->GetCurrentPlayer())
       {
-        // Calculate the new position for the camera.
-        auto newPos = tile->GetPosition();
-        newPos.y += mYDistance;
-        newPos.z += mZDistance;
+        auto boardLayoutComponent = mFollowedBoard->GetFirstComponentOfType<BoardLayoutComponent>();
+        if(boardLayoutComponent != nullptr)
+        {
+          auto tile = boardLayoutComponent->GetTileAtLocation(aPlayer.GetLocation());
+          auto parent = GetParent();
+          if(tile != nullptr &&
+             parent != nullptr)
+          {
+            // Calculate the new position for the camera.
+            auto newPos = tile->GetPosition();
+            newPos.y += mYDistance;
+            newPos.z += mZDistance;
 
-        mTargetPosition = newPos;
-        mMoving = true;
+            mTargetPosition = newPos;
+            mMoving = true;
+          }
+        }
       }
     }
   }

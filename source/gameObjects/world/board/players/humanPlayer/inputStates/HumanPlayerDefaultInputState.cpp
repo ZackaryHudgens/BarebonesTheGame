@@ -14,6 +14,8 @@
 #include "CharacterBehaviorComponent.hpp"
 #include "Skill.hpp"
 
+#include <iostream>
+
 using Barebones::HumanPlayerDefaultInputState;
 
 /******************************************************************************/
@@ -28,42 +30,75 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
 {
   std::unique_ptr<HumanPlayerInputState> newState = nullptr;
 
+  auto player = GetPlayer();
   auto board = GetBoard();
-  if(board != nullptr)
+  if(player != nullptr &&
+     board != nullptr)
   {
-    auto layoutComponent = board->GetFirstComponentOfType<BoardLayoutComponent>();
-    if(layoutComponent != nullptr)
+    auto playerBehaviorComponent = player->GetFirstComponentOfType<PlayerBehaviorComponent>();
+    auto boardLayoutComponent = board->GetFirstComponentOfType<BoardLayoutComponent>();
+    if(playerBehaviorComponent != nullptr &&
+       boardLayoutComponent != nullptr)
     {
-      auto currentLocation = layoutComponent->GetPlayerLocation();
-
+      auto currentLocation = playerBehaviorComponent->GetLocation();
       switch(aCode)
       {
+        // For player movement, first check if a tile exists at the new location
+        // on the board. If it does, update the player's location.
         case UrsineEngine::KeyCode::eKEY_UP:
         case UrsineEngine::KeyCode::eKEY_W:
         {
-          layoutComponent->SetPlayerLocation(TileLocation(currentLocation.first,
-                                                          currentLocation.second + 1));
+          TileLocation newLocation = currentLocation;
+          newLocation.second += 1;
+
+          auto tile = boardLayoutComponent->GetTileAtLocation(newLocation);
+          if(tile != nullptr)
+          {
+            playerBehaviorComponent->SetLocation(newLocation);
+          }
+
           break;
         }
         case UrsineEngine::KeyCode::eKEY_DOWN:
         case UrsineEngine::KeyCode::eKEY_S:
         {
-          layoutComponent->SetPlayerLocation(TileLocation(currentLocation.first,
-                                                          currentLocation.second - 1));
+          TileLocation newLocation = currentLocation;
+          newLocation.second -= 1;
+
+          auto tile = boardLayoutComponent->GetTileAtLocation(newLocation);
+          if(tile != nullptr)
+          {
+            playerBehaviorComponent->SetLocation(newLocation);
+          }
+
           break;
         }
         case UrsineEngine::KeyCode::eKEY_LEFT:
         case UrsineEngine::KeyCode::eKEY_A:
         {
-          layoutComponent->SetPlayerLocation(TileLocation(currentLocation.first - 1,
-                                                          currentLocation.second));
+          TileLocation newLocation = currentLocation;
+          newLocation.first -= 1;
+
+          auto tile = boardLayoutComponent->GetTileAtLocation(newLocation);
+          if(tile != nullptr)
+          {
+            playerBehaviorComponent->SetLocation(newLocation);
+          }
+
           break;
         }
         case UrsineEngine::KeyCode::eKEY_RIGHT:
         case UrsineEngine::KeyCode::eKEY_D:
         {
-          layoutComponent->SetPlayerLocation(TileLocation(currentLocation.first + 1,
-                                                          currentLocation.second));
+          TileLocation newLocation = currentLocation;
+          newLocation.first += 1;
+
+          auto tile = boardLayoutComponent->GetTileAtLocation(newLocation);
+          if(tile != nullptr)
+          {
+            playerBehaviorComponent->SetLocation(newLocation);
+          }
+
           break;
         }
         case UrsineEngine::KeyCode::eKEY_ENTER:
@@ -71,12 +106,6 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
           // If there is a character at the player's current location,
           // then create a menu containing all of that character's
           // available skills.
-          auto character = layoutComponent->GetCharacterAtLocation(currentLocation);
-          if(character != nullptr)
-          {
-            CreateSkillMenu(*character);
-          }
-
           break;
         }
         case UrsineEngine::KeyCode::eKEY_ESCAPE:
@@ -99,6 +128,7 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
           break;
         }
       }
+
     }
   }
 

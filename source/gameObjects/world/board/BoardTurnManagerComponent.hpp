@@ -53,7 +53,7 @@ namespace Barebones
 
       /**
        * Creates a turn display and adds it to the current scene's
-       * canvas. When the turn display finishes, the player in
+       * foreground. When the turn display finishes, the player in
        * the front of the turn list will take their turn.
        */
       void CreateTurnDisplay();
@@ -80,12 +80,6 @@ namespace Barebones
       bool mWaitingForDisplay;
       bool mWaitingToTakeTurn;
   };
-
-  typedef UrsineEngine::SignalT<PlayerBehaviorComponent&> PlayerTurnBeganSignal;
-  typedef UrsineEngine::SignalT<PlayerBehaviorComponent&> PlayerTurnEndedSignal;
-
-  extern PlayerTurnBeganSignal   PlayerTurnBegan;
-  extern PlayerTurnEndedSignal   PlayerTurnEnded;
 }
 
 #endif
