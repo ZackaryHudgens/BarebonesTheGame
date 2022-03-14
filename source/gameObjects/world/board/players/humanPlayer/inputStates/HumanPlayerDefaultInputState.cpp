@@ -106,6 +106,12 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
           // If there is a character at the player's current location,
           // then create a menu containing all of that character's
           // available skills.
+          auto character = boardLayoutComponent->GetCharacterAtLocation(currentLocation);
+          if(character != nullptr)
+          {
+            CreateSkillMenu(*character);
+          }
+
           break;
         }
         case UrsineEngine::KeyCode::eKEY_ESCAPE:

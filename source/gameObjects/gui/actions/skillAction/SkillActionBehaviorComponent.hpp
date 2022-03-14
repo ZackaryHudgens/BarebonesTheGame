@@ -29,18 +29,11 @@ namespace Barebones
       void SetSkill(Skill& aSkill);
 
       /**
-       * Returns the name of the current skill.
+       * Returns a pointer to the skill that this action represents.
        *
-       * @return The name of the current skill.
+       * @return The skill that this action represents.
        */
-      std::string GetSkillName() const;
-
-      /**
-       * Returns the description of the current skill.
-       *
-       * @return The description of the current skill.
-       */
-      std::string GetSkillDescription() const;
+      Skill* GetSkill() { return mSkill; }
 
     protected:
 

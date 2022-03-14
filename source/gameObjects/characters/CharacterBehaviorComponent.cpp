@@ -16,6 +16,13 @@ CharacterBehaviorComponent::CharacterBehaviorComponent()
 }
 
 /******************************************************************************/
+void CharacterBehaviorComponent::Initialize()
+{
+  // All characters have the move skill.
+  AddSkill(std::make_unique<MoveSkill>(*GetParent()));
+}
+
+/******************************************************************************/
 void CharacterBehaviorComponent::Update()
 {
   if(mMoving)
