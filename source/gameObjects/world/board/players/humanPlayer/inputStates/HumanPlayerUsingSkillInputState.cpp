@@ -22,6 +22,109 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerUsingSkillInputStat
 {
   std::unique_ptr<HumanPlayerInputState> newState = nullptr;
 
+  auto player = GetPlayer();
+  auto board = GetBoard();
+  if(player != nullptr &&
+     board != nullptr)
+  {
+    auto playerBehaviorComponent = player->GetFirstComponentOfType<PlayerBehaviorComponent>();
+    auto boardLayoutComponent = board->GetFirstComponentOfType<BoardLayoutComponent>();
+    if(playerBehaviorComponent != nullptr &&
+       boardLayoutComponent != nullptr)
+    {
+      auto currentLocation = playerBehaviorComponent->GetLocation();
+      switch(aCode)
+      {
+        // For player movement, first check if a tile exists at the new location
+        // on the board. If it does, update the player's location.
+        case UrsineEngine::KeyCode::eKEY_UP:
+        case UrsineEngine::KeyCode::eKEY_W:
+        {
+          TileLocation newLocation = currentLocation;
+          newLocation.second += 1;
+
+          auto tile = boardLayoutComponent->GetTileAtLocation(newLocation);
+          if(tile != nullptr)
+          {
+            playerBehaviorComponent->SetLocation(newLocation);
+          }
+
+          break;
+        }
+        case UrsineEngine::KeyCode::eKEY_DOWN:
+        case UrsineEngine::KeyCode::eKEY_S:
+        {
+          TileLocation newLocation = currentLocation;
+          newLocation.second -= 1;
+
+          auto tile = boardLayoutComponent->GetTileAtLocation(newLocation);
+          if(tile != nullptr)
+          {
+            playerBehaviorComponent->SetLocation(newLocation);
+          }
+
+          break;
+        }
+        case UrsineEngine::KeyCode::eKEY_LEFT:
+        case UrsineEngine::KeyCode::eKEY_A:
+        {
+          TileLocation newLocation = currentLocation;
+          newLocation.first -= 1;
+
+          auto tile = boardLayoutComponent->GetTileAtLocation(newLocation);
+          if(tile != nullptr)
+          {
+            playerBehaviorComponent->SetLocation(newLocation);
+          }
+
+          break;
+        }
+        case UrsineEngine::KeyCode::eKEY_RIGHT:
+        case UrsineEngine::KeyCode::eKEY_D:
+        {
+          TileLocation newLocation = currentLocation;
+          newLocation.first += 1;
+
+          auto tile = boardLayoutComponent->GetTileAtLocation(newLocation);
+          if(tile != nullptr)
+          {
+            playerBehaviorComponent->SetLocation(newLocation);
+          }
+
+          break;
+        }
+        case UrsineEngine::KeyCode::eKEY_ENTER:
+        {
+          // If the player's location is valid for using the current skill,
+          // execute it, then and return to the default input state.
+          auto tileLocations = mSkill->GetValidTiles(*board);
+          auto foundTile = std::find(tileLocations.begin(),
+                                     tileLocations.end(),
+                                     currentLocation);
+          if(foundTile != tileLocations.end())
+          {
+            mSkill->Execute(*board,
+                            currentLocation);
+            newState = std::make_unique<HumanPlayerDefaultInputState>(*player);
+            newState->SetBoard(*board);
+          }
+          break;
+        }
+        case UrsineEngine::KeyCode::eKEY_ESCAPE:
+        {
+          // Stop using this skill and return to the default input state.
+          newState = std::make_unique<HumanPlayerDefaultInputState>(*player);
+          newState->SetBoard(*board);
+          break;
+        }
+        default:
+        {
+          break;
+        }
+      }
+
+    }
+  }
   return newState;
 }
 

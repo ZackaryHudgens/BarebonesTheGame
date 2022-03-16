@@ -2,6 +2,8 @@
 
 #include <GameObject.hpp>
 
+#include "Signals.hpp"
+
 using Barebones::InputManagerComponent;
 
 /******************************************************************************/

@@ -5,12 +5,17 @@
 
 #include <GameObject.hpp>
 
+#include "Signals.hpp"
+
 #include "BoardTurnManagerComponent.hpp"
 
 #include "CharacterBehaviorComponent.hpp"
+
 #include "TileFactory.hpp"
 #include "TileBehaviorComponent.hpp"
 #include "TileMeshComponent.hpp"
+
+#include "SkillActionBehaviorComponent.hpp"
 
 using Barebones::BoardLayoutComponent;
 
@@ -36,6 +41,11 @@ BoardLayoutComponent::BoardLayoutComponent()
   PlayerTurnBegan.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
   {
     this->HandlePlayerTurnBegan(aPlayer);
+  });
+
+  SkillSelectedFromMenu.Connect(*this, [this](Skill& aSkill)
+  {
+    this->HandleSkillSelectedFromMenu(aSkill);
   });
 }
 
@@ -311,4 +321,28 @@ void BoardLayoutComponent::HandlePlayerMoved(PlayerBehaviorComponent& aPlayer)
 void BoardLayoutComponent::HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlayer)
 {
   HandlePlayerMoved(aPlayer);
+}
+
+/******************************************************************************/
+void BoardLayoutComponent::HandleSkillSelectedFromMenu(Skill& aSkill)
+{
+  // When a skill is selected, highlight each valid tile for using that skill.
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    auto tileLocations = aSkill.GetValidTiles(*parent);
+    for(auto tileLocation : tileLocations)
+    {
+      auto tile = GetTileAtLocation(tileLocation);
+      if(tile != nullptr)
+      {
+        auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
+        if(tileBehaviorComponent != nullptr)
+        {
+          tileBehaviorComponent->SetHighlightColor(glm::vec3(0.5, 0.5, 0.0));
+          tileBehaviorComponent->SetHighlighted(true);
+        }
+      }
+    }
+  }
 }

@@ -2,7 +2,6 @@
 #define BOARDTURNMANAGERCOMPONENT_HPP
 
 #include <Component.hpp>
-#include <Signal.hpp>
 
 #include "PlayerBehaviorComponent.hpp"
 #include "TurnDisplayComponent.hpp"

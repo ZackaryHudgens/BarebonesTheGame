@@ -3,7 +3,6 @@
 
 #include <Component.hpp>
 #include <GameObject.hpp>
-#include <Signal.hpp>
 
 #include "TileUtil.hpp"
 
@@ -83,14 +82,6 @@ namespace Barebones
 
       TileLocation mLocation;
   };
-
-  typedef UrsineEngine::SignalT<PlayerBehaviorComponent&> PlayerMovedSignal;
-  typedef UrsineEngine::SignalT<PlayerBehaviorComponent&> PlayerTurnBeganSignal;
-  typedef UrsineEngine::SignalT<PlayerBehaviorComponent&> PlayerTurnEndedSignal;
-
-  extern PlayerMovedSignal     PlayerMoved;
-  extern PlayerTurnBeganSignal PlayerTurnBegan;
-  extern PlayerTurnEndedSignal PlayerTurnEnded;
 }
 
 #endif

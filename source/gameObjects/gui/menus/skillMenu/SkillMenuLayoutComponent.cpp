@@ -84,11 +84,6 @@ void SkillMenuLayoutComponent::HandleActionHovered()
 /******************************************************************************/
 void SkillMenuLayoutComponent::HandleActionSelected()
 {
-  auto skillAction = GetCurrentlyHoveredAction()->GetFirstComponentOfType<SkillActionBehaviorComponent>();
-  if(skillAction != nullptr)
-  {
-  }
-
   // When a skill is selected, this menu is no longer needed.
   auto parent = GetParent();
   if(parent != nullptr)
@@ -96,6 +91,3 @@ void SkillMenuLayoutComponent::HandleActionSelected()
     parent->ScheduleForDeletion();
   }
 }
-
-/******************************************************************************/
-Barebones::SkillSelectedFromMenuSignal Barebones::SkillSelectedFromMenu;

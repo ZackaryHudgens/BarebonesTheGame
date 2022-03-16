@@ -1,5 +1,7 @@
 #include "InputComponent.hpp"
 
+#include "Signals.hpp"
+
 using Barebones::InputComponent;
 
 /******************************************************************************/
@@ -14,6 +16,3 @@ void InputComponent::Initialize()
   ProtectedInitialize();
   InputComponentInitialized.Notify(*this);
 }
-
-/******************************************************************************/
-Barebones::InputComponentInitializedSignal Barebones::InputComponentInitialized;

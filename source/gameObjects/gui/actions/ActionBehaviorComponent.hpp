@@ -16,35 +16,17 @@ namespace Barebones
       ActionBehaviorComponent();
 
       /**
-       * Sets the hovered property of this action.
+       * A virtual function that gets called whenever this action is
+       * either hovered or un-hovered.
        *
        * @param aHovered Whether this action was hovered by the user.
        */
-      void SetHovered(bool aHovered);
+      virtual void SetHovered(bool aHovered) = 0;
 
       /**
-       * Sets the selected property of this action.
-       *
-       * @param aSelected Whether this action was selected by the user.
+       * A virtual function that selects this action and executes it.
        */
-      void SetSelected(bool aSelected);
-
-    protected:
-
-      /**
-       * A virtual function that gets called whenever this action
-       * is hovered over by the user.
-       */
-      virtual void HandleHoveredStatusChanged() = 0;
-
-      /**
-       * A virtual function that gets called whenever this action
-       * is selected by the user.
-       */
-      virtual void HandleSelectionStatusChanged() = 0;
-
-      bool mHovered;
-      bool mSelected;
+      virtual void Select() = 0;
   };
 }
 

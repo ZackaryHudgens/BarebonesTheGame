@@ -6,6 +6,8 @@
 #include "HumanPlayerInputState.hpp"
 #include "InputComponent.hpp"
 
+#include "SkillActionBehaviorComponent.hpp"
+
 namespace Barebones
 {
   class HumanPlayerInputComponent : public InputComponent
@@ -60,6 +62,14 @@ namespace Barebones
        * Initializes the component by creating a default state object.
        */
       void ProtectedInitialize() override;
+
+      /**
+       * A handler function that gets called whenever a skill is selected
+       * for use from a menu.
+       *
+       * @param aSkill The skill that was selected.
+       */
+      void HandleSkillSelectedFromMenu(Skill& aSkill);
 
     private:
 

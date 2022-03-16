@@ -6,6 +6,8 @@
 #include <MeshComponent.hpp>
 #include <TextComponent.hpp>
 
+#include "Signals.hpp"
+
 #include "BoardTurnManagerComponent.hpp"
 
 #include "PlayerBehaviorComponent.hpp"
@@ -150,6 +152,3 @@ void TurnDisplayComponent::DisplayMessageForPlayer(UrsineEngine::GameObject& aPl
     mInitialDisplayTime = env.GetTime();
   }
 }
-
-/******************************************************************************/
-Barebones::TurnDisplayFinishedSignal Barebones::TurnDisplayFinished;

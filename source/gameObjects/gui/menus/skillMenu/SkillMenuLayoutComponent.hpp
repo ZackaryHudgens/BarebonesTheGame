@@ -3,7 +3,6 @@
 
 #include "MenuLayoutComponent.hpp"
 
-#include <Signal.hpp>
 #include <TextComponent.hpp>
 
 #include "Skill.hpp"
@@ -55,10 +54,6 @@ namespace Barebones
 
       double mIconSpacing;
   };
-
-  typedef UrsineEngine::SignalT<Skill*> SkillSelectedFromMenuSignal;
-
-  extern SkillSelectedFromMenuSignal SkillSelectedFromMenu;
 }
 
 #endif

@@ -2,7 +2,6 @@
 #define TURNDISPLAYCOMPONENT_HPP
 
 #include <Component.hpp>
-#include <Signal.hpp>
 #include <TextComponent.hpp>
 
 namespace Barebones
@@ -42,9 +41,6 @@ namespace Barebones
 
       bool mDisplaying;
   };
-
-  typedef UrsineEngine::SignalT<TurnDisplayComponent&> TurnDisplayFinishedSignal;
-  extern TurnDisplayFinishedSignal TurnDisplayFinished;
 }
 
 #endif

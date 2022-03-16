@@ -1,5 +1,7 @@
 #include "CharacterBehaviorComponent.hpp"
 
+#include "Signals.hpp"
+
 #include "MoveSkill.hpp"
 
 using Barebones::CharacterBehaviorComponent;
@@ -113,6 +115,3 @@ void CharacterBehaviorComponent::SetCurrentHealth(int aHealth)
     }
   }
 }
-
-/******************************************************************************/
-Barebones::CharacterDiedSignal Barebones::CharacterDied;

@@ -1,6 +1,9 @@
 #include "HumanPlayerInputComponent.hpp"
 
+#include "Signals.hpp"
+
 #include "HumanPlayerDefaultInputState.hpp"
+#include "HumanPlayerUsingSkillInputState.hpp"
 
 using Barebones::HumanPlayerInputComponent;
 
@@ -11,6 +14,10 @@ HumanPlayerInputComponent::HumanPlayerInputComponent()
   , mState(nullptr)
   , mEnabled(false)
 {
+  SkillSelectedFromMenu.Connect(*this, [this](Skill& aSkill)
+  {
+    this->HandleSkillSelectedFromMenu(aSkill);
+  });
 }
 
 /******************************************************************************/
@@ -67,6 +74,19 @@ void HumanPlayerInputComponent::ProtectedInitialize()
 
   if(mBoard != nullptr)
   {
+    mState->SetBoard(*mBoard);
+  }
+}
+
+/******************************************************************************/
+void HumanPlayerInputComponent::HandleSkillSelectedFromMenu(Skill& aSkill)
+{
+  // When a skill is selected, swap to the Using Skill state.
+  auto parent = GetParent();
+  if(parent != nullptr &&
+     mBoard != nullptr)
+  {
+    mState = std::make_unique<HumanPlayerUsingSkillInputState>(*parent, aSkill);
     mState->SetBoard(*mBoard);
   }
 }

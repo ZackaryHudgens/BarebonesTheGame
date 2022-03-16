@@ -22,6 +22,18 @@ namespace Barebones
       void Initialize() override;
 
       /**
+       * Hovers or un-hovers the action.
+       *
+       * @param aHovered Whether this action was hovered by the user.
+       */
+      void SetHovered(bool aHovered) override;
+
+      /**
+       * Selects this action.
+       */
+      void Select() override;
+
+      /**
        * Sets the skill that this action represents.
        *
        * @param aSkill The skill that this action represents.
@@ -34,20 +46,6 @@ namespace Barebones
        * @return The skill that this action represents.
        */
       Skill* GetSkill() { return mSkill; }
-
-    protected:
-
-      /**
-       * A handler function that gets called whenever this action
-       * is hovered over by the user.
-       */
-      void HandleHoveredStatusChanged() override;
-
-      /**
-       * A handler function that gets called whenever this action
-       * is selected by the user.
-       */
-      void HandleSelectionStatusChanged() override;
 
     private:
       Skill* mSkill;

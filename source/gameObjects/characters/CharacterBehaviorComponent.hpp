@@ -5,7 +5,6 @@
 
 #include <Component.hpp>
 #include <GameObject.hpp>
-#include <Signal.hpp>
 
 #include "BoardLayoutComponent.hpp"
 
@@ -113,9 +112,6 @@ namespace Barebones
 
       bool mMoving;
   };
-
-  typedef UrsineEngine::SignalT<CharacterBehaviorComponent&> CharacterDiedSignal;
-  extern CharacterDiedSignal CharacterDied;
 }
 
 #endif

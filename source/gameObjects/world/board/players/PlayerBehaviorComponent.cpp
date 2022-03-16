@@ -1,5 +1,7 @@
 #include "PlayerBehaviorComponent.hpp"
 
+#include "Signals.hpp"
+
 #include "BoardTurnManagerComponent.hpp"
 
 using Barebones::PlayerBehaviorComponent;
@@ -31,8 +33,3 @@ void PlayerBehaviorComponent::SetLocation(const TileLocation& aLocation)
   mLocation = aLocation;
   PlayerMoved.Notify(*this);
 }
-
-/******************************************************************************/
-Barebones::PlayerMovedSignal Barebones::PlayerMoved;
-Barebones::PlayerTurnBeganSignal Barebones::PlayerTurnBegan;
-Barebones::PlayerTurnEndedSignal Barebones::PlayerTurnEnded;

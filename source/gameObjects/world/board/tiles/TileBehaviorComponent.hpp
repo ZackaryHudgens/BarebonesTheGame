@@ -3,7 +3,6 @@
 
 #include <Component.hpp>
 #include <GameObject.hpp>
-#include <Signal.hpp>
 
 namespace Barebones
 {
@@ -90,9 +89,6 @@ namespace Barebones
       bool mHighlighted;
       bool mHovered;
   };
-
-  typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> TileReadyForUseSignal;
-  extern TileReadyForUseSignal TileReadyForUse;
 }
 
 #endif

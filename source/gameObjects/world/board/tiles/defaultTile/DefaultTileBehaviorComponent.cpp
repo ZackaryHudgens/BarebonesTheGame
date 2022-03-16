@@ -2,6 +2,8 @@
 
 #include <GameObject.hpp>
 
+#include "Signals.hpp"
+
 #include "TileMeshComponent.hpp"
 
 using Barebones::DefaultTileBehaviorComponent;

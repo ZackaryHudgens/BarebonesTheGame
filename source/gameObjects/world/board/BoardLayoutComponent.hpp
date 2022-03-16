@@ -9,6 +9,8 @@
 
 #include "PlayerBehaviorComponent.hpp"
 
+#include "Skill.hpp"
+
 namespace Barebones
 {
   /**
@@ -110,6 +112,14 @@ namespace Barebones
        * @param aPlayer The player whose turn began.
        */
       void HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlayer);
+
+      /**
+       * A handler function that gets called whenever a skill is selected
+       * for use from a menu.
+       *
+       * @param aSkill The skill that was selected.
+       */
+      void HandleSkillSelectedFromMenu(Skill& aSkill);
 
       std::vector<std::vector<UrsineEngine::GameObject*>> mTiles;
       std::vector<std::vector<UrsineEngine::GameObject*>> mCharacters;

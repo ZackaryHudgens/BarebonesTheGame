@@ -3,7 +3,7 @@
 
 #include <GameObject.hpp>
 
-#include "BoardLayoutComponent.hpp"
+#include "TileUtil.hpp"
 
 namespace Barebones
 {

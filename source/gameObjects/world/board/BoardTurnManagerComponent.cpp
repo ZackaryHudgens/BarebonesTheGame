@@ -3,6 +3,8 @@
 #include <Environment.hpp>
 #include <GameObject.hpp>
 
+#include "Signals.hpp"
+
 #include "PlayerBehaviorComponent.hpp"
 
 using Barebones::BoardTurnManagerComponent;

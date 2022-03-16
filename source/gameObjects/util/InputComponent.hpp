@@ -51,9 +51,6 @@ namespace Barebones
        */
       virtual void ProtectedInitialize() {}
   };
-
-  typedef UrsineEngine::SignalT<InputComponent&> InputComponentInitializedSignal;
-  extern InputComponentInitializedSignal InputComponentInitialized;
 }
 
 #endif
