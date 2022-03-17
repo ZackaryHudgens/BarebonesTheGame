@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include "Signals.hpp"
+
 #include "BoardLayoutComponent.hpp"
 
 #include "HumanPlayerDefaultInputState.hpp"
@@ -101,7 +103,8 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerUsingSkillInputStat
           auto foundTile = std::find(tileLocations.begin(),
                                      tileLocations.end(),
                                      currentLocation);
-          if(foundTile != tileLocations.end())
+          if(foundTile != tileLocations.end() &&
+             mSkill != nullptr)
           {
             mSkill->Execute(*board,
                             currentLocation);
@@ -115,6 +118,11 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerUsingSkillInputStat
           // Stop using this skill and return to the default input state.
           newState = std::make_unique<HumanPlayerDefaultInputState>(*player);
           newState->SetBoard(*board);
+          
+          if(mSkill != nullptr)
+          {
+            SkillCancelled.Notify(*mSkill);
+          }
           break;
         }
         default:

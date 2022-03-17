@@ -121,10 +121,28 @@ namespace Barebones
        */
       void HandleSkillSelectedFromMenu(Skill& aSkill);
 
+      /**
+       * A handler function that gets called whenever a skill is executed.
+       *
+       * @param aSkill The skill that was executed.
+       */
+      void HandleSkillExecuted(Skill& aSkill);
+
+      /**
+       * A handler function that gets called whenever the use of a skill
+       * is cancelled.
+       *
+       * @param aSkill The skill that was cancelled.
+       */
+      void HandleSkillCancelled(Skill& aSkill);
+
       std::vector<std::vector<UrsineEngine::GameObject*>> mTiles;
       std::vector<std::vector<UrsineEngine::GameObject*>> mCharacters;
 
       UrsineEngine::GameObject* mHoveredTile;
+
+      Skill* mSkillUsedForHighlighting;
+      std::vector<UrsineEngine::GameObject*> mHighlightedTiles;
 
       double mTileSpacing;
       int mColumns;

@@ -19,14 +19,13 @@ namespace Barebones
       Skill(UrsineEngine::GameObject& aCharacter);
 
       /**
-       * A virtual function that executes this skill. Inheriting skills should
-       * override this function to provide the desired behavior.
+       * Executes this skill.
        *
        * @param aBoard The board to execute this skill on.
        * @param aLocation The location on the board to execute this skill.
        */
-      virtual void Execute(UrsineEngine::GameObject& aBoard,
-                           const TileLocation& aLocation) = 0;
+      void Execute(UrsineEngine::GameObject& aBoard,
+                   const TileLocation& aLocation);
 
       /**
        * A virtual function that returns a vector of valid tile locations
@@ -51,6 +50,15 @@ namespace Barebones
       std::string GetDescription() const { return mDescription; }
 
     protected:
+
+      /**
+       * A virtual function that gets called during Execute().
+       *
+       * @param aBoard The board to execute this skill on.
+       * @param aLocation The location on the board to execute this skill.
+       */
+      virtual void ProtectedExecute(UrsineEngine::GameObject& aBoard,
+                                    const TileLocation& aLocation) = 0;
 
       /**
        * Returns the character that owns this skill.

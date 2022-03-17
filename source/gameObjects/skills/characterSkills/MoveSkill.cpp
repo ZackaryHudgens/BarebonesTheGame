@@ -14,8 +14,8 @@ MoveSkill::MoveSkill(UrsineEngine::GameObject& aCharacter)
 }
 
 /******************************************************************************/
-void MoveSkill::Execute(UrsineEngine::GameObject& aBoard,
-                        const TileLocation& aLocation)
+void MoveSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
+                                 const TileLocation& aLocation)
 {
   auto character = GetCharacter();
   auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();

@@ -23,6 +23,7 @@ using Barebones::BoardLayoutComponent;
 BoardLayoutComponent::BoardLayoutComponent()
   : Component()
   , mHoveredTile(nullptr)
+  , mSkillUsedForHighlighting(nullptr)
   , mTileSpacing(0.2)
   , mColumns(7)
   , mRows(7)
@@ -46,6 +47,16 @@ BoardLayoutComponent::BoardLayoutComponent()
   SkillSelectedFromMenu.Connect(*this, [this](Skill& aSkill)
   {
     this->HandleSkillSelectedFromMenu(aSkill);
+  });
+
+  SkillExecuted.Connect(*this, [this](Skill& aSkill)
+  {
+    this->HandleSkillExecuted(aSkill);
+  });
+
+  SkillCancelled.Connect(*this, [this](Skill& aSkill)
+  {
+    this->HandleSkillCancelled(aSkill);
   });
 }
 
@@ -326,12 +337,14 @@ void BoardLayoutComponent::HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlaye
 /******************************************************************************/
 void BoardLayoutComponent::HandleSkillSelectedFromMenu(Skill& aSkill)
 {
+  mSkillUsedForHighlighting = &aSkill;
+
   // When a skill is selected, highlight each valid tile for using that skill.
   auto parent = GetParent();
   if(parent != nullptr)
   {
     auto tileLocations = aSkill.GetValidTiles(*parent);
-    for(auto tileLocation : tileLocations)
+    for(const auto tileLocation : tileLocations)
     {
       auto tile = GetTileAtLocation(tileLocation);
       if(tile != nullptr)
@@ -341,8 +354,35 @@ void BoardLayoutComponent::HandleSkillSelectedFromMenu(Skill& aSkill)
         {
           tileBehaviorComponent->SetHighlightColor(glm::vec3(0.5, 0.5, 0.0));
           tileBehaviorComponent->SetHighlighted(true);
+
+          mHighlightedTiles.emplace_back(tile);
         }
       }
     }
   }
+}
+
+/******************************************************************************/
+void BoardLayoutComponent::HandleSkillExecuted(Skill& aSkill)
+{
+  if(&aSkill == mSkillUsedForHighlighting)
+  {
+    for(auto tile : mHighlightedTiles)
+    {
+      auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
+      if(tileBehaviorComponent != nullptr)
+      {
+        tileBehaviorComponent->SetHighlighted(false);
+      }
+    }
+
+    mHighlightedTiles.clear();
+    mSkillUsedForHighlighting = nullptr;
+  }
+}
+
+/******************************************************************************/
+void BoardLayoutComponent::HandleSkillCancelled(Skill& aSkill)
+{
+  HandleSkillExecuted(aSkill);
 }

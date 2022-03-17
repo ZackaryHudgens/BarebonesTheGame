@@ -3,7 +3,9 @@
 /**
  * Character signals
  */
-Barebones::CharacterDiedSignal Barebones::CharacterDied;
+Barebones::CharacterDiedSignal  Barebones::CharacterDied;
+Barebones::SkillExecutedSignal  Barebones::SkillExecuted;
+Barebones::SkillCancelledSignal Barebones::SkillCancelled;
 
 /**
  * Player signals
