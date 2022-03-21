@@ -2,12 +2,20 @@
 
 #include "BoardLayoutComponent.hpp"
 
+#include "Signals.hpp"
+
 using Barebones::BasicHumanBehaviorComponent;
 
 /******************************************************************************/
 BasicHumanBehaviorComponent::BasicHumanBehaviorComponent()
   : EnemyBehaviorComponent()
+  , mWaitingForMove(false)
 {
+  CharacterFinishedMoving.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
+  {
+    this->HandleCharacterFinishedMoving(aCharacter);
+  });
+
   SetMaximumHealth(5);
   SetCurrentHealth(5);
 }
@@ -32,6 +40,18 @@ void BasicHumanBehaviorComponent::TakeTurn(UrsineEngine::GameObject& aBoard)
     {
       boardLayout->MoveCharacter(location,
                                  newLocation);
+      mWaitingForMove = true;
     }
+  }
+}
+
+/******************************************************************************/
+void BasicHumanBehaviorComponent::HandleCharacterFinishedMoving(CharacterBehaviorComponent& aCharacter)
+{
+  if(&aCharacter == this &&
+     mWaitingForMove)
+  {
+    mWaitingForMove = false;
+    EndTurn();
   }
 }

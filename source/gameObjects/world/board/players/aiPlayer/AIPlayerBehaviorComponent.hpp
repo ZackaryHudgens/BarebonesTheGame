@@ -3,6 +3,8 @@
 
 #include "PlayerBehaviorComponent.hpp"
 
+#include "CharacterBehaviorComponent.hpp"
+
 namespace Barebones
 {
   class AIPlayerBehaviorComponent : public PlayerBehaviorComponent
@@ -23,11 +25,18 @@ namespace Barebones
        */
       void ProtectedTakeTurn(UrsineEngine::GameObject& aBoard) override;
 
+      /**
+       * A handler function that gets called whenever a character finishes
+       * taking a turn.
+       *
+       * @param aCharacter The character that ended its turn.
+       */
+      void HandleCharacterTurnEnded(CharacterBehaviorComponent& aCharacter);
+
     private:
       std::vector<UrsineEngine::GameObject*> mCharacters;
       UrsineEngine::GameObject* mCurrentCharacter;
-
-      bool mWaitingForCharacter;
+      UrsineEngine::GameObject* mBoard;
   };
 }
 

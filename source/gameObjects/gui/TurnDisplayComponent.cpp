@@ -136,12 +136,10 @@ void TurnDisplayComponent::Update()
 /******************************************************************************/
 void TurnDisplayComponent::DisplayMessageForPlayer(UrsineEngine::GameObject& aPlayer)
 {
-  auto playerBehaviorComponent = aPlayer.GetFirstComponentOfType<PlayerBehaviorComponent>();
-  if(playerBehaviorComponent != nullptr &&
-     mNameText != nullptr)
+  if(mNameText != nullptr)
   {
     std::stringstream ss;
-    ss << playerBehaviorComponent->GetName() << "'s Turn";
+    ss << aPlayer.GetName() << "'s Turn";
     mNameText->SetText(ss.str());
 
     mBackground->GetCurrentShader()->Activate();

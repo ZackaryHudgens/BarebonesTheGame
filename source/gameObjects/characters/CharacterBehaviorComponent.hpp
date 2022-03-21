@@ -6,12 +6,17 @@
 #include <Component.hpp>
 #include <GameObject.hpp>
 
-#include "BoardLayoutComponent.hpp"
-
 #include "Skill.hpp"
 
 namespace Barebones
 {
+  enum class Side
+  {
+    eNONE,
+    eENEMY,
+    ePLAYER
+  };
+
   class CharacterBehaviorComponent : public UrsineEngine::Component
   {
     public:
@@ -61,6 +66,20 @@ namespace Barebones
                                     const TileLocation& aLocation) const;
 
       /**
+       * Sets which side this character is on.
+       *
+       * @param aSide The new side for this character.
+       */
+      void SetSide(const Side& aSide) { mSide = aSide; }
+
+      /**
+       * Returns the side this character is on.
+       *
+       * @return The side for this character.
+       */
+      Side GetSide() const { return mSide; }
+
+      /**
        * Returns the maximum health value of this character.
        *
        * @return This character's maximum health.
@@ -104,6 +123,8 @@ namespace Barebones
       glm::vec3 mTargetPosition;
 
       std::vector<std::unique_ptr<Skill>> mSkills;
+
+      Side mSide;
 
       double mSpeed;
 

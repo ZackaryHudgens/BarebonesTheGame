@@ -262,6 +262,32 @@ Barebones::TileLocation BoardLayoutComponent::GetLocationOfCharacter(const std::
 }
 
 /******************************************************************************/
+std::vector<UrsineEngine::GameObject*> BoardLayoutComponent::GetCharactersOnSide(const Side& aSide)
+{
+  std::vector<UrsineEngine::GameObject*> characters;
+
+  for(auto& column : mCharacters)
+  {
+    for(auto& character : column)
+    {
+      if(character != nullptr)
+      {
+        auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
+        if(characterBehaviorComponent != nullptr)
+        {
+          if(characterBehaviorComponent->GetSide() == aSide)
+          {
+            characters.emplace_back(character);
+          }
+        }
+      }
+    }
+  }
+
+  return characters;
+}
+
+/******************************************************************************/
 void BoardLayoutComponent::HandleTileReadyForUse(UrsineEngine::GameObject& aTile)
 {
   ++mFinishedTiles;

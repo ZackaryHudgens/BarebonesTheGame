@@ -22,6 +22,13 @@ namespace Barebones
        * @param aBoard The board to take a turn on.
        */
       virtual void TakeTurn(UrsineEngine::GameObject& aBoard) = 0;
+
+    protected:
+
+      /**
+       * Ends this character's turn and notifies the CharacterTurnEnded Signal.
+       */
+      void EndTurn();
   };
 }
 

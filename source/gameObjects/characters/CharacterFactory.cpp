@@ -1,5 +1,6 @@
 #include "CharacterFactory.hpp"
 
+#include "BasicHumanBehaviorComponent.hpp"
 #include "BasicHumanSpriteComponent.hpp"
 #include "BasicSkeletonBehaviorComponent.hpp"
 #include "BasicSkeletonSpriteComponent.hpp"
@@ -23,6 +24,7 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
     case CharacterType::eBASIC_HUMAN:
     {
       newCharacter->AddComponent(std::make_unique<BasicHumanSpriteComponent>());
+      newCharacter->AddComponent(std::make_unique<BasicHumanBehaviorComponent>());
       newCharacter->Load();
       break;
     }

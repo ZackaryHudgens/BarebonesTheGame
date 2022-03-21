@@ -38,24 +38,38 @@ int main()
   auto board = Barebones::BoardFactory::CreateBoard("board");
   auto boardComp = board->GetFirstComponentOfType<Barebones::BoardLayoutComponent>();
   auto turnManager = board->GetFirstComponentOfType<Barebones::BoardTurnManagerComponent>();
-  turnManager->AddPlayer(Barebones::PlayerFactory::CreatePlayer(Barebones::PlayerType::eARTIFICIAL, "artificialPlayer"));
-  turnManager->AddPlayer(Barebones::PlayerFactory::CreatePlayer(Barebones::PlayerType::eHUMAN, "humanPlayer"));
+  turnManager->AddPlayer(Barebones::PlayerFactory::CreatePlayer(Barebones::PlayerType::eARTIFICIAL, "Enemy"));
+  turnManager->AddPlayer(Barebones::PlayerFactory::CreatePlayer(Barebones::PlayerType::eHUMAN, "Player"));
 
   auto skeleton = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_SKELETON, "skeleton");
+  skeleton->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::ePLAYER);
   auto skeleton2 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_SKELETON, "skeleton2");
+  skeleton2->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::ePLAYER);
   auto skeleton3 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_SKELETON, "skeleton3");
+  skeleton3->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::ePLAYER);
   auto skeleton4 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_SKELETON, "skeleton4");
+  skeleton4->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::ePLAYER);
   auto skeleton5 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_SKELETON, "skeleton5");
+  skeleton5->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::ePLAYER);
   auto skeleton6 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_SKELETON, "skeleton6");
+  skeleton6->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::ePLAYER);
   auto skeleton7 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_SKELETON, "skeleton7");
+  skeleton7->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::ePLAYER);
 
   auto human = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_HUMAN, "human");
+  human->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::eENEMY);
   auto human2 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_HUMAN, "human2");
+  human2->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::eENEMY);
   auto human3 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_HUMAN, "human3");
+  human3->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::eENEMY);
   auto human4 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_HUMAN, "human4");
+  human4->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::eENEMY);
   auto human5 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_HUMAN, "human5");
+  human5->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::eENEMY);
   auto human6 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_HUMAN, "human6");
+  human6->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::eENEMY);
   auto human7 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_HUMAN, "human7");
+  human7->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::eENEMY);
 
   boardComp->AddCharacterAtLocation(std::move(skeleton), Barebones::TileLocation(0, 0));
   boardComp->AddCharacterAtLocation(std::move(skeleton2), Barebones::TileLocation(0, 1));

@@ -19,7 +19,19 @@ namespace Barebones
        *
        * @param aBoard The board to take a turn on.
        */
-      virtual void TakeTurn(UrsineEngine::GameObject& aBoard);
+      virtual void TakeTurn(UrsineEngine::GameObject& aBoard) override;
+
+    private:
+
+      /**
+       * A handler function that gets called whenever a character finishes
+       * moving.
+       *
+       * @param aCharacter The character that finished moving.
+       */
+      void HandleCharacterFinishedMoving(CharacterBehaviorComponent& aCharacter);
+
+      bool mWaitingForMove;
   };
 }
 

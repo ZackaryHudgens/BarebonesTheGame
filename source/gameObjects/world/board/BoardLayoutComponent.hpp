@@ -9,6 +9,7 @@
 
 #include "PlayerBehaviorComponent.hpp"
 
+#include "CharacterBehaviorComponent.hpp"
 #include "Skill.hpp"
 
 namespace Barebones
@@ -78,6 +79,13 @@ namespace Barebones
        *         if no character was found.
        */
       TileLocation GetLocationOfCharacter(const std::string& aName);
+
+      /**
+       * Returns a vector of characters that are on the given side.
+       *
+       * @param aSide The side in question.
+       */
+      std::vector<UrsineEngine::GameObject*> GetCharactersOnSide(const Side& aSide);
 
       /**
        * Moves a character at the first location to the second location.

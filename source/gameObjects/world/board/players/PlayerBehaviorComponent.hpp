@@ -22,13 +22,6 @@ namespace Barebones
       PlayerBehaviorComponent();
 
       /**
-       * Returns the name of the player.
-       *
-       * @return The name of the player.
-       */
-      std::string GetName() const { return mName; }
-
-      /**
        * Sets the location of the player on the board.
        *
        * @param aLocation The new location of the player.
@@ -57,13 +50,6 @@ namespace Barebones
     protected:
 
       /**
-       * Sets the name of the player.
-       *
-       * @param aName The new name of the player.
-       */
-      void SetName(const std::string& aName) { mName = aName; }
-
-      /**
        * A virtual function that gets called whenever this player's turn
        * begins. Should be overridden by inheriting classes.
        *
@@ -78,8 +64,6 @@ namespace Barebones
       virtual void ProtectedEndTurn() {}
 
     private:
-      std::string mName;
-
       TileLocation mLocation;
   };
 }

@@ -10,6 +10,7 @@ using Barebones::CharacterBehaviorComponent;
 CharacterBehaviorComponent::CharacterBehaviorComponent()
   : Component()
   , mTargetPosition(0.0, 0.0, 0.0)
+  , mSide(Side::eNONE)
   , mSpeed(0.0)
   , mMaximumHealth(1)
   , mCurrentHealth(1)
@@ -44,6 +45,8 @@ void CharacterBehaviorComponent::Update()
       {
         parent->SetPosition(mTargetPosition);
         mMoving = false;
+
+        CharacterFinishedMoving.Notify(*this);
       }
       else
       {

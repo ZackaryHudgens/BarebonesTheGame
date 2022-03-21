@@ -8,7 +8,6 @@ using Barebones::HumanPlayerBehaviorComponent;
 HumanPlayerBehaviorComponent::HumanPlayerBehaviorComponent()
   : PlayerBehaviorComponent()
 {
-  SetName("Player");
 }
 
 /******************************************************************************/
