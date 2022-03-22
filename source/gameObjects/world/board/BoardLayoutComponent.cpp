@@ -34,9 +34,9 @@ BoardLayoutComponent::BoardLayoutComponent()
     this->HandleTileReadyForUse(aTile);
   });
 
-  PlayerMoved.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
+  HumanPlayerMoved.Connect(*this, [this](HumanPlayerBehaviorComponent& aPlayer)
   {
-    this->HandlePlayerMoved(aPlayer);
+    this->HandleHumanPlayerMoved(aPlayer);
   });
 
   PlayerTurnBegan.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
@@ -308,7 +308,7 @@ void BoardLayoutComponent::HandleTileReadyForUse(UrsineEngine::GameObject& aTile
 }
 
 /******************************************************************************/
-void BoardLayoutComponent::HandlePlayerMoved(PlayerBehaviorComponent& aPlayer)
+void BoardLayoutComponent::HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& aPlayer)
 {
   // Only change the currently hovered tile if the player that moved is the
   // current player in the turn manager.
@@ -357,7 +357,11 @@ void BoardLayoutComponent::HandlePlayerMoved(PlayerBehaviorComponent& aPlayer)
 /******************************************************************************/
 void BoardLayoutComponent::HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlayer)
 {
-  HandlePlayerMoved(aPlayer);
+  auto humanPlayerBehaviorComponent = dynamic_cast<HumanPlayerBehaviorComponent*>(&aPlayer);
+  if(humanPlayerBehaviorComponent != nullptr)
+  {
+    HandleHumanPlayerMoved(*humanPlayerBehaviorComponent);
+  }
 }
 
 /******************************************************************************/

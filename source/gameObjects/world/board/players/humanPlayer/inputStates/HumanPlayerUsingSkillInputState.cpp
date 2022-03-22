@@ -6,6 +6,7 @@
 
 #include "BoardLayoutComponent.hpp"
 
+#include "HumanPlayerBehaviorComponent.hpp"
 #include "HumanPlayerDefaultInputState.hpp"
 
 using Barebones::HumanPlayerUsingSkillInputState;
@@ -29,7 +30,7 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerUsingSkillInputStat
   if(player != nullptr &&
      board != nullptr)
   {
-    auto playerBehaviorComponent = player->GetFirstComponentOfType<PlayerBehaviorComponent>();
+    auto playerBehaviorComponent = player->GetFirstComponentOfType<HumanPlayerBehaviorComponent>();
     auto boardLayoutComponent = board->GetFirstComponentOfType<BoardLayoutComponent>();
     if(playerBehaviorComponent != nullptr &&
        boardLayoutComponent != nullptr)

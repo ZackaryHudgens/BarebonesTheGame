@@ -2,7 +2,7 @@
 
 #include <Environment.hpp>
 
-#include "PlayerBehaviorComponent.hpp"
+#include "HumanPlayerBehaviorComponent.hpp"
 
 #include "BoardLayoutComponent.hpp"
 
@@ -35,7 +35,7 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
   if(player != nullptr &&
      board != nullptr)
   {
-    auto playerBehaviorComponent = player->GetFirstComponentOfType<PlayerBehaviorComponent>();
+    auto playerBehaviorComponent = player->GetFirstComponentOfType<HumanPlayerBehaviorComponent>();
     auto boardLayoutComponent = board->GetFirstComponentOfType<BoardLayoutComponent>();
     if(playerBehaviorComponent != nullptr &&
        boardLayoutComponent != nullptr)

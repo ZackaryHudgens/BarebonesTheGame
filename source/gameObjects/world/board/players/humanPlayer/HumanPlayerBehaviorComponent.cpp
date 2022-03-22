@@ -2,12 +2,22 @@
 
 #include "HumanPlayerInputComponent.hpp"
 
+#include "Signals.hpp"
+
 using Barebones::HumanPlayerBehaviorComponent;
 
 /******************************************************************************/
 HumanPlayerBehaviorComponent::HumanPlayerBehaviorComponent()
   : PlayerBehaviorComponent()
+  , mLocation(0, 0)
 {
+}
+
+/******************************************************************************/
+void HumanPlayerBehaviorComponent::SetLocation(const TileLocation& aLocation)
+{
+  mLocation = aLocation;
+  HumanPlayerMoved.Notify(*this);
 }
 
 /******************************************************************************/

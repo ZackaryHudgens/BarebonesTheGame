@@ -6,7 +6,7 @@
 
 #include "BoardLayoutComponent.hpp"
 
-#include "PlayerBehaviorComponent.hpp"
+#include "HumanPlayerBehaviorComponent.hpp"
 
 namespace Barebones
 {
@@ -39,12 +39,12 @@ namespace Barebones
     private:
 
       /**
-       * A handler function that gets called whenever a player's
-       * location changes.
+       * A handler function that gets called whenever a human player
+       * changes location on the board.
        *
        * @param aPlayer The player that moved.
        */
-      void HandlePlayerMoved(PlayerBehaviorComponent& aPlayer);
+      void HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& aPlayer);
 
       /**
        * A handler function that gets called whenever a player's turn begins.

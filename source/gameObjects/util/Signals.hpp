@@ -9,6 +9,7 @@ namespace Barebones
   class CharacterBehaviorComponent;
   class InputComponent;
   class PlayerBehaviorComponent;
+  class HumanPlayerBehaviorComponent;
   class Skill;
   class TurnDisplayComponent;
 
@@ -30,13 +31,13 @@ namespace Barebones
   /**
    * Player signals
    */
-  typedef UrsineEngine::SignalT<PlayerBehaviorComponent&> PlayerMovedSignal;
   typedef UrsineEngine::SignalT<PlayerBehaviorComponent&> PlayerTurnBeganSignal;
   typedef UrsineEngine::SignalT<PlayerBehaviorComponent&> PlayerTurnEndedSignal;
+  typedef UrsineEngine::SignalT<HumanPlayerBehaviorComponent&> HumanPlayerMovedSignal;
 
-  extern PlayerMovedSignal     PlayerMoved;
-  extern PlayerTurnBeganSignal PlayerTurnBegan;
-  extern PlayerTurnEndedSignal PlayerTurnEnded;
+  extern PlayerTurnBeganSignal  PlayerTurnBegan;
+  extern PlayerTurnEndedSignal  PlayerTurnEnded;
+  extern HumanPlayerMovedSignal HumanPlayerMoved;
 
   /**
    * Tile signals

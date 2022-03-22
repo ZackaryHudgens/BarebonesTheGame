@@ -12,9 +12,9 @@ Barebones::SkillCancelledSignal          Barebones::SkillCancelled;
 /**
  * Player signals
  */
-Barebones::PlayerMovedSignal     Barebones::PlayerMoved;
-Barebones::PlayerTurnBeganSignal Barebones::PlayerTurnBegan;
-Barebones::PlayerTurnEndedSignal Barebones::PlayerTurnEnded;
+Barebones::PlayerTurnBeganSignal  Barebones::PlayerTurnBegan;
+Barebones::PlayerTurnEndedSignal  Barebones::PlayerTurnEnded;
+Barebones::HumanPlayerMovedSignal Barebones::HumanPlayerMoved;
 
 /**
  * Tile signals

@@ -19,9 +19,9 @@ CameraBehaviorComponent::CameraBehaviorComponent()
   , mSpeed(0.3)
   , mMoving(false)
 {
-  PlayerMoved.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
+  HumanPlayerMoved.Connect(*this, [this](HumanPlayerBehaviorComponent& aPlayer)
   {
-    this->HandlePlayerMoved(aPlayer);
+    this->HandleHumanPlayerMoved(aPlayer);
   });
 
   PlayerTurnBegan.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
@@ -79,24 +79,10 @@ void CameraBehaviorComponent::Update()
 void CameraBehaviorComponent::FollowBoard(UrsineEngine::GameObject& aBoard)
 {
   mFollowedBoard = &aBoard;
-
-  auto turnManager = aBoard.GetFirstComponentOfType<BoardTurnManagerComponent>();
-  if(turnManager != nullptr)
-  {
-    auto player = turnManager->GetCurrentPlayer();
-    if(player != nullptr)
-    {
-      auto playerBehaviorComponent = player->GetFirstComponentOfType<PlayerBehaviorComponent>();
-      if(playerBehaviorComponent != nullptr)
-      {
-        HandlePlayerMoved(*playerBehaviorComponent);
-      }
-    }
-  }
 }
 
 /******************************************************************************/
-void CameraBehaviorComponent::HandlePlayerMoved(PlayerBehaviorComponent& aPlayer)
+void CameraBehaviorComponent::HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& aPlayer)
 {
   if(mFollowedBoard != nullptr)
   {
@@ -132,5 +118,9 @@ void CameraBehaviorComponent::HandlePlayerMoved(PlayerBehaviorComponent& aPlayer
 /******************************************************************************/
 void CameraBehaviorComponent::HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlayer)
 {
-  HandlePlayerMoved(aPlayer);
+  auto humanPlayer = dynamic_cast<HumanPlayerBehaviorComponent*>(&aPlayer);
+  if(humanPlayer != nullptr)
+  {
+    HandleHumanPlayerMoved(*humanPlayer);
+  }
 }

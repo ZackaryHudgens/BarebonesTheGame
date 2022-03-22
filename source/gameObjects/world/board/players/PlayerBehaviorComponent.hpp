@@ -4,8 +4,6 @@
 #include <Component.hpp>
 #include <GameObject.hpp>
 
-#include "TileUtil.hpp"
-
 namespace Barebones
 {
   /**
@@ -20,20 +18,6 @@ namespace Barebones
        * Constructor.
        */
       PlayerBehaviorComponent();
-
-      /**
-       * Sets the location of the player on the board.
-       *
-       * @param aLocation The new location of the player.
-       */
-      void SetLocation(const TileLocation& aLocation);
-
-      /**
-       * Returns the location of the player on the board.
-       *
-       * @return The location of the player.
-       */
-      TileLocation GetLocation() const { return mLocation; }
 
       /**
        * Tells the player to take a turn.
@@ -62,9 +46,6 @@ namespace Barebones
        * ends. Should be overridden by inheriting classes.
        */
       virtual void ProtectedEndTurn() {}
-
-    private:
-      TileLocation mLocation;
   };
 }
 

@@ -7,7 +7,7 @@
 
 #include "TileUtil.hpp"
 
-#include "PlayerBehaviorComponent.hpp"
+#include "HumanPlayerBehaviorComponent.hpp"
 
 #include "CharacterBehaviorComponent.hpp"
 #include "Skill.hpp"
@@ -112,7 +112,7 @@ namespace Barebones
        *
        * @param aPlayer The player that moved.
        */
-      void HandlePlayerMoved(PlayerBehaviorComponent& aPlayer);
+      void HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& aPlayer);
 
       /**
        * A handler function that gets called whenever a player's turn begins.
