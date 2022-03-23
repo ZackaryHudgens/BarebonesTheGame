@@ -17,12 +17,14 @@ namespace Barebones
    * Character signals
    */
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&> CharacterFinishedMovingSignal;
+  typedef UrsineEngine::SignalT<CharacterBehaviorComponent&> CharacterTurnBeganSignal;
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&> CharacterTurnEndedSignal;
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&> CharacterDiedSignal;
   typedef UrsineEngine::SignalT<Skill&>                      SkillExecutedSignal;
   typedef UrsineEngine::SignalT<Skill&>                      SkillCancelledSignal;
 
   extern CharacterFinishedMovingSignal CharacterFinishedMoving;
+  extern CharacterTurnBeganSignal      CharacterTurnBegan;
   extern CharacterTurnEndedSignal      CharacterTurnEnded;
   extern CharacterDiedSignal           CharacterDied;
   extern SkillExecutedSignal           SkillExecuted;

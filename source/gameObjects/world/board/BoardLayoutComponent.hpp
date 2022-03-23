@@ -35,6 +35,20 @@ namespace Barebones
       void Initialize() override;
 
       /**
+       * Returns the number of columns.
+       *
+       * @return The number of columns.
+       */
+      int GetColumns() const { return mColumns; }
+
+      /**
+       * Returns the number of rows.
+       *
+       * @return The number of rows.
+       */
+      int GetRows() const { return mRows; }
+
+      /**
        * Adds a character to the board at the given location by taking
        * ownership of it and adding it as a child GameObject.
        *

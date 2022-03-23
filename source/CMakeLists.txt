@@ -11,6 +11,7 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/world/board/tiles/*.?pp
                        gameObjects/world/board/tiles/defaultTile/*.?pp
                        gameObjects/camera/*.?pp
+                       gameObjects/camera/states/*.?pp
                        gameObjects/characters/*.?pp
                        gameObjects/characters/enemies/*.?pp
                        gameObjects/characters/enemies/basicHuman/*.?pp
@@ -40,6 +41,7 @@ target_include_directories(barebones PUBLIC
                            gameObjects/world/board/tiles
                            gameObjects/world/board/tiles/defaultTile
                            gameObjects/camera
+                           gameObjects/camera/states
                            gameObjects/characters
                            gameObjects/characters/enemies
                            gameObjects/characters/enemies/basicHuman

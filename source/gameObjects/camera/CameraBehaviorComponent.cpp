@@ -6,18 +6,15 @@
 
 #include "BoardTurnManagerComponent.hpp"
 
+#include "CameraDefaultState.hpp"
+
 using Barebones::CameraBehaviorComponent;
 
 /******************************************************************************/
 CameraBehaviorComponent::CameraBehaviorComponent()
   : Component()
   , mFollowedBoard(nullptr)
-  , mTargetPosition(0.0, 0.0, 0.0)
-  , mYDistance(5.0)
-  , mZDistance(5.0)
-  , mRotation(-40.0)
-  , mSpeed(0.3)
-  , mMoving(false)
+  , mState(nullptr)
 {
   HumanPlayerMoved.Connect(*this, [this](HumanPlayerBehaviorComponent& aPlayer)
   {
@@ -28,55 +25,39 @@ CameraBehaviorComponent::CameraBehaviorComponent()
   {
     this->HandlePlayerTurnBegan(aPlayer);
   });
+
+  CharacterTurnBegan.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
+  {
+    this->HandleCharacterTurnBegan(aCharacter);
+  });
 }
 
 /******************************************************************************/
 void CameraBehaviorComponent::Initialize()
 {
-  // Initialize the camera position and orientation.
+  // Begin in the default camera state.
   auto parent = GetParent();
   if(parent != nullptr)
   {
-    parent->SetPosition(glm::vec3(0.0,
-                                  mYDistance,
-                                  mZDistance));
-    parent->SetRotation(mRotation, glm::vec3(1.0,
-                                             0.0,
-                                             0.0));
+    mState = std::make_unique<CameraDefaultState>(*parent);
   }
 }
 
 /******************************************************************************/
 void CameraBehaviorComponent::Update()
 {
-  if(mMoving)
+  if(mState != nullptr)
   {
-    auto parent = GetParent();
-    if(parent != nullptr)
+    auto newState = mState->Update();
+    if(newState != nullptr)
     {
-      auto position = glm::mix(parent->GetPosition(),
-                               mTargetPosition,
-                               mSpeed);
-
-      // If the position is close enough to the target position,
-      // move directly to the target position and stop moving.
-      if(std::abs(mTargetPosition.x - position.x) <= 0.005 &&
-         std::abs(mTargetPosition.y - position.y) <= 0.005 &&
-         std::abs(mTargetPosition.z - position.z) <= 0.005)
-      {
-        parent->SetPosition(mTargetPosition);
-        mMoving = false;
-      }
-      else
-      {
-        parent->SetPosition(position);
-      }
+      mState.swap(newState);
     }
   }
 }
 
 /******************************************************************************/
-void CameraBehaviorComponent::FollowBoard(UrsineEngine::GameObject& aBoard)
+void CameraBehaviorComponent::SetFollowedBoard(UrsineEngine::GameObject& aBoard)
 {
   mFollowedBoard = &aBoard;
 }
@@ -84,33 +65,12 @@ void CameraBehaviorComponent::FollowBoard(UrsineEngine::GameObject& aBoard)
 /******************************************************************************/
 void CameraBehaviorComponent::HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& aPlayer)
 {
-  if(mFollowedBoard != nullptr)
+  if(mState != nullptr)
   {
-    auto turnManager = mFollowedBoard->GetFirstComponentOfType<BoardTurnManagerComponent>();
-    if(turnManager != nullptr)
+    auto newState = mState->HandleHumanPlayerMoved(aPlayer);
+    if(newState != nullptr)
     {
-      // Only move the camera if the player that moved is the current player
-      // on the board.
-      if(aPlayer.GetParent() == turnManager->GetCurrentPlayer())
-      {
-        auto boardLayoutComponent = mFollowedBoard->GetFirstComponentOfType<BoardLayoutComponent>();
-        if(boardLayoutComponent != nullptr)
-        {
-          auto tile = boardLayoutComponent->GetTileAtLocation(aPlayer.GetLocation());
-          auto parent = GetParent();
-          if(tile != nullptr &&
-             parent != nullptr)
-          {
-            // Calculate the new position for the camera.
-            auto newPos = tile->GetPosition();
-            newPos.y += mYDistance;
-            newPos.z += mZDistance;
-
-            mTargetPosition = newPos;
-            mMoving = true;
-          }
-        }
-      }
+      mState.swap(newState);
     }
   }
 }
@@ -118,9 +78,25 @@ void CameraBehaviorComponent::HandleHumanPlayerMoved(HumanPlayerBehaviorComponen
 /******************************************************************************/
 void CameraBehaviorComponent::HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlayer)
 {
-  auto humanPlayer = dynamic_cast<HumanPlayerBehaviorComponent*>(&aPlayer);
-  if(humanPlayer != nullptr)
+  if(mState != nullptr)
   {
-    HandleHumanPlayerMoved(*humanPlayer);
+    auto newState = mState->HandlePlayerTurnBegan(aPlayer);
+    if(newState != nullptr)
+    {
+      mState.swap(newState);
+    }
+  }
+}
+
+/******************************************************************************/
+void CameraBehaviorComponent::HandleCharacterTurnBegan(CharacterBehaviorComponent& aCharacter)
+{
+  if(mState != nullptr)
+  {
+    auto newState = mState->HandleCharacterTurnBegan(aCharacter);
+    if(newState != nullptr)
+    {
+      mState.swap(newState);
+    }
   }
 }

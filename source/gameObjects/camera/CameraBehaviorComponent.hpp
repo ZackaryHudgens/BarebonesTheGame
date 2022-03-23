@@ -8,6 +8,8 @@
 
 #include "HumanPlayerBehaviorComponent.hpp"
 
+#include "CameraState.hpp"
+
 namespace Barebones
 {
   class CameraBehaviorComponent : public UrsineEngine::Component
@@ -34,7 +36,15 @@ namespace Barebones
        *
        * @param aBoard A GameObject with a BoardLayoutComponent.
        */
-      void FollowBoard(UrsineEngine::GameObject& aBoard);
+      void SetFollowedBoard(UrsineEngine::GameObject& aBoard);
+
+      /**
+       * Returns the board that this camera is following.
+       *
+       * @return The board that this camera is following, or
+       *         nullptr if no board is being followed.
+       */
+      UrsineEngine::GameObject* GetFollowedBoard() { return mFollowedBoard; }
 
     private:
 
@@ -53,17 +63,16 @@ namespace Barebones
        */
       void HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlayer);
 
+      /**
+       * A handler function that gets called whenever a character's turn begins.
+       *
+       * @param aCharacter The character whose turn began.
+       */
+      void HandleCharacterTurnBegan(CharacterBehaviorComponent& aCharacter);
+
       UrsineEngine::GameObject* mFollowedBoard;
 
-      glm::vec3 mTargetPosition;
-
-      double mYDistance;
-      double mZDistance;
-      double mRotation;
-
-      double mSpeed;
-
-      bool mMoving;
+      std::unique_ptr<CameraState> mState;
   };
 }
 

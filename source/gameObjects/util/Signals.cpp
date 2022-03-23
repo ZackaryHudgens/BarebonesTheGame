@@ -4,6 +4,7 @@
  * Character signals
  */
 Barebones::CharacterFinishedMovingSignal Barebones::CharacterFinishedMoving;
+Barebones::CharacterTurnBeganSignal      Barebones::CharacterTurnBegan;
 Barebones::CharacterTurnEndedSignal      Barebones::CharacterTurnEnded;
 Barebones::CharacterDiedSignal           Barebones::CharacterDied;
 Barebones::SkillExecutedSignal           Barebones::SkillExecuted;

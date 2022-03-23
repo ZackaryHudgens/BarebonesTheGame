@@ -1,0 +1,37 @@
+#ifndef CAMERADEFAULTSTATE_HPP
+#define CAMERADEFAULTSTATE_HPP
+
+#include "CameraState.hpp"
+
+namespace Barebones
+{
+  class CameraDefaultState : public CameraState
+  {
+    public:
+
+      /**
+       * Constructor.
+       *
+       * @param aCamera The parent GameObject with a CameraBehaviorComponent.
+       */
+      CameraDefaultState(UrsineEngine::GameObject& aCamera);
+
+      /**
+       * A handler function that gets called whenever a player's turn begins.
+       *
+       * @param aPlayer The player whose turn began.
+       * @return A unique_ptr to a new state, if necessary.
+       */
+      std::unique_ptr<CameraState> HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlayer) override;
+
+      /**
+       * A handler function that gets called whenever a character's turn begins.
+       *
+       * @param aCharacter The character whose turn began.
+       * @return A unique_ptr to a new state, if necessary.
+       */
+      std::unique_ptr<CameraState> HandleCharacterTurnBegan(CharacterBehaviorComponent& aCharacter) override;
+  };
+}
+
+#endif
