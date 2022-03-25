@@ -98,7 +98,7 @@ int main()
   newScene.AddObject(std::move(board));
 
   auto camComp = cam->GetFirstComponentOfType<Barebones::CameraBehaviorComponent>();
-  camComp->FollowBoard(*newScene.GetObject("board"));
+  camComp->SetFollowedBoard(*newScene.GetObject("board"));
 
   env.LoadScene(newScene);
 

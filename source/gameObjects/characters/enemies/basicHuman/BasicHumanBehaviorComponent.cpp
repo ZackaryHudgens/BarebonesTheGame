@@ -23,6 +23,8 @@ BasicHumanBehaviorComponent::BasicHumanBehaviorComponent()
 /******************************************************************************/
 void BasicHumanBehaviorComponent::TakeTurn(UrsineEngine::GameObject& aBoard)
 {
+  CharacterTurnBegan.Notify(*this);
+
   // For now, just move the character to the left one space if possible.
   auto parent = GetParent();
   auto boardLayout = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();

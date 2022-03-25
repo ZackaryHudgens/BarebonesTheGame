@@ -49,6 +49,13 @@ namespace Barebones
     private:
 
       /**
+       * A handler function that gets called whenever a GameObject moves.
+       *
+       * @param aObject The GameObject that moved.
+       */
+      void HandleObjectMoved(UrsineEngine::GameObject* aObject);
+
+      /**
        * A handler function that gets called whenever a human player
        * changes location on the board.
        *

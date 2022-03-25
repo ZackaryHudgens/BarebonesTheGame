@@ -16,6 +16,11 @@ CameraBehaviorComponent::CameraBehaviorComponent()
   , mFollowedBoard(nullptr)
   , mState(nullptr)
 {
+  UrsineEngine::ObjectMoved.Connect(*this, [this](UrsineEngine::GameObject* aObject)
+  {
+    this->HandleObjectMoved(aObject);
+  });
+
   HumanPlayerMoved.Connect(*this, [this](HumanPlayerBehaviorComponent& aPlayer)
   {
     this->HandleHumanPlayerMoved(aPlayer);
@@ -60,6 +65,28 @@ void CameraBehaviorComponent::Update()
 void CameraBehaviorComponent::SetFollowedBoard(UrsineEngine::GameObject& aBoard)
 {
   mFollowedBoard = &aBoard;
+
+  if(mState != nullptr)
+  {
+    auto newState = mState->HandleBoardFollowed(aBoard);
+    if(newState != nullptr)
+    {
+      mState.swap(newState);
+    }
+  }
+}
+
+/******************************************************************************/
+void CameraBehaviorComponent::HandleObjectMoved(UrsineEngine::GameObject* aObject)
+{
+  if(mState != nullptr)
+  {
+    auto newState = mState->HandleObjectMoved(aObject);
+    if(newState != nullptr)
+    {
+      mState.swap(newState);
+    }
+  }
 }
 
 /******************************************************************************/

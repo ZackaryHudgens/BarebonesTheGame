@@ -2,6 +2,7 @@
 
 #include "CameraFollowingCharacterState.hpp"
 #include "CameraFollowingPlayerState.hpp"
+#include "CameraObservingBoardState.hpp"
 
 using Barebones::CameraDefaultState;
 
@@ -9,6 +10,22 @@ using Barebones::CameraDefaultState;
 CameraDefaultState::CameraDefaultState(UrsineEngine::GameObject& aCamera)
   : CameraState(aCamera)
 {
+}
+
+/******************************************************************************/
+std::unique_ptr<Barebones::CameraState> CameraDefaultState::HandleBoardFollowed(UrsineEngine::GameObject& aBoard)
+{
+  std::unique_ptr<CameraState> newState = nullptr;
+
+  // Swap to the Observing Board state, if possible.
+  auto camera = GetCamera();
+  if(camera != nullptr)
+  {
+    newState = std::make_unique<CameraObservingBoardState>(*camera,
+                                                           aBoard);
+  }
+
+  return newState;
 }
 
 /******************************************************************************/

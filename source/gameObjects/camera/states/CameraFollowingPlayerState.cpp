@@ -29,8 +29,6 @@ CameraFollowingPlayerState::CameraFollowingPlayerState(UrsineEngine::GameObject&
 /******************************************************************************/
 std::unique_ptr<Barebones::CameraState> CameraFollowingPlayerState::Update()
 {
-  std::unique_ptr<CameraState> newState = nullptr;
-
   if(mMoving)
   {
     auto camera = GetCamera();
@@ -56,7 +54,7 @@ std::unique_ptr<Barebones::CameraState> CameraFollowingPlayerState::Update()
     }
   }
 
-  return newState;
+  return nullptr;
 }
 
 /******************************************************************************/

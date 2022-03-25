@@ -25,16 +25,27 @@ namespace Barebones
        */
       std::unique_ptr<CameraState> Update() override;
 
-    private:
-
       /**
-       * A handler function that gets called whenever a GameObject's position changes.
+       * A handler function that gets called whenever a GameObject moves in the
+       * current Scene.
        *
-       * @param aObject The object that moved.
+       * @param aObject The GameObject that moved.
+       * @return A unique_ptr to a new state, if necessary.
        */
-      void HandleObjectMoved(UrsineEngine::GameObject* aObject);
+      std::unique_ptr<CameraState> HandleObjectMoved(UrsineEngine::GameObject* aObject) override;
 
+    private:
       UrsineEngine::GameObject* mCharacter;
+
+      glm::vec3 mTargetPosition;
+
+      double mYDistance;
+      double mZDistance;
+      double mRotation;
+
+      double mSpeed;
+
+      bool mMoving;
   };
 }
 

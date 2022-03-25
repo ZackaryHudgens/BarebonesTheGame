@@ -1,11 +1,11 @@
-#ifndef CAMERADEFAULTSTATE_HPP
-#define CAMERADEFAULTSTATE_HPP
+#ifndef CAMERAOBSERVINGBOARDSTATE_HPP
+#define CAMERAOBSERVINGBOARDSTATE_HPP
 
 #include "CameraState.hpp"
 
 namespace Barebones
 {
-  class CameraDefaultState : public CameraState
+  class CameraObservingBoardState : public CameraState
   {
     public:
 
@@ -13,8 +13,17 @@ namespace Barebones
        * Constructor.
        *
        * @param aCamera The parent GameObject with a CameraBehaviorComponent.
+       * @param aBoard The board object to observe.
        */
-      CameraDefaultState(UrsineEngine::GameObject& aCamera);
+      CameraObservingBoardState(UrsineEngine::GameObject& aCamera,
+                                UrsineEngine::GameObject& aBoard);
+
+      /**
+       * Updates the state.
+       *
+       * @return A unique_ptr to a new state, if necessary.
+       */
+      std::unique_ptr<CameraState> Update() override;
 
       /**
        * A handler function that gets called whenever the parent camera
@@ -40,6 +49,17 @@ namespace Barebones
        * @return A unique_ptr to a new state, if necessary.
        */
       std::unique_ptr<CameraState> HandleCharacterTurnBegan(CharacterBehaviorComponent& aCharacter) override;
+
+    private:
+      glm::vec3 mTargetPosition;
+
+      double mYDistance;
+      double mZDistance;
+      double mRotation;
+
+      double mSpeed;
+
+      bool mMoving;
   };
 }
 
