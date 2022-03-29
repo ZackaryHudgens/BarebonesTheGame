@@ -1,6 +1,7 @@
 #include "CameraFollowingPlayerState.hpp"
 
 #include "CameraBehaviorComponent.hpp"
+#include "CameraDefaultState.hpp"
 
 #include "BoardLayoutComponent.hpp"
 
@@ -18,12 +19,13 @@ CameraFollowingPlayerState::CameraFollowingPlayerState(UrsineEngine::GameObject&
   , mSpeed(0.3)
   , mMoving(false)
 {
-  // Initialize the camera position and orientation.
-  aCamera.SetPosition(glm::vec3(0.0,
-                                mYDistance,
-                                mZDistance));
-  //aCamera.SetRotation(mRotation,
-  //                    glm::vec3(1.0, 0.0, 0.0));
+  // Upon entering this state, calculate the target position
+  // using the player's position.
+  mTargetPosition = aPlayer.GetPosition();
+  mTargetPosition.y += mYDistance;
+  mTargetPosition.z += mZDistance;
+
+  mMoving = true;
 }
 
 /******************************************************************************/
@@ -93,6 +95,25 @@ std::unique_ptr<Barebones::CameraState> CameraFollowingPlayerState::HandleHumanP
           }
         }
       }
+    }
+  }
+
+  return newState;
+}
+
+/******************************************************************************/
+std::unique_ptr<Barebones::CameraState> CameraFollowingPlayerState::HandlePlayerTurnEnded(PlayerBehaviorComponent& aPlayer)
+{
+  std::unique_ptr<CameraState> newState = nullptr;
+
+  // If the player whose turn ended was the player being followed,
+  // revert to the default state.
+  if(aPlayer.GetParent() == mPlayer)
+  {
+    auto camera = GetCamera();
+    if(camera != nullptr)
+    {
+      newState = std::make_unique<CameraDefaultState>(*camera);
     }
   }
 

@@ -44,6 +44,11 @@ void BasicHumanBehaviorComponent::TakeTurn(UrsineEngine::GameObject& aBoard)
                                  newLocation);
       mWaitingForMove = true;
     }
+    else
+    {
+      // There is a character blocking the path, so our turn has ended.
+      EndTurn();
+    }
   }
 }
 

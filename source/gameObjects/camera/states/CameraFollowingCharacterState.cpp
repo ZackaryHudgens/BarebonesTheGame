@@ -15,8 +15,8 @@ CameraFollowingCharacterState::CameraFollowingCharacterState(UrsineEngine::GameO
 {
   // Initialize the camera position and orientation.
   aCamera.SetPosition(glm::vec3(aCharacter.GetPosition().x,
-                                mYDistance,
-                                mZDistance));
+                                aCharacter.GetPosition().y + mYDistance,
+                                aCharacter.GetPosition().z + mZDistance));
   //aCamera.SetRotation(mRotation,
   //                    glm::vec3(1.0, 0.0, 0.0));
 }

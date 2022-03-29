@@ -39,6 +39,12 @@ std::unique_ptr<CameraState> CameraState::HandlePlayerTurnBegan(PlayerBehaviorCo
 }
 
 /******************************************************************************/
+std::unique_ptr<CameraState> CameraState::HandlePlayerTurnEnded(PlayerBehaviorComponent& aPlayer)
+{
+  return nullptr;
+}
+
+/******************************************************************************/
 std::unique_ptr<CameraState> CameraState::HandleCharacterTurnBegan(CharacterBehaviorComponent& aCharacter)
 {
   return nullptr;

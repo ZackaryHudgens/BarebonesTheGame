@@ -31,6 +31,11 @@ CameraBehaviorComponent::CameraBehaviorComponent()
     this->HandlePlayerTurnBegan(aPlayer);
   });
 
+  PlayerTurnEnded.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
+  {
+    this->HandlePlayerTurnEnded(aPlayer);
+  });
+
   CharacterTurnBegan.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
   {
     this->HandleCharacterTurnBegan(aCharacter);
@@ -113,6 +118,19 @@ void CameraBehaviorComponent::HandlePlayerTurnBegan(PlayerBehaviorComponent& aPl
   if(mState != nullptr)
   {
     auto newState = mState->HandlePlayerTurnBegan(aPlayer);
+    if(newState != nullptr)
+    {
+      mState.swap(newState);
+    }
+  }
+}
+
+/******************************************************************************/
+void CameraBehaviorComponent::HandlePlayerTurnEnded(PlayerBehaviorComponent& aPlayer)
+{
+  if(mState != nullptr)
+  {
+    auto newState = mState->HandlePlayerTurnEnded(aPlayer);
     if(newState != nullptr)
     {
       mState.swap(newState);

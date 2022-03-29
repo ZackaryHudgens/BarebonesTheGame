@@ -71,6 +71,13 @@ namespace Barebones
       void HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlayer);
 
       /**
+       * A handler function that gets called whenever a player's turn ends.
+       *
+       * @param aPlayer The player whose turn ended.
+       */
+      void HandlePlayerTurnEnded(PlayerBehaviorComponent& aPlayer);
+
+      /**
        * A handler function that gets called whenever a character's turn begins.
        *
        * @param aCharacter The character whose turn began.
