@@ -62,8 +62,8 @@ void AIPlayerBehaviorComponent::ProtectedTakeTurn(UrsineEngine::GameObject& aBoa
       auto enemyBehaviorComponent = mCharacters.front()->GetFirstComponentOfType<EnemyBehaviorComponent>();
       if(enemyBehaviorComponent != nullptr)
       {
-        enemyBehaviorComponent->TakeTurn(aBoard);
         mCurrentCharacter = mCharacters.front();
+        enemyBehaviorComponent->TakeTurn(aBoard);
       }
     }
   }
