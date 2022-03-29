@@ -90,8 +90,8 @@ void AIPlayerBehaviorComponent::HandleCharacterTurnEnded(CharacterBehaviorCompon
       else
       {
         // Set the next character as the current one.
-        mCurrentCharacter = (*nextCharacter);
         mWaitingToTakeTurn = true;
+        mCurrentCharacter = (*nextCharacter);
       }
     }
   }

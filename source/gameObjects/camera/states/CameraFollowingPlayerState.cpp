@@ -5,6 +5,8 @@
 
 #include "BoardLayoutComponent.hpp"
 
+#include "HumanPlayerBehaviorComponent.hpp"
+
 using Barebones::CameraFollowingPlayerState;
 
 /******************************************************************************/
@@ -21,11 +23,29 @@ CameraFollowingPlayerState::CameraFollowingPlayerState(UrsineEngine::GameObject&
 {
   // Upon entering this state, calculate the target position
   // using the player's position.
-  mTargetPosition = aPlayer.GetPosition();
-  mTargetPosition.y += mYDistance;
-  mTargetPosition.z += mZDistance;
+  auto cameraBehaviorComponent = aCamera.GetFirstComponentOfType<CameraBehaviorComponent>();
+  if(cameraBehaviorComponent != nullptr)
+  {
+    auto board = cameraBehaviorComponent->GetFollowedBoard();
+    if(board != nullptr)
+    {
+      auto boardLayoutComponent = board->GetFirstComponentOfType<BoardLayoutComponent>();
+      auto humanPlayerBehaviorComponent = aPlayer.GetFirstComponentOfType<HumanPlayerBehaviorComponent>();
+      if(boardLayoutComponent != nullptr &&
+         humanPlayerBehaviorComponent != nullptr)
+      {
+        auto tile = boardLayoutComponent->GetTileAtLocation(humanPlayerBehaviorComponent->GetLocation());
+        if(tile != nullptr)
+        {
+          mTargetPosition = tile->GetPosition();
+          mTargetPosition.y += mYDistance;
+          mTargetPosition.z += mZDistance;
 
-  mMoving = true;
+          mMoving = true;
+        }
+      }
+    }
+  }
 }
 
 /******************************************************************************/
