@@ -38,8 +38,8 @@ void AIPlayerBehaviorComponent::Update()
       if(enemyBehaviorComponent != nullptr &&
          mBoard != nullptr)
       {
-        enemyBehaviorComponent->TakeTurn(*mBoard);
         mWaitingToTakeTurn = false;
+        enemyBehaviorComponent->TakeTurn(*mBoard);
       }
     }
   }
