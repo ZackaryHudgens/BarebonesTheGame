@@ -17,11 +17,32 @@ AIPlayerBehaviorComponent::AIPlayerBehaviorComponent()
   : PlayerBehaviorComponent()
   , mCurrentCharacter(nullptr)
   , mBoard(nullptr)
+  , mWaitingToTakeTurn(false)
 {
   CharacterTurnEnded.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
   {
     this->HandleCharacterTurnEnded(aCharacter);
   });
+}
+
+/******************************************************************************/
+void AIPlayerBehaviorComponent::Update()
+{
+  // "mWaitingToTakeTurn" is used as a one-frame buffer between a character
+  // ending its turn and the next character taking a turn.
+  if(mWaitingToTakeTurn)
+  {
+    if(mCurrentCharacter != nullptr)
+    {
+      auto enemyBehaviorComponent = mCurrentCharacter->GetFirstComponentOfType<EnemyBehaviorComponent>();
+      if(enemyBehaviorComponent != nullptr &&
+         mBoard != nullptr)
+      {
+        enemyBehaviorComponent->TakeTurn(*mBoard);
+        mWaitingToTakeTurn = false;
+      }
+    }
+  }
 }
 
 /******************************************************************************/
@@ -53,8 +74,8 @@ void AIPlayerBehaviorComponent::HandleCharacterTurnEnded(CharacterBehaviorCompon
 {
   if(mCurrentCharacter == aCharacter.GetParent())
   {
-    // Find the next character in the list and make them take
-    // a turn. If there isn't one, our turn has ended.
+    // Find the next character in the list and set them as the current
+    // character. If there isn't one, our turn has ended.
     auto foundCharacter = std::find(mCharacters.begin(),
                                     mCharacters.end(),
                                     mCurrentCharacter);
@@ -63,19 +84,14 @@ void AIPlayerBehaviorComponent::HandleCharacterTurnEnded(CharacterBehaviorCompon
       auto nextCharacter = std::next(foundCharacter);
       if(nextCharacter == mCharacters.end())
       {
-        // There is no next character.
+        // All the characters have taken a turn.
         EndTurn();
       }
       else
       {
-        // Make the next character take a turn.
-        auto characterBehaviorComponent = (*nextCharacter)->GetFirstComponentOfType<EnemyBehaviorComponent>();
-        if(characterBehaviorComponent != nullptr &&
-           mBoard != nullptr)
-        {
-          characterBehaviorComponent->TakeTurn(*mBoard);
-          mCurrentCharacter = (*nextCharacter);
-        }
+        // Set the next character as the current one.
+        mCurrentCharacter = (*nextCharacter);
+        mWaitingToTakeTurn = true;
       }
     }
   }

@@ -16,6 +16,11 @@ namespace Barebones
        */
       AIPlayerBehaviorComponent();
 
+      /**
+       * Updates the component.
+       */
+      void Update() override;
+
     protected:
 
       /**
@@ -37,6 +42,8 @@ namespace Barebones
       std::vector<UrsineEngine::GameObject*> mCharacters;
       UrsineEngine::GameObject* mCurrentCharacter;
       UrsineEngine::GameObject* mBoard;
+
+      bool mWaitingToTakeTurn;
   };
 }
 

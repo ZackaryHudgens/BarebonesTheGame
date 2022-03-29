@@ -77,6 +77,13 @@ namespace Barebones
        */
       void HandleCharacterTurnBegan(CharacterBehaviorComponent& aCharacter);
 
+      /**
+       * A handler function that gets called whenever a character's turn ends.
+       *
+       * @param aCharacter The character whose turn ended.
+       */
+      void HandleCharacterTurnEnded(CharacterBehaviorComponent& aCharacter);
+
       UrsineEngine::GameObject* mFollowedBoard;
 
       std::unique_ptr<CameraState> mState;

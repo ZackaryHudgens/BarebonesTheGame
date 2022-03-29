@@ -19,13 +19,6 @@ namespace Barebones
                                     UrsineEngine::GameObject& aCharacter);
 
       /**
-       * Updates the state.
-       *
-       * @return A unique_ptr to a new state, if necessary.
-       */
-      std::unique_ptr<CameraState> Update() override;
-
-      /**
        * A handler function that gets called whenever a GameObject moves in the
        * current Scene.
        *
@@ -34,18 +27,20 @@ namespace Barebones
        */
       std::unique_ptr<CameraState> HandleObjectMoved(UrsineEngine::GameObject* aObject) override;
 
+      /**
+       * A handler function that gets called whenever a character's turn ends.
+       *
+       * @param aCharacter The character whose turn ended.
+       * @return A unique_ptr to a new state, if necessary.
+       */
+      std::unique_ptr<CameraState> HandleCharacterTurnEnded(CharacterBehaviorComponent& aCharacter) override;
+
     private:
       UrsineEngine::GameObject* mCharacter;
-
-      glm::vec3 mTargetPosition;
 
       double mYDistance;
       double mZDistance;
       double mRotation;
-
-      double mSpeed;
-
-      bool mMoving;
   };
 }
 

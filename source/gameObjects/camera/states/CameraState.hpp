@@ -69,6 +69,14 @@ namespace Barebones
        */
       virtual std::unique_ptr<CameraState> HandleCharacterTurnBegan(CharacterBehaviorComponent& aCharacter);
 
+      /**
+       * A virtual function that gets called whenever a character's turn ends.
+       *
+       * @param aCharacter The character whose turn ended.
+       * @return A unique_ptr to a new state, if necessary.
+       */
+      virtual std::unique_ptr<CameraState> HandleCharacterTurnEnded(CharacterBehaviorComponent& aCharacter);
+
     protected:
 
       /**

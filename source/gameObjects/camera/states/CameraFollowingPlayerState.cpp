@@ -22,8 +22,8 @@ CameraFollowingPlayerState::CameraFollowingPlayerState(UrsineEngine::GameObject&
   aCamera.SetPosition(glm::vec3(0.0,
                                 mYDistance,
                                 mZDistance));
-  aCamera.SetRotation(mRotation,
-                      glm::vec3(1.0, 0.0, 0.0));
+  //aCamera.SetRotation(mRotation,
+  //                    glm::vec3(1.0, 0.0, 0.0));
 }
 
 /******************************************************************************/
