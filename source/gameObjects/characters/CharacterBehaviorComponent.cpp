@@ -3,6 +3,7 @@
 #include "Signals.hpp"
 
 #include "MoveSkill.hpp"
+#include "SlashSkill.hpp"
 
 using Barebones::CharacterBehaviorComponent;
 
@@ -23,6 +24,8 @@ void CharacterBehaviorComponent::Initialize()
 {
   // All characters have the move skill.
   AddSkill(std::make_unique<MoveSkill>(*GetParent()));
+
+  AddSkill(std::make_unique<SlashSkill>(*GetParent()));
 }
 
 /******************************************************************************/
