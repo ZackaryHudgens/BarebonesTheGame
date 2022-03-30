@@ -18,7 +18,6 @@ using Barebones::TurnDisplayComponent;
 TurnDisplayComponent::TurnDisplayComponent()
   : Component()
   , mNameText(nullptr)
-  , mBackground(nullptr)
   , mDisplayTime(1.0)
   , mInitialDisplayTime(0.0)
   , mDisplaying(false)
@@ -45,58 +44,6 @@ void TurnDisplayComponent::Initialize()
     parent->AddChild(std::move(nameObject));
 
     mNameText = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::TextComponent>();
-
-    // Add the transparent black background.
-    auto background = std::make_unique<UrsineEngine::MeshComponent>();
-    background->SetHasTransparency(true);
-    background->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
-
-    UrsineEngine::MeshVertex vertex;
-    vertex.mColor = glm::vec3(0.0,
-                              0.0,
-                              0.0);
-
-    vertex.mPosition = glm::vec3(0.0,
-                                 0.0,
-                                 0.0);
-    background->AddVertex(vertex);
-    vertex.mPosition = glm::vec3(overlayWidth,
-                                 0.0,
-                                 0.0);
-    background->AddVertex(vertex);
-    vertex.mPosition = glm::vec3(overlayWidth,
-                                 overlayHeight,
-                                 0.0);
-    background->AddVertex(vertex);
-    vertex.mPosition = glm::vec3(0.0,
-                                 overlayHeight,
-                                 0.0);
-    background->AddVertex(vertex);
-
-    background->AddIndex(0);
-    background->AddIndex(1);
-    background->AddIndex(3);
-    background->AddIndex(3);
-    background->AddIndex(1);
-    background->AddIndex(2);
-
-    std::string uiVert = "resources/shaders/UIShader.vert";
-    std::string uiFrag = "resources/shaders/UIShader.frag";
-    UrsineEngine::Shader shader(uiVert,
-                                uiFrag);
-    shader.Activate();
-    shader.SetFloat("opacity",
-                    0.0f);
-    background->AddShader("defaultShader",
-                          shader);
-    background->SetCurrentShader("defaultShader");
-
-    auto backgroundObject = std::make_unique<UrsineEngine::GameObject>("turnDisplayBackground");
-    backgroundObject->AddComponent(std::move(background));
-    backgroundObject->SetPosition(glm::vec3(0.0, 0.0, -0.1));
-    parent->AddChild(std::move(backgroundObject));
-
-    mBackground = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
   }
 }
 
@@ -110,16 +57,8 @@ void TurnDisplayComponent::Update()
     {
       mDisplaying = false;
 
-      if(mBackground != nullptr &&
-         mNameText != nullptr)
+      if(mNameText != nullptr)
       {
-        auto shader = mBackground->GetCurrentShader();
-        if(shader != nullptr)
-        {
-          shader->Activate();
-          shader->SetFloat("opacity",
-                           0.0f);
-        }
         mNameText->SetText("");
       }
 
@@ -141,10 +80,6 @@ void TurnDisplayComponent::DisplayMessageForPlayer(UrsineEngine::GameObject& aPl
     std::stringstream ss;
     ss << aPlayer.GetName() << "'s Turn";
     mNameText->SetText(ss.str());
-
-    mBackground->GetCurrentShader()->Activate();
-    mBackground->GetCurrentShader()->SetFloat("opacity",
-                                              0.6f);
 
     mDisplaying = true;
     mInitialDisplayTime = env.GetTime();

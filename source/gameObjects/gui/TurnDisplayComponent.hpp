@@ -34,7 +34,6 @@ namespace Barebones
 
     private:
       UrsineEngine::TextComponent* mNameText;
-      UrsineEngine::MeshComponent* mBackground;
 
       double mDisplayTime;
       double mInitialDisplayTime;
