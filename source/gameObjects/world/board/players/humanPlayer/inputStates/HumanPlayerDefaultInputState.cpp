@@ -109,7 +109,14 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
           auto character = boardLayoutComponent->GetCharacterAtLocation(currentLocation);
           if(character != nullptr)
           {
-            CreateSkillMenu(*character);
+            auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
+            if(characterBehaviorComponent != nullptr)
+            {
+              if(characterBehaviorComponent->GetSide() == Side::ePLAYER)
+              {
+                CreateSkillMenu(*character);
+              }
+            }
           }
 
           break;
