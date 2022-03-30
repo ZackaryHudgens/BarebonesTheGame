@@ -34,14 +34,28 @@ CameraFollowingPlayerState::CameraFollowingPlayerState(UrsineEngine::GameObject&
       if(boardLayoutComponent != nullptr &&
          humanPlayerBehaviorComponent != nullptr)
       {
-        auto tile = boardLayoutComponent->GetTileAtLocation(humanPlayerBehaviorComponent->GetLocation());
-        if(tile != nullptr)
+        // Focus on the character at the player's location if there is one.
+        // If there isn't, focus on the empty tile instead.
+        auto character = boardLayoutComponent->GetCharacterAtLocation(humanPlayerBehaviorComponent->GetLocation());
+        if(character != nullptr)
         {
-          mTargetPosition = tile->GetPosition();
+          mTargetPosition = character->GetPosition();
           mTargetPosition.y += mYDistance;
           mTargetPosition.z += mZDistance;
 
           mMoving = true;
+        }
+        else
+        {
+          auto tile = boardLayoutComponent->GetTileAtLocation(humanPlayerBehaviorComponent->GetLocation());
+          if(tile != nullptr)
+          {
+            mTargetPosition = tile->GetPosition();
+            mTargetPosition.y += mYDistance;
+            mTargetPosition.z += mZDistance;
+
+            mMoving = true;
+          }
         }
       }
     }
@@ -101,16 +115,28 @@ std::unique_ptr<Barebones::CameraState> CameraFollowingPlayerState::HandleHumanP
           auto boardLayoutComponent = boardObject->GetFirstComponentOfType<BoardLayoutComponent>();
           if(boardLayoutComponent != nullptr)
           {
-            auto tile = boardLayoutComponent->GetTileAtLocation(aPlayer.GetLocation());
-            if(tile != nullptr)
+            auto character = boardLayoutComponent->GetCharacterAtLocation(aPlayer.GetLocation());
+            if(character != nullptr)
             {
-              // Calculate the new position for the camera.
-              auto newPos = tile->GetPosition();
-              newPos.y += mYDistance;
-              newPos.z += mZDistance;
+              mTargetPosition = character->GetPosition();
+              mTargetPosition.y += mYDistance;
+              mTargetPosition.z += mZDistance;
 
-              mTargetPosition = newPos;
               mMoving = true;
+            }
+            else
+            {
+              auto tile = boardLayoutComponent->GetTileAtLocation(aPlayer.GetLocation());
+              if(tile != nullptr)
+              {
+                // Calculate the new position for the camera.
+                auto newPos = tile->GetPosition();
+                newPos.y += mYDistance;
+                newPos.z += mZDistance;
+
+                mTargetPosition = newPos;
+                mMoving = true;
+              }
             }
           }
         }
