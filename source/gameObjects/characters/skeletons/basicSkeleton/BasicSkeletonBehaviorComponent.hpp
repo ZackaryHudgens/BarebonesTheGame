@@ -26,6 +26,13 @@ namespace Barebones
       TileList GetMovements(UrsineEngine::GameObject& aObject,
                             const TileLocation& aLocation) const override;
 
+    protected:
+
+      /**
+       * A protected function that gets called during Initialize().
+       */
+      void ProtectedInitialize() override;
+
     private:
       int mHorizontalMovement;
       int mVerticalMovement;

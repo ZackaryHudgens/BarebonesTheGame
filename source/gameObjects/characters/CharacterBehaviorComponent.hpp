@@ -96,6 +96,11 @@ namespace Barebones
     protected:
 
       /**
+       * A virtual function that gets called during Initialize().
+       */
+      virtual void ProtectedInitialize() {}
+
+      /**
        * Adds a skill to this character.
        *
        * @param aSkill The skill to add.

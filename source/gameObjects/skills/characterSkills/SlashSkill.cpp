@@ -31,38 +31,38 @@ Barebones::TileList SlashSkill::GetValidTiles(UrsineEngine::GameObject& aBoard)
     auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(GetCharacter()->GetName());
 
     // Check to the right.
-    auto targetLocaton = characterLocation;
-    targetLocaton.first = characterLocation.first + 1;
+    auto targetLocation = characterLocation;
+    targetLocation.first = characterLocation.first + 1;
     if(IsEnemyAtLocation(aBoard,
-                         characterLocation))
+                         targetLocation))
     {
-      tiles.emplace_back(targetLocaton);
+      tiles.emplace_back(targetLocation);
     }
 
     // Check to the left.
-    targetLocaton.first = characterLocation.first - 1;
+    targetLocation.first = characterLocation.first - 1;
     if(IsEnemyAtLocation(aBoard,
-                         characterLocation))
+                         targetLocation))
     {
-      tiles.emplace_back(targetLocaton);
+      tiles.emplace_back(targetLocation);
     }
 
-    targetLocaton.first = characterLocation.first;
+    targetLocation.first = characterLocation.first;
 
     // Check above.
-    targetLocaton.second = characterLocation.second + 1;
+    targetLocation.second = characterLocation.second + 1;
     if(IsEnemyAtLocation(aBoard,
-                         characterLocation))
+                         targetLocation))
     {
-      tiles.emplace_back(targetLocaton);
+      tiles.emplace_back(targetLocation);
     }
 
     // Check below.
-    targetLocaton.second = characterLocation.second - 1;
+    targetLocation.second = characterLocation.second - 1;
     if(IsEnemyAtLocation(aBoard,
-                         characterLocation))
+                         targetLocation))
     {
-      tiles.emplace_back(targetLocaton);
+      tiles.emplace_back(targetLocation);
     }
   }
 
