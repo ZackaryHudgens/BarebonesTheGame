@@ -2,7 +2,7 @@
 
 #include <Environment.hpp>
 #include <GameObject.hpp>
-#include <MeshComponent.hpp>
+#include <SpriteComponent.hpp>
 
 #include "SkillActionBehaviorComponent.hpp"
 
@@ -51,42 +51,18 @@ void SkillMenuLayoutComponent::Initialize()
     mSkillDescriptionText = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::TextComponent>();
 
     // Create a menu background.
-    auto menuBackground = std::make_unique<UrsineEngine::MeshComponent>();
+    auto menuBackground = std::make_unique<UrsineEngine::SpriteComponent>();
     menuBackground->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
+
+    UrsineEngine::Texture backgroundTexture;
+    backgroundTexture.CreateTextureFromFile("resources/sprites/menuBox.png");
+    menuBackground->SetTexture(backgroundTexture);
 
     std::string vertexFile = "resources/shaders/UIShader.vert";
     std::string fragmentFile = "resources/shaders/UIShader.frag";
     UrsineEngine::Shader uiShader(vertexFile, fragmentFile);
     menuBackground->AddShader("uiShader", uiShader);
     menuBackground->SetCurrentShader("uiShader");
-
-    UrsineEngine::Texture backgroundTexture;
-    backgroundTexture.CreateTextureFromFile("resources/sprites/menuBox.png");
-    menuBackground->AddTexture(backgroundTexture);
-
-    menuBackground->AddIndex(0);
-    menuBackground->AddIndex(1);
-    menuBackground->AddIndex(3);
-    menuBackground->AddIndex(3);
-    menuBackground->AddIndex(1);
-    menuBackground->AddIndex(2);
-
-    UrsineEngine::MeshVertex vertex;
-    vertex.mPosition = glm::vec3(0.0, 0.0, 0.0);
-    vertex.mTexCoords = glm::vec2(0.0, 0.0);
-    menuBackground->AddVertex(vertex);
-
-    vertex.mPosition = glm::vec3(overlayWidth, 0.0, 0.0);
-    vertex.mTexCoords = glm::vec2(1.0, 0.0);
-    menuBackground->AddVertex(vertex);
-
-    vertex.mPosition = glm::vec3(overlayWidth, 200.0, 0.0);
-    vertex.mTexCoords = glm::vec2(1.0, 1.0);
-    menuBackground->AddVertex(vertex);
-
-    vertex.mPosition = glm::vec3(0.0, 200.0, 0.0);
-    vertex.mTexCoords = glm::vec2(0.0, 1.0);
-    menuBackground->AddVertex(vertex);
 
     auto menuBackgroundObject = std::make_unique<UrsineEngine::GameObject>("menuBackground");
     menuBackgroundObject->AddComponent(std::move(menuBackground));

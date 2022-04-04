@@ -6,6 +6,7 @@
 #include "CameraBehaviorComponent.hpp"
 #include "CharacterFactory.hpp"
 #include "CharacterBehaviorComponent.hpp"
+#include "CharacterInfoDisplayComponent.hpp"
 #include "BoardLayoutComponent.hpp"
 #include "BoardTurnManagerComponent.hpp"
 
@@ -99,6 +100,12 @@ int main()
 
   auto camComp = cam->GetFirstComponentOfType<Barebones::CameraBehaviorComponent>();
   camComp->SetFollowedBoard(*newScene.GetObject("board"));
+
+  auto characterInfoDisplayComponent = std::make_unique<Barebones::CharacterInfoDisplayComponent>();
+  characterInfoDisplayComponent->SetFollowedBoard(*newScene.GetObject("board"));
+  auto characterInfoDisplay = std::make_unique<UrsineEngine::GameObject>("characterInfoDisplay");
+  characterInfoDisplay->AddComponent(std::move(characterInfoDisplayComponent));
+  newScene.AddObject(std::move(characterInfoDisplay));
 
   env.LoadScene(newScene);
 

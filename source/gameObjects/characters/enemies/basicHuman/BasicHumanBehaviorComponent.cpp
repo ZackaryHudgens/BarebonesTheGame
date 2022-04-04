@@ -16,6 +16,7 @@ BasicHumanBehaviorComponent::BasicHumanBehaviorComponent()
     this->HandleCharacterFinishedMoving(aCharacter);
   });
 
+  SetName("Humie");
   SetMaximumHealth(5);
   SetCurrentHealth(5);
 }

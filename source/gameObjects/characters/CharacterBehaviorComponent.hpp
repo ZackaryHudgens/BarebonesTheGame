@@ -37,6 +37,13 @@ namespace Barebones
       void Update() override;
 
       /**
+       * Returns the name of this type of character.
+       *
+       * @return The name of this type of character.
+       */
+      std::string GetName() const { return mName; }
+
+      /**
        * Moves the character to a position in world space at the given speed.
        *
        * @param aPosition The position to move to.
@@ -101,6 +108,13 @@ namespace Barebones
       virtual void ProtectedInitialize() {}
 
       /**
+       * Sets the name for this type of character.
+       *
+       * @param aName The name for this type of character.
+       */
+      void SetName(const std::string& aName) { mName = aName; }
+
+      /**
        * Adds a skill to this character.
        *
        * @param aSkill The skill to add.
@@ -130,6 +144,8 @@ namespace Barebones
       std::vector<std::unique_ptr<Skill>> mSkills;
 
       Side mSide;
+
+      std::string mName;
 
       double mSpeed;
 
