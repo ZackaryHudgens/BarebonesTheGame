@@ -34,9 +34,9 @@ void SkillMenuLayoutComponent::Initialize()
 
     auto nameObject = std::make_unique<UrsineEngine::GameObject>("skillName");
     nameObject->AddComponent(std::move(skillName));
+    nameObject->SetPosition(glm::vec3(0.0, 100.0, 0.0));
     parent->AddChild(std::move(nameObject));
     mSkillNameText = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::TextComponent>();
-    mSkillNameText->GetParent()->SetPosition(glm::vec3(0.0, 100.0, 0.0));
 
     // Add the description text.
     auto skillDescription = std::make_unique<UrsineEngine::TextComponent>();
@@ -46,9 +46,9 @@ void SkillMenuLayoutComponent::Initialize()
 
     auto descriptionObject = std::make_unique<UrsineEngine::GameObject>("skillDescription");
     descriptionObject->AddComponent(std::move(skillDescription));
+    descriptionObject->SetPosition(glm::vec3(0.0, 0.0, 0.0));
     parent->AddChild(std::move(descriptionObject));
     mSkillDescriptionText = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::TextComponent>();
-    mSkillDescriptionText->GetParent()->SetPosition(glm::vec3(0.0, 0.0, 0.0));
 
     // Create a menu background.
     auto menuBackground = std::make_unique<UrsineEngine::MeshComponent>();
@@ -90,8 +90,8 @@ void SkillMenuLayoutComponent::Initialize()
 
     auto menuBackgroundObject = std::make_unique<UrsineEngine::GameObject>("menuBackground");
     menuBackgroundObject->AddComponent(std::move(menuBackground));
+    menuBackgroundObject->SetPosition(glm::vec3(0.0, 0.0, -0.9));
     parent->AddChild(std::move(menuBackgroundObject));
-    parent->SetPosition(glm::vec3(0.0, 0.0, -0.9));
   }
 }
 
