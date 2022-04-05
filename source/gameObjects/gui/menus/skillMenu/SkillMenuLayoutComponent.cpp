@@ -13,7 +13,6 @@ SkillMenuLayoutComponent::SkillMenuLayoutComponent()
   : MenuLayoutComponent()
   , mSkillNameText(nullptr)
   , mSkillDescriptionText(nullptr)
-  , mIconSpacing(20.0)
 {
 }
 

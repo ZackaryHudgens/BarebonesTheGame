@@ -51,8 +51,6 @@ namespace Barebones
     private:
       UrsineEngine::TextComponent* mSkillNameText;
       UrsineEngine::TextComponent* mSkillDescriptionText;
-
-      double mIconSpacing;
   };
 }
 
