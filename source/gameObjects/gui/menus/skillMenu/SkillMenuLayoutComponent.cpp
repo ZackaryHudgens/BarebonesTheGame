@@ -13,6 +13,8 @@ SkillMenuLayoutComponent::SkillMenuLayoutComponent()
   : MenuLayoutComponent()
   , mSkillNameText(nullptr)
   , mSkillDescriptionText(nullptr)
+  , mSkillNameBackground(nullptr)
+  , mSkillDescriptionBackgroun(nullptr)
 {
 }
 
@@ -25,7 +27,7 @@ void SkillMenuLayoutComponent::Initialize()
     double overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
     double overlayHeight = env.GetGraphicsOptions().mOverlayHeight;
 
-    // Add the name text.
+    // Create the name text and a GameObject to hold it.
     auto skillName = std::make_unique<UrsineEngine::TextComponent>();
     skillName->SetFont("Alagard", "Medium");
     skillName->SetSize(48);
@@ -37,7 +39,7 @@ void SkillMenuLayoutComponent::Initialize()
     parent->AddChild(std::move(nameObject));
     mSkillNameText = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::TextComponent>();
 
-    // Add the description text.
+    // Create the description text and a GameObject to hold it.
     auto skillDescription = std::make_unique<UrsineEngine::TextComponent>();
     skillDescription->SetFont("Alagard", "Medium");
     skillDescription->SetSize(32);
@@ -49,24 +51,40 @@ void SkillMenuLayoutComponent::Initialize()
     parent->AddChild(std::move(descriptionObject));
     mSkillDescriptionText = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::TextComponent>();
 
-    // Create a menu background.
-    auto menuBackground = std::make_unique<UrsineEngine::SpriteComponent>();
-    menuBackground->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
-
-    UrsineEngine::Texture backgroundTexture;
-    backgroundTexture.CreateTextureFromFile("resources/sprites/menuBox.png");
-    menuBackground->SetTexture(backgroundTexture);
+    // Create a background sprite for the skill name and a GameObject to hold it.
+    auto skillNameBackground = std::make_unique<UrsineEngine::SpriteComponent>();
+    skillNameBackground->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
+    skillNameBackground->SetHasTransparency(false);
 
     std::string vertexFile = "resources/shaders/UIShader.vert";
     std::string fragmentFile = "resources/shaders/UIShader.frag";
     UrsineEngine::Shader uiShader(vertexFile, fragmentFile);
-    menuBackground->AddShader("uiShader", uiShader);
-    menuBackground->SetCurrentShader("uiShader");
+    skillNameBackground->AddShader("uiShader", uiShader);
+    skillNameBackground->SetCurrentShader("uiShader");
+
+    UrsineEngine::Texture backgroundTexture;
+    backgroundTexture.CreateTextureFromFile("resources/sprites/menuBox.png");
+    skillNameBackground->SetTexture(backgroundTexture);
+
+    // Scale the background to stretch across the overlay.
+    double textureWidth = backgroundTexture.GetData().mWidth;
+    double textureHeight = backgroundTexture.GetData().mHeight;
+    double xScalar = overlayWidth / textureWidth;
+    double yScalar = 10.0;
 
     auto menuBackgroundObject = std::make_unique<UrsineEngine::GameObject>("menuBackground");
     menuBackgroundObject->AddComponent(std::move(menuBackground));
-    menuBackgroundObject->SetPosition(glm::vec3(0.0, 0.0, -0.9));
+    menuBackgroundObject->SetScale(glm::vec3(xScalar,
+                                             yScalar,
+                                             1.0));
+
+    double backgroundWidth = xScalar * textureWidth;
+    double backgroundHeight = yScalar * textureHeight;
+    menuBackgroundObject->SetPosition(glm::vec3(backgroundWidth / 2.0,
+                                                overlayHeight - (backgroundHeight / 2.0),
+                                                -0.9));
     parent->AddChild(std::move(menuBackgroundObject));
+    mBackground = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::SpriteComponent>();
   }
 }
 

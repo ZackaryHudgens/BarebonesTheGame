@@ -38,15 +38,15 @@ void BackgroundSpriteComponent::Initialize()
   AddVertex(vertex);
 
   vertex.mPosition = glm::vec3(width, 0.0, 0.0);
-  vertex.mTexCoords = glm::vec2(1.0, 0.0);
+  vertex.mTexCoords = glm::vec2(5.0, 0.0);
   AddVertex(vertex);
 
   vertex.mPosition = glm::vec3(width, height, 0.0);
-  vertex.mTexCoords = glm::vec2(1.0, 1.0);
+  vertex.mTexCoords = glm::vec2(5.0, 5.0);
   AddVertex(vertex);
 
   vertex.mPosition = glm::vec3(0.0, height, 0.0);
-  vertex.mTexCoords = glm::vec2(0.0, 1.0);
+  vertex.mTexCoords = glm::vec2(0.0, 5.0);
   AddVertex(vertex);
 
   // Set the shader.
