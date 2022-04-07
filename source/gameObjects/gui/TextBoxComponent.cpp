@@ -214,15 +214,30 @@ void TextBoxComponent::ResizeBackground()
 /******************************************************************************/
 void TextBoxComponent::RepositionText()
 {
-  if(mText != nullptr)
+  if(mBackground != nullptr &&
+     mText != nullptr)
   {
+    auto backgroundObject = mBackground->GetParent();
     auto textObject = mText->GetParent();
-    if(textObject != nullptr)
+    if(textObject != nullptr &&
+       backgroundObject != nullptr)
     {
       switch(mTextAlignment)
       {
         case TextAlignment::eLEFT:
         {
+          // Determine the x-position.
+          double backgroundLeftMargin = backgroundObject->GetPosition().x - (mBackground->GetWidth() / 2.0);
+          double xPos = backgroundLeftMargin + mHorizontalPadding;
+
+          // Determine the y-position.
+          double backgroundHeight = mBackground->GetHeight();
+          double yPos = backgroundHeight - mVerticalPadding;
+
+          auto textPos = textObject->GetPosition();
+          textPos.x = xPos;
+          textPos.y = yPos;
+          textObject->SetPosition(textPos);
           break;
         }
         case TextAlignment::eRIGHT:

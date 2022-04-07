@@ -2,10 +2,10 @@
 #define CHARACTERINFODISPLAYCOMPONENT_HPP
 
 #include <Component.hpp>
-#include <SpriteComponent.hpp>
-#include <TextComponent.hpp>
 
 #include "HumanPlayerBehaviorComponent.hpp"
+
+#include "TextBoxComponent.hpp"
 
 namespace Barebones
 {
@@ -49,8 +49,7 @@ namespace Barebones
 
       UrsineEngine::GameObject* mBoard;
 
-      UrsineEngine::TextComponent* mInfoText;
-      UrsineEngine::SpriteComponent* mBackground;
+      TextBoxComponent* mTextBox;
   };
 }
 
