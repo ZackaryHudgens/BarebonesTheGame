@@ -50,6 +50,10 @@ namespace Barebones
       UrsineEngine::GameObject* mBoard;
 
       TextBoxComponent* mTextBox;
+
+      double mTextBoxHeight;
+      double mTextBoxHorizontalPadding;
+      double mTextBoxVerticalPadding;
   };
 }
 

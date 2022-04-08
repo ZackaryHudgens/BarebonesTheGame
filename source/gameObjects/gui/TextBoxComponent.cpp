@@ -2,6 +2,8 @@
 
 #include <GameObject.hpp>
 
+#include <iostream>
+
 using Barebones::TextBoxComponent;
 
 /******************************************************************************/
@@ -10,8 +12,8 @@ TextBoxComponent::TextBoxComponent()
   , mText(nullptr)
   , mBackground(nullptr)
   , mTextAlignment(TextAlignment::eLEFT)
-  , mHorizontalPadding(150)
-  , mVerticalPadding(50)
+  , mHorizontalPadding(50)
+  , mVerticalPadding(5)
   , mFixedWidth(false)
   , mFixedHeight(false)
 {
@@ -29,6 +31,7 @@ void TextBoxComponent::Initialize()
 
     auto textObject = std::make_unique<UrsineEngine::GameObject>("textObject");
     textObject->AddComponent(std::move(textComponent));
+    textObject->SetPosition(glm::vec3(0.0, 0.0, 0.1));
     parent->AddChild(std::move(textObject));
 
     mText = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::TextComponent>();
@@ -46,6 +49,7 @@ void TextBoxComponent::Initialize()
 
     auto backgroundSpriteObject = std::make_unique<UrsineEngine::GameObject>("backgroundSpriteObject");
     backgroundSpriteObject->AddComponent(std::move(backgroundSpriteComponent));
+    backgroundSpriteObject->SetPosition(glm::vec3(0.0, 0.0, -0.1));
     parent->AddChild(std::move(backgroundSpriteObject));
 
     mBackground = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::SpriteComponent>();
@@ -178,6 +182,24 @@ void TextBoxComponent::SetHeight(int aHeight)
 }
 
 /******************************************************************************/
+void TextBoxComponent::SetHorizontalPadding(int aPadding)
+{
+  mHorizontalPadding = aPadding;
+
+  ResizeBackground();
+  RepositionText();
+}
+
+/******************************************************************************/
+void TextBoxComponent::SetVerticalPadding(int aPadding)
+{
+  mVerticalPadding = aPadding;
+
+  ResizeBackground();
+  RepositionText();
+}
+
+/******************************************************************************/
 void TextBoxComponent::ResizeBackground()
 {
   if(mText != nullptr &&
@@ -202,7 +224,7 @@ void TextBoxComponent::ResizeBackground()
       auto scalarTransform = backgroundObject->GetScalarTransform();
       double xScalar = mFixedWidth ? scalarTransform[0][0] : newBackgroundWidth / backgroundWidth;
       double yScalar = mFixedHeight ? scalarTransform[1][1] : newBackgroundHeight / backgroundHeight;
-      double zScalar = scalarTransform[3][3];
+      double zScalar = scalarTransform[2][2];
 
       backgroundObject->SetScale(glm::vec3(xScalar,
                                            yScalar,
@@ -226,17 +248,15 @@ void TextBoxComponent::RepositionText()
       {
         case TextAlignment::eLEFT:
         {
-          // Determine the x-position.
-          double backgroundLeftMargin = backgroundObject->GetPosition().x - (mBackground->GetWidth() / 2.0);
-          double xPos = backgroundLeftMargin + mHorizontalPadding;
-
-          // Determine the y-position.
-          double backgroundHeight = mBackground->GetHeight();
-          double yPos = backgroundHeight - mVerticalPadding;
+          auto backgroundScaleTransform = backgroundObject->GetScalarTransform();
+          double backgroundWidth = mBackground->GetWidth() * backgroundScaleTransform[0][0];
+          double backgroundHeight = mBackground->GetHeight() * backgroundScaleTransform[1][1];
+          double backgroundLeftEdge = backgroundObject->GetPosition().x - (backgroundWidth / 2.0);
+          double backgroundBottomEdge = backgroundObject->GetPosition().y - (backgroundHeight / 2.0);
 
           auto textPos = textObject->GetPosition();
-          textPos.x = xPos;
-          textPos.y = yPos;
+          textPos.x = backgroundLeftEdge + mHorizontalPadding;
+          textPos.y = backgroundBottomEdge + mVerticalPadding;
           textObject->SetPosition(textPos);
           break;
         }

@@ -111,6 +111,20 @@ namespace Barebones
        */
       void SetFixedHeight(bool aFixed) { mFixedHeight = aFixed; }
 
+      /**
+       * Sets the horizontal padding (in pixels) for this text box.
+       *
+       * @param aPadding The horizontal padding (in pixels) for this text box.
+       */
+      void SetHorizontalPadding(int aPadding);
+
+      /**
+       * Sets the vertical padding (in pixels) for this text box.
+       *
+       * @param aPadding The certical padding (in pixels) for this text box.
+       */
+      void SetVerticalPadding(int aPadding);
+
     private:
 
       /**
