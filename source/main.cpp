@@ -14,7 +14,7 @@
 
 #include "PlayerFactory.hpp"
 
-#include "BackgroundSpriteComponent.hpp"
+#include "BackgroundMeshComponent.hpp"
 
 int main()
 {
@@ -34,7 +34,7 @@ int main()
   inputManager->AddComponent(std::make_unique<Barebones::InputManagerComponent>());
 
   auto background = std::make_unique<UrsineEngine::GameObject>("background");
-  background->AddComponent(std::make_unique<Barebones::BackgroundSpriteComponent>());
+  background->AddComponent(std::make_unique<Barebones::BackgroundMeshComponent>());
 
   auto board = Barebones::BoardFactory::CreateBoard("board");
   auto boardComp = board->GetFirstComponentOfType<Barebones::BoardLayoutComponent>();

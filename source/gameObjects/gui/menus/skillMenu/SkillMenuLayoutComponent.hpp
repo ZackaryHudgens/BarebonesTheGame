@@ -3,10 +3,8 @@
 
 #include "MenuLayoutComponent.hpp"
 
-#include <SpriteComponent.hpp>
-#include <TextComponent.hpp>
-
 #include "Skill.hpp"
+#include "TextBoxComponent.hpp"
 
 namespace Barebones
 {
@@ -50,11 +48,8 @@ namespace Barebones
       void HandleActionSelected() override;
 
     private:
-      UrsineEngine::TextComponent* mSkillNameText;
-      UrsineEngine::TextComponent* mSkillDescriptionText;
-
-      UrsineEngine::SpriteComponent* mSkillNameBackground;
-      UrsineEngine::SpriteComponent* mSkillDescriptionBackgroun;
+      TextBoxComponent* mSkillNameTextBox;
+      TextBoxComponent* mSkillDescriptionTextBox;
   };
 }
 

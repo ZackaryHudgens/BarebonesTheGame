@@ -100,7 +100,7 @@ void CharacterInfoDisplayComponent::HandleHumanPlayerMoved(HumanPlayerBehaviorCo
            mTextBox != nullptr)
         {
           std::stringstream ss;
-          ss << characterBehaviorComponent->GetName() << ": "
+          ss << characterBehaviorComponent->GetName() << "   HP: "
              << characterBehaviorComponent->GetCurrentHealth() << "/"
              << characterBehaviorComponent->GetMaximumHealth();
 
