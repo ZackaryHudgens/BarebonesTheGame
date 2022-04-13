@@ -45,6 +45,11 @@ CameraBehaviorComponent::CameraBehaviorComponent()
   {
     this->HandleCharacterTurnEnded(aCharacter);
   });
+
+  CharacterFinishedMoving.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
+  {
+    this->HandleCharacterFinishedMoving(aCharacter);
+  });
 }
 
 /******************************************************************************/
@@ -157,6 +162,19 @@ void CameraBehaviorComponent::HandleCharacterTurnEnded(CharacterBehaviorComponen
   if(mState != nullptr)
   {
     auto newState = mState->HandleCharacterTurnEnded(aCharacter);
+    if(newState != nullptr)
+    {
+      mState.swap(newState);
+    }
+  }
+}
+
+/******************************************************************************/
+void CameraBehaviorComponent::HandleCharacterFinishedMoving(CharacterBehaviorComponent& aCharacter)
+{
+  if(mState != nullptr)
+  {
+    auto newState = mState->HandleCharacterFinishedMoving(aCharacter);
     if(newState != nullptr)
     {
       mState.swap(newState);

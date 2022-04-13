@@ -3,6 +3,8 @@
 
 #include <Component.hpp>
 
+#include "CharacterBehaviorComponent.hpp"
+
 #include "HumanPlayerBehaviorComponent.hpp"
 
 #include "TextBoxComponent.hpp"
@@ -46,6 +48,13 @@ namespace Barebones
        * @param aPlayer The player whose location changed.
        */
       void HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& aPlayer);
+
+      /**
+       * A handler function that gets called whenever a character finishes moving.
+       *
+       * @param aCharacter The character that finished moving.
+       */
+      void HandleCharacterFinishedMoving(CharacterBehaviorComponent& aCharacter);
 
       UrsineEngine::GameObject* mBoard;
 

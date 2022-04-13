@@ -91,6 +91,13 @@ namespace Barebones
        */
       void HandleCharacterTurnEnded(CharacterBehaviorComponent& aCharacter);
 
+      /**
+       * A handler function that gets called whenever a character finishes moving.
+       *
+       * @param aCharacter The character who finished moving.
+       */
+      void HandleCharacterFinishedMoving(CharacterBehaviorComponent& aCharacter);
+
       UrsineEngine::GameObject* mFollowedBoard;
 
       std::unique_ptr<CameraState> mState;

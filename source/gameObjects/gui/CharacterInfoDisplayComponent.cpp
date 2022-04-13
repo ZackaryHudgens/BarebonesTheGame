@@ -114,3 +114,19 @@ void CharacterInfoDisplayComponent::HandleHumanPlayerMoved(HumanPlayerBehaviorCo
     }
   }
 }
+
+/******************************************************************************/
+void CharacterInfoDisplayComponent::HandleCharacterFinishedMoving(CharacterBehaviorComponent& aCharacter)
+{
+  if(mBoard != nullptr)
+  {
+    auto boardLayoutComponent = mBoard->GetFirstComponentOfType<BoardLayoutComponent>();
+    if(boardLayoutComponent != nullptr)
+    {
+      auto characterObject = aCharacter.GetParent();
+      if(characterObject != nullptr)
+      {
+      }
+    }
+  }
+}

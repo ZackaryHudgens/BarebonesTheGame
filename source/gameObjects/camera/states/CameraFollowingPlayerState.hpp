@@ -42,6 +42,14 @@ namespace Barebones
        */
       std::unique_ptr<CameraState> HandlePlayerTurnEnded(PlayerBehaviorComponent& aPlayer) override;
 
+      /**
+       * A handler function that gets called whenever a character finishes moving.
+       *
+       * @param aCharacter The character who finished moving.
+       * @return A unique_ptr to a new state, if necessary.
+       */
+      std::unique_ptr<CameraState> HandleCharacterFinishedMoving(CharacterBehaviorComponent& aCharacter) override;
+
     private:
       UrsineEngine::GameObject* mPlayer;
 
