@@ -3,6 +3,7 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/skills/characterSkills/*.?pp
                        gameObjects/skills/spellSkills/*.?pp
                        gameObjects/world/*.?pp
+                       gameObjects/world/background/*.?pp
                        gameObjects/world/board/*.?pp
                        gameObjects/world/board/players/*.?pp
                        gameObjects/world/board/players/aiPlayer/*.?pp
@@ -18,10 +19,11 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/characters/skeletons/*.?pp
                        gameObjects/characters/skeletons/basicSkeleton/*.?pp
                        gameObjects/gui/*.?pp
-                       gameObjects/gui/actions/*.?pp
-                       gameObjects/gui/actions/skillAction/*.?pp
                        gameObjects/gui/menus/*.?pp
                        gameObjects/gui/menus/skillMenu/*.?pp
+                       gameObjects/gui/menus/actions/*.?pp
+                       gameObjects/gui/menus/actions/skillAction/*.?pp
+                       gameObjects/gui/infoPanel/*.?pp
                        gameObjects/util/*.?pp)
 
 add_executable(barebones ${GAME_SOURCES})
@@ -33,6 +35,7 @@ target_include_directories(barebones PUBLIC
                            gameObjects/skills/characterSkills
                            gameObjects/skills/spellSkills
                            gameObjects/world
+                           gameObjects/world/background
                            gameObjects/world/board
                            gameObjects/world/board/players
                            gameObjects/world/board/players/aiPlayer
@@ -48,10 +51,11 @@ target_include_directories(barebones PUBLIC
                            gameObjects/characters/skeletons
                            gameObjects/characters/skeletons/basicSkeleton
                            gameObjects/gui
-                           gameObjects/gui/actions
-                           gameObjects/gui/actions/skillAction
                            gameObjects/gui/menus
                            gameObjects/gui/menus/skillMenu
+                           gameObjects/gui/menus/actions
+                           gameObjects/gui/menus/actions/skillAction
+                           gameObjects/gui/infoPanel
                            gameObjects/util)
 
 install(TARGETS barebones DESTINATION ${INSTALL_DIR})

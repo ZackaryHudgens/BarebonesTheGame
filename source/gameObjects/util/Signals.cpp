@@ -3,12 +3,12 @@
 /**
  * Character signals
  */
-Barebones::CharacterFinishedMovingSignal Barebones::CharacterFinishedMoving;
-Barebones::CharacterTurnBeganSignal      Barebones::CharacterTurnBegan;
-Barebones::CharacterTurnEndedSignal      Barebones::CharacterTurnEnded;
-Barebones::CharacterDiedSignal           Barebones::CharacterDied;
-Barebones::SkillExecutedSignal           Barebones::SkillExecuted;
-Barebones::SkillCancelledSignal          Barebones::SkillCancelled;
+Barebones::CharacterFinishedMovingSignal  Barebones::CharacterFinishedMoving;
+Barebones::CharacterTurnBeganSignal       Barebones::CharacterTurnBegan;
+Barebones::CharacterTurnEndedSignal       Barebones::CharacterTurnEnded;
+Barebones::CharacterDiedSignal            Barebones::CharacterDied;
+Barebones::SkillExecutedSignal            Barebones::SkillExecuted;
+Barebones::SkillCancelledSignal           Barebones::SkillCancelled;
 
 /**
  * Player signals

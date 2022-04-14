@@ -55,9 +55,3 @@ std::unique_ptr<CameraState> CameraState::HandleCharacterTurnEnded(CharacterBeha
 {
   return nullptr;
 }
-
-/******************************************************************************/
-std::unique_ptr<CameraState> CameraState::HandleCharacterFinishedMoving(CharacterBehaviorComponent& aCharacter)
-{
-  return nullptr;
-}

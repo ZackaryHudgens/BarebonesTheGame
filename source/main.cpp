@@ -6,7 +6,6 @@
 #include "CameraBehaviorComponent.hpp"
 #include "CharacterFactory.hpp"
 #include "CharacterBehaviorComponent.hpp"
-#include "CharacterInfoDisplayComponent.hpp"
 #include "BoardLayoutComponent.hpp"
 #include "BoardTurnManagerComponent.hpp"
 
@@ -15,6 +14,8 @@
 #include "PlayerFactory.hpp"
 
 #include "BackgroundMeshComponent.hpp"
+
+#include "InfoPanelBehaviorComponent.hpp"
 
 int main()
 {
@@ -101,11 +102,11 @@ int main()
   auto camComp = cam->GetFirstComponentOfType<Barebones::CameraBehaviorComponent>();
   camComp->SetFollowedBoard(*newScene.GetObject("board"));
 
-  auto characterInfoDisplayComponent = std::make_unique<Barebones::CharacterInfoDisplayComponent>();
-  characterInfoDisplayComponent->SetFollowedBoard(*newScene.GetObject("board"));
-  auto characterInfoDisplay = std::make_unique<UrsineEngine::GameObject>("characterInfoDisplay");
-  characterInfoDisplay->AddComponent(std::move(characterInfoDisplayComponent));
-  newScene.AddObject(std::move(characterInfoDisplay));
+  auto infoPanelBehaviorComponent = std::make_unique<Barebones::InfoPanelBehaviorComponent>();
+  infoPanelBehaviorComponent->SetFollowedBoard(*newScene.GetObject("board"));
+  auto infoPanel = std::make_unique<UrsineEngine::GameObject>("infoPanel");
+  infoPanel->AddComponent(std::move(infoPanelBehaviorComponent));
+  newScene.AddObject(std::move(infoPanel));
 
   env.LoadScene(newScene);
 
