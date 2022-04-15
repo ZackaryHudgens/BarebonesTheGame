@@ -99,6 +99,8 @@ void CharacterBehaviorComponent::SetMaximumHealth(int aHealth)
 {
   mMaximumHealth = aHealth;
 
+  // If the current health is greater than the new maximum health,
+  // set the current health to the new maximum.
   if(mCurrentHealth > mMaximumHealth)
   {
     SetCurrentHealth(mMaximumHealth);
@@ -110,6 +112,9 @@ void CharacterBehaviorComponent::SetCurrentHealth(int aHealth)
 {
   mCurrentHealth = aHealth;
 
+  CharacterHealthChanged.Notify(*this);
+
+  // If the health is below 0, this character is now dead.
   if(mCurrentHealth <= 0)
   {
     CharacterDied.Notify(*this);
@@ -120,4 +125,11 @@ void CharacterBehaviorComponent::SetCurrentHealth(int aHealth)
       parent->ScheduleForDeletion();
     }
   }
+}
+
+/******************************************************************************/
+void CharacterBehaviorComponent::DealDamage(int aValue)
+{
+  // For now, just do the damage.
+  SetCurrentHealth(GetCurrentHealth() - aValue);
 }

@@ -58,6 +58,11 @@ BoardLayoutComponent::BoardLayoutComponent()
   {
     this->HandleSkillCancelled(aSkill);
   });
+
+  CharacterDied.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
+  {
+    this->HandleCharacterDied(aCharacter);
+  });
 }
 
 /******************************************************************************/
@@ -415,4 +420,25 @@ void BoardLayoutComponent::HandleSkillExecuted(Skill& aSkill)
 void BoardLayoutComponent::HandleSkillCancelled(Skill& aSkill)
 {
   HandleSkillExecuted(aSkill);
+}
+
+/******************************************************************************/
+void BoardLayoutComponent::HandleCharacterDied(CharacterBehaviorComponent& aCharacter)
+{
+  // When a character dies, don't remove it right away; just set
+  // the character at their location to nullptr.
+  auto characterObject = aCharacter.GetParent();
+  if(characterObject != nullptr)
+  {
+    auto location = GetLocationOfCharacter(characterObject->GetName());
+    if(location.first >= 0 &&
+       location.second < mCharacters.size())
+    {
+      if(location.second >= 0 &&
+         location.second < mCharacters.at(location.first).size())
+      {
+        mCharacters.at(location.first).at(location.second) = nullptr;
+      }
+    }
+  }
 }

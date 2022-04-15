@@ -19,6 +19,7 @@ namespace Barebones
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&> CharacterFinishedMovingSignal;
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&> CharacterTurnBeganSignal;
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&> CharacterTurnEndedSignal;
+  typedef UrsineEngine::SignalT<CharacterBehaviorComponent&> CharacterHealthChangedSignal;
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&> CharacterDiedSignal;
   typedef UrsineEngine::SignalT<Skill&>                      SkillExecutedSignal;
   typedef UrsineEngine::SignalT<Skill&>                      SkillCancelledSignal;
@@ -26,6 +27,7 @@ namespace Barebones
   extern CharacterFinishedMovingSignal  CharacterFinishedMoving;
   extern CharacterTurnBeganSignal       CharacterTurnBegan;
   extern CharacterTurnEndedSignal       CharacterTurnEnded;
+  extern CharacterHealthChangedSignal   CharacterHealthChanged;
   extern CharacterDiedSignal            CharacterDied;
   extern SkillExecutedSignal            SkillExecuted;
   extern SkillCancelledSignal           SkillCancelled;

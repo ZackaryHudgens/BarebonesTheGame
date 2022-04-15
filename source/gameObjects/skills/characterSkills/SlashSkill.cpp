@@ -18,6 +18,19 @@ SlashSkill::SlashSkill(UrsineEngine::GameObject& aCharacter)
 void SlashSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
                                   const TileLocation& aLocation)
 {
+  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
+  if(boardLayoutComponent != nullptr)
+  {
+    auto characterObject = boardLayoutComponent->GetCharacterAtLocation(aLocation);
+    if(characterObject != nullptr)
+    {
+      auto characterBehaviorComponent = characterObject->GetFirstComponentOfType<CharacterBehaviorComponent>();
+      if(characterBehaviorComponent != nullptr)
+      {
+        characterBehaviorComponent->DealDamage(3);
+      }
+    }
+  }
 }
 
 /******************************************************************************/

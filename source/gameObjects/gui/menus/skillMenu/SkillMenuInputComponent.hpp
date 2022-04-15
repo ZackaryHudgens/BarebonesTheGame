@@ -1,18 +1,18 @@
-#ifndef MENUINPUTCOMPONENT_HPP
-#define MENUINPUTCOMPONENT_HPP
+#ifndef SKILLMENUINPUTCOMPONENT_HPP
+#define SKILLMENUINPUTCOMPONENT_HPP
 
 #include "InputComponent.hpp"
 
 namespace Barebones
 {
-  class MenuInputComponent : public InputComponent
+  class SkillMenuInputComponent : public InputComponent
   {
     public:
 
       /**
        * Constructor.
        */
-      MenuInputComponent();
+      SkillMenuInputComponent();
 
       /**
        * A handler function that gets called whenever the user presses

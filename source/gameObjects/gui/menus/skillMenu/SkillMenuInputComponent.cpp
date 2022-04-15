@@ -1,18 +1,18 @@
-#include "MenuInputComponent.hpp"
+#include "SkillMenuInputComponent.hpp"
 
 #include "MenuLayoutComponent.hpp"
 
-using Barebones::MenuInputComponent;
+using Barebones::SkillMenuInputComponent;
 
 /******************************************************************************/
-MenuInputComponent::MenuInputComponent()
+SkillMenuInputComponent::SkillMenuInputComponent()
   : InputComponent()
 {
 }
 
 /******************************************************************************/
-void MenuInputComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
-                                          int aMods)
+void SkillMenuInputComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
+                                               int aMods)
 {
   auto parent = GetParent();
   if(parent != nullptr)
@@ -22,14 +22,14 @@ void MenuInputComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
     {
       switch(aCode)
       {
-        case UrsineEngine::KeyCode::eKEY_W:
-        case UrsineEngine::KeyCode::eKEY_UP:
+        case UrsineEngine::KeyCode::eKEY_A:
+        case UrsineEngine::KeyCode::eKEY_LEFT:
         {
           layout->HoverOverPreviousAction();
           break;
         }
-        case UrsineEngine::KeyCode::eKEY_S:
-        case UrsineEngine::KeyCode::eKEY_DOWN:
+        case UrsineEngine::KeyCode::eKEY_D:
+        case UrsineEngine::KeyCode::eKEY_RIGHT:
         {
           layout->HoverOverNextAction();
           break;
@@ -49,8 +49,8 @@ void MenuInputComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
 }
 
 /******************************************************************************/
-void MenuInputComponent::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
-                                           int aMods)
+void SkillMenuInputComponent::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
+                                                int aMods)
 {
   auto parent = GetParent();
   if(parent != nullptr)
@@ -60,14 +60,14 @@ void MenuInputComponent::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
     {
       switch(aCode)
       {
-        case UrsineEngine::KeyCode::eKEY_W:
-        case UrsineEngine::KeyCode::eKEY_UP:
+        case UrsineEngine::KeyCode::eKEY_A:
+        case UrsineEngine::KeyCode::eKEY_LEFT:
         {
           layout->HoverOverPreviousAction();
           break;
         }
-        case UrsineEngine::KeyCode::eKEY_S:
-        case UrsineEngine::KeyCode::eKEY_DOWN:
+        case UrsineEngine::KeyCode::eKEY_D:
+        case UrsineEngine::KeyCode::eKEY_RIGHT:
         {
           layout->HoverOverNextAction();
           break;

@@ -50,6 +50,12 @@ namespace Barebones
     private:
       TextBoxComponent* mSkillNameTextBox;
       TextBoxComponent* mSkillDescriptionTextBox;
+
+      int mSkillNameHeight;
+      int mSkillNameVerticalPadding;
+
+      int mSkillDescriptionHeight;
+      int mSkillDescriptionVerticalPadding;
   };
 }
 

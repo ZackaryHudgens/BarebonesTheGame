@@ -258,6 +258,7 @@ void TextBoxComponent::RepositionText()
           textPos.x = backgroundLeftEdge + mHorizontalPadding;
           textPos.y = backgroundBottomEdge + mVerticalPadding;
           textObject->SetPosition(textPos);
+
           break;
         }
         case TextAlignment::eRIGHT:
@@ -266,6 +267,20 @@ void TextBoxComponent::RepositionText()
         }
         case TextAlignment::eCENTER:
         {
+          auto backgroundScaleTransform = backgroundObject->GetScalarTransform();
+          double backgroundWidth = mBackground->GetWidth() * backgroundScaleTransform[0][0];
+          double backgroundHeight = mBackground->GetHeight() * backgroundScaleTransform[1][1];
+          double backgroundBottomEdge = backgroundObject->GetPosition().y - (backgroundHeight / 2.0);
+
+          auto textWidth = mText->GetWidth();
+          auto textHeight = mText->GetHeight();
+          auto distanceFromLeft = (backgroundWidth - textWidth) / 2.0;
+
+          auto textPos = textObject->GetPosition();
+          textPos.x = distanceFromLeft;
+          textPos.y = backgroundBottomEdge + mVerticalPadding;
+          textObject->SetPosition(textPos);
+
           break;
         }
         default:

@@ -63,6 +63,25 @@ namespace Barebones
        */
       void HandleCharacterFinishedMoving(CharacterBehaviorComponent& aCharacter);
 
+      /**
+       * A handler function that gets called whenever a character's health changes.
+       *
+       * @param aCharacter The character whose health changed.
+       */
+      void HandleCharacterHealthChanged(CharacterBehaviorComponent& aCharacter);
+
+      /**
+       * A handler function that gets called whenever a character dies.
+       *
+       * @param aCharacter The character that died.
+       */
+      void HandleCharacterDied(CharacterBehaviorComponent& aCharacter);
+
+      /**
+       * Updates the text based on the focused location on the followed board.
+       */
+      void UpdateText();
+
       UrsineEngine::GameObject* mBoard;
 
       TextBoxComponent* mTextBox;

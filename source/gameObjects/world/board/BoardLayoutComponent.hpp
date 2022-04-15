@@ -158,6 +158,13 @@ namespace Barebones
        */
       void HandleSkillCancelled(Skill& aSkill);
 
+      /**
+       * A handler function that gets called whenever a character dies.
+       *
+       * @param aCharacter The character that died.
+       */
+      void HandleCharacterDied(CharacterBehaviorComponent& aCharacter);
+
       std::vector<std::vector<UrsineEngine::GameObject*>> mTiles;
       std::vector<std::vector<UrsineEngine::GameObject*>> mCharacters;
 

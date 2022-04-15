@@ -41,6 +41,16 @@ InfoPanelBehaviorComponent::InfoPanelBehaviorComponent()
   {
     this->HandleCharacterFinishedMoving(aCharacter);
   });
+
+  CharacterHealthChanged.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
+  {
+    this->HandleCharacterHealthChanged(aCharacter);
+  });
+
+  CharacterDied.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
+  {
+    this->HandleCharacterDied(aCharacter);
+  });
 }
 
 /******************************************************************************/
@@ -60,7 +70,7 @@ void InfoPanelBehaviorComponent::Initialize()
     mTextBox->SetFont("Alagard", "Medium");
     mTextBox->SetTextSize(72);
     mTextBox->SetTextAlignment(TextAlignment::eLEFT);
-    mTextBox->SetTextColor(glm::vec4(0.247, 0.314, 0.247, 1.0));
+    mTextBox->SetTextColor(glm::vec4(0.251, 0.314, 0.063, 1.0));
 
     mTextBox->SetHorizontalPadding(mTextBoxHorizontalPadding);
     mTextBox->SetVerticalPadding(mTextBoxVerticalPadding);
@@ -96,6 +106,97 @@ void InfoPanelBehaviorComponent::HandlePlayerTurnBegan(PlayerBehaviorComponent& 
 /******************************************************************************/
 void InfoPanelBehaviorComponent::HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& aPlayer)
 {
+  mFocusedLocation = aPlayer.GetLocation();
+  UpdateText();
+}
+
+/******************************************************************************/
+void InfoPanelBehaviorComponent::HandleCharacterTurnBegan(CharacterBehaviorComponent& aCharacter)
+{
+  if(mBoard != nullptr)
+  {
+    auto boardLayoutComponent = mBoard->GetFirstComponentOfType<BoardLayoutComponent>();
+    if(boardLayoutComponent != nullptr)
+    {
+      auto characterObject = aCharacter.GetParent();
+      if(characterObject != nullptr)
+      {
+        mFocusedLocation = boardLayoutComponent->GetLocationOfCharacter(characterObject->GetName());
+        UpdateText();
+      }
+    }
+  }
+}
+
+/******************************************************************************/
+void InfoPanelBehaviorComponent::HandleCharacterFinishedMoving(CharacterBehaviorComponent& aCharacter)
+{
+  if(mBoard != nullptr)
+  {
+    auto boardLayoutComponent = mBoard->GetFirstComponentOfType<BoardLayoutComponent>();
+    if(boardLayoutComponent != nullptr)
+    {
+      auto characterObject = aCharacter.GetParent();
+      if(characterObject != nullptr)
+      {
+        auto location = boardLayoutComponent->GetLocationOfCharacter(characterObject->GetName());
+        if(location == mFocusedLocation)
+        {
+          UpdateText();
+        }
+      }
+    }
+  }
+}
+
+/******************************************************************************/
+void InfoPanelBehaviorComponent::HandleCharacterHealthChanged(CharacterBehaviorComponent& aCharacter)
+{
+  if(mBoard != nullptr)
+  {
+    auto boardLayoutComponent = mBoard->GetFirstComponentOfType<BoardLayoutComponent>();
+    if(boardLayoutComponent != nullptr)
+    {
+      auto characterObject = aCharacter.GetParent();
+      if(characterObject != nullptr)
+      {
+        auto location = boardLayoutComponent->GetLocationOfCharacter(characterObject->GetName());
+        if(location == mFocusedLocation)
+        {
+          UpdateText();
+        }
+      }
+    }
+  }
+}
+
+/******************************************************************************/
+void InfoPanelBehaviorComponent::HandleCharacterDied(CharacterBehaviorComponent& aCharacter)
+{
+  if(mBoard != nullptr)
+  {
+    auto boardLayoutComponent = mBoard->GetFirstComponentOfType<BoardLayoutComponent>();
+    if(boardLayoutComponent != nullptr)
+    {
+      auto characterObject = aCharacter.GetParent();
+      if(characterObject != nullptr)
+      {
+        auto location = boardLayoutComponent->GetLocationOfCharacter(characterObject->GetName());
+        if(location == mFocusedLocation)
+        {
+          if(mTextBox != nullptr)
+          {
+            mTextBox->SetText("Empty Space");
+          }
+        }
+      }
+    }
+  }
+}
+
+/******************************************************************************/
+void InfoPanelBehaviorComponent::UpdateText()
+{
   if(mBoard != nullptr)
   {
     auto boardLayoutComponent = mBoard->GetFirstComponentOfType<BoardLayoutComponent>();
@@ -103,7 +204,7 @@ void InfoPanelBehaviorComponent::HandleHumanPlayerMoved(HumanPlayerBehaviorCompo
     {
       // If there is a character at the player's location, update the info text.
       // Otherwise, clear the info text.
-      auto character = boardLayoutComponent->GetCharacterAtLocation(aPlayer.GetLocation());
+      auto character = boardLayoutComponent->GetCharacterAtLocation(mFocusedLocation);
       if(character != nullptr)
       {
         auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
@@ -121,57 +222,6 @@ void InfoPanelBehaviorComponent::HandleHumanPlayerMoved(HumanPlayerBehaviorCompo
       else if(mTextBox != nullptr)
       {
         mTextBox->SetText("Empty Space");
-      }
-    }
-  }
-
-  mFocusedLocation = aPlayer.GetLocation();
-}
-
-/******************************************************************************/
-void InfoPanelBehaviorComponent::HandleCharacterTurnBegan(CharacterBehaviorComponent& aCharacter)
-{
-  auto characterObject = aCharacter.GetParent();
-  if(characterObject != nullptr)
-  {
-    if(mTextBox != nullptr)
-    {
-      std::stringstream ss;
-      ss << aCharacter.GetName() << "   HP: "
-         << aCharacter.GetCurrentHealth() << "/"
-         << aCharacter.GetMaximumHealth();
-
-      mTextBox->SetText(ss.str());
-    }
-  }
-}
-
-/******************************************************************************/
-void InfoPanelBehaviorComponent::HandleCharacterFinishedMoving(CharacterBehaviorComponent& aCharacter)
-{
-  if(mBoard != nullptr)
-  {
-    auto boardLayoutComponent = mBoard->GetFirstComponentOfType<BoardLayoutComponent>();
-    if(boardLayoutComponent != nullptr)
-    {
-      auto characterObject = aCharacter.GetParent();
-      if(characterObject != nullptr)
-      {
-        auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(characterObject->GetName());
-
-        // Only update the info text if the character moved into the focused tile.
-        if(mFocusedLocation == characterLocation)
-        {
-          if(mTextBox != nullptr)
-          {
-            std::stringstream ss;
-            ss << aCharacter.GetName() << "   HP: "
-               << aCharacter.GetCurrentHealth() << "/"
-               << aCharacter.GetMaximumHealth();
-
-            mTextBox->SetText(ss.str());
-          }
-        }
       }
     }
   }

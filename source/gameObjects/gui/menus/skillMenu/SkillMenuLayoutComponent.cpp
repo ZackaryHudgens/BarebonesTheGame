@@ -13,6 +13,10 @@ SkillMenuLayoutComponent::SkillMenuLayoutComponent()
   : MenuLayoutComponent()
   , mSkillNameTextBox(nullptr)
   , mSkillDescriptionTextBox(nullptr)
+  , mSkillNameHeight(100)
+  , mSkillNameVerticalPadding(25)
+  , mSkillDescriptionHeight(65)
+  , mSkillDescriptionVerticalPadding(15)
 {
 }
 
@@ -42,24 +46,39 @@ void SkillMenuLayoutComponent::Initialize()
     // Set the font parameters for both text boxes.
     mSkillNameTextBox->SetFont("Alagard", "Medium");
     mSkillNameTextBox->SetTextSize(72);
-    mSkillNameTextBox->SetTextAlignment(TextAlignment::eLEFT);
-    mSkillNameTextBox->SetTextColor(glm::vec4(0.247, 0.314, 0.247, 1.0));
+    mSkillNameTextBox->SetTextAlignment(TextAlignment::eCENTER);
+    mSkillNameTextBox->SetTextColor(glm::vec4(0.251, 0.314, 0.063, 1.0));
+    mSkillNameTextBox->SetVerticalPadding(mSkillNameVerticalPadding);
 
     mSkillDescriptionTextBox->SetFont("Alagard", "Medium");
     mSkillDescriptionTextBox->SetTextSize(48);
-    mSkillDescriptionTextBox->SetTextAlignment(TextAlignment::eLEFT);
-    mSkillDescriptionTextBox->SetTextColor(glm::vec4(0.247, 0.314, 0.247, 1.0));
+    mSkillDescriptionTextBox->SetTextAlignment(TextAlignment::eCENTER);
+    mSkillDescriptionTextBox->SetTextColor(glm::vec4(0.251, 0.314, 0.063, 1.0));
+    mSkillDescriptionTextBox->SetVerticalPadding(mSkillDescriptionVerticalPadding);
 
-    // Center both of the text boxes.
+    // Make both text boxes stretch across the screen.
     double overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
     double overlayHeight = env.GetGraphicsOptions().mOverlayHeight;
-    double horizontalCenter = overlayWidth / 2.0;
 
+    mSkillNameTextBox->SetWidth(overlayWidth);
+    mSkillNameTextBox->SetHeight(mSkillNameHeight);
+    mSkillNameTextBox->SetFixedWidth(true);
+    mSkillNameTextBox->SetFixedHeight(true);
+
+    mSkillDescriptionTextBox->SetWidth(overlayWidth);
+    mSkillDescriptionTextBox->SetHeight(mSkillDescriptionHeight);
+    mSkillDescriptionTextBox->SetFixedWidth(true);
+    mSkillDescriptionTextBox->SetFixedHeight(true);
+
+    // Center each text box object.
+    double horizontalCenter = overlayWidth / 2.0;
+    double skillNameYPos = ((double)mSkillNameHeight / 2.0) + mSkillDescriptionHeight;
+    double skillDescriptionYPos = (double)mSkillDescriptionHeight / 2.0;
     mSkillNameTextBox->GetParent()->SetPosition(glm::vec3(horizontalCenter,
-                                                          100.0 / 2.0,
+                                                          skillNameYPos,
                                                           0.0));
     mSkillDescriptionTextBox->GetParent()->SetPosition(glm::vec3(horizontalCenter,
-                                                                 (50.0 / 2.0) + 100.0 + 15.0,
+                                                                 skillDescriptionYPos,
                                                                  0.0));
   }
 }

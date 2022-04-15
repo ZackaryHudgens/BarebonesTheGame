@@ -100,6 +100,13 @@ namespace Barebones
        */
       int GetCurrentHealth() const { return mCurrentHealth; }
 
+      /**
+       * Takes a damage value and applies it to this character's health.
+       *
+       * @param aValue The amount of damage to deal.
+       */
+      void DealDamage(int aValue);
+
     protected:
 
       /**
