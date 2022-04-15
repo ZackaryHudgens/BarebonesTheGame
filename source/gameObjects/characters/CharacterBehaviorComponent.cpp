@@ -3,7 +3,6 @@
 #include "Signals.hpp"
 
 #include "MoveSkill.hpp"
-#include "SlashSkill.hpp"
 
 using Barebones::CharacterBehaviorComponent;
 
@@ -11,11 +10,13 @@ using Barebones::CharacterBehaviorComponent;
 CharacterBehaviorComponent::CharacterBehaviorComponent()
   : Component()
   , mTargetPosition(0.0, 0.0, 0.0)
+  , mOriginalPosition(0.0, 0.0, 0.0)
   , mSide(Side::eNONE)
   , mSpeed(0.0)
   , mMaximumHealth(1)
   , mCurrentHealth(1)
   , mMoving(false)
+  , mRebound(false)
 {
 }
 
@@ -47,9 +48,19 @@ void CharacterBehaviorComponent::Update()
          std::abs(mTargetPosition.z - position.z) <= 0.005)
       {
         parent->SetPosition(mTargetPosition);
-        mMoving = false;
 
-        CharacterFinishedMoving.Notify(*this);
+        // If the rebound flag is set, change the target position to
+        // the original position and clear the flag.
+        if(mRebound)
+        {
+          mTargetPosition = mOriginalPosition;
+          mRebound = false;
+        }
+        else
+        {
+          mMoving = false;
+          CharacterFinishedMoving.Notify(*this);
+        }
       }
       else
       {
@@ -61,11 +72,23 @@ void CharacterBehaviorComponent::Update()
 
 /******************************************************************************/
 void CharacterBehaviorComponent::MoveToPosition(const glm::vec3& aPosition,
-                                                double aSpeed)
+                                                double aSpeed,
+                                                bool aRebound)
 {
   mTargetPosition = aPosition;
   mSpeed = aSpeed;
+  mRebound = aRebound;
+
   mMoving = true;
+
+  if(mRebound)
+  {
+    auto parent = GetParent();
+    if(parent != nullptr)
+    {
+      mOriginalPosition = parent->GetPosition();
+    }
+  }
 }
 
 /******************************************************************************/

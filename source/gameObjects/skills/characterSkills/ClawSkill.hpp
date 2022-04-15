@@ -1,11 +1,11 @@
-#ifndef SLASHSKILL_HPP
-#define SLASHSKILL_HPP
+#ifndef CLAWSKILL_HPP
+#define CLAWSKILL_HPP
 
 #include "Skill.hpp"
 
 namespace Barebones
 {
-  class SlashSkill : public Skill
+  class ClawSkill : public Skill
   {
     public:
 
@@ -14,7 +14,7 @@ namespace Barebones
        *
        * @param aCharacter The character that owns this skill.
        */
-      SlashSkill(UrsineEngine::GameObject& aCharacter);
+      ClawSkill(UrsineEngine::GameObject& aCharacter);
 
       /**
        * Returns a vector of valid tile locations for executing this skill.
@@ -45,6 +45,8 @@ namespace Barebones
        */
       bool IsEnemyAtLocation(UrsineEngine::GameObject& aBoard,
                              const TileLocation& aLocation);
+
+      int mDamage;
   };
 }
 

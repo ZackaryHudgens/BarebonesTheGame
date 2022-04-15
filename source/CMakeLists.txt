@@ -2,6 +2,7 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/skills/*.?pp
                        gameObjects/skills/characterSkills/*.?pp
                        gameObjects/skills/spellSkills/*.?pp
+                       gameObjects/skills/skillEffects/*.?pp
                        gameObjects/world/*.?pp
                        gameObjects/world/background/*.?pp
                        gameObjects/world/board/*.?pp
@@ -34,6 +35,7 @@ target_include_directories(barebones PUBLIC
                            gameObjects/skills
                            gameObjects/skills/characterSkills
                            gameObjects/skills/spellSkills
+                           gameObjects/skills/skillEffects
                            gameObjects/world
                            gameObjects/world/background
                            gameObjects/world/board

@@ -45,12 +45,17 @@ namespace Barebones
 
       /**
        * Moves the character to a position in world space at the given speed.
+       * Optionally, the rebound flag can be set to move back to the original
+       * position afterwards at the same speed.
        *
        * @param aPosition The position to move to.
        * @param aSpeed The speed to move at.
+       * @param aRebound Whether to move back to the original position after
+       *                 reaching the target position.
        */
       void MoveToPosition(const glm::vec3& aPosition,
-                          double aSpeed);
+                          double aSpeed,
+                          bool aRebound = false);
 
       /**
        * Returns a vector of this character's skills.
@@ -147,6 +152,7 @@ namespace Barebones
 
     private:
       glm::vec3 mTargetPosition;
+      glm::vec3 mOriginalPosition;
 
       std::vector<std::unique_ptr<Skill>> mSkills;
 
@@ -160,6 +166,7 @@ namespace Barebones
       int mCurrentHealth;
 
       bool mMoving;
+      bool mRebound;
   };
 }
 

@@ -47,13 +47,13 @@ void SkillMenuLayoutComponent::Initialize()
     mSkillNameTextBox->SetFont("Alagard", "Medium");
     mSkillNameTextBox->SetTextSize(72);
     mSkillNameTextBox->SetTextAlignment(TextAlignment::eCENTER);
-    mSkillNameTextBox->SetTextColor(glm::vec4(0.251, 0.314, 0.063, 1.0));
+    mSkillNameTextBox->SetTextColor(glm::vec4(0.125, 0.125, 0.125, 1.0));
     mSkillNameTextBox->SetVerticalPadding(mSkillNameVerticalPadding);
 
     mSkillDescriptionTextBox->SetFont("Alagard", "Medium");
     mSkillDescriptionTextBox->SetTextSize(48);
     mSkillDescriptionTextBox->SetTextAlignment(TextAlignment::eCENTER);
-    mSkillDescriptionTextBox->SetTextColor(glm::vec4(0.251, 0.314, 0.063, 1.0));
+    mSkillDescriptionTextBox->SetTextColor(glm::vec4(0.125, 0.125, 0.125, 1.0));
     mSkillDescriptionTextBox->SetVerticalPadding(mSkillDescriptionVerticalPadding);
 
     // Make both text boxes stretch across the screen.
