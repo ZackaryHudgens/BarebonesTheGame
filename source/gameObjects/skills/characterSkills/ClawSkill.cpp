@@ -52,8 +52,37 @@ void ClawSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
           auto characterBehaviorComponent = characterObject->GetFirstComponentOfType<CharacterBehaviorComponent>();
           if(characterBehaviorComponent != nullptr)
           {
+            auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(characterObject->GetName());
+            auto targetCharacterLocation = boardLayoutComponent->GetLocationOfCharacter(targetCharacterObject->GetName());
+
+            // Move the character in different directions based on the target location.
             auto characterPos = characterObject->GetPosition();
-            characterPos.x += 0.2;
+            auto xDifference = characterLocation.first - targetCharacterLocation.first;
+            auto yDifference = characterLocation.second - targetCharacterLocation.second;
+            if(xDifference > 0)
+            {
+              // This character is to the right of the target.
+              characterPos.x -= 0.2;
+            }
+            else if(xDifference < 0)
+            {
+              // This character is to the left of the target.
+              characterPos.x += 0.2;
+            }
+            else if(xDifference == 0)
+            {
+              if(yDifference > 0)
+              {
+                // This character is above the target.
+                characterPos.z += 0.2;
+              }
+              else if(yDifference < 0)
+              {
+                // This character is below the target.
+                characterPos.z -= 0.2;
+              }
+            }
+
             characterBehaviorComponent->MoveToPosition(characterPos,
                                                        0.3,
                                                        true);

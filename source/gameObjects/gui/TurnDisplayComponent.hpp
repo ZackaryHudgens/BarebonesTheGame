@@ -2,7 +2,8 @@
 #define TURNDISPLAYCOMPONENT_HPP
 
 #include <Component.hpp>
-#include <TextComponent.hpp>
+
+#include "TextBoxComponent.hpp"
 
 namespace Barebones
 {
@@ -33,12 +34,17 @@ namespace Barebones
       void DisplayMessageForPlayer(UrsineEngine::GameObject& aPlayer);
 
     private:
-      UrsineEngine::TextComponent* mNameText;
+      TextBoxComponent* mTextBox;
 
-      double mDisplayTime;
-      double mInitialDisplayTime;
+      double mTextBoxVerticalPadding;
 
-      bool mDisplaying;
+      double mSpeed;
+      bool mMoving;
+
+      double mTimeBecamePaused;
+      double mTimeToSpendPaused;
+      bool mHasPaused;
+      bool mCurrentlyPaused;
   };
 }
 

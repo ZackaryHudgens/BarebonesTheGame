@@ -3,12 +3,8 @@
 #include <sstream>
 
 #include <Environment.hpp>
-#include <MeshComponent.hpp>
-#include <TextComponent.hpp>
 
 #include "Signals.hpp"
-
-#include "BoardTurnManagerComponent.hpp"
 
 #include "PlayerBehaviorComponent.hpp"
 
@@ -17,10 +13,14 @@ using Barebones::TurnDisplayComponent;
 /******************************************************************************/
 TurnDisplayComponent::TurnDisplayComponent()
   : Component()
-  , mNameText(nullptr)
-  , mDisplayTime(1.0)
-  , mInitialDisplayTime(0.0)
-  , mDisplaying(false)
+  , mTextBox(nullptr)
+  , mTextBoxVerticalPadding(25.0)
+  , mSpeed(125.0)
+  , mMoving(false)
+  , mTimeBecamePaused(0.0)
+  , mTimeToSpendPaused(0.5)
+  , mCurrentlyPaused(false)
+  , mHasPaused(false)
 {
 }
 
@@ -30,44 +30,82 @@ void TurnDisplayComponent::Initialize()
   auto parent = GetParent();
   if(parent != nullptr)
   {
+    // Create a text box and add it to the parent.
+    parent->AddComponent(std::make_unique<TextBoxComponent>());
+    mTextBox = parent->GetComponentsOfType<TextBoxComponent>().back();
+
+    UrsineEngine::Texture backgroundTexture;
+    backgroundTexture.CreateTextureFromFile("resources/sprites/menuBox.png");
+    mTextBox->SetTexture(backgroundTexture);
+
+    mTextBox->SetFont("Alagard", "Medium");
+    mTextBox->SetTextSize(72);
+    mTextBox->SetTextAlignment(TextAlignment::eCENTER);
+    mTextBox->SetTextColor(glm::vec4(0.125, 0.125, 0.125, 1.0));
+    mTextBox->SetVerticalPadding(mTextBoxVerticalPadding);
+
+    // Set the dimensions of the text box to stretch across the screen.
     double overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
     double overlayHeight = env.GetGraphicsOptions().mOverlayHeight;
 
-    // Add the player name text.
-    auto playerName = std::make_unique<UrsineEngine::TextComponent>();
-    playerName->SetFont("Alagard", "Medium");
-    playerName->SetSize(48);
-    playerName->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
+    mTextBox->SetWidth(overlayWidth);
+    mTextBox->SetFixedWidth(true);
 
-    auto nameObject = std::make_unique<UrsineEngine::GameObject>("playerName");
-    nameObject->AddComponent(std::move(playerName));
-    parent->AddChild(std::move(nameObject));
-
-    mNameText = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::TextComponent>();
+    // Move the parent object to be just to the right of the overlay,
+    // centered vertically.
+    auto xPos = overlayWidth * 1.5;
+    auto yPos = overlayHeight / 2.0;
+    parent->SetPosition(glm::vec3(xPos,
+                                  yPos,
+                                  0.1));
   }
 }
 
 /******************************************************************************/
 void TurnDisplayComponent::Update()
 {
-  if(mDisplaying)
+  if(mMoving)
   {
-    double totalTime = env.GetTime() - mInitialDisplayTime;
-    if(totalTime >= mDisplayTime)
+    auto parent = GetParent();
+    if(parent != nullptr)
     {
-      mDisplaying = false;
+      auto pos = parent->GetPosition();
+      pos.x -= mSpeed;
+      parent->SetPosition(pos);
 
-      if(mNameText != nullptr)
+      // If the text box is now in the center of the overlay,
+      // pause for a moment so the player can read the text.
+      double overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
+      if(!mHasPaused &&
+         pos.x <= (overlayWidth / 2.0))
       {
-        mNameText->SetText("");
-      }
+        pos.x = (overlayWidth / 2.0);
+        parent->SetPosition(pos);
 
-      auto parent = GetParent();
-      if(parent != nullptr)
-      {
-        parent->ScheduleForDeletion();
-        TurnDisplayFinished.Notify(*this);
+        mHasPaused = true;
+        mCurrentlyPaused = true;
+        mMoving = false;
+
+        mTimeBecamePaused = env.GetTime();
       }
+      else
+      {
+        auto overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
+        if(pos.x <= -(overlayWidth / 2.0))
+        {
+          TurnDisplayFinished.Notify(*this);
+          parent->ScheduleForDeletion();
+        }
+      }
+    }
+  }
+  else if(mCurrentlyPaused)
+  {
+    auto timeSpentPaused = env.GetTime() - mTimeBecamePaused;
+    if(timeSpentPaused >= mTimeToSpendPaused)
+    {
+      mMoving = true;
+      mCurrentlyPaused = false;
     }
   }
 }
@@ -75,13 +113,12 @@ void TurnDisplayComponent::Update()
 /******************************************************************************/
 void TurnDisplayComponent::DisplayMessageForPlayer(UrsineEngine::GameObject& aPlayer)
 {
-  if(mNameText != nullptr)
+  if(mTextBox != nullptr)
   {
     std::stringstream ss;
     ss << aPlayer.GetName() << "'s Turn";
-    mNameText->SetText(ss.str());
+    mTextBox->SetText(ss.str());
 
-    mDisplaying = true;
-    mInitialDisplayTime = env.GetTime();
+    mMoving = true;
   }
 }

@@ -12,8 +12,8 @@ TextBoxComponent::TextBoxComponent()
   , mText(nullptr)
   , mBackground(nullptr)
   , mTextAlignment(TextAlignment::eLEFT)
-  , mHorizontalPadding(50)
-  , mVerticalPadding(5)
+  , mHorizontalPadding(0)
+  , mVerticalPadding(0)
   , mFixedWidth(false)
   , mFixedHeight(false)
 {
@@ -270,6 +270,7 @@ void TextBoxComponent::RepositionText()
           auto backgroundScaleTransform = backgroundObject->GetScalarTransform();
           double backgroundWidth = mBackground->GetWidth() * backgroundScaleTransform[0][0];
           double backgroundHeight = mBackground->GetHeight() * backgroundScaleTransform[1][1];
+          double backgroundLeftEdge = backgroundObject->GetPosition().x - (backgroundWidth / 2.0);
           double backgroundBottomEdge = backgroundObject->GetPosition().y - (backgroundHeight / 2.0);
 
           auto textWidth = mText->GetWidth();
@@ -277,7 +278,7 @@ void TextBoxComponent::RepositionText()
           auto distanceFromLeft = (backgroundWidth - textWidth) / 2.0;
 
           auto textPos = textObject->GetPosition();
-          textPos.x = distanceFromLeft;
+          textPos.x = backgroundLeftEdge + distanceFromLeft;
           textPos.y = backgroundBottomEdge + mVerticalPadding;
           textObject->SetPosition(textPos);
 
