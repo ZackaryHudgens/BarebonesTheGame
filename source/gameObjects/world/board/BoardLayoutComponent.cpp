@@ -387,7 +387,7 @@ void BoardLayoutComponent::HandleSkillSelectedFromMenu(Skill& aSkill)
         auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
         if(tileBehaviorComponent != nullptr)
         {
-          tileBehaviorComponent->SetHighlightColor(glm::vec3(0.5, 0.5, 0.0));
+          tileBehaviorComponent->SetHighlightColor(glm::vec3(0.682, 0.729, 0.537));
           tileBehaviorComponent->SetHighlighted(true);
 
           mHighlightedTiles.emplace_back(tile);
