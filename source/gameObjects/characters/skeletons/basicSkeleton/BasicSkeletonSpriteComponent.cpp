@@ -28,11 +28,25 @@ void BasicSkeletonSpriteComponent::SetupShaders()
 void BasicSkeletonSpriteComponent::SetupTextures()
 {
   UrsineEngine::Texture spritesheet;
-  spritesheet.CreateTextureFromFile("resources/sprites/skeletons/TempSprite.png");
+  spritesheet.CreateTextureFromFile("resources/sprites/skeletons/basicSkeletonSpritesheet.png");
   SetTexture(spritesheet);
 }
 
 /******************************************************************************/
 void BasicSkeletonSpriteComponent::SetupAnimations()
 {
+  CreateAnimation("walking");
+
+  UrsineEngine::TextureClip clip;
+  clip.mHeight = 16;
+  clip.mWidth = 16;
+  clip.mX = 0;
+  clip.mY = 0;
+  AddFrameToAnimation("walking", clip);
+
+  clip.mX = 16;
+  AddFrameToAnimation("walking", clip);
+
+  SetAnimation("walking");
+  SetSpeedOfAnimation(3.0);
 }

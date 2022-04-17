@@ -14,11 +14,11 @@ using Barebones::TurnDisplayComponent;
 TurnDisplayComponent::TurnDisplayComponent()
   : Component()
   , mTextBox(nullptr)
-  , mTextBoxVerticalPadding(25.0)
+  , mTextBoxVerticalPadding(50.0)
   , mSpeed(200.0)
   , mMoving(false)
   , mTimeBecamePaused(0.0)
-  , mTimeToSpendPaused(0.5)
+  , mTimeToSpendPaused(1.0)
   , mCurrentlyPaused(false)
   , mHasPaused(false)
 {
@@ -39,7 +39,7 @@ void TurnDisplayComponent::Initialize()
     mTextBox->SetTexture(backgroundTexture);
 
     mTextBox->SetFont("Alagard", "Medium");
-    mTextBox->SetTextSize(72);
+    mTextBox->SetTextSize(96);
     mTextBox->SetTextAlignment(TextAlignment::eCENTER);
     mTextBox->SetTextColor(glm::vec4(0.125, 0.125, 0.125, 1.0));
     mTextBox->SetVerticalPadding(mTextBoxVerticalPadding);
