@@ -66,6 +66,11 @@ void AIPlayerBehaviorComponent::ProtectedTakeTurn(UrsineEngine::GameObject& aBoa
         enemyBehaviorComponent->TakeTurn(aBoard);
       }
     }
+    else
+    {
+      // If there are no characters, end the turn.
+      EndTurn();
+    }
   }
 }
 

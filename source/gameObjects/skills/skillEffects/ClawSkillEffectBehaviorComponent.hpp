@@ -2,6 +2,7 @@
 #define CLAWSKILLEFFECTBEHAVIORCOMPONENT_HPP
 
 #include <Component.hpp>
+#include <SpriteComponent.hpp>
 
 namespace Barebones
 {
@@ -19,16 +20,19 @@ namespace Barebones
        */
       void Initialize() override;
 
-      /**
-       * Updates the component.
-       *
-       * @param aTime The start time of the current Scene's Update().
-       */
-      void Update(double aTime) override;
-
     private:
-      double mDisplayTime;
-      double mTimeInitialized;
+
+      /**
+       * A handler function that gets called whenever a sprite animation
+       * completes.
+       *
+       * @param aName The name of the animation that finished.
+       * @param aSprite The SpriteComponent that finished animating.
+       */
+      void HandleSpriteAnimationComplete(const std::string& aName,
+                                         UrsineEngine::SpriteComponent& aSprite);
+
+      UrsineEngine::SpriteComponent* mSprite;
   };
 }
 

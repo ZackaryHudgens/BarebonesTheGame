@@ -3,16 +3,22 @@
 #include <Environment.hpp>
 #include <GameObject.hpp>
 #include <Shader.hpp>
-#include <SpriteComponent.hpp>
+
+#include <iostream>
 
 using Barebones::ClawSkillEffectBehaviorComponent;
 
 /******************************************************************************/
 ClawSkillEffectBehaviorComponent::ClawSkillEffectBehaviorComponent()
   : Component()
-  , mDisplayTime(0.3)
-  , mTimeInitialized(0.0)
+  , mSprite(nullptr)
 {
+  UrsineEngine::SpriteAnimationComplete.Connect(*this, [this](const std::string& aName,
+                                                              UrsineEngine::SpriteComponent& aSprite)
+  {
+    this->HandleSpriteAnimationComplete(aName,
+                                        aSprite);
+  });
 }
 
 /******************************************************************************/
@@ -25,7 +31,7 @@ void ClawSkillEffectBehaviorComponent::Initialize()
     auto sprite = std::make_unique<UrsineEngine::SpriteComponent>();
 
     UrsineEngine::Texture texture;
-    texture.CreateTextureFromFile("resources/sprites/claw.png");
+    texture.CreateTextureFromFile("resources/sprites/clawEffectSpritesheet.png");
     sprite->SetTexture(texture);
 
     std::string vertexFile = "resources/shaders/CharacterShader.vert";
@@ -41,20 +47,38 @@ void ClawSkillEffectBehaviorComponent::Initialize()
     sprite->AddShader("defaultShader", defaultShader);
     sprite->SetCurrentShader("defaultShader");
 
-    parent->AddComponent(std::move(sprite));
-  }
+    // Create the animations for the sprite.
+    sprite->CreateAnimation("default");
 
-  mTimeInitialized = env.GetTime();
+    UrsineEngine::TextureClip clip;
+    clip.mHeight = 16;
+    clip.mWidth = 16;
+    clip.mX = 0;
+    clip.mY = 0;
+    sprite->AddFrameToAnimation("default", clip);
+
+    clip.mX = 16;
+    sprite->AddFrameToAnimation("default", clip);
+
+    clip.mX = 32;
+    sprite->AddFrameToAnimation("default", clip);
+
+    sprite->SetAnimation("default");
+    sprite->SetSpeedOfAnimation(15.0);
+
+    parent->AddComponent(std::move(sprite));
+    mSprite = parent->GetComponentsOfType<UrsineEngine::SpriteComponent>().back();
+  }
 }
 
 /******************************************************************************/
-void ClawSkillEffectBehaviorComponent::Update(double aTime)
+void ClawSkillEffectBehaviorComponent::HandleSpriteAnimationComplete(const std::string& aName,
+                                                                     UrsineEngine::SpriteComponent& aSprite)
 {
-  auto parent = GetParent();
-  if(parent != nullptr)
+  if(mSprite == &aSprite)
   {
-    auto timeDisplayed = aTime - mTimeInitialized;
-    if(timeDisplayed >= mDisplayTime)
+    auto parent = GetParent();
+    if(parent != nullptr)
     {
       parent->ScheduleForDeletion();
     }
