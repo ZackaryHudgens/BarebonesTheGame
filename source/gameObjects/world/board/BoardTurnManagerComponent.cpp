@@ -28,7 +28,7 @@ BoardTurnManagerComponent::BoardTurnManagerComponent()
 }
 
 /******************************************************************************/
-void BoardTurnManagerComponent::Update()
+void BoardTurnManagerComponent::Update(double aTime)
 {
   // "mWaitingToTakeTurn" is used as a one-frame buffer between the turn display
   // finishing its animation and the front player taking a turn. This way,

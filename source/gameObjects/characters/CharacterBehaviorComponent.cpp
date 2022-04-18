@@ -30,7 +30,7 @@ void CharacterBehaviorComponent::Initialize()
 }
 
 /******************************************************************************/
-void CharacterBehaviorComponent::Update()
+void CharacterBehaviorComponent::Update(double aTime)
 {
   if(mMoving)
   {

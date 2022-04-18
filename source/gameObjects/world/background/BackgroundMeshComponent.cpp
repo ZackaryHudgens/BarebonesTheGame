@@ -15,7 +15,7 @@ BackgroundMeshComponent::BackgroundMeshComponent()
 }
 
 /******************************************************************************/
-void BackgroundMeshComponent::Update()
+void BackgroundMeshComponent::Update(double aTime)
 {
   auto vertices = GetVertices();
 

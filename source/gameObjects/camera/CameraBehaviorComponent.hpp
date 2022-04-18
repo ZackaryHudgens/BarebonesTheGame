@@ -28,8 +28,10 @@ namespace Barebones
 
       /**
        * Updates the component.
+       *
+       * @param aTime The start time of the current Scene's Update().
        */
-      void Update() override;
+      void Update(double aTime) override;
 
       /**
        * Makes this component follow the given board.

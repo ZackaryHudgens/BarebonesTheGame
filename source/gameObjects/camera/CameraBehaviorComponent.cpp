@@ -59,11 +59,11 @@ void CameraBehaviorComponent::Initialize()
 }
 
 /******************************************************************************/
-void CameraBehaviorComponent::Update()
+void CameraBehaviorComponent::Update(double aTime)
 {
   if(mState != nullptr)
   {
-    auto newState = mState->Update();
+    auto newState = mState->Update(aTime);
     if(newState != nullptr)
     {
       mState.swap(newState);

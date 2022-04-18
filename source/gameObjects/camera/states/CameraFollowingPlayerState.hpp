@@ -21,9 +21,10 @@ namespace Barebones
       /**
        * Updates the state.
        *
+       * @param aTime The start time of the current Scene's Update().
        * @return A unique_ptr to a new state, if necessary.
        */
-      std::unique_ptr<CameraState> Update() override;
+      std::unique_ptr<CameraState> Update(double aTime) override;
 
       /**
        * A handler function that gets called whenever a human player

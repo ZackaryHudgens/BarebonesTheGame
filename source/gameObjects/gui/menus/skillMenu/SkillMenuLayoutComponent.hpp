@@ -22,11 +22,6 @@ namespace Barebones
        */
       void Initialize() override;
 
-      /**
-       * Updates the component.
-       */
-      void Update() override;
-
     protected:
 
       /**

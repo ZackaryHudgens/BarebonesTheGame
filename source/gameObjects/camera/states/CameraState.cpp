@@ -9,7 +9,7 @@ CameraState::CameraState(UrsineEngine::GameObject& aCamera)
 }
 
 /******************************************************************************/
-std::unique_ptr<CameraState> CameraState::Update()
+std::unique_ptr<CameraState> CameraState::Update(double aTime)
 {
   return nullptr;
 }

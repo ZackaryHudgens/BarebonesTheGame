@@ -31,7 +31,7 @@ void DefaultTileBehaviorComponent::Initialize()
 }
 
 /******************************************************************************/
-void DefaultTileBehaviorComponent::Update()
+void DefaultTileBehaviorComponent::Update(double aTime)
 {
   // Scale the tile up to normal size.
   if(mScaling)

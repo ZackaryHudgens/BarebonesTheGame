@@ -48,12 +48,12 @@ void ClawSkillEffectBehaviorComponent::Initialize()
 }
 
 /******************************************************************************/
-void ClawSkillEffectBehaviorComponent::Update()
+void ClawSkillEffectBehaviorComponent::Update(double aTime)
 {
   auto parent = GetParent();
   if(parent != nullptr)
   {
-    auto timeDisplayed = env.GetTime() - mTimeInitialized;
+    auto timeDisplayed = aTime - mTimeInitialized;
     if(timeDisplayed >= mDisplayTime)
     {
       parent->ScheduleForDeletion();

@@ -22,9 +22,10 @@ namespace Barebones
       /**
        * A virtual function that updates the state.
        *
+       * @param aTime The start time of the current Scene's Update().
        * @return A unique_ptr to a new state, if necessary.
        */
-      virtual std::unique_ptr<CameraState> Update();
+      virtual std::unique_ptr<CameraState> Update(double aTime);
 
       /**
        * A virtual function that gets called whenever a GameObject moves in the

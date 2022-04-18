@@ -62,7 +62,7 @@ void TurnDisplayComponent::Initialize()
 }
 
 /******************************************************************************/
-void TurnDisplayComponent::Update()
+void TurnDisplayComponent::Update(double aTime)
 {
   if(mMoving)
   {
@@ -86,7 +86,7 @@ void TurnDisplayComponent::Update()
         mCurrentlyPaused = true;
         mMoving = false;
 
-        mTimeBecamePaused = env.GetTime();
+        mTimeBecamePaused = aTime;
       }
       else
       {
@@ -101,7 +101,7 @@ void TurnDisplayComponent::Update()
   }
   else if(mCurrentlyPaused)
   {
-    auto timeSpentPaused = env.GetTime() - mTimeBecamePaused;
+    auto timeSpentPaused = aTime - mTimeBecamePaused;
     if(timeSpentPaused >= mTimeToSpendPaused)
     {
       mMoving = true;

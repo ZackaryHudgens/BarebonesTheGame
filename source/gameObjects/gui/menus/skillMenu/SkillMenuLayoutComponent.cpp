@@ -84,11 +84,6 @@ void SkillMenuLayoutComponent::Initialize()
 }
 
 /******************************************************************************/
-void SkillMenuLayoutComponent::Update()
-{
-}
-
-/******************************************************************************/
 void SkillMenuLayoutComponent::HandleActionAdded()
 {
 }

@@ -26,7 +26,7 @@ AIPlayerBehaviorComponent::AIPlayerBehaviorComponent()
 }
 
 /******************************************************************************/
-void AIPlayerBehaviorComponent::Update()
+void AIPlayerBehaviorComponent::Update(double aTime)
 {
   // "mWaitingToTakeTurn" is used as a one-frame buffer between a character
   // ending its turn and the next character taking a turn.

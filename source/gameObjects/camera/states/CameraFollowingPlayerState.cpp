@@ -51,7 +51,7 @@ CameraFollowingPlayerState::CameraFollowingPlayerState(UrsineEngine::GameObject&
 }
 
 /******************************************************************************/
-std::unique_ptr<Barebones::CameraState> CameraFollowingPlayerState::Update()
+std::unique_ptr<Barebones::CameraState> CameraFollowingPlayerState::Update(double aTime)
 {
   if(mMoving)
   {

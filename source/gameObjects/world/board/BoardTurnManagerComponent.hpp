@@ -23,8 +23,10 @@ namespace Barebones
 
       /**
        * Updates the turn manager.
+       *
+       * @param aTime The start time of the current Scene's Update().
        */
-      void Update() override;
+      void Update(double aTime) override;
 
       /**
        * "Starts" the turn manager by making the first player take

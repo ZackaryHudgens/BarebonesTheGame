@@ -44,7 +44,7 @@ CameraObservingBoardState::CameraObservingBoardState(UrsineEngine::GameObject& a
 }
 
 /******************************************************************************/
-std::unique_ptr<Barebones::CameraState> CameraObservingBoardState::Update()
+std::unique_ptr<Barebones::CameraState> CameraObservingBoardState::Update(double aTime)
 {
   if(mMoving)
   {
