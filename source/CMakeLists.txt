@@ -1,17 +1,4 @@
 file(GLOB GAME_SOURCES main.cpp
-                       gameObjects/skills/*.?pp
-                       gameObjects/skills/characterSkills/*.?pp
-                       gameObjects/skills/spellSkills/*.?pp
-                       gameObjects/skills/skillEffects/*.?pp
-                       gameObjects/world/*.?pp
-                       gameObjects/world/background/*.?pp
-                       gameObjects/world/board/*.?pp
-                       gameObjects/world/board/players/*.?pp
-                       gameObjects/world/board/players/aiPlayer/*.?pp
-                       gameObjects/world/board/players/humanPlayer/*.?pp
-                       gameObjects/world/board/players/humanPlayer/inputStates/*.?pp
-                       gameObjects/world/board/tiles/*.?pp
-                       gameObjects/world/board/tiles/defaultTile/*.?pp
                        gameObjects/camera/*.?pp
                        gameObjects/camera/states/*.?pp
                        gameObjects/characters/*.?pp
@@ -19,32 +6,29 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/characters/enemies/basicHuman/*.?pp
                        gameObjects/characters/skeletons/*.?pp
                        gameObjects/characters/skeletons/basicSkeleton/*.?pp
+                       gameObjects/characters/skills/*.?pp
+                       gameObjects/characters/skills/clawSkill/*.?pp
                        gameObjects/gui/*.?pp
+                       gameObjects/gui/infoPanel/*.?pp
                        gameObjects/gui/menus/*.?pp
-                       gameObjects/gui/menus/skillMenu/*.?pp
                        gameObjects/gui/menus/actions/*.?pp
                        gameObjects/gui/menus/actions/skillAction/*.?pp
-                       gameObjects/gui/infoPanel/*.?pp
-                       gameObjects/util/*.?pp)
+                       gameObjects/gui/menus/skillMenu/*.?pp
+                       gameObjects/util/*.?pp
+                       gameObjects/world/background/*.?pp
+                       gameObjects/world/board/*.?pp
+                       gameObjects/world/board/players/*.?pp
+                       gameObjects/world/board/players/aiPlayer/*.?pp
+                       gameObjects/world/board/players/humanPlayer/*.?pp
+                       gameObjects/world/board/players/humanPlayer/inputStates/*.?pp
+                       gameObjects/world/board/tiles/*.?pp
+                       gameObjects/world/board/tiles/defaultTile/*.?pp)
 
 add_executable(barebones ${GAME_SOURCES})
 target_link_libraries(barebones PUBLIC
                       ${URSINE_LIBRARIES})
 target_include_directories(barebones PUBLIC
                            ${URSINE_INCLUDE_DIRS}
-                           gameObjects/skills
-                           gameObjects/skills/characterSkills
-                           gameObjects/skills/spellSkills
-                           gameObjects/skills/skillEffects
-                           gameObjects/world
-                           gameObjects/world/background
-                           gameObjects/world/board
-                           gameObjects/world/board/players
-                           gameObjects/world/board/players/aiPlayer
-                           gameObjects/world/board/players/humanPlayer
-                           gameObjects/world/board/players/humanPlayer/inputStates
-                           gameObjects/world/board/tiles
-                           gameObjects/world/board/tiles/defaultTile
                            gameObjects/camera
                            gameObjects/camera/states
                            gameObjects/characters
@@ -52,13 +36,23 @@ target_include_directories(barebones PUBLIC
                            gameObjects/characters/enemies/basicHuman
                            gameObjects/characters/skeletons
                            gameObjects/characters/skeletons/basicSkeleton
+                           gameObjects/characters/skills
+                           gameObjects/characters/skills/clawSkill
                            gameObjects/gui
+                           gameObjects/gui/infoPanel
                            gameObjects/gui/menus
-                           gameObjects/gui/menus/skillMenu
                            gameObjects/gui/menus/actions
                            gameObjects/gui/menus/actions/skillAction
-                           gameObjects/gui/infoPanel
-                           gameObjects/util)
+                           gameObjects/gui/menus/skillMenu
+                           gameObjects/util
+                           gameObjects/world/background
+                           gameObjects/world/board
+                           gameObjects/world/board/players
+                           gameObjects/world/board/players/aiPlayer
+                           gameObjects/world/board/players/humanPlayer
+                           gameObjects/world/board/players/humanPlayer/inputStates
+                           gameObjects/world/board/tiles
+                           gameObjects/world/board/tiles/defaultTile)
 
 install(TARGETS barebones DESTINATION ${INSTALL_DIR})
 install(DIRECTORY resources DESTINATION ${INSTALL_DIR})
