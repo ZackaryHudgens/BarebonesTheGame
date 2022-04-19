@@ -6,14 +6,16 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/characters/enemies/basicHuman/*.?pp
                        gameObjects/characters/skeletons/*.?pp
                        gameObjects/characters/skeletons/basicSkeleton/*.?pp
-                       gameObjects/characters/skills/*.?pp
-                       gameObjects/characters/skills/clawSkill/*.?pp
                        gameObjects/gui/*.?pp
                        gameObjects/gui/infoPanel/*.?pp
                        gameObjects/gui/menus/*.?pp
                        gameObjects/gui/menus/actions/*.?pp
                        gameObjects/gui/menus/actions/skillAction/*.?pp
                        gameObjects/gui/menus/skillMenu/*.?pp
+                       gameObjects/skills/*.?pp
+                       gameObjects/skills/spells/*.?pp
+                       gameObjects/skills/clawSkill/*.?pp
+                       gameObjects/skills/moveSkill/*.?pp
                        gameObjects/util/*.?pp
                        gameObjects/world/background/*.?pp
                        gameObjects/world/board/*.?pp
@@ -36,14 +38,16 @@ target_include_directories(barebones PUBLIC
                            gameObjects/characters/enemies/basicHuman
                            gameObjects/characters/skeletons
                            gameObjects/characters/skeletons/basicSkeleton
-                           gameObjects/characters/skills
-                           gameObjects/characters/skills/clawSkill
                            gameObjects/gui
                            gameObjects/gui/infoPanel
                            gameObjects/gui/menus
                            gameObjects/gui/menus/actions
                            gameObjects/gui/menus/actions/skillAction
                            gameObjects/gui/menus/skillMenu
+                           gameObjects/skills
+                           gameObjects/skills/spells
+                           gameObjects/skills/clawSkill
+                           gameObjects/skills/moveSkill
                            gameObjects/util
                            gameObjects/world/background
                            gameObjects/world/board

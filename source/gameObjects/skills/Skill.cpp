@@ -5,8 +5,8 @@
 using Barebones::Skill;
 
 /******************************************************************************/
-Skill::Skill(UrsineEngine::GameObject& aCharacter)
-  : mCharacter(&aCharacter)
+Skill::Skill(UrsineEngine::GameObject& aParent)
+  : mParent(&aParent)
 {
 }
 

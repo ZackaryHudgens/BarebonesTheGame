@@ -12,9 +12,9 @@ namespace Barebones
       /**
        * Constructor.
        *
-       * @param aCharacter The character that owns this skill.
+       * @param aParent The GameObject that owns this skill.
        */
-      ClawSkill(UrsineEngine::GameObject& aCharacter);
+      ClawSkill(UrsineEngine::GameObject& aParent);
 
       /**
        * Returns a vector of valid tile locations for executing this skill.

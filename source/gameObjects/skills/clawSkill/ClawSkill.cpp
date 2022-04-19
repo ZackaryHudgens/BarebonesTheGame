@@ -12,8 +12,8 @@
 using Barebones::ClawSkill;
 
 /******************************************************************************/
-ClawSkill::ClawSkill(UrsineEngine::GameObject& aCharacter)
-  : Skill(aCharacter)
+ClawSkill::ClawSkill(UrsineEngine::GameObject& aParent)
+  : Skill(aParent)
   , mDamage(3)
 {
   SetName("Claw");
@@ -46,17 +46,17 @@ void ClawSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
         }
 
         // Move the character to indicate attacking.
-        auto characterObject = GetCharacter();
-        if(characterObject != nullptr)
+        auto parentObject = GetParent();
+        if(parentObject != nullptr)
         {
-          auto characterBehaviorComponent = characterObject->GetFirstComponentOfType<CharacterBehaviorComponent>();
+          auto characterBehaviorComponent = parentObject->GetFirstComponentOfType<CharacterBehaviorComponent>();
           if(characterBehaviorComponent != nullptr)
           {
-            auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(characterObject->GetName());
+            auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parentObject->GetName());
             auto targetCharacterLocation = boardLayoutComponent->GetLocationOfCharacter(targetCharacterObject->GetName());
 
             // Move the character in different directions based on the target location.
-            auto characterPos = characterObject->GetPosition();
+            auto characterPos = parentObject->GetPosition();
             auto xDifference = characterLocation.first - targetCharacterLocation.first;
             auto yDifference = characterLocation.second - targetCharacterLocation.second;
             if(xDifference > 0)
@@ -100,44 +100,52 @@ Barebones::TileList ClawSkill::GetValidTiles(UrsineEngine::GameObject& aBoard)
 {
   TileList tiles;
 
-  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
-  if(boardLayoutComponent != nullptr)
+  auto parent = GetParent();
+  if(parent != nullptr)
   {
-    auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(GetCharacter()->GetName());
-
-    // Check to the right.
-    auto targetLocation = characterLocation;
-    targetLocation.first = characterLocation.first + 1;
-    if(IsEnemyAtLocation(aBoard,
-                         targetLocation))
+    auto characterBehaviorComponent = parent->GetFirstComponentOfType<CharacterBehaviorComponent>();
+    if(characterBehaviorComponent != nullptr)
     {
-      tiles.emplace_back(targetLocation);
-    }
+      auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
+      if(boardLayoutComponent != nullptr)
+      {
+        auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
 
-    // Check to the left.
-    targetLocation.first = characterLocation.first - 1;
-    if(IsEnemyAtLocation(aBoard,
-                         targetLocation))
-    {
-      tiles.emplace_back(targetLocation);
-    }
+        // Check to the right.
+        auto targetLocation = characterLocation;
+        targetLocation.first = characterLocation.first + 1;
+        if(IsEnemyAtLocation(aBoard,
+                             targetLocation))
+        {
+          tiles.emplace_back(targetLocation);
+        }
 
-    targetLocation.first = characterLocation.first;
+        // Check to the left.
+        targetLocation.first = characterLocation.first - 1;
+        if(IsEnemyAtLocation(aBoard,
+                             targetLocation))
+        {
+          tiles.emplace_back(targetLocation);
+        }
 
-    // Check above.
-    targetLocation.second = characterLocation.second + 1;
-    if(IsEnemyAtLocation(aBoard,
-                         targetLocation))
-    {
-      tiles.emplace_back(targetLocation);
-    }
+        targetLocation.first = characterLocation.first;
 
-    // Check below.
-    targetLocation.second = characterLocation.second - 1;
-    if(IsEnemyAtLocation(aBoard,
-                         targetLocation))
-    {
-      tiles.emplace_back(targetLocation);
+        // Check above.
+        targetLocation.second = characterLocation.second + 1;
+        if(IsEnemyAtLocation(aBoard,
+                             targetLocation))
+        {
+          tiles.emplace_back(targetLocation);
+        }
+
+        // Check below.
+        targetLocation.second = characterLocation.second - 1;
+        if(IsEnemyAtLocation(aBoard,
+                             targetLocation))
+        {
+          tiles.emplace_back(targetLocation);
+        }
+      }
     }
   }
 

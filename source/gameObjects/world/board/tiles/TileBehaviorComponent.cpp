@@ -6,7 +6,7 @@ using Barebones::TileBehaviorComponent;
 TileBehaviorComponent::TileBehaviorComponent()
   : Component()
   , mHighlightColor(1.0, 1.0, 1.0)
-  , mHoverColor(0.1, 0.1, 0.1)
+  , mHoverColor(0.525, 0.525, 0.525)
   , mHighlighted(false)
 {
 }
