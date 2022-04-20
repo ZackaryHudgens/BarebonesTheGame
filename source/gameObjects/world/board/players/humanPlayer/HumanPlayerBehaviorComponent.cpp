@@ -21,6 +21,19 @@ void HumanPlayerBehaviorComponent::SetLocation(const TileLocation& aLocation)
 }
 
 /******************************************************************************/
+std::vector<Barebones::Skill*> HumanPlayerBehaviorComponent::GetSkills()
+{
+  std::vector<Skill*> skills;
+
+  for(auto& skill : mSkills)
+  {
+    skills.emplace_back(skill.get());
+  }
+
+  return skills;
+}
+
+/******************************************************************************/
 void HumanPlayerBehaviorComponent::ProtectedTakeTurn(UrsineEngine::GameObject& aBoard)
 {
   // Enable the input component.
@@ -49,4 +62,10 @@ void HumanPlayerBehaviorComponent::ProtectedEndTurn()
       inputComponent->SetEnabled(false);
     }
   }
+}
+
+/******************************************************************************/
+void HumanPlayerBehaviorComponent::AddSkill(std::unique_ptr<Skill> aSkill)
+{
+  mSkills.emplace_back(std::move(aSkill));
 }

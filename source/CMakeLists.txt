@@ -13,7 +13,6 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/gui/menus/actions/skillAction/*.?pp
                        gameObjects/gui/menus/skillMenu/*.?pp
                        gameObjects/skills/*.?pp
-                       gameObjects/skills/spells/*.?pp
                        gameObjects/skills/clawSkill/*.?pp
                        gameObjects/skills/moveSkill/*.?pp
                        gameObjects/util/*.?pp
@@ -45,7 +44,6 @@ target_include_directories(barebones PUBLIC
                            gameObjects/gui/menus/actions/skillAction
                            gameObjects/gui/menus/skillMenu
                            gameObjects/skills
-                           gameObjects/skills/spells
                            gameObjects/skills/clawSkill
                            gameObjects/skills/moveSkill
                            gameObjects/util

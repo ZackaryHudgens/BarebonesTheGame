@@ -3,6 +3,7 @@
 
 #include "PlayerBehaviorComponent.hpp"
 
+#include "Skill.hpp"
 #include "TileUtil.hpp"
 
 namespace Barebones
@@ -30,6 +31,13 @@ namespace Barebones
        */
       TileLocation GetLocation() const { return mLocation; }
 
+      /**
+       * Returns a vector of this player's skills.
+       *
+       * @return This player's skills.
+       */
+      std::vector<Skill*> GetSkills();
+
     protected:
 
       /**
@@ -45,8 +53,17 @@ namespace Barebones
        */
       void ProtectedEndTurn() override;
 
+      /**
+       * Adds a skill to this player.
+       *
+       * @param aSkill The skill to add.
+       */
+      void AddSkill(std::unique_ptr<Skill> aSkill);
+
     private:
       TileLocation mLocation;
+
+      std::vector<std::unique_ptr<Skill>> mSkills;
   };
 }
 
