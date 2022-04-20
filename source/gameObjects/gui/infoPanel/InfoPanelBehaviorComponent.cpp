@@ -85,6 +85,8 @@ void InfoPanelBehaviorComponent::Initialize()
     mTextBox->SetFixedWidth(true);
     mTextBox->SetFixedHeight(true);
 
+    mTextBox->SetText("");
+
     // Center the display on the screen.
     double horizontalCenter = overlayWidth / 2.0;
     parent->SetPosition(glm::vec3(horizontalCenter,

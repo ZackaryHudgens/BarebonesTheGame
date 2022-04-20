@@ -12,10 +12,12 @@ TextBoxComponent::TextBoxComponent()
   , mText(nullptr)
   , mBackground(nullptr)
   , mTextAlignment(TextAlignment::eLEFT)
-  , mHorizontalPadding(0)
-  , mVerticalPadding(0)
+  , mWidth(0)
+  , mHeight(0)
   , mFixedWidth(false)
   , mFixedHeight(false)
+  , mHorizontalPadding(0)
+  , mVerticalPadding(0)
 {
 }
 
@@ -136,49 +138,17 @@ void TextBoxComponent::SetTexture(const UrsineEngine::Texture& aTexture)
 /******************************************************************************/
 void TextBoxComponent::SetWidth(int aWidth)
 {
-  if(!mFixedWidth)
-  {
-    if(mBackground != nullptr)
-    {
-      auto backgroundObject = mBackground->GetParent();
-      if(backgroundObject != nullptr)
-      {
-        double currentWidth = mBackground->GetWidth();
-        double scalar = (double)aWidth / currentWidth;
+  mWidth = aWidth;
 
-        auto scalarTransform = backgroundObject->GetScalarTransform();
-        backgroundObject->SetScale(glm::vec3(scalar,
-                                             scalarTransform[1][1],
-                                             scalarTransform[2][2]));
-
-        RepositionText();
-      }
-    }
-  }
+  RepositionText();
 }
 
 /******************************************************************************/
 void TextBoxComponent::SetHeight(int aHeight)
 {
-  if(!mFixedHeight)
-  {
-    if(mBackground != nullptr)
-    {
-      auto backgroundObject = mBackground->GetParent();
-      if(backgroundObject != nullptr)
-      {
-        double currentHeight = mBackground->GetHeight();
-        double scalar = (double)aHeight / currentHeight;
+  mHeight = aHeight;
 
-        auto scalarTransform = backgroundObject->GetScalarTransform();
-        backgroundObject->SetScale(glm::vec3(scalarTransform[0][0],
-                                             scalar,
-                                             scalarTransform[2][2]));
-
-        RepositionText();
-      }
-    }
-  }
+  RepositionText();
 }
 
 /******************************************************************************/
@@ -202,33 +172,68 @@ void TextBoxComponent::SetVerticalPadding(int aPadding)
 /******************************************************************************/
 void TextBoxComponent::ResizeBackground()
 {
-  if(mText != nullptr &&
-     mBackground != nullptr)
+  if(mBackground != nullptr &&
+     mText != nullptr)
   {
-    auto textObject = mText->GetParent();
     auto backgroundObject = mBackground->GetParent();
-    if(textObject != nullptr &&
-       backgroundObject != nullptr)
+    if(backgroundObject != nullptr)
     {
-      // Use the dimensions of the text and the padding values to determine
-      // how large the background needs to be to fit the text.
-      double textWidth = mText->GetWidth();
-      double textHeight = mText->GetHeight();
+      auto backgroundWidth = mBackground->GetWidth();
+      auto backgroundHeight = mBackground->GetHeight();
 
-      // Only update the width and height if they aren't fixed.
-      double backgroundWidth = mBackground->GetWidth();
-      double backgroundHeight = mBackground->GetHeight();
-      double newBackgroundWidth = textWidth + (mHorizontalPadding * 2);
-      double newBackgroundHeight = textHeight + (mVerticalPadding * 2);
+      // If the background has no width and/or height, there is no
+      // resizing to be done.
+      if(backgroundWidth > 0.0 &&
+         backgroundHeight > 0.0)
+      {
+        // Determine the horizontal scalar for the background object. If
+        // the width is not fixed, the scalar is calculated to make the object
+        // just large enough to fit the text and the horizontal padding.
+        // If it is fixed, the scalar is calculated to make the background
+        // object the width of the set value.
+        double xScalar = 0.0;
+        if(!mFixedWidth)
+        {
+          auto textWidth = mText->GetWidth();
+          textWidth += mHorizontalPadding;
 
-      auto scalarTransform = backgroundObject->GetScalarTransform();
-      double xScalar = mFixedWidth ? scalarTransform[0][0] : newBackgroundWidth / backgroundWidth;
-      double yScalar = mFixedHeight ? scalarTransform[1][1] : newBackgroundHeight / backgroundHeight;
-      double zScalar = scalarTransform[2][2];
+          auto largerWidth = std::max(backgroundWidth, textWidth);
+          auto smallerWidth = std::min(backgroundWidth, textWidth);
+          xScalar = smallerWidth == 0 ? 1.0 : (largerWidth / smallerWidth);
 
-      backgroundObject->SetScale(glm::vec3(xScalar,
-                                           yScalar,
-                                           zScalar));
+          // Update the width value for use with text positioning.
+          mWidth = backgroundWidth * xScalar;
+        }
+        else
+        {
+          xScalar = (double)mWidth / (double)backgroundWidth;
+        }
+
+        // Determine the vertical scalar for the background object. This
+        // is done in the same way as the horizontal scalar above.
+        double yScalar = 0.0;
+        if(!mFixedHeight)
+        {
+          auto textHeight = mText->GetHeight();
+          textHeight += mVerticalPadding;
+
+          auto largerHeight = std::max(backgroundHeight, textHeight);
+          auto smallerHeight = std::min(backgroundHeight, textHeight);
+          auto yScalar = smallerHeight == 0 ? 1.0 : (largerHeight / smallerHeight);
+
+          // Update the height value for use with text positioning.
+          mHeight = backgroundHeight * yScalar;
+        }
+        else
+        {
+          yScalar = (double)mHeight / (double)backgroundHeight;
+        }
+
+        // Scale the background object.
+        backgroundObject->SetScale(glm::vec3(xScalar,
+                                             yScalar,
+                                             1.0));
+      }
     }
   }
 }
@@ -236,27 +241,33 @@ void TextBoxComponent::ResizeBackground()
 /******************************************************************************/
 void TextBoxComponent::RepositionText()
 {
-  if(mBackground != nullptr &&
-     mText != nullptr)
+  auto parent = GetParent();
+  if(mText != nullptr &&
+     parent != nullptr)
   {
-    auto backgroundObject = mBackground->GetParent();
     auto textObject = mText->GetParent();
-    if(textObject != nullptr &&
-       backgroundObject != nullptr)
+    if(textObject != nullptr)
     {
+      auto leftEdge = parent->GetPosition().x - ((double)mWidth / 2.0);
+      auto bottomEdge = parent->GetPosition().y - ((double)mHeight / 2.0);
+
       switch(mTextAlignment)
       {
+        case TextAlignment::eCENTER:
+        {
+          auto textWidth = mText->GetWidth();
+          auto textPos = textObject->GetPosition();
+          textPos.x = leftEdge + ((mWidth - textWidth) / 2.0);
+          textPos.y = bottomEdge + mVerticalPadding;
+          textObject->SetPosition(textPos);
+
+          break;
+        }
         case TextAlignment::eLEFT:
         {
-          auto backgroundScaleTransform = backgroundObject->GetScalarTransform();
-          double backgroundWidth = mBackground->GetWidth() * backgroundScaleTransform[0][0];
-          double backgroundHeight = mBackground->GetHeight() * backgroundScaleTransform[1][1];
-          double backgroundLeftEdge = backgroundObject->GetPosition().x - (backgroundWidth / 2.0);
-          double backgroundBottomEdge = backgroundObject->GetPosition().y - (backgroundHeight / 2.0);
-
           auto textPos = textObject->GetPosition();
-          textPos.x = backgroundLeftEdge + mHorizontalPadding;
-          textPos.y = backgroundBottomEdge + mVerticalPadding;
+          textPos.x = leftEdge + mHorizontalPadding;
+          textPos.y = bottomEdge + mVerticalPadding;
           textObject->SetPosition(textPos);
 
           break;
@@ -265,30 +276,11 @@ void TextBoxComponent::RepositionText()
         {
           break;
         }
-        case TextAlignment::eCENTER:
-        {
-          auto backgroundScaleTransform = backgroundObject->GetScalarTransform();
-          double backgroundWidth = mBackground->GetWidth() * backgroundScaleTransform[0][0];
-          double backgroundHeight = mBackground->GetHeight() * backgroundScaleTransform[1][1];
-          double backgroundLeftEdge = backgroundObject->GetPosition().x - (backgroundWidth / 2.0);
-          double backgroundBottomEdge = backgroundObject->GetPosition().y - (backgroundHeight / 2.0);
-
-          auto textWidth = mText->GetWidth();
-          auto textHeight = mText->GetHeight();
-          auto distanceFromLeft = (backgroundWidth - textWidth) / 2.0;
-
-          auto textPos = textObject->GetPosition();
-          textPos.x = backgroundLeftEdge + distanceFromLeft;
-          textPos.y = backgroundBottomEdge + mVerticalPadding;
-          textObject->SetPosition(textPos);
-
-          break;
-        }
         default:
         {
           break;
         }
-      };
+      }
     }
   }
 }

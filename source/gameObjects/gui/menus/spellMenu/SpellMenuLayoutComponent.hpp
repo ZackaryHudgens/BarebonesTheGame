@@ -3,6 +3,8 @@
 
 #include "MenuLayoutComponent.hpp"
 
+#include <TextBoxComponent.hpp>
+
 namespace Barebones
 {
   class SpellMenuLayoutComponent : public MenuLayoutComponent
@@ -18,6 +20,15 @@ namespace Barebones
        * Initializes the component.
        */
       void Initialize() override;
+
+    private:
+      TextBoxComponent* mSpellNameTextBox;
+      TextBoxComponent* mSpellDescriptionTextBox;
+
+      int mSpellNameVerticalPadding;
+      int mSpellDescriptionVerticalPadding;
+      int mSpellNameHeight;
+      int mSpellDescriptionHeight;
   };
 }
 

@@ -142,11 +142,13 @@ namespace Barebones
 
       TextAlignment mTextAlignment;
 
-      int mHorizontalPadding;
-      int mVerticalPadding;
-
+      int mWidth;
+      int mHeight;
       bool mFixedWidth;
       bool mFixedHeight;
+
+      int mHorizontalPadding;
+      int mVerticalPadding;
   };
 }
 

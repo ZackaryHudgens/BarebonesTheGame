@@ -101,6 +101,11 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
 
           break;
         }
+        case UrsineEngine::KeyCode::eKEY_Q:
+        {
+          CreateSpellMenu(*player);
+          break;
+        }
         case UrsineEngine::KeyCode::eKEY_ENTER:
         {
           // If there is a character at the player's current location,
@@ -207,6 +212,27 @@ void HumanPlayerDefaultInputState::CreateSkillMenu(UrsineEngine::GameObject& aOb
         {
           foreground->AddChild(std::move(menu));
         }
+      }
+    }
+  }
+}
+
+/******************************************************************************/
+void HumanPlayerDefaultInputState::CreateSpellMenu(UrsineEngine::GameObject& aObject)
+{
+  auto humanPlayerBehaviorComponent = aObject.GetFirstComponentOfType<HumanPlayerBehaviorComponent>();
+  if(humanPlayerBehaviorComponent != nullptr)
+  {
+    auto spellMenuObject = MenuFactory::CreateMenu(MenuType::eSPELL, "spellMenu");
+
+    // Add the new menu to the foreground of the current scene.
+    auto scene = env.GetCurrentScene();
+    if(scene != nullptr)
+    {
+      auto foreground = scene->GetForeground();
+      if(foreground != nullptr)
+      {
+        foreground->AddChild(std::move(spellMenuObject));
       }
     }
   }

@@ -49,6 +49,14 @@ namespace Barebones
        * @param aObject The character in question.
        */
       void CreateSkillMenu(UrsineEngine::GameObject& aObject);
+
+      /**
+       * Creates a spell menu for the current player and adds it to the
+       * current scene.
+       *
+       * @param aObject The player GameObject.
+       */
+      void CreateSpellMenu(UrsineEngine::GameObject& aObject);
   };
 }
 
