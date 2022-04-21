@@ -194,19 +194,15 @@ void TextBoxComponent::ResizeBackground()
         double xScalar = 0.0;
         if(!mFixedWidth)
         {
-          auto textWidth = mText->GetWidth();
-          textWidth += mHorizontalPadding;
-
-          auto largerWidth = std::max(backgroundWidth, textWidth);
-          auto smallerWidth = std::min(backgroundWidth, textWidth);
-          xScalar = smallerWidth == 0 ? 1.0 : (largerWidth / smallerWidth);
+          double textWidth = mText->GetWidth();
+          xScalar = (textWidth + mHorizontalPadding) / (std::max(backgroundWidth, 1.0));
 
           // Update the width value for use with text positioning.
           mWidth = backgroundWidth * xScalar;
         }
         else
         {
-          xScalar = (double)mWidth / (double)backgroundWidth;
+          xScalar = (double)mWidth / (std::max((double)backgroundWidth, 1.0));
         }
 
         // Determine the vertical scalar for the background object. This
@@ -214,19 +210,15 @@ void TextBoxComponent::ResizeBackground()
         double yScalar = 0.0;
         if(!mFixedHeight)
         {
-          auto textHeight = mText->GetHeight();
-          textHeight += mVerticalPadding;
-
-          auto largerHeight = std::max(backgroundHeight, textHeight);
-          auto smallerHeight = std::min(backgroundHeight, textHeight);
-          auto yScalar = smallerHeight == 0 ? 1.0 : (largerHeight / smallerHeight);
+          double textHeight = mText->GetHeight();
+          yScalar = (textHeight + mVerticalPadding) / (std::max(backgroundHeight, 1.0));
 
           // Update the height value for use with text positioning.
           mHeight = backgroundHeight * yScalar;
         }
         else
         {
-          yScalar = (double)mHeight / (double)backgroundHeight;
+          yScalar = (double)mHeight / (std::max((double)backgroundHeight, 1.0));
         }
 
         // Scale the background object.
