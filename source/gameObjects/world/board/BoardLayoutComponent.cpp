@@ -353,6 +353,12 @@ void BoardLayoutComponent::HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& 
 
             mHoveredTile = newTile;
           }
+
+          // Update the highlighted tiles, if necessary.
+          if(mSkillUsedForHighlighting != nullptr)
+          {
+            HandleSkillSelectedFromMenu(*mSkillUsedForHighlighting);
+          }
         }
       }
     }
@@ -374,11 +380,22 @@ void BoardLayoutComponent::HandleSkillSelectedFromMenu(Skill& aSkill)
 {
   mSkillUsedForHighlighting = &aSkill;
 
-  // When a skill is selected, highlight each valid tile for using that skill.
+  // First, un-highlight all highlighted tiles.
+  for(auto tile : mHighlightedTiles)
+  {
+    auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
+    if(tileBehaviorComponent != nullptr)
+    {
+      tileBehaviorComponent->SetHighlighted(false);
+    }
+  }
+  mHighlightedTiles.clear();
+
+  // Next, highlight all tiles affected by this skill.
   auto parent = GetParent();
   if(parent != nullptr)
   {
-    auto tileLocations = aSkill.GetValidTiles(*parent);
+    auto tileLocations = aSkill.GetTilesToHighlight(*parent);
     for(const auto tileLocation : tileLocations)
     {
       auto tile = GetTileAtLocation(tileLocation);

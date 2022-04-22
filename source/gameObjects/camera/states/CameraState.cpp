@@ -55,3 +55,15 @@ std::unique_ptr<CameraState> CameraState::HandleCharacterTurnEnded(CharacterBeha
 {
   return nullptr;
 }
+
+/******************************************************************************/
+std::unique_ptr<CameraState> CameraState::HandleSkillSelectedFromMenu(Skill& aSkill)
+{
+  return nullptr;
+}
+
+/******************************************************************************/
+std::unique_ptr<CameraState> CameraState::HandleSkillExecuted(Skill& aSkill)
+{
+  return nullptr;
+}

@@ -223,16 +223,33 @@ void HumanPlayerDefaultInputState::CreateSpellMenu(UrsineEngine::GameObject& aOb
   auto humanPlayerBehaviorComponent = aObject.GetFirstComponentOfType<HumanPlayerBehaviorComponent>();
   if(humanPlayerBehaviorComponent != nullptr)
   {
-    auto spellMenuObject = MenuFactory::CreateMenu(MenuType::eSPELL, "spellMenu");
-
-    // Add the new menu to the foreground of the current scene.
-    auto scene = env.GetCurrentScene();
-    if(scene != nullptr)
+    auto spells = humanPlayerBehaviorComponent->GetSpells();
+    if(!spells.empty())
     {
-      auto foreground = scene->GetForeground();
-      if(foreground != nullptr)
+      auto menu = MenuFactory::CreateMenu(MenuType::eSPELL, "spellMenu");
+      auto menuLayout = menu->GetFirstComponentOfType<MenuLayoutComponent>();
+      if(menuLayout != nullptr)
       {
-        foreground->AddChild(std::move(spellMenuObject));
+        // Add each of this character's skills to the menu.
+        for(auto& spell : spells)
+        {
+          auto action = ActionFactory::CreateAction(ActionType::eSKILL,
+                                                    spell->GetName());
+          auto skillAction = action->GetFirstComponentOfType<SkillActionBehaviorComponent>();
+          skillAction->SetSkill(*spell);
+          menuLayout->AddAction(std::move(action));
+        }
+      }
+
+      // Add the new menu to the foreground of the current scene.
+      auto scene = env.GetCurrentScene();
+      if(scene != nullptr)
+      {
+        auto foreground = scene->GetForeground();
+        if(foreground != nullptr)
+        {
+          foreground->AddChild(std::move(menu));
+        }
       }
     }
   }

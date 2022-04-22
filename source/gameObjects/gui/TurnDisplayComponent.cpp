@@ -14,7 +14,7 @@ using Barebones::TurnDisplayComponent;
 TurnDisplayComponent::TurnDisplayComponent()
   : Component()
   , mTextBox(nullptr)
-  , mTextBoxVerticalPadding(50.0)
+  , mTextBoxVerticalPadding(30.0)
   , mSpeed(200.0)
   , mMoving(false)
   , mTimeBecamePaused(0.0)

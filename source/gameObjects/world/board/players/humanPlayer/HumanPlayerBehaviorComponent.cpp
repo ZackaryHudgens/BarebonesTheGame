@@ -4,6 +4,8 @@
 
 #include "Signals.hpp"
 
+#include "DesecrateSpell.hpp"
+
 using Barebones::HumanPlayerBehaviorComponent;
 
 /******************************************************************************/
@@ -14,6 +16,16 @@ HumanPlayerBehaviorComponent::HumanPlayerBehaviorComponent()
 }
 
 /******************************************************************************/
+void HumanPlayerBehaviorComponent::Initialize()
+{
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    AddSpell(std::make_unique<DesecrateSpell>(*parent));
+  }
+}
+
+/******************************************************************************/
 void HumanPlayerBehaviorComponent::SetLocation(const TileLocation& aLocation)
 {
   mLocation = aLocation;
@@ -21,16 +33,16 @@ void HumanPlayerBehaviorComponent::SetLocation(const TileLocation& aLocation)
 }
 
 /******************************************************************************/
-std::vector<Barebones::Skill*> HumanPlayerBehaviorComponent::GetSkills()
+std::vector<Barebones::Skill*> HumanPlayerBehaviorComponent::GetSpells()
 {
-  std::vector<Skill*> skills;
+  std::vector<Skill*> spells;
 
-  for(auto& skill : mSkills)
+  for(auto& spell : mSpells)
   {
-    skills.emplace_back(skill.get());
+    spells.emplace_back(spell.get());
   }
 
-  return skills;
+  return spells;
 }
 
 /******************************************************************************/
@@ -65,7 +77,7 @@ void HumanPlayerBehaviorComponent::ProtectedEndTurn()
 }
 
 /******************************************************************************/
-void HumanPlayerBehaviorComponent::AddSkill(std::unique_ptr<Skill> aSkill)
+void HumanPlayerBehaviorComponent::AddSpell(std::unique_ptr<Skill> aSpell)
 {
-  mSkills.emplace_back(std::move(aSkill));
+  mSpells.emplace_back(std::move(aSpell));
 }

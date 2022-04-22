@@ -10,6 +10,8 @@
 
 #include "CameraState.hpp"
 
+#include "Skill.hpp"
+
 namespace Barebones
 {
   class CameraBehaviorComponent : public UrsineEngine::Component
@@ -93,9 +95,19 @@ namespace Barebones
        */
       void HandleCharacterTurnEnded(CharacterBehaviorComponent& aCharacter);
 
+      /**
+       * A handler function that gets called whenever a skill is selected
+       * from a menu.
+       *
+       * @param aSkill The skill that was selected.
+       */
+      void HandleSkillSelectedFromMenu(Skill& aSkill);
+
       UrsineEngine::GameObject* mFollowedBoard;
 
       std::unique_ptr<CameraState> mState;
+
+      double mRotation;
   };
 }
 

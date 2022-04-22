@@ -20,7 +20,7 @@ InfoPanelBehaviorComponent::InfoPanelBehaviorComponent()
   , mFocusedLocation(0, 0)
   , mTextBoxHeight(100.0)
   , mTextBoxHorizontalPadding(130.0)
-  , mTextBoxVerticalPadding(25.0)
+  , mTextBoxVerticalPadding(30.0)
 {
   PlayerTurnBegan.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
   {

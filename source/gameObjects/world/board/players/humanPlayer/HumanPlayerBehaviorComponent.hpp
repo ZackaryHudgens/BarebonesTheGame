@@ -18,6 +18,11 @@ namespace Barebones
       HumanPlayerBehaviorComponent();
 
       /**
+       * Initializes the component.
+       */
+      void Initialize() override;
+
+      /**
        * Sets the location of the player on the board.
        *
        * @param aLocation The new location of the player.
@@ -32,11 +37,11 @@ namespace Barebones
       TileLocation GetLocation() const { return mLocation; }
 
       /**
-       * Returns a vector of this player's skills.
+       * Returns a vector of this player's spells.
        *
-       * @return This player's skills.
+       * @return This player's spells.
        */
-      std::vector<Skill*> GetSkills();
+      std::vector<Skill*> GetSpells();
 
     protected:
 
@@ -54,16 +59,16 @@ namespace Barebones
       void ProtectedEndTurn() override;
 
       /**
-       * Adds a skill to this player.
+       * Adds a spell to this player.
        *
-       * @param aSkill The skill to add.
+       * @param aSpell The spell to add.
        */
-      void AddSkill(std::unique_ptr<Skill> aSkill);
+      void AddSpell(std::unique_ptr<Skill> aSpell);
 
     private:
       TileLocation mLocation;
 
-      std::vector<std::unique_ptr<Skill>> mSkills;
+      std::vector<std::unique_ptr<Skill>> mSpells;
   };
 }
 

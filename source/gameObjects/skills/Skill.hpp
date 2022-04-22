@@ -31,9 +31,22 @@ namespace Barebones
        * A virtual function that returns a vector of valid tile locations
        * for executing this skill.
        *
-       * @param aBoard A GameObject containing a BoardLayoutComponent.
+       * @param aBoard The board GameObject to use this skill on.
        */
       virtual TileList GetValidTiles(UrsineEngine::GameObject& aBoard) { return TileList(); }
+
+      /**
+       * A virtual function that returns a vector of tiles to highlight when
+       * the player selects this skill but before executing it. This is
+       * different from GetValidTiles() in that a skill might have an
+       * area-of-effect that should be communicated to the player, but not
+       * all of the affected tiles are valid for execution.
+       *
+       * By default, all valid tiles are highlighted.
+       *
+       * @param aBoard The board GameObject to use this skill on.
+       */
+      virtual TileList GetTilesToHighlight(UrsineEngine::GameObject& aBoard) { return GetValidTiles(aBoard); }
 
       /**
        * Returns the name of the skill.
@@ -48,6 +61,14 @@ namespace Barebones
        * @return The description of the skill.
        */
       std::string GetDescription() const { return mDescription; }
+
+      /**
+       * Returns whether the camera should zoom out when this skill
+       * is selected.
+       *
+       * @return Whether the camera should zoom out when this skill is selected.
+       */
+      bool GetCameraZoomOut() const { return mZoomOut; }
 
     protected:
 
@@ -81,11 +102,20 @@ namespace Barebones
        */
       void SetDescription(const std::string& aDescription) { mDescription = aDescription; }
 
+      /**
+       * Sets whether the camera should zoom out when this skill is selected.
+       *
+       * @param aZoomOut Whether the camera should zoom out when this skill is selected.
+       */
+      void SetCameraZoomOut(bool aZoomOut) { mZoomOut = aZoomOut; }
+
     private:
       UrsineEngine::GameObject* mParent;
 
       std::string mDescription;
       std::string mName;
+
+      bool mZoomOut;
   };
 }
 

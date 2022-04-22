@@ -56,7 +56,6 @@ namespace Barebones
 
       double mYDistance;
       double mZDistance;
-      double mRotation;
 
       double mSpeed;
 

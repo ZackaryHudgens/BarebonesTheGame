@@ -2,17 +2,29 @@
 
 #include <Environment.hpp>
 #include <GameObject.hpp>
-#include <SpriteComponent.hpp>
+
+#include "SkillActionBehaviorComponent.hpp"
 
 using Barebones::SpellMenuLayoutComponent;
 
 /******************************************************************************/
 SpellMenuLayoutComponent::SpellMenuLayoutComponent()
   : MenuLayoutComponent()
-  , mSpellNameVerticalPadding(5)
-  , mSpellDescriptionVerticalPadding(5)
+  , mSpellbookSprite(nullptr)
+  , mSpellNameTextBox(nullptr)
+  , mSpellDescriptionTextBox(nullptr)
+  , mSpellbookScalar(25.0)
+  , mSpellbookVerticalOffset(25)
   , mSpellNameHeight(100)
-  , mSpellDescriptionHeight(500)
+  , mSpellNameWidth(500)
+  , mSpellNameVerticalPadding(5)
+  , mSpellNameHorizontalOffset(375)
+  , mSpellNameVerticalOffset(350)
+  , mSpellDescriptionHeight(100)
+  , mSpellDescriptionWidth(500)
+  , mSpellDescriptionVerticalPadding(5)
+  , mSpellDescriptionHorizontalOffset(375)
+  , mSpellDescriptionVerticalOffset(350)
 {
 }
 
@@ -23,33 +35,35 @@ void SpellMenuLayoutComponent::Initialize()
   if(parent != nullptr)
   {
     // Create a sprite for the spellbook and a GameObject to hold it.
-    auto spellbookSprite = std::make_unique<UrsineEngine::SpriteComponent>();
-    spellbookSprite->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
+    auto spellbookObject = std::make_unique<UrsineEngine::GameObject>("spellbook");
+    spellbookObject->AddComponent(std::make_unique<UrsineEngine::SpriteComponent>());
+    spellbookObject->SetScale(glm::vec3(mSpellbookScalar,
+                                        mSpellbookScalar,
+                                        1.0));
+    parent->AddChild(std::move(spellbookObject));
+    mSpellbookSprite = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::SpriteComponent>();
+
+    mSpellbookSprite->SetHasTransparency(false);
+    mSpellbookSprite->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
 
     UrsineEngine::Texture texture;
     texture.CreateTextureFromFile("resources/sprites/spellbook.png");
-    spellbookSprite->SetTexture(texture);
+    mSpellbookSprite->SetTexture(texture);
 
     std::string vertexFile = "resources/shaders/UIShader.vert";
     std::string fragmentFile = "resources/shaders/UIShader.frag";
     UrsineEngine::Shader shader(vertexFile, fragmentFile);
-    spellbookSprite->AddShader("default", shader);
-    spellbookSprite->SetCurrentShader("default");
-
-    auto spellbookObject = std::make_unique<UrsineEngine::GameObject>("spellbook");
-    spellbookObject->AddComponent(std::move(spellbookSprite));
-
-    // Scale up the spellbook.
-    spellbookObject->SetScale(glm::vec3(22.0, 22.0, 1.0));
+    mSpellbookSprite->AddShader("default", shader);
+    mSpellbookSprite->SetCurrentShader("default");
 
     // Center the spellbook on the overlay.
     double overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
     double overlayHeight = env.GetGraphicsOptions().mOverlayHeight;
-    double horizontalCenter = overlayWidth / 2.0;
-    double verticalCenter = (overlayHeight / 2.0) - 50.0;
-    spellbookObject->SetPosition(glm::vec3(horizontalCenter, verticalCenter, 0.1));
-
-    parent->AddChild(std::move(spellbookObject));
+    double horizontalCenter = (overlayWidth / 2.0);
+    double verticalCenter = (overlayHeight / 2.0);
+    mSpellbookSprite->GetParent()->SetPosition(glm::vec3(horizontalCenter,
+                                                         verticalCenter - mSpellbookVerticalOffset,
+                                                         -0.1));
 
     // Create two text boxes and GameObjects to hold them.
     auto spellNameObject = std::make_unique<UrsineEngine::GameObject>("spellNameObject");
@@ -62,12 +76,6 @@ void SpellMenuLayoutComponent::Initialize()
     parent->AddChild(std::move(spellDescriptionObject));
     mSpellDescriptionTextBox = parent->GetChildren().back()->GetFirstComponentOfType<TextBoxComponent>();
 
-    // Set the background texture for both text boxes.
-    //UrsineEngine::Texture backgroundTexture;
-    //backgroundTexture.CreateTextureFromFile("resources/sprites/menuBox.png");
-    //mSpellNameTextBox->SetTexture(backgroundTexture);
-    //mSpellDescriptionTextBox->SetTexture(backgroundTexture);
-
     // Set the font parameters for both text boxes.
     mSpellNameTextBox->SetFont("Alagard", "Medium");
     mSpellNameTextBox->SetTextSize(72);
@@ -77,21 +85,67 @@ void SpellMenuLayoutComponent::Initialize()
 
     mSpellDescriptionTextBox->SetFont("Alagard", "Medium");
     mSpellDescriptionTextBox->SetTextSize(48);
-    mSpellDescriptionTextBox->SetTextAlignment(TextAlignment::eCENTER);
+    mSpellDescriptionTextBox->SetTextAlignment(TextAlignment::eLEFT);
     mSpellDescriptionTextBox->SetTextColor(glm::vec4(0.125, 0.125, 0.125, 1.0));
     mSpellDescriptionTextBox->SetVerticalPadding(mSpellDescriptionVerticalPadding);
 
-    mSpellNameTextBox->SetWidth(500.0);
+    mSpellNameTextBox->SetWidth(mSpellNameWidth);
     mSpellNameTextBox->SetHeight(mSpellNameHeight);
     mSpellNameTextBox->SetFixedWidth(true);
     mSpellNameTextBox->SetFixedHeight(true);
 
-    mSpellDescriptionTextBox->SetWidth(500.0);
+    mSpellDescriptionTextBox->SetWidth(mSpellDescriptionWidth);
     mSpellDescriptionTextBox->SetHeight(mSpellDescriptionHeight);
     mSpellDescriptionTextBox->SetFixedWidth(true);
     mSpellDescriptionTextBox->SetFixedHeight(true);
 
-    mSpellNameTextBox->SetText("woohoo");
-    mSpellNameTextBox->GetParent()->SetPosition(glm::vec3(500.0, 500.0, 0.2));
+    // Place the text boxes on the spellbook.
+    auto spellbookPos = mSpellbookSprite->GetParent()->GetPosition();
+    mSpellNameTextBox->SetText("Woohoo");
+    mSpellNameTextBox->GetParent()->SetPosition(glm::vec3(spellbookPos.x - mSpellNameHorizontalOffset,
+                                                          spellbookPos.y + mSpellNameVerticalOffset,
+                                                          0.1));
+
+    mSpellDescriptionTextBox->SetText("Lorem ipsum dolor sit amet");
+    mSpellDescriptionTextBox->GetParent()->SetPosition(glm::vec3(spellbookPos.x + mSpellDescriptionHorizontalOffset,
+                                                                 spellbookPos.y + mSpellDescriptionVerticalOffset,
+                                                                 0.1));
+  }
+}
+
+/******************************************************************************/
+void SpellMenuLayoutComponent::HandleActionAdded()
+{
+}
+
+/******************************************************************************/
+void SpellMenuLayoutComponent::HandleActionHovered()
+{
+  auto action = GetCurrentlyHoveredAction();
+  if(action != nullptr)
+  {
+    auto skillAction = action->GetFirstComponentOfType<SkillActionBehaviorComponent>();
+    if(skillAction != nullptr)
+    {
+      auto skill = skillAction->GetSkill();
+      if(skill != nullptr &&
+         mSpellNameTextBox != nullptr &&
+         mSpellDescriptionTextBox != nullptr)
+      {
+        mSpellNameTextBox->SetText(skill->GetName());
+        mSpellDescriptionTextBox->SetText(skill->GetDescription());
+      }
+    }
+  }
+}
+
+/******************************************************************************/
+void SpellMenuLayoutComponent::HandleActionSelected()
+{
+  // When a skill is selected, this menu is no longer needed.
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    parent->ScheduleForDeletion();
   }
 }

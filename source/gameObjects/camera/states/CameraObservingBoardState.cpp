@@ -2,6 +2,7 @@
 
 #include "BoardLayoutComponent.hpp"
 
+#include "CameraDefaultState.hpp"
 #include "CameraFollowingCharacterState.hpp"
 #include "CameraFollowingPlayerState.hpp"
 
@@ -12,9 +13,8 @@ CameraObservingBoardState::CameraObservingBoardState(UrsineEngine::GameObject& a
                                                      UrsineEngine::GameObject& aBoard)
   : CameraState(aCamera)
   , mTargetPosition(0.0, 0.0, 0.0)
-  , mYDistance(7.0)
-  , mZDistance(7.0)
-  , mRotation(-40.0)
+  , mYDistance(8.0)
+  , mZDistance(9.0)
   , mSpeed(0.3)
 {
   // Upon entering this state, calculate the target position
@@ -38,14 +38,13 @@ CameraObservingBoardState::CameraObservingBoardState(UrsineEngine::GameObject& a
       mMoving = true;
     }
   }
-
-  aCamera.SetRotation(mRotation,
-                      glm::vec3(1.0, 0.0, 0.0));
 }
 
 /******************************************************************************/
 std::unique_ptr<Barebones::CameraState> CameraObservingBoardState::Update(double aTime)
 {
+  std::unique_ptr<CameraState> newState = nullptr;
+
   if(mMoving)
   {
     auto camera = GetCamera();
@@ -63,6 +62,9 @@ std::unique_ptr<Barebones::CameraState> CameraObservingBoardState::Update(double
       {
         camera->SetPosition(mTargetPosition);
         mMoving = false;
+
+        // Revert to the default state.
+        newState = std::make_unique<CameraDefaultState>(*camera);
       }
       else
       {
@@ -71,7 +73,7 @@ std::unique_ptr<Barebones::CameraState> CameraObservingBoardState::Update(double
     }
   }
 
-  return nullptr;
+  return newState;
 }
 
 /******************************************************************************/

@@ -15,6 +15,7 @@ CameraBehaviorComponent::CameraBehaviorComponent()
   : Component()
   , mFollowedBoard(nullptr)
   , mState(nullptr)
+  , mRotation(-40.0)
 {
   UrsineEngine::ObjectMoved.Connect(*this, [this](UrsineEngine::GameObject* aObject)
   {
@@ -45,6 +46,11 @@ CameraBehaviorComponent::CameraBehaviorComponent()
   {
     this->HandleCharacterTurnEnded(aCharacter);
   });
+
+  SkillSelectedFromMenu.Connect(*this, [this](Skill& aSkill)
+  {
+    this->HandleSkillSelectedFromMenu(aSkill);
+  });
 }
 
 /******************************************************************************/
@@ -55,6 +61,10 @@ void CameraBehaviorComponent::Initialize()
   if(parent != nullptr)
   {
     mState = std::make_unique<CameraDefaultState>(*parent);
+
+    // Initialize the camera rotation.
+    parent->SetRotation(mRotation,
+                        glm::vec3(1.0, 0.0, 0.0));
   }
 }
 
@@ -157,6 +167,19 @@ void CameraBehaviorComponent::HandleCharacterTurnEnded(CharacterBehaviorComponen
   if(mState != nullptr)
   {
     auto newState = mState->HandleCharacterTurnEnded(aCharacter);
+    if(newState != nullptr)
+    {
+      mState.swap(newState);
+    }
+  }
+}
+
+/******************************************************************************/
+void CameraBehaviorComponent::HandleSkillSelectedFromMenu(Skill& aSkill)
+{
+  if(mState != nullptr)
+  {
+    auto newState = mState->HandleSkillSelectedFromMenu(aSkill);
     if(newState != nullptr)
     {
       mState.swap(newState);
