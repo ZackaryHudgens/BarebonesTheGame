@@ -68,30 +68,3 @@ std::unique_ptr<Barebones::CameraState> CameraDefaultState::HandleCharacterTurnB
 
   return newState;
 }
-
-/******************************************************************************/
-std::unique_ptr<Barebones::CameraState> CameraDefaultState::HandleSkillSelectedFromMenu(Skill& aSkill)
-{
-  std::unique_ptr<CameraState> newState = nullptr;
-
-  // If the skill has the ZoomOut flag set, swap to the Observing Board state.
-  if(aSkill.GetCameraZoomOut())
-  {
-    auto camera = GetCamera();
-    if(camera != nullptr)
-    {
-      auto cameraBehaviorComponent = camera->GetFirstComponentOfType<CameraBehaviorComponent>();
-      if(cameraBehaviorComponent != nullptr)
-      {
-        auto board = cameraBehaviorComponent->GetFollowedBoard();
-        if(board != nullptr)
-        {
-          newState = std::make_unique<CameraObservingBoardState>(*camera,
-                                                                 *board);
-        }
-      }
-    }
-  }
-
-  return newState;
-}

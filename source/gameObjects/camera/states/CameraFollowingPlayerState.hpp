@@ -43,15 +43,6 @@ namespace Barebones
        */
       std::unique_ptr<CameraState> HandlePlayerTurnEnded(PlayerBehaviorComponent& aPlayer) override;
 
-      /**
-       * A handler function that gets called whenever a skill is selected from
-       * a menu.
-       *
-       * @param aSkill The skill that was selected.
-       * @return A unique_ptr to a new state, if necessary.
-       */
-      std::unique_ptr<CameraState> HandleSkillSelectedFromMenu(Skill& aSkill) override;
-
     private:
       UrsineEngine::GameObject* mPlayer;
 

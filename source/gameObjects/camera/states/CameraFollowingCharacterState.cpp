@@ -1,5 +1,6 @@
 #include "CameraFollowingCharacterState.hpp"
 
+#include "CameraBehaviorComponent.hpp"
 #include "CameraDefaultState.hpp"
 
 using Barebones::CameraFollowingCharacterState;
@@ -14,11 +15,14 @@ CameraFollowingCharacterState::CameraFollowingCharacterState(UrsineEngine::GameO
   , mRotation(-40.0)
 {
   // Initialize the camera position and orientation.
-  aCamera.SetPosition(glm::vec3(aCharacter.GetPosition().x,
-                                aCharacter.GetPosition().y + mYDistance,
-                                aCharacter.GetPosition().z + mZDistance));
-  //aCamera.SetRotation(mRotation,
-  //                    glm::vec3(1.0, 0.0, 0.0));
+  auto cameraBehaviorComponent = aCamera.GetFirstComponentOfType<CameraBehaviorComponent>();
+  if(cameraBehaviorComponent != nullptr)
+  {
+    auto zoomDistance = cameraBehaviorComponent->GetZoomDistance();
+    aCamera.SetPosition(glm::vec3(aCharacter.GetPosition().x,
+                                  aCharacter.GetPosition().y + mYDistance + zoomDistance,
+                                  aCharacter.GetPosition().z + mZDistance + zoomDistance));
+  }
 }
 
 /******************************************************************************/
@@ -35,6 +39,13 @@ std::unique_ptr<Barebones::CameraState> CameraFollowingCharacterState::HandleObj
     auto camera = GetCamera();
     if(camera != nullptr)
     {
+      auto cameraBehaviorComponent = camera->GetFirstComponentOfType<CameraBehaviorComponent>();
+      if(cameraBehaviorComponent != nullptr)
+      {
+        newPos.y += cameraBehaviorComponent->GetZoomDistance();
+        newPos.z += cameraBehaviorComponent->GetZoomDistance();
+      }
+
       camera->SetPosition(newPos);
     }
   }

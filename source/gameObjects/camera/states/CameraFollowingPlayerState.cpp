@@ -41,8 +41,8 @@ CameraFollowingPlayerState::CameraFollowingPlayerState(UrsineEngine::GameObject&
         if(tile != nullptr)
         {
           mTargetPosition = tile->GetPosition();
-          mTargetPosition.y += mYDistance;
-          mTargetPosition.z += mZDistance;
+          mTargetPosition.y += (mYDistance + cameraBehaviorComponent->GetZoomDistance());
+          mTargetPosition.z += (mZDistance + cameraBehaviorComponent->GetZoomDistance());
 
           mMoving = true;
         }
@@ -109,8 +109,8 @@ std::unique_ptr<Barebones::CameraState> CameraFollowingPlayerState::HandleHumanP
             {
               // Calculate the new position for the camera.
               auto newPos = tile->GetPosition();
-              newPos.y += mYDistance;
-              newPos.z += mZDistance;
+              newPos.y += (mYDistance + cameraBehaviorComponent->GetZoomDistance());
+              newPos.z += (mZDistance + cameraBehaviorComponent->GetZoomDistance());
 
               mTargetPosition = newPos;
               mMoving = true;
@@ -137,33 +137,6 @@ std::unique_ptr<Barebones::CameraState> CameraFollowingPlayerState::HandlePlayer
     if(camera != nullptr)
     {
       newState = std::make_unique<CameraDefaultState>(*camera);
-    }
-  }
-
-  return newState;
-}
-
-/******************************************************************************/
-std::unique_ptr<Barebones::CameraState> CameraFollowingPlayerState::HandleSkillSelectedFromMenu(Skill& aSkill)
-{
-  std::unique_ptr<CameraState> newState = nullptr;
-
-  // If the skill has the ZoomOut flag set, swap to the Observing Board state.
-  if(aSkill.GetCameraZoomOut())
-  {
-    auto camera = GetCamera();
-    if(camera != nullptr)
-    {
-      auto cameraBehaviorComponent = camera->GetFirstComponentOfType<CameraBehaviorComponent>();
-      if(cameraBehaviorComponent != nullptr)
-      {
-        auto board = cameraBehaviorComponent->GetFollowedBoard();
-        if(board != nullptr)
-        {
-          newState = std::make_unique<CameraObservingBoardState>(*camera,
-                                                                 *board);
-        }
-      }
     }
   }
 

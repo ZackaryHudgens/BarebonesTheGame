@@ -50,6 +50,13 @@ namespace Barebones
        */
       UrsineEngine::GameObject* GetFollowedBoard() { return mFollowedBoard; }
 
+      /**
+       * Returns the current zoom distance set by the player.
+       *
+       * @return The current zoom distance set by the player.
+       */
+      double GetZoomDistance() const { return mZoomDistance; }
+
     private:
 
       /**
@@ -95,19 +102,13 @@ namespace Barebones
        */
       void HandleCharacterTurnEnded(CharacterBehaviorComponent& aCharacter);
 
-      /**
-       * A handler function that gets called whenever a skill is selected
-       * from a menu.
-       *
-       * @param aSkill The skill that was selected.
-       */
-      void HandleSkillSelectedFromMenu(Skill& aSkill);
-
       UrsineEngine::GameObject* mFollowedBoard;
 
       std::unique_ptr<CameraState> mState;
 
       double mRotation;
+
+      double mZoomDistance;
   };
 }
 

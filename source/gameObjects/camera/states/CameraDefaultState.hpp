@@ -40,15 +40,6 @@ namespace Barebones
        * @return A unique_ptr to a new state, if necessary.
        */
       std::unique_ptr<CameraState> HandleCharacterTurnBegan(CharacterBehaviorComponent& aCharacter) override;
-
-      /**
-       * A handler function that gets called whenever a skill is selected from
-       * a menu.
-       *
-       * @param aSkill The skill that was selected.
-       * @return A unique_ptr to a new state, if necessary.
-       */
-      std::unique_ptr<CameraState> HandleSkillSelectedFromMenu(Skill& aSkill) override;
   };
 }
 

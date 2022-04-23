@@ -16,6 +16,7 @@ CameraBehaviorComponent::CameraBehaviorComponent()
   , mFollowedBoard(nullptr)
   , mState(nullptr)
   , mRotation(-40.0)
+  , mZoomDistance(0.0)
 {
   UrsineEngine::ObjectMoved.Connect(*this, [this](UrsineEngine::GameObject* aObject)
   {
@@ -45,11 +46,6 @@ CameraBehaviorComponent::CameraBehaviorComponent()
   CharacterTurnEnded.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
   {
     this->HandleCharacterTurnEnded(aCharacter);
-  });
-
-  SkillSelectedFromMenu.Connect(*this, [this](Skill& aSkill)
-  {
-    this->HandleSkillSelectedFromMenu(aSkill);
   });
 }
 
@@ -167,19 +163,6 @@ void CameraBehaviorComponent::HandleCharacterTurnEnded(CharacterBehaviorComponen
   if(mState != nullptr)
   {
     auto newState = mState->HandleCharacterTurnEnded(aCharacter);
-    if(newState != nullptr)
-    {
-      mState.swap(newState);
-    }
-  }
-}
-
-/******************************************************************************/
-void CameraBehaviorComponent::HandleSkillSelectedFromMenu(Skill& aSkill)
-{
-  if(mState != nullptr)
-  {
-    auto newState = mState->HandleSkillSelectedFromMenu(aSkill);
     if(newState != nullptr)
     {
       mState.swap(newState);

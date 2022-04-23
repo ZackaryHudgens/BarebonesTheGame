@@ -21,8 +21,6 @@ DesecrateSpell::DesecrateSpell(UrsineEngine::GameObject& aParent)
   ss << " spaces\nof the target tile.\n\n";
   ss << "Desecrated tiles\ndamage enemies and\nheal skeletons.";
   SetDescription(ss.str());
-
-  SetCameraZoomOut(true);
 }
 
 /******************************************************************************/

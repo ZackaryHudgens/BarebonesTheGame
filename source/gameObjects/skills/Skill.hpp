@@ -62,14 +62,6 @@ namespace Barebones
        */
       std::string GetDescription() const { return mDescription; }
 
-      /**
-       * Returns whether the camera should zoom out when this skill
-       * is selected.
-       *
-       * @return Whether the camera should zoom out when this skill is selected.
-       */
-      bool GetCameraZoomOut() const { return mZoomOut; }
-
     protected:
 
       /**
@@ -102,20 +94,11 @@ namespace Barebones
        */
       void SetDescription(const std::string& aDescription) { mDescription = aDescription; }
 
-      /**
-       * Sets whether the camera should zoom out when this skill is selected.
-       *
-       * @param aZoomOut Whether the camera should zoom out when this skill is selected.
-       */
-      void SetCameraZoomOut(bool aZoomOut) { mZoomOut = aZoomOut; }
-
     private:
       UrsineEngine::GameObject* mParent;
 
       std::string mDescription;
       std::string mName;
-
-      bool mZoomOut;
   };
 }
 

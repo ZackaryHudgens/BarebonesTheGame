@@ -86,23 +86,6 @@ namespace Barebones
        */
       virtual std::unique_ptr<CameraState> HandleCharacterTurnEnded(CharacterBehaviorComponent& aCharacter);
 
-      /**
-       * A virtual function that gets called whenever a skill is selected from
-       * a menu.
-       *
-       * @param aSkill The skill that was selected.
-       * @return A unique_ptr to a new state, if necessary.
-       */
-      virtual std::unique_ptr<CameraState> HandleSkillSelectedFromMenu(Skill& aSkill);
-
-      /**
-       * A virtual function that gets called whenever a skill is executed.
-       *
-       * @param aSkill The skill that was executed.
-       * @return A unique_ptr to a new state, if necessary.
-       */
-      virtual std::unique_ptr<CameraState> HandleSkillExecuted(Skill& aSkill);
-
     protected:
 
       /**
