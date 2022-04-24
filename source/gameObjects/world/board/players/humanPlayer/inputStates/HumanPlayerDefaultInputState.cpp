@@ -14,6 +14,8 @@
 #include "CharacterBehaviorComponent.hpp"
 #include "Skill.hpp"
 
+#include "Signals.hpp"
+
 #include <iostream>
 
 using Barebones::HumanPlayerDefaultInputState;
@@ -104,6 +106,16 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
         case UrsineEngine::KeyCode::eKEY_Q:
         {
           CreateSpellMenu(*player);
+          break;
+        }
+        case UrsineEngine::KeyCode::eKEY_Z:
+        {
+          CameraZoomChangeRequested.Notify(2.5);
+          break;
+        }
+        case UrsineEngine::KeyCode::eKEY_X:
+        {
+          CameraZoomChangeRequested.Notify(0.0);
           break;
         }
         case UrsineEngine::KeyCode::eKEY_ENTER:

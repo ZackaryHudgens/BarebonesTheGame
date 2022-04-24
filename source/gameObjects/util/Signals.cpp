@@ -33,3 +33,8 @@ Barebones::InputComponentInitializedSignal Barebones::InputComponentInitialized;
  */
 Barebones::TurnDisplayFinishedSignal   Barebones::TurnDisplayFinished;
 Barebones::SkillSelectedFromMenuSignal Barebones::SkillSelectedFromMenu;
+
+/**
+ * Settings signals
+ */
+Barebones::CameraZoomChangeRequestedSignal Barebones::CameraZoomChangeRequested;

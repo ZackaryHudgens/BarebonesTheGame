@@ -6,6 +6,8 @@
 
 #include "HumanPlayerBehaviorComponent.hpp"
 
+#include "TileFactory.hpp"
+
 using Barebones::DesecrateSpell;
 
 /******************************************************************************/
@@ -86,4 +88,13 @@ Barebones::TileList DesecrateSpell::GetTilesToHighlight(UrsineEngine::GameObject
 void DesecrateSpell::ProtectedExecute(UrsineEngine::GameObject& aBoard,
                                       const TileLocation& aLocation)
 {
+  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
+  if(boardLayoutComponent != nullptr)
+  {
+    for(const auto& tileLocation : GetTilesToHighlight(aBoard))
+    {
+      // For each affected tile, create a new desecrated tile at that location.
+      boardLayoutComponent->ChangeTileAtLocation(TileType::eDEFAULT, tileLocation);
+    }
+  }
 }

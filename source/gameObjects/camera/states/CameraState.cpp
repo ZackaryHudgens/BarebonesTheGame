@@ -55,3 +55,9 @@ std::unique_ptr<CameraState> CameraState::HandleCharacterTurnEnded(CharacterBeha
 {
   return nullptr;
 }
+
+/******************************************************************************/
+std::unique_ptr<CameraState> CameraState::HandleCameraZoomChanged(double aZoom)
+{
+  return nullptr;
+}

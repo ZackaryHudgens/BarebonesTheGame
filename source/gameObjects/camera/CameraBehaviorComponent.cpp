@@ -47,6 +47,11 @@ CameraBehaviorComponent::CameraBehaviorComponent()
   {
     this->HandleCharacterTurnEnded(aCharacter);
   });
+
+  CameraZoomChangeRequested.Connect(*this, [this](double aZoom)
+  {
+    this->HandleCameraZoomChangeRequested(aZoom);
+  });
 }
 
 /******************************************************************************/
@@ -163,6 +168,21 @@ void CameraBehaviorComponent::HandleCharacterTurnEnded(CharacterBehaviorComponen
   if(mState != nullptr)
   {
     auto newState = mState->HandleCharacterTurnEnded(aCharacter);
+    if(newState != nullptr)
+    {
+      mState.swap(newState);
+    }
+  }
+}
+
+/******************************************************************************/
+void CameraBehaviorComponent::HandleCameraZoomChangeRequested(double aZoom)
+{
+  mZoomDistance = aZoom;
+
+  if(mState != nullptr)
+  {
+    auto newState = mState->HandleCameraZoomChanged(mZoomDistance);
     if(newState != nullptr)
     {
       mState.swap(newState);

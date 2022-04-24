@@ -142,3 +142,42 @@ std::unique_ptr<Barebones::CameraState> CameraFollowingPlayerState::HandlePlayer
 
   return newState;
 }
+
+/******************************************************************************/
+std::unique_ptr<Barebones::CameraState> CameraFollowingPlayerState::HandleCameraZoomChanged(double aZoom)
+{
+  // Get the tile at the player's current location and add the new zoom
+  // value to it.
+  if(mPlayer != nullptr)
+  {
+    auto humanPlayerBehaviorComponent = mPlayer->GetFirstComponentOfType<HumanPlayerBehaviorComponent>();
+    auto camera = GetCamera();
+    if(humanPlayerBehaviorComponent != nullptr &&
+       camera != nullptr)
+    {
+      auto cameraBehaviorComponent = camera->GetFirstComponentOfType<CameraBehaviorComponent>();
+      if(cameraBehaviorComponent != nullptr)
+      {
+        auto board = cameraBehaviorComponent->GetFollowedBoard();
+        if(board != nullptr)
+        {
+          auto boardLayoutComponent = board->GetFirstComponentOfType<BoardLayoutComponent>();
+          if(boardLayoutComponent != nullptr)
+          {
+            auto tile = boardLayoutComponent->GetTileAtLocation(humanPlayerBehaviorComponent->GetLocation());
+            if(tile != nullptr)
+            {
+              mTargetPosition = tile->GetPosition();
+              mTargetPosition.y += (mYDistance + aZoom);
+              mTargetPosition.z += (mZDistance + aZoom);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  mMoving = true;
+
+  return nullptr;
+}

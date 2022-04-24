@@ -96,6 +96,16 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerUsingSkillInputStat
 
           break;
         }
+        case UrsineEngine::KeyCode::eKEY_Z:
+        {
+          CameraZoomChangeRequested.Notify(2.5);
+          break;
+        }
+        case UrsineEngine::KeyCode::eKEY_X:
+        {
+          CameraZoomChangeRequested.Notify(0.0);
+          break;
+        }
         case UrsineEngine::KeyCode::eKEY_ENTER:
         {
           // If the player's location is valid for using the current skill,

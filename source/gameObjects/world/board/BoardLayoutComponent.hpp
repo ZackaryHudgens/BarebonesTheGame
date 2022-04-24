@@ -5,6 +5,7 @@
 #include <CoreSignals.hpp>
 #include <GameObject.hpp>
 
+#include "TileFactory.hpp"
 #include "TileUtil.hpp"
 
 #include "HumanPlayerBehaviorComponent.hpp"
@@ -35,6 +36,13 @@ namespace Barebones
       void Initialize() override;
 
       /**
+       * Updates the component.
+       *
+       * @param aTime The start time of the current Scene's Update().
+       */
+      void Update(double aTime) override;
+
+      /**
        * Returns the number of columns.
        *
        * @return The number of columns.
@@ -47,6 +55,16 @@ namespace Barebones
        * @return The number of rows.
        */
       int GetRows() const { return mRows; }
+
+      /**
+       * Changes the type of the tile at the given location if the location
+       * is within the boundaries of the board.
+       *
+       * @param aTileType The new type of tile.
+       * @param aLocation The location of the tile to change.
+       */
+      void ChangeTileAtLocation(const TileType& aTileType,
+                                const TileLocation& aLocation);
 
       /**
        * Adds a character to the board at the given location by taking
@@ -172,6 +190,8 @@ namespace Barebones
 
       Skill* mSkillUsedForHighlighting;
       std::vector<UrsineEngine::GameObject*> mHighlightedTiles;
+
+      std::vector<std::pair<TileLocation, TileType>> mTilesToCreate;
 
       double mTileSpacing;
       int mColumns;

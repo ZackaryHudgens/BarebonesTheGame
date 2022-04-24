@@ -102,6 +102,14 @@ namespace Barebones
        */
       void HandleCharacterTurnEnded(CharacterBehaviorComponent& aCharacter);
 
+      /**
+       * A handler function that gets called whenever the player tries
+       * to zoom the camera in/out.
+       *
+       * @param aZoom The value to zoom by in world space.
+       */
+      void HandleCameraZoomChangeRequested(double aZoom);
+
       UrsineEngine::GameObject* mFollowedBoard;
 
       std::unique_ptr<CameraState> mState;

@@ -86,6 +86,15 @@ namespace Barebones
        */
       virtual std::unique_ptr<CameraState> HandleCharacterTurnEnded(CharacterBehaviorComponent& aCharacter);
 
+      /**
+       * A virtual function that gets called whenever the camera's zoom
+       * level changes.
+       *
+       * @param aZoom The new zoom level.
+       * @return A unique_ptr to a new state, if necessary.
+       */
+      virtual std::unique_ptr<CameraState> HandleCameraZoomChanged(double aZoom);
+
     protected:
 
       /**

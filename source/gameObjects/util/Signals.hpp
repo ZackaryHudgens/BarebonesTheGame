@@ -65,6 +65,13 @@ namespace Barebones
 
   extern TurnDisplayFinishedSignal TurnDisplayFinished;
   extern SkillSelectedFromMenuSignal SkillSelectedFromMenu;
+
+  /**
+   * Settings signals
+   */
+  typedef UrsineEngine::SignalT<double> CameraZoomChangeRequestedSignal;
+
+  extern CameraZoomChangeRequestedSignal CameraZoomChangeRequested;
 }
 
 #endif

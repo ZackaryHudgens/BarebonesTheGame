@@ -43,6 +43,15 @@ namespace Barebones
        */
       std::unique_ptr<CameraState> HandlePlayerTurnEnded(PlayerBehaviorComponent& aPlayer) override;
 
+      /**
+       * A handler function that gets called whenever the camera's zoom
+       * level changes.
+       *
+       * @param aZoom The new zoom level.
+       * @return A unique_ptr to a new state, if necessary.
+       */
+      std::unique_ptr<CameraState> HandleCameraZoomChanged(double aZoom) override;
+
     private:
       UrsineEngine::GameObject* mPlayer;
 

@@ -11,11 +11,12 @@
 
 #include "CharacterBehaviorComponent.hpp"
 
-#include "TileFactory.hpp"
 #include "TileBehaviorComponent.hpp"
 #include "TileMeshComponent.hpp"
 
 #include "SkillActionBehaviorComponent.hpp"
+
+#include <iostream>
 
 using Barebones::BoardLayoutComponent;
 
@@ -102,6 +103,65 @@ void BoardLayoutComponent::Initialize()
       mTiles.emplace_back(row);
       mCharacters.emplace_back(characters);
     }
+  }
+}
+
+/******************************************************************************/
+void BoardLayoutComponent::Update(double aTime)
+{
+  if(!mTilesToCreate.empty())
+  {
+    auto parent = GetParent();
+    if(parent != nullptr)
+    {
+      std::stringstream ss;
+
+      for(const auto& tileData : mTilesToCreate)
+      {
+        auto tileLocation = tileData.first;
+        auto oldTile = GetTileAtLocation(tileLocation);
+        if(oldTile == nullptr &&
+           tileLocation.first >= 0 &&
+           tileLocation.first < mTiles.size())
+        {
+          if(tileLocation.second >= 0 &&
+             tileLocation.second < mTiles.at(tileLocation.first).size())
+          {
+            // Create a new tile with the given type at the new location.
+            ss << "tile_" << tileLocation.first << "_" << tileLocation.second;
+            auto newTile = TileFactory::CreateTile(tileData.second, ss.str());
+
+            // The z-position in world space corresponds to the y-position
+            // on the 2D grid. It's made negative here so that (0, 0) on
+            // the grid is in the bottom left.
+            newTile->SetPosition(glm::vec3((double)tileLocation.first + (mTileSpacing * tileLocation.first),
+                                            0.0,
+                                            -1 * (double)tileLocation.second - (mTileSpacing * tileLocation.second)));
+            parent->AddChild(std::move(newTile));
+
+            // Place the new tile in the tile map.
+            mTiles.at(tileLocation.first).at(tileLocation.second) = parent->GetChild(ss.str());
+            ss.str("");
+          }
+        }
+      }
+    }
+  }
+}
+
+/******************************************************************************/
+void BoardLayoutComponent::ChangeTileAtLocation(const TileType& aTileType,
+                                                const TileLocation& aLocation)
+{
+  auto tile = GetTileAtLocation(aLocation);
+  if(tile != nullptr)
+  {
+    // Schedule the current tile for deletion, then add the new tile type
+    // to the list of tiles to be created on the next update.
+    tile->ScheduleForDeletion();
+    mTiles.at(aLocation.first).at(aLocation.second) = nullptr;
+
+    mTilesToCreate.emplace_back(aLocation, aTileType);
   }
 }
 
