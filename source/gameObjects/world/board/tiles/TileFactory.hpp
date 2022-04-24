@@ -7,7 +7,8 @@ namespace Barebones
 {
   enum class TileType
   {
-    eDEFAULT
+    eDEFAULT,
+    eDESECRATED
   };
 
   class TileFactory

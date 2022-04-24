@@ -2,6 +2,8 @@
 
 #include "DefaultTileBehaviorComponent.hpp"
 #include "DefaultTileMeshComponent.hpp"
+#include "DesecratedTileBehaviorComponent.hpp"
+#include "DesecratedTileMeshComponent.hpp"
 
 using Barebones::TileFactory;
 
@@ -16,6 +18,12 @@ std::unique_ptr<UrsineEngine::GameObject> TileFactory::CreateTile(const TileType
     {
       newTile->AddComponent(std::make_unique<DefaultTileBehaviorComponent>());
       newTile->AddComponent(std::make_unique<DefaultTileMeshComponent>());
+      break;
+    }
+    case TileType::eDESECRATED:
+    {
+      newTile->AddComponent(std::make_unique<DesecratedTileBehaviorComponent>());
+      newTile->AddComponent(std::make_unique<DesecratedTileMeshComponent>());
       break;
     }
     default:

@@ -26,7 +26,8 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/world/board/players/humanPlayer/*.?pp
                        gameObjects/world/board/players/humanPlayer/inputStates/*.?pp
                        gameObjects/world/board/tiles/*.?pp
-                       gameObjects/world/board/tiles/defaultTile/*.?pp)
+                       gameObjects/world/board/tiles/defaultTile/*.?pp
+                       gameObjects/world/board/tiles/desecratedTile/*.?pp)
 
 add_executable(barebones ${GAME_SOURCES})
 target_link_libraries(barebones PUBLIC
@@ -60,7 +61,8 @@ target_include_directories(barebones PUBLIC
                            gameObjects/world/board/players/humanPlayer
                            gameObjects/world/board/players/humanPlayer/inputStates
                            gameObjects/world/board/tiles
-                           gameObjects/world/board/tiles/defaultTile)
+                           gameObjects/world/board/tiles/defaultTile
+                           gameObjects/world/board/tiles/desecratedTile)
 
 install(TARGETS barebones DESTINATION ${INSTALL_DIR})
 install(DIRECTORY resources DESTINATION ${INSTALL_DIR})

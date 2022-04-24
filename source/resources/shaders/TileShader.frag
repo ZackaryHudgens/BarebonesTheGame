@@ -14,5 +14,5 @@ uniform vec4 hoverColor;
 
 void main()
 {
-  fragColor = hoverColor * highlightColor * texture(texSampler, texCoords);//vec4(vertexColor, 1.0);
+  fragColor = hoverColor * highlightColor * texture(texSampler, texCoords);
 }

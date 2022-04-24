@@ -95,7 +95,7 @@ void DesecrateSpell::ProtectedExecute(UrsineEngine::GameObject& aBoard,
     {
       // For each affected tile, create a new desecrated tile at that location.
       boardLayoutComponent->RemoveTileAtLocation(tileLocation);
-      boardLayoutComponent->AddTileAtLocation(TileType::eDEFAULT, tileLocation);
+      boardLayoutComponent->AddTileAtLocation(TileType::eDESECRATED, tileLocation);
     }
   }
 }
