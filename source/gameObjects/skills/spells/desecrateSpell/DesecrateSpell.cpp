@@ -94,7 +94,8 @@ void DesecrateSpell::ProtectedExecute(UrsineEngine::GameObject& aBoard,
     for(const auto& tileLocation : GetTilesToHighlight(aBoard))
     {
       // For each affected tile, create a new desecrated tile at that location.
-      boardLayoutComponent->ChangeTileAtLocation(TileType::eDEFAULT, tileLocation);
+      boardLayoutComponent->RemoveTileAtLocation(tileLocation);
+      boardLayoutComponent->AddTileAtLocation(TileType::eDEFAULT, tileLocation);
     }
   }
 }

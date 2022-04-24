@@ -23,7 +23,7 @@ using Barebones::BoardLayoutComponent;
 /******************************************************************************/
 BoardLayoutComponent::BoardLayoutComponent()
   : Component()
-  , mHoveredTile(nullptr)
+  , mHoveredTileLocation(0, 0)
   , mSkillUsedForHighlighting(nullptr)
   , mTileSpacing(0.2)
   , mColumns(7)
@@ -107,61 +107,61 @@ void BoardLayoutComponent::Initialize()
 }
 
 /******************************************************************************/
-void BoardLayoutComponent::Update(double aTime)
+bool BoardLayoutComponent::AddTileAtLocation(const TileType& aTileType,
+                                             const TileLocation& aLocation)
 {
-  if(!mTilesToCreate.empty())
+  bool success = false;
+
+  auto tile = GetTileAtLocation(aLocation);
+  if(tile == nullptr)
   {
-    auto parent = GetParent();
-    if(parent != nullptr)
+    if(aLocation.first >= 0 &&
+       aLocation.first < mColumns &&
+       aLocation.second >= 0 &&
+       aLocation.second < mRows)
     {
-      std::stringstream ss;
-
-      for(const auto& tileData : mTilesToCreate)
+      auto parent = GetParent();
+      if(parent != nullptr)
       {
-        auto tileLocation = tileData.first;
-        auto oldTile = GetTileAtLocation(tileLocation);
-        if(oldTile == nullptr &&
-           tileLocation.first >= 0 &&
-           tileLocation.first < mTiles.size())
+        // Create the new tile and add it as a child GameObject.
+        std::stringstream newTileName;
+        newTileName << "tile_" << aLocation.first << "_" << aLocation.second;
+
+        // If a child GameObject with this name already exists, but no tile
+        // was found at this location in the tile map, then it's likely that
+        // this function was called in the same frame as RemoveTileAtLocation()
+        // and the tile hasn't been removed from the parent GameObject yet.
+        // If that's the case, add "_new" to the name.
+        if(parent->GetChild(newTileName.str()) != nullptr)
         {
-          if(tileLocation.second >= 0 &&
-             tileLocation.second < mTiles.at(tileLocation.first).size())
-          {
-            // Create a new tile with the given type at the new location.
-            ss << "tile_" << tileLocation.first << "_" << tileLocation.second;
-            auto newTile = TileFactory::CreateTile(tileData.second, ss.str());
-
-            // The z-position in world space corresponds to the y-position
-            // on the 2D grid. It's made negative here so that (0, 0) on
-            // the grid is in the bottom left.
-            newTile->SetPosition(glm::vec3((double)tileLocation.first + (mTileSpacing * tileLocation.first),
-                                            0.0,
-                                            -1 * (double)tileLocation.second - (mTileSpacing * tileLocation.second)));
-            parent->AddChild(std::move(newTile));
-
-            // Place the new tile in the tile map.
-            mTiles.at(tileLocation.first).at(tileLocation.second) = parent->GetChild(ss.str());
-            ss.str("");
-          }
+          newTileName << "_new";
         }
+
+        // Position the tile in world space. The z-position in world space
+        // corresponds to the y-position on the 2D grid. It's made negative here
+        // so that (0, 0) on the grid is in the bottom left.
+        auto newTile = TileFactory::CreateTile(aTileType, newTileName.str());
+        newTile->SetPosition(glm::vec3((double)aLocation.first + (mTileSpacing * aLocation.first),
+                                        0.0,
+                                        -1 * (double)aLocation.second - (mTileSpacing * aLocation.second)));
+
+        parent->AddChild(std::move(newTile));
+        mTiles.at(aLocation.first).at(aLocation.second) = parent->GetChildren().back();
       }
     }
   }
+
+  return success;
 }
 
 /******************************************************************************/
-void BoardLayoutComponent::ChangeTileAtLocation(const TileType& aTileType,
-                                                const TileLocation& aLocation)
+void BoardLayoutComponent::RemoveTileAtLocation(const TileLocation& aLocation)
 {
   auto tile = GetTileAtLocation(aLocation);
   if(tile != nullptr)
   {
-    // Schedule the current tile for deletion, then add the new tile type
-    // to the list of tiles to be created on the next update.
     tile->ScheduleForDeletion();
     mTiles.at(aLocation.first).at(aLocation.second) = nullptr;
-
-    mTilesToCreate.emplace_back(aLocation, aTileType);
   }
 }
 
@@ -392,9 +392,10 @@ void BoardLayoutComponent::HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& 
            location.second >= 0)
         {
           // Un-hover the tile at the previous location.
-          if(mHoveredTile != nullptr)
+          auto hoveredTile = GetTileAtLocation(mHoveredTileLocation);
+          if(hoveredTile != nullptr)
           {
-            auto prevTileBehaviorComp = mHoveredTile->GetFirstComponentOfType<TileBehaviorComponent>();
+            auto prevTileBehaviorComp = hoveredTile->GetFirstComponentOfType<TileBehaviorComponent>();
             if(prevTileBehaviorComp != nullptr)
             {
               prevTileBehaviorComp->SetHovered(false);
@@ -411,7 +412,7 @@ void BoardLayoutComponent::HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& 
               newTileBehaviorComp->SetHovered(true);
             }
 
-            mHoveredTile = newTile;
+            mHoveredTileLocation = location;
           }
 
           // Update the highlighted tiles, if necessary.
@@ -441,15 +442,19 @@ void BoardLayoutComponent::HandleSkillSelectedFromMenu(Skill& aSkill)
   mSkillUsedForHighlighting = &aSkill;
 
   // First, un-highlight all highlighted tiles.
-  for(auto tile : mHighlightedTiles)
+  for(auto tileLocation : mHighlightedTileLocations)
   {
-    auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
-    if(tileBehaviorComponent != nullptr)
+    auto tile = GetTileAtLocation(tileLocation);
+    if(tile != nullptr)
     {
-      tileBehaviorComponent->SetHighlighted(false);
+      auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
+      if(tileBehaviorComponent != nullptr)
+      {
+        tileBehaviorComponent->SetHighlighted(false);
+      }
     }
   }
-  mHighlightedTiles.clear();
+  mHighlightedTileLocations.clear();
 
   // Next, highlight all tiles affected by this skill.
   auto parent = GetParent();
@@ -466,10 +471,10 @@ void BoardLayoutComponent::HandleSkillSelectedFromMenu(Skill& aSkill)
         {
           tileBehaviorComponent->SetHighlightColor(glm::vec3(0.682, 0.729, 0.537));
           tileBehaviorComponent->SetHighlighted(true);
-
-          mHighlightedTiles.emplace_back(tile);
         }
       }
+
+      mHighlightedTileLocations.emplace_back(tileLocation);
     }
   }
 }
@@ -479,16 +484,20 @@ void BoardLayoutComponent::HandleSkillExecuted(Skill& aSkill)
 {
   if(&aSkill == mSkillUsedForHighlighting)
   {
-    for(auto tile : mHighlightedTiles)
+    for(auto tileLocation : mHighlightedTileLocations)
     {
-      auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
-      if(tileBehaviorComponent != nullptr)
+      auto tile = GetTileAtLocation(tileLocation);
+      if(tile != nullptr)
       {
-        tileBehaviorComponent->SetHighlighted(false);
+        auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
+        if(tileBehaviorComponent != nullptr)
+        {
+          tileBehaviorComponent->SetHighlighted(false);
+        }
       }
     }
 
-    mHighlightedTiles.clear();
+    mHighlightedTileLocations.clear();
     mSkillUsedForHighlighting = nullptr;
   }
 }

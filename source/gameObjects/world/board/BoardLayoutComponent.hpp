@@ -36,13 +36,6 @@ namespace Barebones
       void Initialize() override;
 
       /**
-       * Updates the component.
-       *
-       * @param aTime The start time of the current Scene's Update().
-       */
-      void Update(double aTime) override;
-
-      /**
        * Returns the number of columns.
        *
        * @return The number of columns.
@@ -57,14 +50,23 @@ namespace Barebones
       int GetRows() const { return mRows; }
 
       /**
-       * Changes the type of the tile at the given location if the location
-       * is within the boundaries of the board.
+       * Adds a tile of the given type at at the given location on the board.
+       * If the location is not within the board's boundaries, this function fails.
+       * This function also fails if a tile already exists at the given location.
        *
-       * @param aTileType The new type of tile.
-       * @param aLocation The location of the tile to change.
+       * @param aTileType The type of the new tile.
+       * @param aLocation The location of the new tile.
+       * @return True if successful, false otherwise.
        */
-      void ChangeTileAtLocation(const TileType& aTileType,
-                                const TileLocation& aLocation);
+      bool AddTileAtLocation(const TileType& aTileType,
+                             const TileLocation& aLocation);
+
+      /**
+       * Removes a tile from the board at the given location.
+       *
+       * @param aLocation The location of the tile to remove.
+       */
+      void RemoveTileAtLocation(const TileLocation& aLocation);
 
       /**
        * Adds a character to the board at the given location by taking
@@ -186,12 +188,10 @@ namespace Barebones
       std::vector<std::vector<UrsineEngine::GameObject*>> mTiles;
       std::vector<std::vector<UrsineEngine::GameObject*>> mCharacters;
 
-      UrsineEngine::GameObject* mHoveredTile;
+      TileLocation mHoveredTileLocation;
 
       Skill* mSkillUsedForHighlighting;
-      std::vector<UrsineEngine::GameObject*> mHighlightedTiles;
-
-      std::vector<std::pair<TileLocation, TileType>> mTilesToCreate;
+      std::vector<TileLocation> mHighlightedTileLocations;
 
       double mTileSpacing;
       int mColumns;
