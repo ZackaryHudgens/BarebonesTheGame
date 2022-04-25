@@ -178,6 +178,7 @@ void DesecratedTileMeshComponent::SetupShaders()
                                              1.0,
                                              1.0,
                                              1.0));
+  tileShader.SetVec4("fadeInColor", glm::vec4(0.89, 0.93, 0.75, 1.0));
 
   AddShader("tileShader", tileShader);
   SetCurrentShader("tileShader");

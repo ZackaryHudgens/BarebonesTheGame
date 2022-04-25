@@ -47,10 +47,10 @@ namespace Barebones
       void HandleHoverChanged(bool aHover) override;
 
     private:
-      double mScale;
-      double mScaleSpeed;
+      float mFadeValue;
+      double mFadeSpeed;
 
-      bool mScaling;
+      bool mFadingIn;
   };
 }
 

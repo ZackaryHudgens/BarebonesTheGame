@@ -11,61 +11,54 @@ using Barebones::DefaultTileBehaviorComponent;
 /******************************************************************************/
 DefaultTileBehaviorComponent::DefaultTileBehaviorComponent()
   : TileBehaviorComponent()
-  , mScale(0.1)
-  , mScaleSpeed(0.1)
-  , mScaling(false)
+  , mFadeValue(0.0)
+  , mFadeSpeed(0.1)
+  , mFadingIn(false)
 {
 }
 
 /******************************************************************************/
 void DefaultTileBehaviorComponent::Initialize()
 {
-  auto parent = GetParent();
-  if(parent != nullptr)
-  {
-    parent->SetScale(glm::vec3(mScale,
-                               mScale,
-                               mScale));
-    mScaling = true;
-  }
+  mFadingIn = true;
 }
 
 /******************************************************************************/
 void DefaultTileBehaviorComponent::Update(double aTime)
 {
-  // Scale the tile up to normal size.
-  if(mScaling)
+  // Fade in the tile texture.
+  if(mFadingIn)
   {
     auto parent = GetParent();
     if(parent != nullptr)
     {
-      // Calculate the new scalar value via interpolation.
-      // Because we scale each axis evenly, we can just use
-      // the x-axis scale as our starting point ([0, 0] in the matrix).
-      auto transform = parent->GetScalarTransform();
-      double scalar = transform[0][0];
-      double newScalar = glm::mix(scalar, 1.0, mScaleSpeed);
-
-      if((1.0 - newScalar) <= 0.005)
+      auto tileMesh = parent->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
+      if(tileMesh != nullptr)
       {
-        newScalar = 1.0;
-      }
+        auto shader = tileMesh->GetCurrentShader();
+        if(shader != nullptr)
+        {
+          if(shader->IsUniformDefined("fadeValue"))
+          {
+            shader->Activate();
 
-      parent->SetScale(glm::vec3(newScalar,
-                                 newScalar,
-                                 newScalar));
+            auto newFadeValue = glm::mix(mFadeValue, 1.0f, mFadeSpeed);
+            if((1.0 - newFadeValue) <= 0.005)
+            {
+              newFadeValue = 1.0;
+              mFadingIn = false;
+            }
 
-      if(newScalar == 1.0)
-      {
-        mScaling = false;
-        TileReadyForUse.Notify(*parent);
+            mFadeValue = newFadeValue;
+            shader->SetFloat("fadeValue", mFadeValue);
+            if(!mFadingIn)
+            {
+              TileReadyForUse.Notify(*parent);
+            }
+          }
+        }
       }
     }
-  }
-
-  // Add a simple glow effect to the tile.
-  if(IsHighlighted())
-  {
   }
 }
 
