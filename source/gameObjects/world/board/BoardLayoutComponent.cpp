@@ -60,6 +60,11 @@ BoardLayoutComponent::BoardLayoutComponent()
     this->HandleSkillCancelled(aSkill);
   });
 
+  CharacterFinishedMoving.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
+  {
+    this->HandleCharacterFinishedMoving(aCharacter);
+  });
+
   CharacterDied.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
   {
     this->HandleCharacterDied(aCharacter);
@@ -144,6 +149,16 @@ bool BoardLayoutComponent::AddTileAtLocation(const TileType& aTileType,
         newTile->SetPosition(glm::vec3((double)aLocation.first + (mTileSpacing * aLocation.first),
                                         0.0,
                                         -1 * (double)aLocation.second - (mTileSpacing * aLocation.second)));
+
+        // If the new tile is at the hovered location, set the hovered flag.
+        if(mHoveredTileLocation == aLocation)
+        {
+          auto tileBehaviorComponent = newTile->GetFirstComponentOfType<TileBehaviorComponent>();
+          if(tileBehaviorComponent != nullptr)
+          {
+            tileBehaviorComponent->SetHovered(true);
+          }
+        }
 
         parent->AddChild(std::move(newTile));
         mTiles.at(aLocation.first).at(aLocation.second) = parent->GetChildren().back();
@@ -506,6 +521,26 @@ void BoardLayoutComponent::HandleSkillExecuted(Skill& aSkill)
 void BoardLayoutComponent::HandleSkillCancelled(Skill& aSkill)
 {
   HandleSkillExecuted(aSkill);
+}
+
+/******************************************************************************/
+void BoardLayoutComponent::HandleCharacterFinishedMoving(CharacterBehaviorComponent& aCharacter)
+{
+  // When a character finishes moving, tell the tile at their new location.
+  auto characterObject = aCharacter.GetParent();
+  if(characterObject != nullptr)
+  {
+    auto location = GetLocationOfCharacter(characterObject->GetName());
+    auto tile = GetTileAtLocation(location);
+    if(tile != nullptr)
+    {
+      auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
+      if(tileBehaviorComponent != nullptr)
+      {
+        tileBehaviorComponent->HandleCharacterEntered(*characterObject);
+      }
+    }
+  }
 }
 
 /******************************************************************************/

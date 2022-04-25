@@ -28,6 +28,22 @@ namespace Barebones
        */
       void Update(double aTime) override;
 
+      /**
+       * A handler function that gets called whenever a character stops
+       * moving on this tile.
+       *
+       * @param aCharacter The character GameObject that stopped moving.
+       */
+      void HandleCharacterEntered(UrsineEngine::GameObject& aCharacter) override;
+
+      /**
+       * A handler function that gets called whenever a character moves away
+       * from this tile.
+       *
+       * @param aCharacter The character GameObject that moved away.
+       */
+      void HandleCharacterExited(UrsineEngine::GameObject& aCharacter) override;
+
     protected:
 
       /**

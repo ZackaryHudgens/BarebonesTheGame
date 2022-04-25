@@ -29,16 +29,16 @@ void DefaultTileMeshComponent::SetupVertices()
 
   // Front face
   vertex.mPosition  = glm::vec3(-xVal, -yVal, zVal);
-  vertex.mTexCoords = glm::vec2(0.0, 0.0);
+  vertex.mTexCoords = glm::vec2(0.33, 0.0);
   AddVertex(vertex);
   vertex.mPosition  = glm::vec3(xVal, -yVal, zVal);
-  vertex.mTexCoords = glm::vec2(1.0, 0.0);
+  vertex.mTexCoords = glm::vec2(0.66, 0.0);
   AddVertex(vertex);
   vertex.mPosition  = glm::vec3(xVal, yVal, zVal);
-  vertex.mTexCoords = glm::vec2(1.0, 1.0);
+  vertex.mTexCoords = glm::vec2(0.66, 1.0);
   AddVertex(vertex);
   vertex.mPosition  = glm::vec3(-xVal, yVal, zVal);
-  vertex.mTexCoords = glm::vec2(0.0, 1.0);
+  vertex.mTexCoords = glm::vec2(0.33, 1.0);
   AddVertex(vertex);
 
   AddIndex(0);
@@ -53,10 +53,10 @@ void DefaultTileMeshComponent::SetupVertices()
   vertex.mTexCoords = glm::vec2(0.0, 0.0);
   AddVertex(vertex);
   vertex.mPosition  = glm::vec3(xVal, yVal, zVal);
-  vertex.mTexCoords = glm::vec2(1.0, 0.0);
+  vertex.mTexCoords = glm::vec2(0.33, 0.0);
   AddVertex(vertex);
   vertex.mPosition  = glm::vec3(xVal, yVal, -zVal);
-  vertex.mTexCoords = glm::vec2(1.0, 1.0);
+  vertex.mTexCoords = glm::vec2(0.33, 1.0);
   AddVertex(vertex);
   vertex.mPosition  = glm::vec3(-xVal, yVal, -zVal);
   vertex.mTexCoords = glm::vec2(0.0, 1.0);
@@ -71,16 +71,16 @@ void DefaultTileMeshComponent::SetupVertices()
 
   // Back face
   vertex.mPosition  = glm::vec3(-xVal, -yVal, -zVal);
-  vertex.mTexCoords = glm::vec2(0.0, 0.0);
+  vertex.mTexCoords = glm::vec2(0.33, 0.0);
   AddVertex(vertex);
   vertex.mPosition  = glm::vec3(xVal, -yVal, -zVal);
-  vertex.mTexCoords = glm::vec2(1.0, 0.0);
+  vertex.mTexCoords = glm::vec2(0.66, 0.0);
   AddVertex(vertex);
   vertex.mPosition  = glm::vec3(xVal, yVal, -zVal);
-  vertex.mTexCoords = glm::vec2(1.0, 1.0);
+  vertex.mTexCoords = glm::vec2(0.66, 1.0);
   AddVertex(vertex);
   vertex.mPosition  = glm::vec3(-xVal, yVal, -zVal);
-  vertex.mTexCoords = glm::vec2(0.0, 1.0);
+  vertex.mTexCoords = glm::vec2(0.33, 1.0);
   AddVertex(vertex);
 
   AddIndex(8);
@@ -92,16 +92,16 @@ void DefaultTileMeshComponent::SetupVertices()
 
   // Left face
   vertex.mPosition  = glm::vec3(-xVal, -yVal, -zVal);
-  vertex.mTexCoords = glm::vec2(0.0, 0.0);
+  vertex.mTexCoords = glm::vec2(0.33, 0.0);
   AddVertex(vertex);
   vertex.mPosition  = glm::vec3(-xVal, -yVal, zVal);
-  vertex.mTexCoords = glm::vec2(1.0, 0.0);
+  vertex.mTexCoords = glm::vec2(0.66, 0.0);
   AddVertex(vertex);
   vertex.mPosition  = glm::vec3(-xVal, yVal, zVal);
-  vertex.mTexCoords = glm::vec2(1.0, 1.0);
+  vertex.mTexCoords = glm::vec2(0.66, 1.0);
   AddVertex(vertex);
   vertex.mPosition  = glm::vec3(-xVal, yVal, -zVal);
-  vertex.mTexCoords = glm::vec2(0.0, 1.0);
+  vertex.mTexCoords = glm::vec2(0.33, 1.0);
   AddVertex(vertex);
 
   AddIndex(12);
@@ -113,7 +113,7 @@ void DefaultTileMeshComponent::SetupVertices()
 
   // Bottom face
   vertex.mPosition  = glm::vec3(-xVal, -yVal, -zVal);
-  vertex.mTexCoords = glm::vec2(0.0, 0.0);
+  vertex.mTexCoords = glm::vec2(0.66, 0.0);
   AddVertex(vertex);
   vertex.mPosition  = glm::vec3(xVal, -yVal, -zVal);
   vertex.mTexCoords = glm::vec2(1.0, 0.0);
@@ -122,7 +122,7 @@ void DefaultTileMeshComponent::SetupVertices()
   vertex.mTexCoords = glm::vec2(1.0, 1.0);
   AddVertex(vertex);
   vertex.mPosition  = glm::vec3(-xVal, -yVal, zVal);
-  vertex.mTexCoords = glm::vec2(0.0, 1.0);
+  vertex.mTexCoords = glm::vec2(0.66, 1.0);
   AddVertex(vertex);
 
   AddIndex(16);
@@ -134,16 +134,16 @@ void DefaultTileMeshComponent::SetupVertices()
 
   // Right face
   vertex.mPosition  = glm::vec3(xVal, -yVal, -zVal);
-  vertex.mTexCoords = glm::vec2(0.0, 0.0);
+  vertex.mTexCoords = glm::vec2(0.33, 0.0);
   AddVertex(vertex);
   vertex.mPosition  = glm::vec3(xVal, -yVal, zVal);
-  vertex.mTexCoords = glm::vec2(1.0, 0.0);
+  vertex.mTexCoords = glm::vec2(0.66, 0.0);
   AddVertex(vertex);
   vertex.mPosition  = glm::vec3(xVal, yVal, zVal);
-  vertex.mTexCoords = glm::vec2(1.0, 1.0);
+  vertex.mTexCoords = glm::vec2(0.66, 1.0);
   AddVertex(vertex);
   vertex.mPosition  = glm::vec3(xVal, yVal, -zVal);
-  vertex.mTexCoords = glm::vec2(0.0, 1.0);
+  vertex.mTexCoords = glm::vec2(0.33, 1.0);
   AddVertex(vertex);
 
   AddIndex(20);
@@ -158,7 +158,7 @@ void DefaultTileMeshComponent::SetupVertices()
 void DefaultTileMeshComponent::SetupTextures()
 {
   UrsineEngine::Texture brickTexture;
-  brickTexture.CreateTextureFromFile("resources/sprites/basicBrick.png");
+  brickTexture.CreateTextureFromFile("resources/sprites/tileTemplate.png");
   AddTexture(brickTexture);
 }
 

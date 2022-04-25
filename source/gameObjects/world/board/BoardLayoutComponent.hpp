@@ -179,6 +179,14 @@ namespace Barebones
       void HandleSkillCancelled(Skill& aSkill);
 
       /**
+       * A handler function that gets called whenever a character
+       * finishes moving.
+       *
+       * @param aCharacter The character that finished moving.
+       */
+      void HandleCharacterFinishedMoving(CharacterBehaviorComponent& aCharacter);
+
+      /**
        * A handler function that gets called whenever a character dies.
        *
        * @param aCharacter The character that died.

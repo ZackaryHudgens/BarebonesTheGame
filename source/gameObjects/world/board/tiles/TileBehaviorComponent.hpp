@@ -16,6 +16,22 @@ namespace Barebones
       TileBehaviorComponent();
 
       /**
+       * A virtual function that gets called whenever a character stops
+       * moving on this tile.
+       *
+       * @param aCharacter The character GameObject that stopped moving.
+       */
+      virtual void HandleCharacterEntered(UrsineEngine::GameObject& aCharacter) {}
+
+      /**
+       * A virtual function that gets called whenever a character moves away
+       * from this tile.
+       *
+       * @param aCharacter The character GameObject that moved away.
+       */
+      virtual void HandleCharacterExited(UrsineEngine::GameObject& aCharacter) {}
+
+      /**
        * Sets whether the tile should be highlighted.
        *
        * @param aHighlight Whether the tile should be highlighted.

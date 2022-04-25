@@ -63,6 +63,16 @@ void DesecratedTileBehaviorComponent::Update(double aTime)
 }
 
 /******************************************************************************/
+void DesecratedTileBehaviorComponent::HandleCharacterEntered(UrsineEngine::GameObject& aCharacter)
+{
+}
+
+/******************************************************************************/
+void DesecratedTileBehaviorComponent::HandleCharacterExited(UrsineEngine::GameObject& aCharacter)
+{
+}
+
+/******************************************************************************/
 void DesecratedTileBehaviorComponent::HandleHighlightChanged(bool aHighlight)
 {
   auto parent = GetParent();
