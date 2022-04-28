@@ -1,8 +1,12 @@
 #include "CharacterBehaviorComponent.hpp"
 
+#include <Environment.hpp>
+
 #include "Signals.hpp"
 
 #include "MoveSkill.hpp"
+
+#include "StatusMessageBehaviorComponent.hpp"
 
 using Barebones::CharacterBehaviorComponent;
 
@@ -155,4 +159,23 @@ void CharacterBehaviorComponent::DealDamage(int aValue)
 {
   // For now, just do the damage.
   SetCurrentHealth(GetCurrentHealth() - aValue);
+
+  // Create a status message and add it to the scene.
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    auto statusMessageObject = std::make_unique<UrsineEngine::GameObject>("status_message");
+    statusMessageObject->AddComponent(std::make_unique<StatusMessageBehaviorComponent>());
+
+    auto parentPos = parent->GetPosition();
+    parentPos.z += 0.1;
+    statusMessageObject->SetPosition(parentPos);
+    statusMessageObject->SetScale(glm::vec3(0.01, 0.01, 1.0));
+
+    auto scene = env.GetCurrentScene();
+    if(scene != nullptr)
+    {
+      scene->AddObject(std::move(statusMessageObject));
+    }
+  }
 }
