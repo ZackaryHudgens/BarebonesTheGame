@@ -93,8 +93,8 @@ void BackgroundMeshComponent::Initialize()
   AddVertex(vertex);
 
   // Set the shader.
-  std::string vertexFile = "resources/shaders/BackgroundShader.vert";
-  std::string fragmentFile = "resources/shaders/BackgroundShader.frag";
+  std::string vertexFile = "resources/shaders/TexturedMeshShader.vert";
+  std::string fragmentFile = "resources/shaders/TexturedMeshShader.frag";
   UrsineEngine::Shader defaultShader(vertexFile,
                                      fragmentFile);
   AddShader("defaultShader",
