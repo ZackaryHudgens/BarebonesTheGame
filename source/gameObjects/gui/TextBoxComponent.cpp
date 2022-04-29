@@ -31,6 +31,12 @@ void TextBoxComponent::Initialize()
     auto textComponent = std::make_unique<UrsineEngine::TextComponent>();
     textComponent->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
 
+    std::string vertexFile = "resources/shaders/TextShader.vert";
+    std::string fragmentFile = "resources/shaders/TextShader.frag";
+    UrsineEngine::Shader textShader(vertexFile, fragmentFile);
+    textComponent->AddShader("textShader", textShader);
+    textComponent->SetCurrentShader("textShader");
+
     auto textObject = std::make_unique<UrsineEngine::GameObject>("textObject");
     textObject->AddComponent(std::move(textComponent));
     textObject->SetPosition(glm::vec3(0.0, 0.0, 0.1));
@@ -43,8 +49,8 @@ void TextBoxComponent::Initialize()
     backgroundSpriteComponent->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
     backgroundSpriteComponent->SetHasTransparency(false);
 
-    std::string vertexFile = "resources/shaders/UIShader.vert";
-    std::string fragmentFile = "resources/shaders/UIShader.frag";
+    vertexFile = "resources/shaders/UIShader.vert";
+    fragmentFile = "resources/shaders/UIShader.frag";
     UrsineEngine::Shader backgroundShader(vertexFile, fragmentFile);
     backgroundSpriteComponent->AddShader("backgroundShader", backgroundShader);
     backgroundSpriteComponent->SetCurrentShader("backgroundShader");
@@ -115,7 +121,12 @@ void TextBoxComponent::SetTextColor(const glm::vec4& aColor)
 {
   if(mText != nullptr)
   {
-    mText->SetColor(aColor);
+    auto textShader = mText->GetCurrentShader();
+    if(textShader != nullptr)
+    {
+      textShader->Activate();
+      textShader->SetVec4("textColor", aColor);
+    }
   }
 }
 

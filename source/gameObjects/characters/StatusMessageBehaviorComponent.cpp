@@ -22,9 +22,18 @@ void StatusMessageBehaviorComponent::Initialize()
     textObject->AddComponent(std::make_unique<UrsineEngine::TextComponent>());
     mTextComponent = textObject->GetComponentsOfType<UrsineEngine::TextComponent>().back();
 
+    std::string vertexFile = "resources/shaders/OutlineTextShader.vert";
+    std::string fragmentFile = "resources/shaders/OutlineTextShader.frag";
+    UrsineEngine::Shader outlineTextShader(vertexFile, fragmentFile);
+    outlineTextShader.Activate();
+    outlineTextShader.SetVec4("textColor", glm::vec4(0.89, 0.93, 0.75, 1.0));
+    outlineTextShader.SetVec4("outlineColor", glm::vec4(0.125, 0.125, 0.125, 1.0));
+    outlineTextShader.SetFloat("outlineWidth", 2.0);
+    mTextComponent->AddShader("outlineTextShader", outlineTextShader);
+    mTextComponent->SetCurrentShader("outlineTextShader");
+
     mTextComponent->SetFont("Alagard", "Medium");
     mTextComponent->SetSize(42);
-    mTextComponent->SetColor(glm::vec4(0.89, 0.93, 0.75, 1.0));
     mTextComponent->SetText("Desecrated!");
 
     mTextComponent->SetRenderOption(GL_DEPTH_TEST, false);
@@ -40,7 +49,7 @@ void StatusMessageBehaviorComponent::Update(double aTime)
   if(parent != nullptr)
   {
     auto pos = parent->GetPosition();
-    //pos.y += 0.01;
+    pos.y += 0.01;
     parent->SetPosition(pos);
 
     if(pos.y >= 2.5)
