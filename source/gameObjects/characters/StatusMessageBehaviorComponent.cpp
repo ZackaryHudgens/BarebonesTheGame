@@ -22,8 +22,8 @@ void StatusMessageBehaviorComponent::Initialize()
     textObject->AddComponent(std::make_unique<UrsineEngine::TextComponent>());
     mTextComponent = textObject->GetComponentsOfType<UrsineEngine::TextComponent>().back();
 
-    std::string vertexFile = "resources/shaders/OutlineTextShader.vert";
-    std::string fragmentFile = "resources/shaders/OutlineTextShader.frag";
+    std::string vertexFile = "resources/shaders/OutlinedTextShader.vert";
+    std::string fragmentFile = "resources/shaders/OutlinedTextShader.frag";
     UrsineEngine::Shader outlineTextShader(vertexFile, fragmentFile);
     outlineTextShader.Activate();
     outlineTextShader.SetVec4("textColor", glm::vec4(0.89, 0.93, 0.75, 1.0));
@@ -34,9 +34,7 @@ void StatusMessageBehaviorComponent::Initialize()
 
     mTextComponent->SetFont("Alagard", "Medium");
     mTextComponent->SetSize(42);
-    mTextComponent->SetText("Desecrated!");
-
-    mTextComponent->SetRenderOption(GL_DEPTH_TEST, false);
+    mTextComponent->SetText(mText);
 
     parent->AddChild(std::move(textObject));
   }
@@ -52,9 +50,20 @@ void StatusMessageBehaviorComponent::Update(double aTime)
     pos.y += 0.01;
     parent->SetPosition(pos);
 
-    if(pos.y >= 2.5)
+    if(pos.y >= 1.5)
     {
       parent->ScheduleForDeletion();
     }
+  }
+}
+
+/******************************************************************************/
+void StatusMessageBehaviorComponent::SetText(const std::string& aText)
+{
+  mText = aText;
+
+  if(mTextComponent != nullptr)
+  {
+    mTextComponent->SetText(mText);
   }
 }

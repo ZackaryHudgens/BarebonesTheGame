@@ -109,10 +109,19 @@ namespace Barebones
 
       /**
        * Takes a damage value and applies it to this character's health.
+       * The damage value is displayed as a status message.
        *
        * @param aValue The amount of damage to deal.
        */
       void DealDamage(int aValue);
+
+      /**
+       * Displays a message with the given text in front of and above
+       * the character.
+       *
+       * @param aText The text to display.
+       */
+      void DisplayStatusMessage(const std::string& aText);
 
     protected:
 

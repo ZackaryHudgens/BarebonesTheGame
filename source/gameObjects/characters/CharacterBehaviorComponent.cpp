@@ -1,5 +1,7 @@
 #include "CharacterBehaviorComponent.hpp"
 
+#include <sstream>
+
 #include <Environment.hpp>
 
 #include "Signals.hpp"
@@ -157,25 +159,50 @@ void CharacterBehaviorComponent::SetCurrentHealth(int aHealth)
 /******************************************************************************/
 void CharacterBehaviorComponent::DealDamage(int aValue)
 {
-  // For now, just do the damage.
+  // Apply the damage.
   SetCurrentHealth(GetCurrentHealth() - aValue);
 
-  // Create a status message and add it to the scene.
-  auto parent = GetParent();
-  if(parent != nullptr)
-  {
-    auto statusMessageObject = std::make_unique<UrsineEngine::GameObject>("status_message");
-    statusMessageObject->AddComponent(std::make_unique<StatusMessageBehaviorComponent>());
+  // Create a status message to display the amount of damage dealt.
+  std::stringstream damageText;
+  damageText << aValue;
+  DisplayStatusMessage(damageText.str());
+}
 
-    auto parentPos = parent->GetPosition();
-    parentPos.z += 0.1;
-    statusMessageObject->SetPosition(parentPos);
+/******************************************************************************/
+void CharacterBehaviorComponent::DisplayStatusMessage(const std::string& aText)
+{
+  // Create a status message and add it to the scene.
+  auto scene = env.GetCurrentScene();
+  auto parent = GetParent();
+  if(parent != nullptr &&
+     scene != nullptr)
+  {
+    // Generate a name for the status message object.
+    int nameIndex = 0;
+    std::stringstream nameStream;
+    do
+    {
+      ++nameIndex;
+
+      nameStream.str("");
+      nameStream << parent->GetName() << "StatusMessage" << aText << nameIndex;
+    }
+    while(scene->GetObject(nameStream.str()) != nullptr);
+
+    // Create the status message object.
+    auto statusMessageObject = std::make_unique<UrsineEngine::GameObject>(nameStream.str());
+    statusMessageObject->AddComponent(std::make_unique<StatusMessageBehaviorComponent>());
+    auto statusMessageComponent = statusMessageObject->GetComponentsOfType<StatusMessageBehaviorComponent>().back();
+    statusMessageComponent->SetText(aText);
+
+    // Position the status message to be centered in front of the character.
+    auto messagePos = parent->GetPosition();
+    messagePos.z += 0.1;
+    messagePos.x -= ((statusMessageComponent->GetTextComponent()->GetWidth() * 0.01) / 2.0);
+    statusMessageObject->SetPosition(messagePos);
     statusMessageObject->SetScale(glm::vec3(0.01, 0.01, 1.0));
 
-    auto scene = env.GetCurrentScene();
-    if(scene != nullptr)
-    {
-      scene->AddObject(std::move(statusMessageObject));
-    }
+    // Add the status message to the scene.
+    scene->AddObject(std::move(statusMessageObject));
   }
 }

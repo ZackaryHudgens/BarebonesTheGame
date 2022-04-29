@@ -27,8 +27,24 @@ namespace Barebones
        */
       void Update(double aTime) override;
 
+      /**
+       * Sets the text to display.
+       *
+       * @param aText The text to display.
+       */
+      void SetText(const std::string& aText);
+
+      /**
+       * Returns the TextComponent this status message is using.
+       *
+       * @return A const pointer to the TextComponent.
+       */
+      const UrsineEngine::TextComponent* GetTextComponent() const { return mTextComponent; }
+
     private:
       UrsineEngine::TextComponent* mTextComponent;
+
+      std::string mText;
   };
 }
 
