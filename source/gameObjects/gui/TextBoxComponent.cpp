@@ -49,8 +49,8 @@ void TextBoxComponent::Initialize()
     backgroundSpriteComponent->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
     backgroundSpriteComponent->SetHasTransparency(false);
 
-    vertexFile = "resources/shaders/UIShader.vert";
-    fragmentFile = "resources/shaders/UIShader.frag";
+    vertexFile = "resources/shaders/TexturedMeshShader.vert";
+    fragmentFile = "resources/shaders/TexturedMeshShader.frag";
     UrsineEngine::Shader backgroundShader(vertexFile, fragmentFile);
     backgroundSpriteComponent->AddShader("backgroundShader", backgroundShader);
     backgroundSpriteComponent->SetCurrentShader("backgroundShader");

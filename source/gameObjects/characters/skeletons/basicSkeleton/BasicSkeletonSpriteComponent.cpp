@@ -11,15 +11,9 @@ BasicSkeletonSpriteComponent::BasicSkeletonSpriteComponent()
 /******************************************************************************/
 void BasicSkeletonSpriteComponent::SetupShaders()
 {
-  std::string vertexFile = "resources/shaders/CharacterShader.vert";
-  std::string fragmentFile = "resources/shaders/CharacterShader.frag";
+  std::string vertexFile = "resources/shaders/TexturedMeshShader.vert";
+  std::string fragmentFile = "resources/shaders/TexturedMeshShader.frag";
   UrsineEngine::Shader defaultShader(vertexFile, fragmentFile);
-
-  defaultShader.Activate();
-  defaultShader.SetVec4("selectionColor", glm::vec4(1.0,
-                                                    1.0,
-                                                    1.0,
-                                                    1.0));
   AddShader("defaultShader", defaultShader);
   SetCurrentShader("defaultShader");
 }

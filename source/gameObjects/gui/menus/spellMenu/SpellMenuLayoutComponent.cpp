@@ -50,11 +50,11 @@ void SpellMenuLayoutComponent::Initialize()
     texture.CreateTextureFromFile("resources/sprites/spellbook.png");
     mSpellbookSprite->SetTexture(texture);
 
-    std::string vertexFile = "resources/shaders/UIShader.vert";
-    std::string fragmentFile = "resources/shaders/UIShader.frag";
-    UrsineEngine::Shader shader(vertexFile, fragmentFile);
-    mSpellbookSprite->AddShader("default", shader);
-    mSpellbookSprite->SetCurrentShader("default");
+    std::string vertexFile = "resources/shaders/TexturedMeshShader.vert";
+    std::string fragmentFile = "resources/shaders/TexturedMeshShader.frag";
+    UrsineEngine::Shader texturedMeshShader(vertexFile, fragmentFile);
+    mSpellbookSprite->AddShader("texturedMeshShader", texturedMeshShader);
+    mSpellbookSprite->SetCurrentShader("texturedMeshShader");
 
     // Center the spellbook on the overlay.
     double overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
