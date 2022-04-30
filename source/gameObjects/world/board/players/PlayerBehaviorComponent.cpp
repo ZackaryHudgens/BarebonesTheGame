@@ -7,6 +7,7 @@ using Barebones::PlayerBehaviorComponent;
 /******************************************************************************/
 PlayerBehaviorComponent::PlayerBehaviorComponent()
   : Component()
+  , mControlledSide(Side::eNONE)
 {
 }
 

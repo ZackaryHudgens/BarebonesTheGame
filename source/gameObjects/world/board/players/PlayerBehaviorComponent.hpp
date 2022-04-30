@@ -4,6 +4,8 @@
 #include <Component.hpp>
 #include <GameObject.hpp>
 
+#include "Side.hpp"
+
 namespace Barebones
 {
   /**
@@ -31,6 +33,20 @@ namespace Barebones
        */
       void EndTurn();
 
+      /**
+       * Sets the side that this player controls.
+       *
+       * @param aSide The side this player should control.
+       */
+      void SetSide(const Side& aSide) { mControlledSide = aSide; }
+
+      /**
+       * Returns the side that this player controls.
+       *
+       * @return The side that this player controls.
+       */
+      Side GetSide() const { return mControlledSide; }
+
     protected:
 
       /**
@@ -46,6 +62,9 @@ namespace Barebones
        * ends. Should be overridden by inheriting classes.
        */
       virtual void ProtectedEndTurn() {}
+
+    private:
+      Side mControlledSide;
   };
 }
 

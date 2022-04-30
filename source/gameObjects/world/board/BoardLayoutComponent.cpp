@@ -16,8 +16,6 @@
 
 #include "SkillActionBehaviorComponent.hpp"
 
-#include <iostream>
-
 using Barebones::BoardLayoutComponent;
 
 /******************************************************************************/
@@ -43,6 +41,11 @@ BoardLayoutComponent::BoardLayoutComponent()
   PlayerTurnBegan.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
   {
     this->HandlePlayerTurnBegan(aPlayer);
+  });
+
+  PlayerTurnEnded.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
+  {
+    this->HandlePlayerTurnEnded(aPlayer);
   });
 
   SkillSelectedFromMenu.Connect(*this, [this](Skill& aSkill)
@@ -481,6 +484,40 @@ void BoardLayoutComponent::HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlaye
   if(humanPlayerBehaviorComponent != nullptr)
   {
     HandleHumanPlayerMoved(*humanPlayerBehaviorComponent);
+  }
+
+  auto characters = GetCharactersOnSide(aPlayer.GetSide());
+  for(auto& character : characters)
+  {
+    auto characterLocation = GetLocationOfCharacter(character->GetName());
+    auto tile = GetTileAtLocation(characterLocation);
+    if(tile != nullptr)
+    {
+      auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
+      if(tileBehaviorComponent != nullptr)
+      {
+        tileBehaviorComponent->HandleTurnBegan(*character);
+      }
+    }
+  }
+}
+
+/******************************************************************************/
+void BoardLayoutComponent::HandlePlayerTurnEnded(PlayerBehaviorComponent& aPlayer)
+{
+  auto characters = GetCharactersOnSide(aPlayer.GetSide());
+  for(auto& character : characters)
+  {
+    auto characterLocation = GetLocationOfCharacter(character->GetName());
+    auto tile = GetTileAtLocation(characterLocation);
+    if(tile != nullptr)
+    {
+      auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
+      if(tileBehaviorComponent != nullptr)
+      {
+        tileBehaviorComponent->HandleTurnEnded(*character);
+      }
+    }
   }
 }
 

@@ -23,6 +23,8 @@ AIPlayerBehaviorComponent::AIPlayerBehaviorComponent()
   {
     this->HandleCharacterTurnEnded(aCharacter);
   });
+
+  SetSide(Side::eENEMY);
 }
 
 /******************************************************************************/
@@ -54,7 +56,7 @@ void AIPlayerBehaviorComponent::ProtectedTakeTurn(UrsineEngine::GameObject& aBoa
   auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
   if(boardLayoutComponent != nullptr)
   {
-    mCharacters = boardLayoutComponent->GetCharactersOnSide(Side::eENEMY);
+    mCharacters = boardLayoutComponent->GetCharactersOnSide(GetSide());
 
     // Make the first character take a turn.
     if(!mCharacters.empty())

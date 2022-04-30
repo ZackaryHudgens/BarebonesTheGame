@@ -7,15 +7,16 @@
 #include <GameObject.hpp>
 
 #include "Effect.hpp"
+#include "Side.hpp"
 #include "Skill.hpp"
 
 namespace Barebones
 {
-  enum class Side
+  enum class Type
   {
     eNONE,
-    eENEMY,
-    ePLAYER
+    eHUMAN,
+    eSKELETON
   };
 
   class CharacterBehaviorComponent : public UrsineEngine::Component
@@ -116,6 +117,13 @@ namespace Barebones
       Side GetSide() const { return mSide; }
 
       /**
+       * Returns the type of this character.
+       *
+       * @return The type of this character.
+       */
+      Type GetType() const { return mType; }
+
+      /**
        * Returns the maximum health value of this character.
        *
        * @return This character's maximum health.
@@ -150,6 +158,13 @@ namespace Barebones
        * @param aName The name for this type of character.
        */
       void SetName(const std::string& aName) { mName = aName; }
+
+      /**
+       * Sets the type of this character.
+       *
+       * @param aType The new type of the character.
+       */
+      void SetType(const Type& aType) { mType = aType; }
 
       /**
        * Adds a skill to this character.
@@ -191,6 +206,7 @@ namespace Barebones
       std::vector<std::unique_ptr<Skill>> mSkills;
 
       Side mSide;
+      Type mType;
 
       std::string mName;
 

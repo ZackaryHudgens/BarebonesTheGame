@@ -109,7 +109,7 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerUsingSkillInputStat
         case UrsineEngine::KeyCode::eKEY_ENTER:
         {
           // If the player's location is valid for using the current skill,
-          // execute it, then and return to the default input state.
+          // execute it, then return to the default input state.
           auto tileLocations = mSkill->GetValidTiles(*board);
           auto foundTile = std::find(tileLocations.begin(),
                                      tileLocations.end(),
@@ -144,6 +144,7 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerUsingSkillInputStat
 
     }
   }
+
   return newState;
 }
 

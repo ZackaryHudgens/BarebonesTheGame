@@ -17,6 +17,7 @@ BasicSkeletonBehaviorComponent::BasicSkeletonBehaviorComponent()
   , mVerticalMovement(2)
 {
   SetName("Skelly");
+  SetType(Type::eSKELETON);
   SetMaximumHealth(10);
   SetCurrentHealth(10);
 }

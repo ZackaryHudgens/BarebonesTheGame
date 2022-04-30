@@ -13,6 +13,7 @@ HumanPlayerBehaviorComponent::HumanPlayerBehaviorComponent()
   : PlayerBehaviorComponent()
   , mLocation(0, 0)
 {
+  SetSide(Side::ePLAYER);
 }
 
 /******************************************************************************/

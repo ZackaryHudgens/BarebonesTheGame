@@ -32,6 +32,22 @@ namespace Barebones
       virtual void HandleCharacterExited(UrsineEngine::GameObject& aCharacter) {}
 
       /**
+       * A virtual function that gets called whenever a character ends the turn
+       * on this tile.
+       *
+       * @param aCharacter The character GameObject that ended the turn on this tile.
+       */
+      virtual void HandleTurnEnded(UrsineEngine::GameObject& aCharacter) {}
+
+      /**
+       * A virtual function that gets called whenever a character begins the turn
+       * on this tile.
+       *
+       * @param aCharacter The character GameObject that begins the turn on this tile.
+       */
+      virtual void HandleTurnBegan(UrsineEngine::GameObject& aCharacter) {}
+
+      /**
        * Sets whether the tile should be highlighted.
        *
        * @param aHighlight Whether the tile should be highlighted.

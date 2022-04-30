@@ -17,6 +17,7 @@ BasicHumanBehaviorComponent::BasicHumanBehaviorComponent()
   });
 
   SetName("Humie");
+  SetType(Type::eHUMAN);
   SetMaximumHealth(5);
   SetCurrentHealth(5);
 }
