@@ -160,6 +160,17 @@ bool BoardLayoutComponent::AddTileAtLocation(const TileType& aTileType,
           }
         }
 
+        // If there is a character at the tile's location, let the tile know.
+        auto character = GetCharacterAtLocation(aLocation);
+        if(character != nullptr)
+        {
+          auto tileBehaviorComponent = newTile->GetFirstComponentOfType<TileBehaviorComponent>();
+          if(tileBehaviorComponent != nullptr)
+          {
+            tileBehaviorComponent->HandleCharacterEntered(*character);
+          }
+        }
+
         parent->AddChild(std::move(newTile));
         mTiles.at(aLocation.first).at(aLocation.second) = parent->GetChildren().back();
       }
@@ -175,6 +186,17 @@ void BoardLayoutComponent::RemoveTileAtLocation(const TileLocation& aLocation)
   auto tile = GetTileAtLocation(aLocation);
   if(tile != nullptr)
   {
+    // If there is a character at the tile's location, let the tile know.
+    auto character = GetCharacterAtLocation(aLocation);
+    if(character != nullptr)
+    {
+      auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
+      if(tileBehaviorComponent != nullptr)
+      {
+        tileBehaviorComponent->HandleCharacterExited(*character);
+      }
+    }
+
     tile->ScheduleForDeletion();
     mTiles.at(aLocation.first).at(aLocation.second) = nullptr;
   }
@@ -291,6 +313,17 @@ void BoardLayoutComponent::MoveCharacter(const TileLocation& aCurrentLocation,
         newPosition.y = tileMesh->GetHeight();
         charBehaviorComp->MoveToPosition(newPosition,
                                          0.3);
+      }
+
+      // Let the tile at the current location know that a character has left.
+      auto currentTile = GetTileAtLocation(aCurrentLocation);
+      if(currentTile != nullptr)
+      {
+        auto tileBehaviorComponent = currentTile->GetFirstComponentOfType<TileBehaviorComponent>();
+        if(tileBehaviorComponent != nullptr)
+        {
+          tileBehaviorComponent->HandleCharacterExited(*character);
+        }
       }
 
       // Finally, update the character map.

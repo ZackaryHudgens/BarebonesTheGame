@@ -2,9 +2,13 @@
 
 #include <GameObject.hpp>
 
+#include "CharacterBehaviorComponent.hpp"
+
 #include "Signals.hpp"
 
 #include "TileMeshComponent.hpp"
+
+#include "DesecratedEffect.hpp"
 
 using Barebones::DesecratedTileBehaviorComponent;
 
@@ -65,11 +69,21 @@ void DesecratedTileBehaviorComponent::Update(double aTime)
 /******************************************************************************/
 void DesecratedTileBehaviorComponent::HandleCharacterEntered(UrsineEngine::GameObject& aCharacter)
 {
+  auto characterBehaviorComponent = aCharacter.GetFirstComponentOfType<CharacterBehaviorComponent>();
+  if(characterBehaviorComponent != nullptr)
+  {
+    characterBehaviorComponent->AddEffect(std::make_unique<DesecratedEffect>());
+  }
 }
 
 /******************************************************************************/
 void DesecratedTileBehaviorComponent::HandleCharacterExited(UrsineEngine::GameObject& aCharacter)
 {
+  auto characterBehaviorComponent = aCharacter.GetFirstComponentOfType<CharacterBehaviorComponent>();
+  if(characterBehaviorComponent != nullptr)
+  {
+    characterBehaviorComponent->RemoveEffect("Desecrated");
+  }
 }
 
 /******************************************************************************/

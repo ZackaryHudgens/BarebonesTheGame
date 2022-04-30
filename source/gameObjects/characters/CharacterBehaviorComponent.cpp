@@ -1,6 +1,9 @@
 #include "CharacterBehaviorComponent.hpp"
 
+#include <algorithm>
 #include <sstream>
+
+#include <iostream>
 
 #include <Environment.hpp>
 
@@ -111,10 +114,66 @@ std::vector<Barebones::Skill*> CharacterBehaviorComponent::GetSkills()
 }
 
 /******************************************************************************/
+void CharacterBehaviorComponent::AddEffect(std::unique_ptr<Effect> aEffect)
+{
+  // Display a status message when this effect is added.
+  DisplayStatusMessage(aEffect->GetStatusMessage());
+
+  mEffects.emplace_back(std::move(aEffect));
+}
+
+/******************************************************************************/
+void CharacterBehaviorComponent::RemoveEffect(const std::string& aName)
+{
+  auto findEffect = [aName](const std::unique_ptr<Effect>& aEffect)
+  {
+    return aEffect->GetName() == aName;
+  };
+
+  auto foundEffect = std::find_if(mEffects.begin(),
+                                  mEffects.end(),
+                                  findEffect);
+  if(foundEffect != mEffects.end())
+  {
+    // Display a status message when this effect is removed.
+    std::stringstream removedMessage;
+    removedMessage << foundEffect->get()->GetName() << "\nremoved!";
+    DisplayStatusMessage(removedMessage.str());
+
+    mEffects.erase(foundEffect);
+  }
+}
+
+/******************************************************************************/
+std::vector<Barebones::Effect*> CharacterBehaviorComponent::GetEffects()
+{
+  std::vector<Effect*> effects;
+
+  for(auto& effect : mEffects)
+  {
+    effects.emplace_back(effect.get());
+  }
+
+  return effects;
+}
+
+/******************************************************************************/
 Barebones::TileList CharacterBehaviorComponent::GetMovements(UrsineEngine::GameObject& aObject,
                                                              const TileLocation& aLocation) const
 {
   return TileList();
+}
+
+/******************************************************************************/
+void CharacterBehaviorComponent::DealDamage(int aValue)
+{
+  // Apply the damage.
+  SetCurrentHealth(GetCurrentHealth() - aValue);
+
+  // Create a status message to display the amount of damage dealt.
+  std::stringstream damageText;
+  damageText << aValue;
+  DisplayStatusMessage(damageText.str());
 }
 
 /******************************************************************************/
@@ -157,29 +216,19 @@ void CharacterBehaviorComponent::SetCurrentHealth(int aHealth)
 }
 
 /******************************************************************************/
-void CharacterBehaviorComponent::DealDamage(int aValue)
-{
-  // Apply the damage.
-  SetCurrentHealth(GetCurrentHealth() - aValue);
-
-  // Create a status message to display the amount of damage dealt.
-  std::stringstream damageText;
-  damageText << aValue;
-  DisplayStatusMessage(damageText.str());
-}
-
-/******************************************************************************/
 void CharacterBehaviorComponent::DisplayStatusMessage(const std::string& aText)
 {
   // Create a status message and add it to the scene.
   auto scene = env.GetCurrentScene();
   auto parent = GetParent();
-  if(parent != nullptr &&
-     scene != nullptr)
+  if(scene != nullptr &&
+     parent != nullptr)
   {
     // Generate a name for the status message object.
     int nameIndex = 0;
     std::stringstream nameStream;
+    nameStream << parent->GetName() << "StatusMessage" << aText;
+
     do
     {
       ++nameIndex;

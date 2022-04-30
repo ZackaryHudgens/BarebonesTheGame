@@ -6,6 +6,7 @@
 #include <Component.hpp>
 #include <GameObject.hpp>
 
+#include "Effect.hpp"
 #include "Skill.hpp"
 
 namespace Barebones
@@ -67,6 +68,27 @@ namespace Barebones
       std::vector<Skill*> GetSkills();
 
       /**
+       * Adds a status effect to this character.
+       *
+       * @param aEffect The effect to add.
+       */
+      void AddEffect(std::unique_ptr<Effect> aEffect);
+
+      /**
+       * Removes the effect with the given name from this character.
+       *
+       * @param aEffectName The name of the effect to remove.
+       */
+      void RemoveEffect(const std::string& aName);
+
+      /**
+       * Returns a list of effects on this character.
+       *
+       * @return A list of effects on this character.
+       */
+      std::vector<Effect*> GetEffects();
+
+      /**
        * A virtual function that returns a list of possible movements
        * given a location on a board. The first integer of each
        * pair corresponds to the column; the second integer corresponds
@@ -115,14 +137,6 @@ namespace Barebones
        */
       void DealDamage(int aValue);
 
-      /**
-       * Displays a message with the given text in front of and above
-       * the character.
-       *
-       * @param aText The text to display.
-       */
-      void DisplayStatusMessage(const std::string& aText);
-
     protected:
 
       /**
@@ -161,10 +175,19 @@ namespace Barebones
        */
       void SetCurrentHealth(int aHealth);
 
+      /**
+       * Displays a message with the given text in front of and above
+       * the character.
+       *
+       * @param aText The text to display.
+       */
+      void DisplayStatusMessage(const std::string& aText);
+
     private:
       glm::vec3 mTargetPosition;
       glm::vec3 mOriginalPosition;
 
+      std::vector<std::unique_ptr<Effect>> mEffects;
       std::vector<std::unique_ptr<Skill>> mSkills;
 
       Side mSide;

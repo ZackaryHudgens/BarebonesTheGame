@@ -6,6 +6,7 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/characters/enemies/basicHuman/*.?pp
                        gameObjects/characters/skeletons/*.?pp
                        gameObjects/characters/skeletons/basicSkeleton/*.?pp
+                       gameObjects/effects/*.?pp
                        gameObjects/gui/*.?pp
                        gameObjects/gui/infoPanel/*.?pp
                        gameObjects/gui/menus/*.?pp
@@ -41,6 +42,7 @@ target_include_directories(barebones PUBLIC
                            gameObjects/characters/enemies/basicHuman
                            gameObjects/characters/skeletons
                            gameObjects/characters/skeletons/basicSkeleton
+                           gameObjects/effects
                            gameObjects/gui
                            gameObjects/gui/infoPanel
                            gameObjects/gui/menus
