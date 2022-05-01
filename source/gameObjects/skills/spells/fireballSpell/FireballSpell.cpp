@@ -2,9 +2,13 @@
 
 #include <sstream>
 
+#include <Environment.hpp>
+
 #include "BoardLayoutComponent.hpp"
 
 #include "CharacterBehaviorComponent.hpp"
+
+#include "FireballSpellEffectBehaviorComponent.hpp"
 
 using Barebones::FireballSpell;
 
@@ -90,6 +94,43 @@ void FireballSpell::ProtectedExecute(UrsineEngine::GameObject& aBoard,
   {
     for(auto& affectedTile : GetTilesToHighlight(aBoard))
     {
+      // Place a spell effect on this tile.
+      std::stringstream nameStream;
+      auto tile = boardLayoutComponent->GetTileAtLocation(affectedTile);
+      if(tile != nullptr)
+      {
+        // Create a GameObject with a unique name for the fireball sprite.
+        nameStream << "fireballEffect" << affectedTile.first << affectedTile.second;
+        auto spellEffectObject = std::make_unique<UrsineEngine::GameObject>(nameStream.str());
+        nameStream.str("");
+
+        // Add the spell effect to the GameObject, then retrieve the height of the sprite.
+        spellEffectObject->AddComponent(std::make_unique<FireballSpellEffectBehaviorComponent>());
+        auto fireballSprite = spellEffectObject->GetFirstComponentOfType<UrsineEngine::SpriteComponent>();
+        auto fireballHeight = fireballSprite->GetHeight();
+
+        // Retrieve the height of the tile.
+        double tileHeight = 0.0;
+        auto tileMesh = tile->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
+        if(tileMesh != nullptr)
+        {
+          tileHeight = tileMesh->GetHeight();
+        }
+
+        // Place the fireball sprite on the file.
+        auto tilePos = tile->GetPosition();
+        tilePos.y += ((tileHeight / 2.0) + (fireballHeight / 2.0));
+        spellEffectObject->SetPosition(tilePos);
+
+        // Finally, add the fireball sprite to the current scene.
+        auto scene = env.GetCurrentScene();
+        if(scene != nullptr)
+        {
+          scene->AddObject(std::move(spellEffectObject));
+        }
+      }
+
+      // Deal damage to the character on this tile, if there is one.
       auto character = boardLayoutComponent->GetCharacterAtLocation(affectedTile);
       if(character != nullptr)
       {
