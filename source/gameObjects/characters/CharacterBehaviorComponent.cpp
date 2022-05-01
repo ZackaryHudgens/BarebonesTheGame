@@ -69,6 +69,7 @@ void CharacterBehaviorComponent::Update(double aTime)
         else
         {
           mMoving = false;
+          mSpeed = 0.0;
           CharacterFinishedMoving.Notify(*this);
         }
       }

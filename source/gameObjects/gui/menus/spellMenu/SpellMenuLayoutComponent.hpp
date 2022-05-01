@@ -47,6 +47,10 @@ namespace Barebones
       TextBoxComponent* mSpellNameTextBox;
       TextBoxComponent* mSpellDescriptionTextBox;
 
+      UrsineEngine::TextureClip mFirstSpellClip;
+      UrsineEngine::TextureClip mLastSpellClip;
+      UrsineEngine::TextureClip mCenterSpellClip;
+
       double mSpellbookScalar;
       int mSpellbookVerticalOffset;
 

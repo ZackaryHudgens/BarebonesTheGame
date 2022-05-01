@@ -1,9 +1,13 @@
 #include "SpellMenuLayoutComponent.hpp"
 
+#include <algorithm>
+
 #include <Environment.hpp>
 #include <GameObject.hpp>
 
 #include "SkillActionBehaviorComponent.hpp"
+
+#include <iostream>
 
 using Barebones::SpellMenuLayoutComponent;
 
@@ -26,6 +30,21 @@ SpellMenuLayoutComponent::SpellMenuLayoutComponent()
   , mSpellDescriptionHorizontalOffset(375)
   , mSpellDescriptionVerticalOffset(350)
 {
+  // Store the three different texture clips for the spellbook.
+  mFirstSpellClip.mHeight = 36;
+  mFirstSpellClip.mWidth = 64;
+  mFirstSpellClip.mX = 0;
+  mFirstSpellClip.mY = 72;
+
+  mLastSpellClip.mHeight = 36;
+  mLastSpellClip.mWidth = 64;
+  mLastSpellClip.mX = 0;
+  mLastSpellClip.mY = 36;
+
+  mCenterSpellClip.mHeight = 36;
+  mCenterSpellClip.mWidth = 64;
+  mCenterSpellClip.mX = 0;
+  mCenterSpellClip.mY = 0;
 }
 
 /******************************************************************************/
@@ -101,12 +120,9 @@ void SpellMenuLayoutComponent::Initialize()
 
     // Place the text boxes on the spellbook.
     auto spellbookPos = mSpellbookSprite->GetParent()->GetPosition();
-    mSpellNameTextBox->SetText("Woohoo");
     mSpellNameTextBox->GetParent()->SetPosition(glm::vec3(spellbookPos.x - mSpellNameHorizontalOffset,
                                                           spellbookPos.y + mSpellNameVerticalOffset,
                                                           0.1));
-
-    mSpellDescriptionTextBox->SetText("Lorem ipsum dolor sit amet");
     mSpellDescriptionTextBox->GetParent()->SetPosition(glm::vec3(spellbookPos.x + mSpellDescriptionHorizontalOffset,
                                                                  spellbookPos.y + mSpellDescriptionVerticalOffset,
                                                                  0.1));
@@ -116,6 +132,11 @@ void SpellMenuLayoutComponent::Initialize()
 /******************************************************************************/
 void SpellMenuLayoutComponent::HandleActionAdded()
 {
+  // If this is the only action, switch the sprite to display the first spell.
+  if(GetActions().size() == 1)
+  {
+    mSpellbookSprite->SetRenderDimensions(mFirstSpellClip);
+  }
 }
 
 /******************************************************************************/
@@ -124,6 +145,7 @@ void SpellMenuLayoutComponent::HandleActionHovered()
   auto action = GetCurrentlyHoveredAction();
   if(action != nullptr)
   {
+    // Update the spell name and description.
     auto skillAction = action->GetFirstComponentOfType<SkillActionBehaviorComponent>();
     if(skillAction != nullptr)
     {
@@ -134,6 +156,28 @@ void SpellMenuLayoutComponent::HandleActionHovered()
       {
         mSpellNameTextBox->SetText(skill->GetName());
         mSpellDescriptionTextBox->SetText(skill->GetDescription());
+      }
+    }
+
+    // Update the sprite based on the position of the current action
+    // in the action list.
+    auto actions = GetActions();
+    auto foundAction = std::find(actions.begin(),
+                                 actions.end(),
+                                 action);
+    if(foundAction != actions.end())
+    {
+      if((*foundAction) == actions.front())
+      {
+        mSpellbookSprite->SetRenderDimensions(mFirstSpellClip);
+      }
+      else if((*foundAction) == actions.back())
+      {
+        mSpellbookSprite->SetRenderDimensions(mLastSpellClip);
+      }
+      else
+      {
+        mSpellbookSprite->SetRenderDimensions(mCenterSpellClip);
       }
     }
   }
