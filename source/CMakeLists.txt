@@ -19,6 +19,7 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/skills/moveSkill/*.?pp
                        gameObjects/skills/spells/*.?pp
                        gameObjects/skills/spells/desecrateSpell/*.?pp
+                       gameObjects/skills/spells/fireballSpell/*.?pp
                        gameObjects/util/*.?pp
                        gameObjects/world/background/*.?pp
                        gameObjects/world/board/*.?pp
@@ -55,6 +56,7 @@ target_include_directories(barebones PUBLIC
                            gameObjects/skills/moveSkill
                            gameObjects/skills/spells
                            gameObjects/skills/spells/desecrateSpell
+                           gameObjects/skills/spells/fireballSpell
                            gameObjects/util
                            gameObjects/world/background
                            gameObjects/world/board

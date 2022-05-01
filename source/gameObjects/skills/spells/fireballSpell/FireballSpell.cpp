@@ -1,32 +1,29 @@
-#include "DesecrateSpell.hpp"
+#include "FireballSpell.hpp"
 
 #include <sstream>
 
 #include "BoardLayoutComponent.hpp"
 
-#include "HumanPlayerBehaviorComponent.hpp"
+#include "CharacterBehaviorComponent.hpp"
 
-#include "TileFactory.hpp"
-
-using Barebones::DesecrateSpell;
+using Barebones::FireballSpell;
 
 /******************************************************************************/
-DesecrateSpell::DesecrateSpell(UrsineEngine::GameObject& aParent)
+FireballSpell::FireballSpell(UrsineEngine::GameObject& aParent)
   : Skill(aParent)
-  , mRadius(1)
+  , mRadius(2)
 {
-  SetName("Desecrate");
+  SetName("Fireball");
 
   std::stringstream ss;
-  ss << "Desecrates all tiles\nwithin ";
-  ss << mRadius;
-  ss << " spaces\nof the target tile.\n\n";
-  ss << "Desecrated tiles\ndamage enemies and\nheal skeletons.";
+  ss << "Deals 8d6...wait, hang on.\n\n";
+  ss << "Deals 30 damage to each\n";
+  ss << "creature within the radius.";
   SetDescription(ss.str());
 }
 
 /******************************************************************************/
-Barebones::TileList DesecrateSpell::GetValidTiles(UrsineEngine::GameObject& aBoard)
+Barebones::TileList FireballSpell::GetValidTiles(UrsineEngine::GameObject& aBoard)
 {
   TileList tiles;
 
@@ -51,7 +48,7 @@ Barebones::TileList DesecrateSpell::GetValidTiles(UrsineEngine::GameObject& aBoa
 }
 
 /******************************************************************************/
-Barebones::TileList DesecrateSpell::GetTilesToHighlight(UrsineEngine::GameObject& aBoard)
+Barebones::TileList FireballSpell::GetTilesToHighlight(UrsineEngine::GameObject& aBoard)
 {
   TileList tiles;
 
@@ -85,17 +82,23 @@ Barebones::TileList DesecrateSpell::GetTilesToHighlight(UrsineEngine::GameObject
 }
 
 /******************************************************************************/
-void DesecrateSpell::ProtectedExecute(UrsineEngine::GameObject& aBoard,
-                                      const TileLocation& aLocation)
+void FireballSpell::ProtectedExecute(UrsineEngine::GameObject& aBoard,
+                                     const TileLocation& aLocation)
 {
   auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
   if(boardLayoutComponent != nullptr)
   {
-    for(const auto& tileLocation : GetTilesToHighlight(aBoard))
+    for(auto& affectedTile : GetTilesToHighlight(aBoard))
     {
-      // For each affected tile, create a new desecrated tile at that location.
-      boardLayoutComponent->RemoveTileAtLocation(tileLocation);
-      boardLayoutComponent->AddTileAtLocation(TileType::eDESECRATED, tileLocation);
+      auto character = boardLayoutComponent->GetCharacterAtLocation(affectedTile);
+      if(character != nullptr)
+      {
+        auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
+        if(characterBehaviorComponent != nullptr)
+        {
+          characterBehaviorComponent->DealDamage(30);
+        }
+      }
     }
   }
 }

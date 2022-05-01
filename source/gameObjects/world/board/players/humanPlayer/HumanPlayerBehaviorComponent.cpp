@@ -5,6 +5,7 @@
 #include "Signals.hpp"
 
 #include "DesecrateSpell.hpp"
+#include "FireballSpell.hpp"
 
 using Barebones::HumanPlayerBehaviorComponent;
 
@@ -23,6 +24,7 @@ void HumanPlayerBehaviorComponent::Initialize()
   if(parent != nullptr)
   {
     AddSpell(std::make_unique<DesecrateSpell>(*parent));
+    AddSpell(std::make_unique<FireballSpell>(*parent));
   }
 }
 
