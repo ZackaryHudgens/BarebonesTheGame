@@ -20,6 +20,8 @@ CharacterBehaviorComponent::CharacterBehaviorComponent()
   : Component()
   , mTargetPosition(0.0, 0.0, 0.0)
   , mOriginalPosition(0.0, 0.0, 0.0)
+  , mFadeValue(0.0)
+  , mFadeSpeed(0.1)
   , mSide(Side::eNONE)
   , mType(Type::eNONE)
   , mSpeed(0.0)
@@ -27,6 +29,7 @@ CharacterBehaviorComponent::CharacterBehaviorComponent()
   , mCurrentHealth(1)
   , mMoving(false)
   , mRebound(false)
+  , mDying(false)
 {
 }
 
@@ -76,6 +79,33 @@ void CharacterBehaviorComponent::Update(double aTime)
       else
       {
         parent->SetPosition(position);
+      }
+    }
+  }
+
+  if(mDying)
+  {
+    auto parent = GetParent();
+    if(parent != nullptr)
+    {
+      auto mesh = parent->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
+      if(mesh != nullptr)
+      {
+        auto shader = mesh->GetCurrentShader();
+        if(shader != nullptr)
+        {
+          mFadeValue = glm::mix(mFadeValue, 1.0, mFadeSpeed);
+
+          shader->Activate();
+          shader->SetFloat("fadeValue", mFadeValue);
+
+          if(mFadeValue >= 0.95)
+          {
+            // This character has finished fading to black, so
+            // schedule it for deletion.
+            parent->ScheduleForDeletion();
+          }
+        }
       }
     }
   }
@@ -204,16 +234,11 @@ void CharacterBehaviorComponent::SetCurrentHealth(int aHealth)
 
   CharacterHealthChanged.Notify(*this);
 
-  // If the health is below 0, this character is now dead.
+  // If the health is below 0, this character is now dying.
   if(mCurrentHealth <= 0)
   {
     CharacterDied.Notify(*this);
-
-    auto parent = GetParent();
-    if(parent != nullptr)
-    {
-      parent->ScheduleForDeletion();
-    }
+    mDying = true;
   }
 }
 

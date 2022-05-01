@@ -7,7 +7,7 @@
 
 #include "BoardLayoutComponent.hpp"
 
-#include "SkillEffectFactory.hpp"
+#include "ClawSkillEffectBehaviorComponent.hpp"
 
 using Barebones::ClawSkill;
 
@@ -37,7 +37,9 @@ void ClawSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
         if(scene != nullptr)
         {
           // Create an effect in front of the target character.
-          auto effectObject = SkillEffectFactory::CreateEffect(SkillType::eCLAW, "clawEffect");
+          auto effectObject = std::make_unique<UrsineEngine::GameObject>("clawEffect");
+          effectObject->AddComponent(std::make_unique<ClawSkillEffectBehaviorComponent>());
+
           auto targetPosition = targetCharacterObject->GetPosition();
           targetPosition.z += 0.1;
           effectObject->SetPosition(targetPosition);

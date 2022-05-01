@@ -117,9 +117,24 @@ void FireballSpell::ProtectedExecute(UrsineEngine::GameObject& aBoard,
           tileHeight = tileMesh->GetHeight();
         }
 
-        // Place the fireball sprite on the file.
+        // Place the fireball sprite on the tile. If there is a character
+        // on the tile, place the sprite slightly in front of the character.
         auto tilePos = tile->GetPosition();
         tilePos.y += ((tileHeight / 2.0) + (fireballHeight / 2.0));
+
+        auto character = boardLayoutComponent->GetCharacterAtLocation(affectedTile);
+        if(character != nullptr)
+        {
+          tilePos.z = character->GetPosition().z + 0.1;
+
+          // Also deal damage to the character.
+          auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
+          if(characterBehaviorComponent != nullptr)
+          {
+            characterBehaviorComponent->DealDamage(30);
+          }
+        }
+
         spellEffectObject->SetPosition(tilePos);
 
         // Finally, add the fireball sprite to the current scene.
@@ -127,17 +142,6 @@ void FireballSpell::ProtectedExecute(UrsineEngine::GameObject& aBoard,
         if(scene != nullptr)
         {
           scene->AddObject(std::move(spellEffectObject));
-        }
-      }
-
-      // Deal damage to the character on this tile, if there is one.
-      auto character = boardLayoutComponent->GetCharacterAtLocation(affectedTile);
-      if(character != nullptr)
-      {
-        auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
-        if(characterBehaviorComponent != nullptr)
-        {
-          characterBehaviorComponent->DealDamage(30);
         }
       }
     }

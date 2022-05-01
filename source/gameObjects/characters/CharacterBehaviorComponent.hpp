@@ -190,6 +190,8 @@ namespace Barebones
        */
       void SetCurrentHealth(int aHealth);
 
+    private:
+
       /**
        * Displays a message with the given text in front of and above
        * the character.
@@ -198,9 +200,11 @@ namespace Barebones
        */
       void DisplayStatusMessage(const std::string& aText);
 
-    private:
       glm::vec3 mTargetPosition;
       glm::vec3 mOriginalPosition;
+
+      double mFadeValue;
+      double mFadeSpeed;
 
       std::vector<std::unique_ptr<Effect>> mEffects;
       std::vector<std::unique_ptr<Skill>> mSkills;
@@ -217,6 +221,7 @@ namespace Barebones
 
       bool mMoving;
       bool mRebound;
+      bool mDying;
   };
 }
 
