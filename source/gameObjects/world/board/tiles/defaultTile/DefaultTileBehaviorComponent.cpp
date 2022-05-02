@@ -1,10 +1,9 @@
 #include "DefaultTileBehaviorComponent.hpp"
 
 #include <GameObject.hpp>
+#include <MeshComponent.hpp>
 
 #include "Signals.hpp"
-
-#include "TileMeshComponent.hpp"
 
 using Barebones::DefaultTileBehaviorComponent;
 
@@ -68,7 +67,7 @@ void DefaultTileBehaviorComponent::HandleHighlightChanged(bool aHighlight)
   auto parent = GetParent();
   if(parent != nullptr)
   {
-    auto mesh = parent->GetFirstComponentOfType<TileMeshComponent>();
+    auto mesh = parent->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
     if(mesh != nullptr)
     {
       auto shader = mesh->GetCurrentShader();
@@ -99,7 +98,7 @@ void DefaultTileBehaviorComponent::HandleHoverChanged(bool aHover)
   auto parent = GetParent();
   if(parent != nullptr)
   {
-    auto mesh = parent->GetFirstComponentOfType<TileMeshComponent>();
+    auto mesh = parent->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
     if(mesh != nullptr)
     {
       auto shader = mesh->GetCurrentShader();

@@ -4,7 +4,6 @@
 #include <GameObject.hpp>
 
 #include "BoardLayoutComponent.hpp"
-#include "CharacterSpriteComponent.hpp"
 
 #include "ClawSkill.hpp"
 

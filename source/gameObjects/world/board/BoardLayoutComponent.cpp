@@ -4,6 +4,7 @@
 #include <sstream>
 
 #include <GameObject.hpp>
+#include <MeshComponent.hpp>
 
 #include "Signals.hpp"
 
@@ -12,7 +13,6 @@
 #include "CharacterBehaviorComponent.hpp"
 
 #include "TileBehaviorComponent.hpp"
-#include "TileMeshComponent.hpp"
 
 #include "SkillActionBehaviorComponent.hpp"
 
@@ -223,7 +223,7 @@ bool BoardLayoutComponent::AddCharacterAtLocation(std::unique_ptr<UrsineEngine::
         // Move the character to stand on top of the tile.
         auto tile = mTiles[aLocation.first][aLocation.second];
         auto newPos = tile->GetPosition();
-        newPos.y = tile->GetFirstComponentOfType<TileMeshComponent>()->GetHeight();
+        newPos.y = tile->GetFirstComponentOfType<UrsineEngine::MeshComponent>()->GetHeight();
         aObject->SetPosition(newPos);
 
         // Add the character as a child object of the board.
@@ -307,7 +307,7 @@ void BoardLayoutComponent::MoveCharacter(const TileLocation& aCurrentLocation,
     if(GetCharacterAtLocation(aNewLocation) == nullptr)
     {
       // Next, move the character to the new position in world space.
-      auto tileMesh = newTile->GetFirstComponentOfType<TileMeshComponent>();
+      auto tileMesh = newTile->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
       auto charBehaviorComp = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
       if(tileMesh != nullptr &&
          charBehaviorComp != nullptr)
