@@ -12,6 +12,7 @@
 #include "CharacterDefaultState.hpp"
 #include "CharacterDyingState.hpp"
 #include "CharacterMovingState.hpp"
+#include "CharacterShakingState.hpp"
 
 #include "MoveSkill.hpp"
 
@@ -155,6 +156,13 @@ void CharacterBehaviorComponent::DealDamage(int aValue)
 {
   // Apply the damage.
   SetCurrentHealth(GetCurrentHealth() - aValue);
+
+  // Switch to the shaking state.
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    mMovementState = std::make_unique<CharacterShakingState>(*parent);
+  }
 
   // Create a status message to display the amount of damage dealt.
   std::stringstream damageText;

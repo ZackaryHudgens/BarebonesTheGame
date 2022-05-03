@@ -21,6 +21,12 @@ namespace Barebones
        * @return A unique_ptr to a new state, if necessary.
        */
       std::unique_ptr<CharacterState> Update(double aTime) override;
+
+    private:
+      glm::vec3 mOriginalPosition;
+      glm::vec3 mTargetPosition;
+      double mSpeed;
+      double mOffset;
   };
 }
 
