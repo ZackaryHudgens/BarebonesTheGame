@@ -6,6 +6,8 @@
 #include <Component.hpp>
 #include <GameObject.hpp>
 
+#include "CharacterState.hpp"
+
 #include "Effect.hpp"
 #include "Side.hpp"
 #include "Skill.hpp"
@@ -49,17 +51,12 @@ namespace Barebones
 
       /**
        * Moves the character to a position in world space at the given speed.
-       * Optionally, the rebound flag can be set to move back to the original
-       * position afterwards at the same speed.
        *
        * @param aPosition The position to move to.
        * @param aSpeed The speed to move at.
-       * @param aRebound Whether to move back to the original position after
-       *                 reaching the target position.
        */
       void MoveToPosition(const glm::vec3& aPosition,
-                          double aSpeed,
-                          bool aRebound = false);
+                          double aSpeed);
 
       /**
        * Returns a vector of this character's skills.
@@ -200,11 +197,8 @@ namespace Barebones
        */
       void DisplayStatusMessage(const std::string& aText);
 
-      glm::vec3 mTargetPosition;
-      glm::vec3 mOriginalPosition;
-
-      double mFadeValue;
-      double mFadeSpeed;
+      std::unique_ptr<CharacterState> mMovementState;
+      std::unique_ptr<CharacterState> mStatusState;
 
       std::vector<std::unique_ptr<Effect>> mEffects;
       std::vector<std::unique_ptr<Skill>> mSkills;
@@ -214,14 +208,8 @@ namespace Barebones
 
       std::string mName;
 
-      double mSpeed;
-
       int mMaximumHealth;
       int mCurrentHealth;
-
-      bool mMoving;
-      bool mRebound;
-      bool mDying;
   };
 }
 

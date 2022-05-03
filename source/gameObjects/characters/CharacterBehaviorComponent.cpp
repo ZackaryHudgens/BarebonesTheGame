@@ -9,6 +9,10 @@
 
 #include "Signals.hpp"
 
+#include "CharacterDefaultState.hpp"
+#include "CharacterDyingState.hpp"
+#include "CharacterMovingState.hpp"
+
 #include "MoveSkill.hpp"
 
 #include "StatusMessageBehaviorComponent.hpp"
@@ -18,26 +22,28 @@ using Barebones::CharacterBehaviorComponent;
 /******************************************************************************/
 CharacterBehaviorComponent::CharacterBehaviorComponent()
   : Component()
-  , mTargetPosition(0.0, 0.0, 0.0)
-  , mOriginalPosition(0.0, 0.0, 0.0)
-  , mFadeValue(0.0)
-  , mFadeSpeed(0.1)
+  , mMovementState(nullptr)
+  , mStatusState(nullptr)
   , mSide(Side::eNONE)
   , mType(Type::eNONE)
-  , mSpeed(0.0)
   , mMaximumHealth(1)
   , mCurrentHealth(1)
-  , mMoving(false)
-  , mRebound(false)
-  , mDying(false)
 {
 }
 
 /******************************************************************************/
 void CharacterBehaviorComponent::Initialize()
 {
-  // All characters have the move skill.
-  AddSkill(std::make_unique<MoveSkill>(*GetParent()));
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    // Begin in the default state.
+    mMovementState = std::make_unique<CharacterDefaultState>(*parent);
+    mStatusState = std::make_unique<CharacterDefaultState>(*parent);
+
+    // All characters have the move skill.
+    AddSkill(std::make_unique<MoveSkill>(*GetParent()));
+  }
 
   ProtectedInitialize();
 }
@@ -45,90 +51,38 @@ void CharacterBehaviorComponent::Initialize()
 /******************************************************************************/
 void CharacterBehaviorComponent::Update(double aTime)
 {
-  if(mMoving)
+  // Update the movement state.
+  if(mMovementState != nullptr)
   {
-    auto parent = GetParent();
-    if(parent != nullptr)
+    auto newMovementState = mMovementState->Update(aTime);
+    if(newMovementState != nullptr)
     {
-      auto position = glm::mix(parent->GetPosition(),
-                               mTargetPosition,
-                               mSpeed);
-
-      // If the position is close enough to the target position,
-      // move directly to the target position and stop moving.
-      if(std::abs(mTargetPosition.x - position.x) <= 0.005 &&
-         std::abs(mTargetPosition.y - position.y) <= 0.005 &&
-         std::abs(mTargetPosition.z - position.z) <= 0.005)
-      {
-        parent->SetPosition(mTargetPosition);
-
-        // If the rebound flag is set, change the target position to
-        // the original position and clear the flag.
-        if(mRebound)
-        {
-          mTargetPosition = mOriginalPosition;
-          mRebound = false;
-        }
-        else
-        {
-          mMoving = false;
-          mSpeed = 0.0;
-          CharacterFinishedMoving.Notify(*this);
-        }
-      }
-      else
-      {
-        parent->SetPosition(position);
-      }
+      mMovementState.swap(newMovementState);
     }
   }
 
-  if(mDying)
+  // Update the status state.
+  if(mStatusState != nullptr)
   {
-    auto parent = GetParent();
-    if(parent != nullptr)
+    auto newStatusState = mStatusState->Update(aTime);
+    if(newStatusState != nullptr)
     {
-      auto mesh = parent->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
-      if(mesh != nullptr)
-      {
-        auto shader = mesh->GetCurrentShader();
-        if(shader != nullptr)
-        {
-          mFadeValue = glm::mix(mFadeValue, 1.0, mFadeSpeed);
-
-          shader->Activate();
-          shader->SetFloat("fadeValue", mFadeValue);
-
-          if(mFadeValue >= 0.95)
-          {
-            // This character has finished fading to black, so
-            // schedule it for deletion.
-            parent->ScheduleForDeletion();
-          }
-        }
-      }
+      mStatusState.swap(newStatusState);
     }
   }
 }
 
 /******************************************************************************/
 void CharacterBehaviorComponent::MoveToPosition(const glm::vec3& aPosition,
-                                                double aSpeed,
-                                                bool aRebound)
+                                                double aSpeed)
 {
-  mTargetPosition = aPosition;
-  mSpeed = aSpeed;
-  mRebound = aRebound;
-
-  mMoving = true;
-
-  if(mRebound)
+  auto parent = GetParent();
+  if(parent != nullptr)
   {
-    auto parent = GetParent();
-    if(parent != nullptr)
-    {
-      mOriginalPosition = parent->GetPosition();
-    }
+    // Switch to the moving state.
+    mMovementState = std::make_unique<CharacterMovingState>(*parent,
+                                                            aPosition,
+                                                            aSpeed);
   }
 }
 
@@ -238,7 +192,13 @@ void CharacterBehaviorComponent::SetCurrentHealth(int aHealth)
   if(mCurrentHealth <= 0)
   {
     CharacterDied.Notify(*this);
-    mDying = true;
+
+    auto parent = GetParent();
+    if(parent != nullptr)
+    {
+      // Switch to the dying state.
+      mStatusState = std::make_unique<CharacterDyingState>(*parent);
+    }
   }
 }
 

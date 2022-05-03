@@ -84,10 +84,6 @@ void ClawSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
                 characterPos.z -= 0.2;
               }
             }
-
-            characterBehaviorComponent->MoveToPosition(characterPos,
-                                                       0.3,
-                                                       true);
           }
         }
 
