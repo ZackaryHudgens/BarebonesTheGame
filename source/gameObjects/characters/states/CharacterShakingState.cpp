@@ -8,7 +8,7 @@ using Barebones::CharacterShakingState;
 CharacterShakingState::CharacterShakingState(UrsineEngine::GameObject& aCharacter)
   : CharacterState(aCharacter)
   , mSpeed(0.9)
-  , mOffset(0.1)
+  , mOffset(0.15)
 {
   mOriginalPosition = aCharacter.GetPosition();
 
@@ -34,8 +34,6 @@ std::unique_ptr<Barebones::CharacterState> CharacterShakingState::Update(double 
        std::abs(mTargetPosition.y - position.y) <= 0.005 &&
        std::abs(mTargetPosition.z - position.z) <= 0.005)
     {
-      character->SetPosition(mTargetPosition);
-      
       // Set the new target position using the offset value.
       // If the offset value has been exhausted, return to the
       // original position and stop shaking.
@@ -50,12 +48,16 @@ std::unique_ptr<Barebones::CharacterState> CharacterShakingState::Update(double 
       }
       else if(mTargetPosition.x >= mOriginalPosition.x)
       {
+        character->SetPosition(mTargetPosition);
+      
         // We were moving to the right before; now move to the left.
         mTargetPosition = mOriginalPosition;
         mTargetPosition.x -= mOffset;
       }
       else
       {
+        character->SetPosition(mTargetPosition);
+
         // We were moving to the left before; now move to the right.
         mTargetPosition = mOriginalPosition;
         mTargetPosition.x += mOffset;

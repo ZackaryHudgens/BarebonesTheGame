@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include <Environment.hpp>
+#include <SpriteComponent.hpp>
 
 #include "Signals.hpp"
 
