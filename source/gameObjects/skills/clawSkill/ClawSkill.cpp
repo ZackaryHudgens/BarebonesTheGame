@@ -14,7 +14,7 @@ using Barebones::ClawSkill;
 /******************************************************************************/
 ClawSkill::ClawSkill(UrsineEngine::GameObject& aParent)
   : Skill(aParent)
-  , mDamage(3)
+  , mDamage(1)
 {
   SetName("Claw");
   SetDescription("Slashes with bony claws.");

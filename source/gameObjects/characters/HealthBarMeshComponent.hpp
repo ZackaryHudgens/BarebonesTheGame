@@ -1,21 +1,20 @@
-#ifndef HEALTHBARBEHAVIORCOMPONENT_HPP
-#define HEALTHBARBEHAVIORCOMPONENT_HPP
+#ifndef HEALTHBARMESHCOMPONENT_HPP
+#define HEALTHBARMESHCOMPONENT_HPP
 
-#include <Component.hpp>
 #include <MeshComponent.hpp>
 
 #include "CharacterBehaviorComponent.hpp"
 
 namespace Barebones
 {
-  class HealthBarBehaviorComponent : public UrsineEngine::Component
+  class HealthBarMeshComponent : public UrsineEngine::MeshComponent
   {
     public:
 
       /**
        * Constructor.
        */
-      HealthBarBehaviorComponent();
+      HealthBarMeshComponent();
 
       /**
        * Initializes the component.
@@ -45,9 +44,6 @@ namespace Barebones
        * @param aCharacter The character whose health changed.
        */
       void HandleCharacterHealthChanged(CharacterBehaviorComponent& aCharacter);
-
-      UrsineEngine::MeshComponent* mBackgroundMesh;
-      UrsineEngine::MeshComponent* mForegroundMesh;
 
       CharacterBehaviorComponent* mCharacter;
 

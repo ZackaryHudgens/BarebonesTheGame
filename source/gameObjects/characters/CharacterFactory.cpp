@@ -2,7 +2,7 @@
 
 #include <SpriteComponent.hpp>
 
-#include "HealthBarBehaviorComponent.hpp"
+#include "HealthBarMeshComponent.hpp"
 
 #include "BasicHumanBehaviorComponent.hpp"
 #include "BasicSkeletonBehaviorComponent.hpp"
@@ -99,15 +99,15 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
 
   // Add a health bar to this character as a child object.
   auto healthBarObject = std::make_unique<UrsineEngine::GameObject>("healthBar");
-  auto healthBarBehaviorComponent = std::make_unique<HealthBarBehaviorComponent>();
+  auto healthBarMeshComponent = std::make_unique<HealthBarMeshComponent>();
 
   auto characterBehaviorComponent = newCharacter->GetFirstComponentOfType<CharacterBehaviorComponent>();
   if(characterBehaviorComponent != nullptr)
   {
-    healthBarBehaviorComponent->SetCharacter(*characterBehaviorComponent);
+    healthBarMeshComponent->SetCharacter(*characterBehaviorComponent);
   }
 
-  healthBarObject->AddComponent(std::move(healthBarBehaviorComponent));
+  healthBarObject->AddComponent(std::move(healthBarMeshComponent));
 
   // Place the health bar above the character sprite.
   auto characterMesh = newCharacter->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
