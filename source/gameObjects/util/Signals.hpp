@@ -7,6 +7,7 @@
 namespace Barebones
 {
   class CharacterBehaviorComponent;
+  class Effect;
   class InputComponent;
   class PlayerBehaviorComponent;
   class HumanPlayerBehaviorComponent;
@@ -16,21 +17,25 @@ namespace Barebones
   /**
    * Character signals
    */
-  typedef UrsineEngine::SignalT<CharacterBehaviorComponent&> CharacterFinishedMovingSignal;
-  typedef UrsineEngine::SignalT<CharacterBehaviorComponent&> CharacterTurnBeganSignal;
-  typedef UrsineEngine::SignalT<CharacterBehaviorComponent&> CharacterTurnEndedSignal;
-  typedef UrsineEngine::SignalT<CharacterBehaviorComponent&> CharacterHealthChangedSignal;
-  typedef UrsineEngine::SignalT<CharacterBehaviorComponent&> CharacterDiedSignal;
-  typedef UrsineEngine::SignalT<Skill&>                      SkillExecutedSignal;
-  typedef UrsineEngine::SignalT<Skill&>                      SkillCancelledSignal;
+  typedef UrsineEngine::SignalT<CharacterBehaviorComponent&>          CharacterFinishedMovingSignal;
+  typedef UrsineEngine::SignalT<CharacterBehaviorComponent&>          CharacterTurnBeganSignal;
+  typedef UrsineEngine::SignalT<CharacterBehaviorComponent&>          CharacterTurnEndedSignal;
+  typedef UrsineEngine::SignalT<CharacterBehaviorComponent&>          CharacterHealthChangedSignal;
+  typedef UrsineEngine::SignalT<CharacterBehaviorComponent&>          CharacterDiedSignal;
+  typedef UrsineEngine::SignalT<Skill&>                               SkillExecutedSignal;
+  typedef UrsineEngine::SignalT<Skill&>                               SkillCancelledSignal;
+  typedef UrsineEngine::SignalT<CharacterBehaviorComponent&, Effect&> EffectAddedToCharacterSignal;
+  typedef UrsineEngine::SignalT<CharacterBehaviorComponent&, Effect&> EffectRemovedFromCharacterSignal;
 
-  extern CharacterFinishedMovingSignal  CharacterFinishedMoving;
-  extern CharacterTurnBeganSignal       CharacterTurnBegan;
-  extern CharacterTurnEndedSignal       CharacterTurnEnded;
-  extern CharacterHealthChangedSignal   CharacterHealthChanged;
-  extern CharacterDiedSignal            CharacterDied;
-  extern SkillExecutedSignal            SkillExecuted;
-  extern SkillCancelledSignal           SkillCancelled;
+  extern CharacterFinishedMovingSignal    CharacterFinishedMoving;
+  extern CharacterTurnBeganSignal         CharacterTurnBegan;
+  extern CharacterTurnEndedSignal         CharacterTurnEnded;
+  extern CharacterHealthChangedSignal     CharacterHealthChanged;
+  extern CharacterDiedSignal              CharacterDied;
+  extern SkillExecutedSignal              SkillExecuted;
+  extern SkillCancelledSignal             SkillCancelled;
+  extern EffectAddedToCharacterSignal     EffectAddedToCharacter;
+  extern EffectRemovedFromCharacterSignal EffectRemovedFromCharacter;
 
   /**
    * Player signals
@@ -63,7 +68,7 @@ namespace Barebones
   typedef UrsineEngine::SignalT<TurnDisplayComponent&> TurnDisplayFinishedSignal;
   typedef UrsineEngine::SignalT<Skill&> SkillSelectedFromMenuSignal;
 
-  extern TurnDisplayFinishedSignal TurnDisplayFinished;
+  extern TurnDisplayFinishedSignal   TurnDisplayFinished;
   extern SkillSelectedFromMenuSignal SkillSelectedFromMenu;
 
   /**

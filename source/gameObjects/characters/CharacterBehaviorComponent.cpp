@@ -19,6 +19,8 @@
 
 #include "StatusMessageBehaviorComponent.hpp"
 
+#include "TestEffect.hpp"
+
 using Barebones::CharacterBehaviorComponent;
 
 /******************************************************************************/
@@ -45,6 +47,8 @@ void CharacterBehaviorComponent::Initialize()
 
     // All characters have the move skill.
     AddSkill(std::make_unique<MoveSkill>(*GetParent()));
+
+    AddEffect(std::make_unique<TestEffect>());
   }
 
   ProtectedInitialize();
@@ -104,10 +108,14 @@ std::vector<Barebones::Skill*> CharacterBehaviorComponent::GetSkills()
 /******************************************************************************/
 void CharacterBehaviorComponent::AddEffect(std::unique_ptr<Effect> aEffect)
 {
-  // Display a status message when this effect is added.
-  DisplayStatusMessage(aEffect->GetStatusMessage());
+  if(aEffect != nullptr)
+  {
+    // Display a status message when this effect is added.
+    DisplayStatusMessage(aEffect->GetStatusMessage());
 
-  mEffects.emplace_back(std::move(aEffect));
+    mEffects.emplace_back(std::move(aEffect));
+    EffectAddedToCharacter.Notify(*this, *mEffects.back());
+  }
 }
 
 /******************************************************************************/
@@ -128,6 +136,7 @@ void CharacterBehaviorComponent::RemoveEffect(const std::string& aName)
     removedMessage << foundEffect->get()->GetName() << "\nremoved!";
     DisplayStatusMessage(removedMessage.str());
 
+    EffectRemovedFromCharacter.Notify(*this, *(*foundEffect));
     mEffects.erase(foundEffect);
   }
 }

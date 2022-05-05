@@ -2,6 +2,7 @@
 
 #include <SpriteComponent.hpp>
 
+#include "EffectListBehaviorComponent.hpp"
 #include "HealthBarMeshComponent.hpp"
 
 #include "BasicHumanBehaviorComponent.hpp"
@@ -110,16 +111,34 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
   healthBarObject->AddComponent(std::move(healthBarMeshComponent));
 
   // Place the health bar above the character sprite.
+  auto healthBarPos = newCharacter->GetPosition();
   auto characterMesh = newCharacter->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
   if(characterMesh != nullptr)
   {
-    auto healthBarPos = newCharacter->GetPosition();
     healthBarPos.y += (characterMesh->GetHeight() / 2.0);
     healthBarPos.y += 0.1;
     healthBarObject->SetPosition(healthBarPos);
   }
 
+  // Add an effect list to this character as a child object.
+  auto effectListObject = std::make_unique<UrsineEngine::GameObject>("effectList");
+  auto effectListBehaviorComponent = std::make_unique<EffectListBehaviorComponent>();
+
+  if(characterBehaviorComponent != nullptr)
+  {
+    effectListBehaviorComponent->SetCharacter(*characterBehaviorComponent);
+  }
+
+  effectListObject->AddComponent(std::move(effectListBehaviorComponent));
+
+  // Place the effect list above the health bar.
+  auto effectListPos = healthBarPos;
+  effectListPos.y += 0.1;
+  effectListObject->SetPosition(effectListPos);
+
+  // Finally, add the extra objects to the character.
   newCharacter->AddChild(std::move(healthBarObject));
+  newCharacter->AddChild(std::move(effectListObject));
 
   return std::move(newCharacter);
 }

@@ -3,6 +3,8 @@
 
 #include <GameObject.hpp>
 
+#include <MeshComponent.hpp>
+
 namespace Barebones
 {
   class Effect
@@ -34,6 +36,14 @@ namespace Barebones
        * @return The status message for this effect.
        */
       std::string GetStatusMessage() const { return mStatusMessage; }
+
+      /**
+       * A virtual function that returns an icon for this effect as
+       * a MeshComponent.
+       *
+       * @return An icon mesh for this effect.
+       */
+      virtual std::unique_ptr<UrsineEngine::MeshComponent> GetIcon() const { return nullptr; }
 
     protected:
 
