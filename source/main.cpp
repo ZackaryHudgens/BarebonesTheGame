@@ -58,19 +58,19 @@ int main()
   auto skeleton7 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_SKELETON, "skeleton7");
   skeleton7->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::ePLAYER);
 
-  auto human = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_HUMAN, "human");
+  auto human = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eCORRUPTED_FARMER, "human");
   human->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::eENEMY);
-  auto human2 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_HUMAN, "human2");
+  auto human2 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eCORRUPTED_FARMER, "human2");
   human2->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::eENEMY);
-  auto human3 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_HUMAN, "human3");
+  auto human3 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eCORRUPTED_FARMER, "human3");
   human3->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::eENEMY);
-  auto human4 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_HUMAN, "human4");
+  auto human4 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eCORRUPTED_FARMER, "human4");
   human4->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::eENEMY);
-  auto human5 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_HUMAN, "human5");
+  auto human5 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eCORRUPTED_FARMER, "human5");
   human5->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::eENEMY);
-  auto human6 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_HUMAN, "human6");
+  auto human6 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eCORRUPTED_FARMER, "human6");
   human6->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::eENEMY);
-  auto human7 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eBASIC_HUMAN, "human7");
+  auto human7 = Barebones::CharacterFactory::CreateCharacter(Barebones::CharacterType::eCORRUPTED_FARMER, "human7");
   human7->GetFirstComponentOfType<Barebones::CharacterBehaviorComponent>()->SetSide(Barebones::Side::eENEMY);
 
   boardComp->AddCharacterAtLocation(std::move(skeleton), Barebones::TileLocation(0, 0));

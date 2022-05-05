@@ -1,18 +1,18 @@
-#ifndef BASICHUMANBEHAVIORCOMPONENT_HPP
-#define BASICHUMANBEHAVIORCOMPONENT_HPP
+#ifndef CORRUPTEDFARMERBEHAVIORCOMPONENT_HPP
+#define CORRUPTEDFARMERBEHAVIORCOMPONENT_HPP
 
 #include "EnemyBehaviorComponent.hpp"
 
 namespace Barebones
 {
-  class BasicHumanBehaviorComponent : public EnemyBehaviorComponent
+  class CorruptedFarmerBehaviorComponent : public EnemyBehaviorComponent
   {
     public:
 
       /**
        * Constructor.
        */
-      BasicHumanBehaviorComponent();
+      CorruptedFarmerBehaviorComponent();
 
       /**
        * Performs an action whenever it is this character's turn.

@@ -1,4 +1,4 @@
-#include "BasicHumanBehaviorComponent.hpp"
+#include "CorruptedFarmerBehaviorComponent.hpp"
 
 #include "BoardLayoutComponent.hpp"
 
@@ -6,10 +6,10 @@
 
 #include "PitchforkSkill.hpp"
 
-using Barebones::BasicHumanBehaviorComponent;
+using Barebones::CorruptedFarmerBehaviorComponent;
 
 /******************************************************************************/
-BasicHumanBehaviorComponent::BasicHumanBehaviorComponent()
+CorruptedFarmerBehaviorComponent::CorruptedFarmerBehaviorComponent()
   : EnemyBehaviorComponent()
   , mWaitingForMove(false)
   , mHorizontalMovement(1)
@@ -20,14 +20,14 @@ BasicHumanBehaviorComponent::BasicHumanBehaviorComponent()
     this->HandleCharacterFinishedMoving(aCharacter);
   });
 
-  SetName("Humie");
+  SetName("Corrupted Farmer");
   SetType(Type::eHUMAN);
   SetMaximumHealth(5);
   SetCurrentHealth(5);
 }
 
 /******************************************************************************/
-void BasicHumanBehaviorComponent::TakeTurn(UrsineEngine::GameObject& aBoard)
+void CorruptedFarmerBehaviorComponent::TakeTurn(UrsineEngine::GameObject& aBoard)
 {
   CharacterTurnBegan.Notify(*this);
 
@@ -75,7 +75,7 @@ void BasicHumanBehaviorComponent::TakeTurn(UrsineEngine::GameObject& aBoard)
 }
 
 /******************************************************************************/
-Barebones::TileList BasicHumanBehaviorComponent::GetMovements(UrsineEngine::GameObject& aObject,
+Barebones::TileList CorruptedFarmerBehaviorComponent::GetMovements(UrsineEngine::GameObject& aObject,
                                                               const TileLocation& aLocation) const
 {
   TileList moves;
@@ -165,7 +165,7 @@ Barebones::TileList BasicHumanBehaviorComponent::GetMovements(UrsineEngine::Game
 }
 
 /******************************************************************************/
-void BasicHumanBehaviorComponent::ProtectedInitialize()
+void CorruptedFarmerBehaviorComponent::ProtectedInitialize()
 {
   auto parent = GetParent();
   if(parent != nullptr)
@@ -175,7 +175,7 @@ void BasicHumanBehaviorComponent::ProtectedInitialize()
 }
 
 /******************************************************************************/
-void BasicHumanBehaviorComponent::HandleCharacterFinishedMoving(CharacterBehaviorComponent& aCharacter)
+void CorruptedFarmerBehaviorComponent::HandleCharacterFinishedMoving(CharacterBehaviorComponent& aCharacter)
 {
   if(&aCharacter == this &&
      mWaitingForMove)

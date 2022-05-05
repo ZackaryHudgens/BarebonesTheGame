@@ -3,9 +3,10 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/camera/states/*.?pp
                        gameObjects/characters/*.?pp
                        gameObjects/characters/enemies/*.?pp
-                       gameObjects/characters/enemies/basicHuman/*.?pp
+                       gameObjects/characters/enemies/corruptedFarmer/*.?pp
                        gameObjects/characters/skeletons/*.?pp
                        gameObjects/characters/skeletons/basicSkeleton/*.?pp
+                       gameObjects/characters/skeletons/boneThrower/*.?pp
                        gameObjects/characters/states/*.?pp
                        gameObjects/effects/*.?pp
                        gameObjects/gui/*.?pp
@@ -16,10 +17,10 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/gui/menus/skillMenu/*.?pp
                        gameObjects/gui/menus/spellMenu/*.?pp
                        gameObjects/skills/*.?pp
-                       gameObjects/skills/clawSkill/*.?pp
                        gameObjects/skills/moveSkill/*.?pp
-                       gameObjects/skills/pitchforkSkill/*.?pp
-                       gameObjects/skills/tentacleSlapSkill/*.?pp
+                       gameObjects/skills/skeletonSkills/clawSkill/*.?pp
+                       gameObjects/skills/humanSkills/pitchforkSkill/*.?pp
+                       gameObjects/skills/humanSkills/tentacleSlapSkill/*.?pp
                        gameObjects/skills/spells/*.?pp
                        gameObjects/skills/spells/desecrateSpell/*.?pp
                        gameObjects/skills/spells/fireballSpell/*.?pp
@@ -43,9 +44,10 @@ target_include_directories(barebones PUBLIC
                            gameObjects/camera/states
                            gameObjects/characters
                            gameObjects/characters/enemies
-                           gameObjects/characters/enemies/basicHuman
+                           gameObjects/characters/enemies/corruptedFarmer
                            gameObjects/characters/skeletons
                            gameObjects/characters/skeletons/basicSkeleton
+                           gameObjects/characters/skeletons/boneThrower
                            gameObjects/characters/states
                            gameObjects/effects
                            gameObjects/gui
@@ -56,10 +58,10 @@ target_include_directories(barebones PUBLIC
                            gameObjects/gui/menus/skillMenu
                            gameObjects/gui/menus/spellMenu
                            gameObjects/skills
-                           gameObjects/skills/clawSkill
                            gameObjects/skills/moveSkill
-                           gameObjects/skills/pitchforkSkill
-                           gameObjects/skills/tentacleSlapSkill
+                           gameObjects/skills/skeletonSkills/clawSkill
+                           gameObjects/skills/humanSkills/pitchforkSkill
+                           gameObjects/skills/humanSkills/tentacleSlapSkill
                            gameObjects/skills/spells
                            gameObjects/skills/spells/desecrateSpell
                            gameObjects/skills/spells/fireballSpell

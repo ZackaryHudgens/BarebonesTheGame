@@ -5,7 +5,7 @@
 #include "EffectListBehaviorComponent.hpp"
 #include "HealthBarMeshComponent.hpp"
 
-#include "BasicHumanBehaviorComponent.hpp"
+#include "CorruptedFarmerBehaviorComponent.hpp"
 #include "BasicSkeletonBehaviorComponent.hpp"
 
 #include "Colors.hpp"
@@ -67,9 +67,9 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
 
       break;
     }
-    case CharacterType::eBASIC_HUMAN:
+    case CharacterType::eCORRUPTED_FARMER:
     {
-      newCharacter->AddComponent(std::make_unique<BasicHumanBehaviorComponent>());
+      newCharacter->AddComponent(std::make_unique<CorruptedFarmerBehaviorComponent>());
 
       // Create and set up the sprite.
       auto newSprite = std::make_unique<UrsineEngine::SpriteComponent>();
