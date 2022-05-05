@@ -72,6 +72,7 @@ void EffectListBehaviorComponent::HandleEffectAddedToCharacter(CharacterBehavior
        parent != nullptr)
     {
       auto newObject = std::make_unique<UrsineEngine::GameObject>(aEffect.GetName());
+      newObject->SetScale(glm::vec3(0.1, 0.1, 1.0));
       newObject->AddComponent(std::move(mesh));
       parent->AddChild(std::move(newObject));
 
@@ -120,57 +121,58 @@ void EffectListBehaviorComponent::HandleEffectRemovedFromCharacter(CharacterBeha
 /******************************************************************************/
 void EffectListBehaviorComponent::RepositionIcons()
 {
-  auto parent = GetParent();
-  if(parent != nullptr)
+  if(mCharacter != nullptr)
   {
-    auto characterMesh = parent->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
-    if(characterMesh != nullptr)
+    auto characterObject = mCharacter->GetParent();
+    if(characterObject != nullptr)
     {
-      // For each icon, place it above the character in a row.
-      int numIconsInRow = 0;
-      int numRows = 0;
-      UrsineEngine::MeshComponent* previousIconMesh = nullptr;
-      for(auto& iconObject : mIcons)
+      auto characterMesh = characterObject->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
+      if(characterMesh != nullptr)
       {
-        auto iconMesh = iconObject->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
-        if(iconMesh != nullptr)
+        // For each icon, place it above the character in a row.
+        int numIconsInRow = 0;
+        int numRows = 0;
+        UrsineEngine::MeshComponent* previousIconMesh = nullptr;
+        for(auto& iconObject : mIcons)
         {
-          // Calculate this icon's x-position using the character's position
-          // or the position of the previously placed icon.
-          glm::vec3 iconPos;
-          if(previousIconMesh != nullptr)
+          auto iconMesh = iconObject->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
+          if(iconMesh != nullptr)
           {
-            auto previousIconParent = previousIconMesh->GetParent();
-            if(previousIconParent != nullptr)
+            // Calculate this icon's x-position using the character's position
+            // or the position of the previously placed icon.
+            glm::vec3 iconPos;
+            if(previousIconMesh != nullptr)
             {
-              iconPos = previousIconParent->GetPosition();
-              iconPos.x += (previousIconMesh->GetWidth() / 2.0) + (iconMesh->GetWidth() / 2.0) + mHorizontalPadding;
+              auto previousIconParent = previousIconMesh->GetParent();
+              if(previousIconParent != nullptr)
+              {
+                iconPos = previousIconParent->GetPosition();
+                iconPos.x += (previousIconMesh->GetWidth() / 2.0) + (iconMesh->GetWidth() / 2.0) + mHorizontalPadding;
+              }
             }
-          }
-          else
-          {
-            iconPos = parent->GetPosition();
-            iconPos.x -= (characterMesh->GetWidth() / 2.0) - (iconMesh->GetWidth() / 2.0) - mHorizontalPadding;
-          }
+            else
+            {
+              iconPos = characterObject->GetPosition();
+              iconPos.x -= (characterMesh->GetWidth() / 2.0) - ((iconMesh->GetWidth() * 0.1) / 2.0);// - mHorizontalPadding;
+            }
 
-          // Calculate this icon's y-position using the character's position
-          // and the number of rows.
-          iconPos.y = (characterMesh->GetHeight() / 2.0) + (iconMesh->GetHeight() / 2.0) + mVerticalPadding;
-          iconPos.y += ((iconMesh->GetHeight() / 2.0) + mVerticalPadding) * numRows;
+            // Calculate this icon's y-position using the number of rows.
+            iconPos.y += (((iconMesh->GetHeight() * 0.1) / 2.0) + mVerticalPadding) * numRows;
 
-          iconObject->SetPosition(iconPos);
+            iconObject->SetPosition(iconPos);
 
-          // Update the row count.
-          ++numIconsInRow;
-          if(numIconsInRow == mIconsPerRow)
-          {
-            previousIconMesh = nullptr;
-            numIconsInRow = 0;
-            ++numRows;
-          }
-          else
-          {
-            previousIconMesh = iconMesh;
+            // Update the row count.
+            ++numIconsInRow;
+            if(numIconsInRow == mIconsPerRow)
+            {
+              previousIconMesh = nullptr;
+              numIconsInRow = 0;
+              ++numRows;
+            }
+            else
+            {
+              previousIconMesh = iconMesh;
+            }
           }
         }
       }

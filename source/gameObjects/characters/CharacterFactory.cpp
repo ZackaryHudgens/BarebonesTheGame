@@ -8,9 +8,13 @@
 #include "BasicHumanBehaviorComponent.hpp"
 #include "BasicSkeletonBehaviorComponent.hpp"
 
+#include "Colors.hpp"
+
 #include <iostream>
 
 using Barebones::CharacterFactory;
+
+double Barebones::CharacterFactory::mVerticalPadding = 0.2;
 
 /******************************************************************************/
 std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(const CharacterType& aType,
@@ -33,7 +37,7 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
 
       defaultShader.Activate();
       defaultShader.SetFloat("fadeValue", 0.0);
-      defaultShader.SetVec4("fadeColor", glm::vec4(0.125, 0.125, 0.125, 1.0));
+      defaultShader.SetVec4("fadeColor", glm::vec4(BACKGROUND_COLOR, 1.0));
 
       newSprite->AddShader("defaultShader", defaultShader);
       newSprite->SetCurrentShader("defaultShader");
@@ -77,7 +81,7 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
 
       defaultShader.Activate();
       defaultShader.SetFloat("fadeValue", 0.0);
-      defaultShader.SetVec4("fadeColor", glm::vec4(0.125, 0.125, 0.125, 1.0));
+      defaultShader.SetVec4("fadeColor", glm::vec4(BACKGROUND_COLOR, 1.0));
 
       newSprite->AddShader("defaultShader", defaultShader);
       newSprite->SetCurrentShader("defaultShader");
@@ -116,7 +120,7 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
   if(characterMesh != nullptr)
   {
     healthBarPos.y += (characterMesh->GetHeight() / 2.0);
-    healthBarPos.y += 0.1;
+    healthBarPos.y += mVerticalPadding;
     healthBarObject->SetPosition(healthBarPos);
   }
 
@@ -133,7 +137,7 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
 
   // Place the effect list above the health bar.
   auto effectListPos = healthBarPos;
-  effectListPos.y += 0.1;
+  effectListPos.y += mVerticalPadding;
   effectListObject->SetPosition(effectListPos);
 
   // Finally, add the extra objects to the character.

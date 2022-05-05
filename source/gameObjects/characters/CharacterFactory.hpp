@@ -26,6 +26,9 @@ namespace Barebones
        */
       static std::unique_ptr<UrsineEngine::GameObject> CreateCharacter(const CharacterType& aType,
                                                                        const std::string& aName);
+
+    private:
+      static double mVerticalPadding;
   };
 }
 
