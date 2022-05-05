@@ -36,6 +36,18 @@ namespace Barebones
       virtual TileList GetValidTiles(UrsineEngine::GameObject& aBoard) { return TileList(); }
 
       /**
+       * Returns true if the given tile location on the given board
+       * is valid for executing this skill. This function uses the virtual
+       * GetValidTiles() function.
+       *
+       * @param aBoard The board GameObject to use this skill on.
+       * @param aLocation The TileLocation to use this skill on.
+       * @return True if the TileLocation is valid, false otherwise.
+       */
+      bool IsTileValid(UrsineEngine::GameObject& aBoard,
+                       const TileLocation& aLocation);
+
+      /**
        * A virtual function that returns a vector of tiles to highlight when
        * the player selects this skill but before executing it. This is
        * different from GetValidTiles() in that a skill might have an

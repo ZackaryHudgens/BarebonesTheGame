@@ -1,4 +1,4 @@
-#include "ClawSkill.hpp"
+#include "PitchforkSkill.hpp"
 
 #include <Environment.hpp>
 #include <Scene.hpp>
@@ -7,22 +7,20 @@
 
 #include "BoardLayoutComponent.hpp"
 
-#include "ClawSkillEffectBehaviorComponent.hpp"
-
-using Barebones::ClawSkill;
+using Barebones::PitchforkSkill;
 
 /******************************************************************************/
-ClawSkill::ClawSkill(UrsineEngine::GameObject& aParent)
+PitchforkSkill::PitchforkSkill(UrsineEngine::GameObject& aParent)
   : Skill(aParent)
   , mDamage(1)
 {
-  SetName("Claw");
-  SetDescription("Slashes with bony claws.");
+  SetName("Pitchfork");
+  SetDescription("Stabs with a pitchfork.");
 }
 
 /******************************************************************************/
-void ClawSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
-                                 const TileLocation& aLocation)
+void PitchforkSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
+                                      const TileLocation& aLocation)
 {
   auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
   if(boardLayoutComponent != nullptr)
@@ -33,20 +31,6 @@ void ClawSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
       auto targetCharacterBehaviorComponent = targetCharacterObject->GetFirstComponentOfType<CharacterBehaviorComponent>();
       if(targetCharacterBehaviorComponent != nullptr)
       {
-        auto scene = env.GetCurrentScene();
-        if(scene != nullptr)
-        {
-          // Create an effect in front of the target character.
-          auto effectObject = std::make_unique<UrsineEngine::GameObject>("clawEffect");
-          effectObject->AddComponent(std::make_unique<ClawSkillEffectBehaviorComponent>());
-
-          auto targetPosition = targetCharacterObject->GetPosition();
-          targetPosition.z += 0.1;
-          effectObject->SetPosition(targetPosition);
-
-          scene->AddObject(std::move(effectObject));
-        }
-
         targetCharacterBehaviorComponent->DealDamage(mDamage);
       }
     }
@@ -54,7 +38,7 @@ void ClawSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
 }
 
 /******************************************************************************/
-Barebones::TileList ClawSkill::GetValidTiles(UrsineEngine::GameObject& aBoard)
+Barebones::TileList PitchforkSkill::GetValidTiles(UrsineEngine::GameObject& aBoard)
 {
   TileList tiles;
 
@@ -111,8 +95,8 @@ Barebones::TileList ClawSkill::GetValidTiles(UrsineEngine::GameObject& aBoard)
 }
 
 /******************************************************************************/
-bool ClawSkill::IsEnemyAtLocation(UrsineEngine::GameObject& aBoard,
-                                   const TileLocation& aLocation)
+bool PitchforkSkill::IsEnemyAtLocation(UrsineEngine::GameObject& aBoard,
+                                       const TileLocation& aLocation)
 {
   bool success = false;
 

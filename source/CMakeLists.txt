@@ -18,6 +18,8 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/skills/*.?pp
                        gameObjects/skills/clawSkill/*.?pp
                        gameObjects/skills/moveSkill/*.?pp
+                       gameObjects/skills/pitchforkSkill/*.?pp
+                       gameObjects/skills/tentacleSlapSkill/*.?pp
                        gameObjects/skills/spells/*.?pp
                        gameObjects/skills/spells/desecrateSpell/*.?pp
                        gameObjects/skills/spells/fireballSpell/*.?pp
@@ -56,6 +58,8 @@ target_include_directories(barebones PUBLIC
                            gameObjects/skills
                            gameObjects/skills/clawSkill
                            gameObjects/skills/moveSkill
+                           gameObjects/skills/pitchforkSkill
+                           gameObjects/skills/tentacleSlapSkill
                            gameObjects/skills/spells
                            gameObjects/skills/spells/desecrateSpell
                            gameObjects/skills/spells/fireballSpell

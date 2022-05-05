@@ -19,8 +19,6 @@
 
 #include "StatusMessageBehaviorComponent.hpp"
 
-#include "BurningEffect.hpp"
-
 using Barebones::CharacterBehaviorComponent;
 
 /******************************************************************************/
@@ -47,8 +45,6 @@ void CharacterBehaviorComponent::Initialize()
 
     // All characters have the move skill.
     AddSkill(std::make_unique<MoveSkill>(*GetParent()));
-
-    AddEffect(std::make_unique<BurningEffect>());
   }
 
   ProtectedInitialize();
@@ -103,6 +99,27 @@ std::vector<Barebones::Skill*> CharacterBehaviorComponent::GetSkills()
   }
 
   return skills;
+}
+
+/******************************************************************************/
+Barebones::Skill* CharacterBehaviorComponent::GetSkill(const std::string& aName)
+{
+  Skill* skill = nullptr;
+
+  auto findSkill = [&aName](const std::unique_ptr<Skill>& aSkill)
+  {
+    return aSkill->GetName() == aName;
+  };
+
+  auto foundSkill = std::find_if(mSkills.begin(),
+                                 mSkills.end(),
+                                 findSkill);
+  if(foundSkill != mSkills.end())
+  {
+    skill = (*foundSkill).get();
+  }
+
+  return skill;
 }
 
 /******************************************************************************/

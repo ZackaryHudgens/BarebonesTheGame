@@ -4,12 +4,16 @@
 
 #include "Signals.hpp"
 
+#include "PitchforkSkill.hpp"
+
 using Barebones::BasicHumanBehaviorComponent;
 
 /******************************************************************************/
 BasicHumanBehaviorComponent::BasicHumanBehaviorComponent()
   : EnemyBehaviorComponent()
   , mWaitingForMove(false)
+  , mHorizontalMovement(1)
+  , mVerticalMovement(1)
 {
   CharacterFinishedMoving.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
   {
@@ -27,30 +31,146 @@ void BasicHumanBehaviorComponent::TakeTurn(UrsineEngine::GameObject& aBoard)
 {
   CharacterTurnBegan.Notify(*this);
 
-  // For now, just move the character to the left one space if possible.
-  auto parent = GetParent();
-  auto boardLayout = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
-  if(parent != nullptr &&
-     boardLayout != nullptr)
-  {
-    auto location = boardLayout->GetLocationOfCharacter(parent->GetName());
+  bool success = false;
 
-    // Check if there is a character to the left of this one. If there isn't,
-    // move to that space. If there is, do nothing.
-    TileLocation newLocation = location;
-    newLocation.first -= 1;
-    auto character = boardLayout->GetCharacterAtLocation(newLocation);
-    if(character == nullptr)
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
+    if(boardLayoutComponent != nullptr)
     {
-      boardLayout->MoveCharacter(location,
-                                 newLocation);
-      mWaitingForMove = true;
+      // For now, just move the character to the left one space if possible.
+      auto targetLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
+      targetLocation.first -= 1;
+
+      auto moveSkill = GetSkill("Move");
+      if(moveSkill != nullptr)
+      {
+        if(moveSkill->IsTileValid(aBoard, targetLocation))
+        {
+          moveSkill->Execute(aBoard, targetLocation);
+          mWaitingForMove = true;
+          success = true;
+        }
+        else
+        {
+          // Check if we can use our pitchfork.
+          auto pitchforkSkill = GetSkill("Pitchfork");
+          if(pitchforkSkill != nullptr)
+          {
+            if(pitchforkSkill->IsTileValid(aBoard, targetLocation))
+            {
+              pitchforkSkill->Execute(aBoard, targetLocation);
+            }
+          }
+        }
+      }
     }
-    else
+  }
+
+  if(!success)
+  {
+    EndTurn();
+  }
+}
+
+/******************************************************************************/
+Barebones::TileList BasicHumanBehaviorComponent::GetMovements(UrsineEngine::GameObject& aObject,
+                                                              const TileLocation& aLocation) const
+{
+  TileList moves;
+
+  auto layout = aObject.GetFirstComponentOfType<BoardLayoutComponent>();
+  if(layout != nullptr)
+  {
+    TileLocation moveLocation = aLocation;
+
+    // Determine movements to the left.
+    for(int left = 0; left < mHorizontalMovement; ++left)
     {
-      // There is a character blocking the path, so our turn has ended.
-      EndTurn();
+      moveLocation.first = aLocation.first - left - 1;
+
+      if(layout->GetCharacterAtLocation(moveLocation) == nullptr)
+      {
+        // Add this location to the move list.
+        moves.emplace_back(moveLocation);
+      }
+      else
+      {
+        // If there is a character at this location,
+        // we can no longer move left.
+        break;
+      }
     }
+    moveLocation.first = aLocation.first;
+
+    // Determine movements to the right.
+    for(int right = 0; right < mHorizontalMovement; ++right)
+    {
+      moveLocation.first = aLocation.first + right + 1;
+
+      if(layout->GetCharacterAtLocation(moveLocation) == nullptr)
+      {
+        // Add this location to the move list.
+        moves.emplace_back(moveLocation);
+      }
+      else
+      {
+        // If there is a character at this location,
+        // we can no longer move right.
+        break;
+      }
+    }
+    moveLocation.first = aLocation.first;
+
+    // Determine upward movements.
+    for(int up = 0; up < mVerticalMovement; ++up)
+    {
+      moveLocation.second = aLocation.second + up + 1;
+
+      if(layout->GetCharacterAtLocation(moveLocation) == nullptr)
+      {
+        // Add this location to the move list.
+        moves.emplace_back(moveLocation);
+      }
+      else
+      {
+        // If there is a character at this location,
+        // we can no longer move up.
+        break;
+      }
+    }
+    moveLocation.second = aLocation.second;
+
+    // Determine downward movements.
+    for(int down = 0; down < mVerticalMovement; ++down)
+    {
+      moveLocation.second = aLocation.second - down - 1;
+
+      if(layout->GetCharacterAtLocation(moveLocation) == nullptr)
+      {
+        // Add this location to the move list.
+        moves.emplace_back(moveLocation);
+      }
+      else
+      {
+        // If there is a character at this location,
+        // we can no longer move down.
+        break;
+      }
+    }
+  }
+
+  return moves;
+}
+
+/******************************************************************************/
+void BasicHumanBehaviorComponent::ProtectedInitialize()
+{
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    AddSkill(std::make_unique<PitchforkSkill>(*parent));
   }
 }
 

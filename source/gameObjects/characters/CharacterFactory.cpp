@@ -91,6 +91,21 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
       spritesheet.CreateTextureFromFile("resources/sprites/enemies/basicHuman.png");
       newSprite->SetTexture(spritesheet);
 
+      newSprite->CreateAnimation("walking");
+
+      UrsineEngine::TextureClip clip;
+      clip.mHeight = 16;
+      clip.mWidth = 16;
+      clip.mX = 0;
+      clip.mY = 0;
+      newSprite->AddFrameToAnimation("walking", clip);
+
+      clip.mX = 16;
+      newSprite->AddFrameToAnimation("walking", clip);
+
+      newSprite->SetAnimation("walking");
+      newSprite->SetSpeedOfAnimation(3.0);
+
       // Finally, add the sprite.
       newCharacter->AddComponent(std::move(newSprite));
 

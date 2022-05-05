@@ -66,6 +66,15 @@ namespace Barebones
       std::vector<Skill*> GetSkills();
 
       /**
+       * Returns a pointer to this character's skill with the given name, or
+       * nullptr if the character doesn't have a skill with the given name.
+       *
+       * @param aName The name of the skill to retrieve.
+       * @return A pointer to the skill with the given name.
+       */
+      Skill* GetSkill(const std::string& aName);
+
+      /**
        * Adds a status effect to this character.
        *
        * @param aEffect The effect to add.

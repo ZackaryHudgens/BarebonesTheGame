@@ -110,17 +110,16 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerUsingSkillInputStat
         {
           // If the player's location is valid for using the current skill,
           // execute it, then return to the default input state.
-          auto tileLocations = mSkill->GetValidTiles(*board);
-          auto foundTile = std::find(tileLocations.begin(),
-                                     tileLocations.end(),
-                                     currentLocation);
-          if(foundTile != tileLocations.end() &&
-             mSkill != nullptr)
+          if(mSkill != nullptr)
           {
-            mSkill->Execute(*board,
-                            currentLocation);
-            newState = std::make_unique<HumanPlayerDefaultInputState>(*player);
-            newState->SetBoard(*board);
+            if(mSkill->IsTileValid(*board,
+                                   currentLocation))
+            {
+              mSkill->Execute(*board,
+                              currentLocation);
+              newState = std::make_unique<HumanPlayerDefaultInputState>(*player);
+              newState->SetBoard(*board);
+            }
           }
           break;
         }

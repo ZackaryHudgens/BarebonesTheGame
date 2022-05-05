@@ -8,6 +8,7 @@
 
 #include "CharacterBehaviorComponent.hpp"
 
+#include "Colors.hpp"
 #include "Signals.hpp"
 
 using Barebones::InfoPanelBehaviorComponent;
@@ -69,8 +70,8 @@ void InfoPanelBehaviorComponent::Initialize()
 
     mTextBox->SetFont("Alagard", "Medium");
     mTextBox->SetTextSize(72);
-    mTextBox->SetTextAlignment(TextAlignment::eLEFT);
-    mTextBox->SetTextColor(glm::vec4(0.125, 0.125, 0.125, 1.0));
+    mTextBox->SetTextAlignment(TextAlignment::eCENTER);
+    mTextBox->SetTextColor(glm::vec4(BACKGROUND_COLOR, 1.0));
 
     mTextBox->SetHorizontalPadding(mTextBoxHorizontalPadding);
     mTextBox->SetVerticalPadding(mTextBoxVerticalPadding);
