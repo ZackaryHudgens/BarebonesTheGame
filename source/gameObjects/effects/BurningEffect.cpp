@@ -1,23 +1,22 @@
-#include "TestEffect.hpp"
+#include "BurningEffect.hpp"
 
 #include <SpriteComponent.hpp>
 
-using Barebones::TestEffect;
+using Barebones::BurningEffect;
 
 /******************************************************************************/
-TestEffect::TestEffect()
+BurningEffect::BurningEffect()
   : Effect()
 {
-  SetName("woo");
 }
 
 /******************************************************************************/
-std::unique_ptr<UrsineEngine::MeshComponent> TestEffect::GetIcon() const
+std::unique_ptr<UrsineEngine::MeshComponent> BurningEffect::GetIcon() const
 {
   auto sprite = std::make_unique<UrsineEngine::SpriteComponent>();
 
   UrsineEngine::Texture texture;
-  texture.CreateTextureFromFile("resources/sprites/basicBrick.png");
+  texture.CreateTextureFromFile("resources/sprites/fireballSpellSprite.png");
   sprite->SetTexture(texture);
 
   std::string vertexFile = "resources/shaders/TexturedMeshShader.vert";

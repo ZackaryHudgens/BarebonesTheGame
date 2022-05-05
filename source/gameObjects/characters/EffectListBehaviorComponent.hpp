@@ -63,6 +63,7 @@ namespace Barebones
       int mIconsPerRow;
       double mHorizontalPadding;
       double mVerticalPadding;
+      double mIconScale;
   };
 }
 

@@ -15,6 +15,7 @@ EffectListBehaviorComponent::EffectListBehaviorComponent()
   , mIconsPerRow(5)
   , mHorizontalPadding(0.1)
   , mVerticalPadding(0.1)
+  , mIconScale(0.2)
 {
   EffectAddedToCharacter.Connect(*this, [this](CharacterBehaviorComponent& aCharacter,
                                                Effect& aEffect)
@@ -32,6 +33,7 @@ EffectListBehaviorComponent::EffectListBehaviorComponent()
 /******************************************************************************/
 void EffectListBehaviorComponent::Initialize()
 {
+  // On initialization, add an effect icon for each effect on the set character.
   if(mCharacter != nullptr)
   {
     for(auto& effect : mCharacter->GetEffects())
@@ -49,6 +51,19 @@ void EffectListBehaviorComponent::SetCharacter(CharacterBehaviorComponent& aChar
 {
   mCharacter = &aCharacter;
 
+  // Remove each effect icon from the parent object.
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    for(auto& icon : mIcons)
+    {
+      parent->RemoveChild(icon->GetName());
+    }
+  }
+
+  mIcons.clear();
+
+  // Add an effect icon for each effect on the set character.
   for(auto& effect : mCharacter->GetEffects())
   {
     if(effect != nullptr)
@@ -65,14 +80,14 @@ void EffectListBehaviorComponent::HandleEffectAddedToCharacter(CharacterBehavior
   if(&aCharacter == mCharacter)
   {
     // Create a GameObject to hold the effect icon and add it as
-    // a child, then reposition all the icons.
+    // a child object, then reposition all the icons.
     auto mesh = aEffect.GetIcon();
     auto parent = GetParent();
     if(mesh != nullptr &&
        parent != nullptr)
     {
       auto newObject = std::make_unique<UrsineEngine::GameObject>(aEffect.GetName());
-      newObject->SetScale(glm::vec3(0.1, 0.1, 1.0));
+      newObject->SetScale(glm::vec3(0.2, 0.2, 1.0));
       newObject->AddComponent(std::move(mesh));
       parent->AddChild(std::move(newObject));
 
@@ -89,20 +104,13 @@ void EffectListBehaviorComponent::HandleEffectRemovedFromCharacter(CharacterBeha
 {
   if(&aCharacter == mCharacter)
   {
-    // Remove the icon for this effect, then reposition all the icons.
     auto parent = GetParent();
     if(parent != nullptr)
     {
+      // Remove the icon for this effect, then reposition all the icons.
       auto findEffectObject = [aEffect](UrsineEngine::GameObject* aObject)
       {
-        bool success = false;
-
-        if(aObject != nullptr)
-        {
-          success = (aObject->GetName() == aEffect.GetName());
-        }
-
-        return success;
+        return aObject->GetName() == aEffect.GetName();
       };
 
       auto foundEffectObject = std::find_if(mIcons.begin(),
@@ -110,6 +118,7 @@ void EffectListBehaviorComponent::HandleEffectRemovedFromCharacter(CharacterBeha
                                             findEffectObject);
       if(foundEffectObject != mIcons.end())
       {
+        parent->RemoveChild((*foundEffectObject)->GetName());
         mIcons.erase(foundEffectObject);
 
         RepositionIcons();
@@ -141,23 +150,30 @@ void EffectListBehaviorComponent::RepositionIcons()
             // Calculate this icon's x-position using the character's position
             // or the position of the previously placed icon.
             glm::vec3 iconPos;
+            double iconHalfWidth = (iconMesh->GetWidth() / 2.0) * mIconScale;
+            double iconHalfHeight = (iconMesh->GetHeight() / 2.0) * mIconScale;
+
             if(previousIconMesh != nullptr)
             {
               auto previousIconParent = previousIconMesh->GetParent();
               if(previousIconParent != nullptr)
               {
+                double previousIconHalfWidth = previousIconMesh->GetWidth() / 2.0;
+
                 iconPos = previousIconParent->GetPosition();
-                iconPos.x += (previousIconMesh->GetWidth() / 2.0) + (iconMesh->GetWidth() / 2.0) + mHorizontalPadding;
+                iconPos.x += previousIconHalfWidth + iconHalfWidth + mHorizontalPadding;
               }
             }
             else
             {
+              double characterMeshHalfWidth = characterMesh->GetWidth() / 2.0;
+
               iconPos = characterObject->GetPosition();
-              iconPos.x -= (characterMesh->GetWidth() / 2.0) - ((iconMesh->GetWidth() * 0.1) / 2.0);// - mHorizontalPadding;
+              iconPos.x -= characterMeshHalfWidth - iconHalfWidth;
             }
 
             // Calculate this icon's y-position using the number of rows.
-            iconPos.y += (((iconMesh->GetHeight() * 0.1) / 2.0) + mVerticalPadding) * numRows;
+            iconPos.y += (iconHalfHeight + mVerticalPadding) * numRows;
 
             iconObject->SetPosition(iconPos);
 

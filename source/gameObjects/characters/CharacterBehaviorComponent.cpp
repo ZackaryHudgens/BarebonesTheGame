@@ -19,7 +19,7 @@
 
 #include "StatusMessageBehaviorComponent.hpp"
 
-#include "TestEffect.hpp"
+#include "BurningEffect.hpp"
 
 using Barebones::CharacterBehaviorComponent;
 
@@ -48,7 +48,7 @@ void CharacterBehaviorComponent::Initialize()
     // All characters have the move skill.
     AddSkill(std::make_unique<MoveSkill>(*GetParent()));
 
-    AddEffect(std::make_unique<TestEffect>());
+    AddEffect(std::make_unique<BurningEffect>());
   }
 
   ProtectedInitialize();
