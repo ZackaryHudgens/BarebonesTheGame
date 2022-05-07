@@ -1,7 +1,6 @@
 #include "MoveSkill.hpp"
 
 #include "BoardLayoutComponent.hpp"
-#include "CharacterBehaviorComponent.hpp"
 
 using Barebones::MoveSkill;
 
@@ -26,6 +25,12 @@ void MoveSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
     auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
     boardLayoutComponent->MoveCharacter(characterLocation,
                                         aLocation);
+
+    --mUsesRemaining;
+    if(mUsesRemaining <= 0)
+    {
+      SetEnabled(false);
+    }
   }
 }
 

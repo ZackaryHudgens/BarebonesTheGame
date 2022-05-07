@@ -28,6 +28,20 @@ namespace Barebones
                    const TileLocation& aLocation);
 
       /**
+       * Enables or disables this skill.
+       *
+       * @param aEnabled Whether to enable or disable this skill.
+       */
+      void SetEnabled(bool aEnabled) { mEnabled = aEnabled; }
+
+      /**
+       * Returns whether this skill is enabled.
+       *
+       * @return Whether this skill is enabled.
+       */
+      bool IsEnabled() const { return mEnabled; }
+
+      /**
        * A virtual function that returns a vector of valid tile locations
        * for executing this skill.
        *
@@ -111,6 +125,8 @@ namespace Barebones
 
       std::string mDescription;
       std::string mName;
+
+      bool mEnabled;
   };
 }
 

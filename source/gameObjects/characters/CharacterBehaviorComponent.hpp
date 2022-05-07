@@ -96,17 +96,14 @@ namespace Barebones
       std::vector<Effect*> GetEffects();
 
       /**
-       * A virtual function that returns a list of possible movements
-       * given a location on a board. The first integer of each
-       * pair corresponds to the column; the second integer corresponds
-       * to the row.
+       * Returns a list of possible movements given a location on a board.
        *
-       * @param aObject A GameObject containing a BoardLoyoutComponent.
+       * @param aBoard The board GameObject.
        * @param aLocation The initial location.
        * @return A list of possible movements.
        */
-      virtual TileList GetMovements(UrsineEngine::GameObject& aObject,
-                                    const TileLocation& aLocation) const;
+      TileList GetMovements(UrsineEngine::GameObject& aBoard,
+                            const TileLocation& aLocation) const;
 
       /**
        * Sets which side this character is on.
@@ -128,6 +125,13 @@ namespace Barebones
        * @return The type of this character.
        */
       Type GetType() const { return mType; }
+
+      /**
+       * Returns the speed (number of movements per turn) for this character.
+       *
+       * @return The speed (number of movements) for this character.
+       */
+      int GetSpeed() const { return mSpeed; }
 
       /**
        * Returns the maximum health value of this character.
@@ -196,6 +200,13 @@ namespace Barebones
        */
       void SetCurrentHealth(int aHealth);
 
+      /**
+       * Sets the speed (number of movements per turn) for this character.
+       *
+       * @param aSpeed The speed (number of movements) for this character.
+       */
+      void SetSpeed(int aSpeed) { mSpeed = aSpeed; }
+
     private:
 
       /**
@@ -219,6 +230,8 @@ namespace Barebones
 
       int mMaximumHealth;
       int mCurrentHealth;
+
+      int mSpeed;
   };
 }
 

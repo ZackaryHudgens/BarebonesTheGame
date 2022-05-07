@@ -6,6 +6,8 @@
 
 #include "SkillActionBehaviorComponent.hpp"
 
+#include "Colors.hpp"
+
 using Barebones::SkillMenuLayoutComponent;
 
 /******************************************************************************/
@@ -47,13 +49,13 @@ void SkillMenuLayoutComponent::Initialize()
     mSkillNameTextBox->SetFont("Alagard", "Medium");
     mSkillNameTextBox->SetTextSize(72);
     mSkillNameTextBox->SetTextAlignment(TextAlignment::eCENTER);
-    mSkillNameTextBox->SetTextColor(glm::vec4(0.125, 0.125, 0.125, 1.0));
+    mSkillNameTextBox->SetTextColor(glm::vec4(BACKGROUND_COLOR, 1.0));
     mSkillNameTextBox->SetVerticalPadding(mSkillNameVerticalPadding);
 
     mSkillDescriptionTextBox->SetFont("Alagard", "Medium");
     mSkillDescriptionTextBox->SetTextSize(48);
     mSkillDescriptionTextBox->SetTextAlignment(TextAlignment::eCENTER);
-    mSkillDescriptionTextBox->SetTextColor(glm::vec4(0.125, 0.125, 0.125, 1.0));
+    mSkillDescriptionTextBox->SetTextColor(glm::vec4(BACKGROUND_COLOR, 1.0));
     mSkillDescriptionTextBox->SetVerticalPadding(mSkillDescriptionVerticalPadding);
 
     // Make both text boxes stretch across the screen.
@@ -104,6 +106,12 @@ void SkillMenuLayoutComponent::HandleActionHovered()
       {
         mSkillNameTextBox->SetText(skill->GetName());
         mSkillDescriptionTextBox->SetText(skill->GetDescription());
+
+        if(!skill->IsEnabled())
+        {
+          mSkillNameTextBox->SetTextColor(glm::vec4(DARK_COLOR, 1.0));
+          mSkillDescriptionTextBox->SetTextColor(glm::vec4(DARK_COLOR, 1.0));
+        }
       }
     }
   }
@@ -112,10 +120,25 @@ void SkillMenuLayoutComponent::HandleActionHovered()
 /******************************************************************************/
 void SkillMenuLayoutComponent::HandleActionSelected()
 {
-  // When a skill is selected, this menu is no longer needed.
-  auto parent = GetParent();
-  if(parent != nullptr)
+  auto action = GetCurrentlyHoveredAction();
+  if(action != nullptr)
   {
-    parent->ScheduleForDeletion();
+    auto skillAction = action->GetFirstComponentOfType<SkillActionBehaviorComponent>();
+    if(skillAction != nullptr)
+    {
+      auto skill = skillAction->GetSkill();
+      if(skill != nullptr)
+      {
+        if(skill->IsEnabled())
+        {
+          // When a skill is selected, this menu is no longer needed.
+          auto parent = GetParent();
+          if(parent != nullptr)
+          {
+            parent->ScheduleForDeletion();
+          }
+        }
+      }
+    }
   }
 }

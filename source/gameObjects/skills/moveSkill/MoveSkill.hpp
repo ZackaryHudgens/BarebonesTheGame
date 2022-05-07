@@ -33,6 +33,8 @@ namespace Barebones
        */
       void ProtectedExecute(UrsineEngine::GameObject& aBoard,
                             const TileLocation& aLocation) override;
+
+      int mUsesRemaining;
   };
 }
 

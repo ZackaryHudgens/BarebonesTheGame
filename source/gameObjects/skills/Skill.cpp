@@ -9,6 +9,7 @@ using Barebones::Skill;
 /******************************************************************************/
 Skill::Skill(UrsineEngine::GameObject& aParent)
   : mParent(&aParent)
+  , mEnabled(true)
 {
 }
 
@@ -16,9 +17,12 @@ Skill::Skill(UrsineEngine::GameObject& aParent)
 void Skill::Execute(UrsineEngine::GameObject& aBoard,
                     const TileLocation& aLocation)
 {
-  ProtectedExecute(aBoard,
-                   aLocation);
-  SkillExecuted.Notify(*this);
+  if(mEnabled)
+  {
+    ProtectedExecute(aBoard,
+                     aLocation);
+    SkillExecuted.Notify(*this);
+  }
 }
 
 /******************************************************************************/

@@ -29,7 +29,10 @@ void SkillActionBehaviorComponent::Select()
 {
   if(mSkill != nullptr)
   {
-    SkillSelectedFromMenu.Notify(*mSkill);
+    if(mSkill->IsEnabled())
+    {
+      SkillSelectedFromMenu.Notify(*mSkill);
+    }
   }
 }
 
