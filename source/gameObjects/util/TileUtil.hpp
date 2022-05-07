@@ -12,6 +12,21 @@ namespace Barebones
    */
   typedef std::pair<int, int> TileLocation;
   typedef std::vector<TileLocation> TileList;
+
+  /**
+   * Represents an edge in an undirected graph of tiles.
+   */
+  typedef std::pair<TileLocation, int> TileEdge;
+
+  /**
+   * Maps a tile location to a list of edges.
+   */
+  typedef std::pair<TileLocation, std::vector<TileEdge>> TileAdjacencyList;
+
+  /**
+   * Represents an undirected graph as a collection of adjacency lists.
+   */
+  typedef std::vector<TileAdjacencyList> TileAdjacencyGraph;
 }
 
 #endif
