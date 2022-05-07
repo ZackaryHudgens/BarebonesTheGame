@@ -3,8 +3,6 @@
 #include <algorithm>
 #include <sstream>
 
-#include <iostream>
-
 #include <Environment.hpp>
 #include <SpriteComponent.hpp>
 
@@ -34,6 +32,10 @@ CharacterBehaviorComponent::CharacterBehaviorComponent()
   , mCurrentHealth(1)
   , mSpeed(1)
 {
+  PlayerTurnBegan.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
+  {
+    this->HandlePlayerTurnBegan(aPlayer);
+  });
 }
 
 /******************************************************************************/
@@ -316,5 +318,26 @@ void CharacterBehaviorComponent::DisplayStatusMessage(const std::string& aText)
 
     // Add the status message to the scene.
     scene->AddObject(std::move(statusMessageObject));
+  }
+}
+
+/******************************************************************************/
+void CharacterBehaviorComponent::HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlayer)
+{
+  // If this character is being controlled by the player whose turn began,
+  // enable each of this character's skills.
+  if(aPlayer.GetSide() == mSide)
+  {
+    for(auto& skill : mSkills)
+    {
+      skill->SetEnabled(true);
+
+      // Refresh the number of uses for the Move skill this turn.
+      auto moveSkill = dynamic_cast<MoveSkill*>(skill.get());
+      if(moveSkill != nullptr)
+      {
+        moveSkill->SetUsesRemaining(mSpeed);
+      }
+    }
   }
 }

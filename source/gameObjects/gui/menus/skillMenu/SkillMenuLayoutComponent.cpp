@@ -4,9 +4,9 @@
 #include <GameObject.hpp>
 #include <SpriteComponent.hpp>
 
-#include "SkillActionBehaviorComponent.hpp"
-
 #include "Colors.hpp"
+
+#include "SkillActionBehaviorComponent.hpp"
 
 using Barebones::SkillMenuLayoutComponent;
 
@@ -107,7 +107,12 @@ void SkillMenuLayoutComponent::HandleActionHovered()
         mSkillNameTextBox->SetText(skill->GetName());
         mSkillDescriptionTextBox->SetText(skill->GetDescription());
 
-        if(!skill->IsEnabled())
+        if(skillAction->IsEnabled())
+        {
+          mSkillNameTextBox->SetTextColor(glm::vec4(BACKGROUND_COLOR, 1.0));
+          mSkillDescriptionTextBox->SetTextColor(glm::vec4(BACKGROUND_COLOR, 1.0));
+        }
+        else
         {
           mSkillNameTextBox->SetTextColor(glm::vec4(DARK_COLOR, 1.0));
           mSkillDescriptionTextBox->SetTextColor(glm::vec4(DARK_COLOR, 1.0));
@@ -120,25 +125,10 @@ void SkillMenuLayoutComponent::HandleActionHovered()
 /******************************************************************************/
 void SkillMenuLayoutComponent::HandleActionSelected()
 {
-  auto action = GetCurrentlyHoveredAction();
-  if(action != nullptr)
+  // When a skill is selected, this menu is no longer needed.
+  auto parent = GetParent();
+  if(parent != nullptr)
   {
-    auto skillAction = action->GetFirstComponentOfType<SkillActionBehaviorComponent>();
-    if(skillAction != nullptr)
-    {
-      auto skill = skillAction->GetSkill();
-      if(skill != nullptr)
-      {
-        if(skill->IsEnabled())
-        {
-          // When a skill is selected, this menu is no longer needed.
-          auto parent = GetParent();
-          if(parent != nullptr)
-          {
-            parent->ScheduleForDeletion();
-          }
-        }
-      }
-    }
+    parent->ScheduleForDeletion();
   }
 }

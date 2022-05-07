@@ -1,5 +1,7 @@
 #include "MoveSkill.hpp"
 
+#include <sstream>
+
 #include "BoardLayoutComponent.hpp"
 
 using Barebones::MoveSkill;
@@ -26,7 +28,7 @@ void MoveSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
     boardLayoutComponent->MoveCharacter(characterLocation,
                                         aLocation);
 
-    --mUsesRemaining;
+    SetUsesRemaining(mUsesRemaining - 1);
     if(mUsesRemaining <= 0)
     {
       SetEnabled(false);
@@ -51,4 +53,15 @@ Barebones::TileList MoveSkill::GetValidTiles(UrsineEngine::GameObject& aBoard)
   }
 
   return tiles;
+}
+
+/******************************************************************************/
+void MoveSkill::SetUsesRemaining(int aUses)
+{
+  mUsesRemaining = aUses;
+
+  std::stringstream descriptionStream;
+  descriptionStream << "Moves the character. ";
+  descriptionStream << mUsesRemaining << " uses remaining this turn.";
+  SetDescription(descriptionStream.str());
 }

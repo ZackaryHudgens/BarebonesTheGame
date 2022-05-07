@@ -29,11 +29,6 @@ namespace Barebones
       void SetHovered(bool aHovered) override;
 
       /**
-       * Selects this action.
-       */
-      void Select() override;
-
-      /**
        * Sets the skill that this action represents.
        *
        * @param aSkill The skill that this action represents.
@@ -46,6 +41,13 @@ namespace Barebones
        * @return The skill that this action represents.
        */
       Skill* GetSkill() { return mSkill; }
+
+    protected:
+
+      /**
+       * Selects this action.
+       */
+      void ProtectedSelect() override;
 
     private:
       Skill* mSkill;

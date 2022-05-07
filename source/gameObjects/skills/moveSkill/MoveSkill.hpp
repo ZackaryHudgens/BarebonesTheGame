@@ -23,6 +23,13 @@ namespace Barebones
        */
       TileList GetValidTiles(UrsineEngine::GameObject& aBoard) override;
 
+      /**
+       * Sets the number of times this skill can be used until becoming disabled.
+       *
+       * @param aUses The number of times this skill can be used.
+       */
+      void SetUsesRemaining(int aUses);
+
     protected:
 
       /**

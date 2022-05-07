@@ -39,6 +39,11 @@ void SkillMenuInputComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCod
           layout->SelectCurrentAction();
           break;
         }
+        case UrsineEngine::KeyCode::eKEY_ESCAPE:
+        {
+          parent->ScheduleForDeletion();
+          break;
+        }
         default:
         {
           break;

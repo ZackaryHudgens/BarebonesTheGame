@@ -26,7 +26,31 @@ namespace Barebones
       /**
        * A virtual function that selects this action and executes it.
        */
-      virtual void Select() = 0;
+      void Select();
+
+      /**
+       * Enables or disables this skill.
+       *
+       * @param aEnabled Whether to enable or disable this skill.
+       */
+      void SetEnabled(bool aEnabled) { mEnabled = aEnabled; }
+
+      /**
+       * Returns whether this skill is enabled.
+       *
+       * @return Whether this skill is enabled.
+       */
+      bool IsEnabled() const { return mEnabled; }
+
+    protected:
+
+      /**
+       * A virtual function that gets called during Select().
+       */
+      virtual void ProtectedSelect() = 0;
+
+    private:
+      bool mEnabled;
   };
 }
 

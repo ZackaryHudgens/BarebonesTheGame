@@ -14,6 +14,7 @@ BasicSkeletonBehaviorComponent::BasicSkeletonBehaviorComponent()
   SetType(Type::eSKELETON);
   SetMaximumHealth(10);
   SetCurrentHealth(10);
+  SetSpeed(7);
 }
 
 /******************************************************************************/

@@ -8,6 +8,8 @@
 
 #include "CharacterState.hpp"
 
+#include "PlayerBehaviorComponent.hpp"
+
 #include "Effect.hpp"
 #include "Side.hpp"
 #include "Skill.hpp"
@@ -216,6 +218,14 @@ namespace Barebones
        * @param aText The text to display.
        */
       void DisplayStatusMessage(const std::string& aText);
+
+      /**
+       * A handler function that gets called whenever a player begins
+       * their turn.
+       *
+       * @param aPlayer The player whose turn began.
+       */
+      void HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlayer);
 
       std::unique_ptr<CharacterState> mMovementState;
       std::unique_ptr<CharacterState> mStatusState;
