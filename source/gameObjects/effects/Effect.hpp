@@ -5,8 +5,6 @@
 
 #include <MeshComponent.hpp>
 
-#include "TileUtil.hpp"
-
 namespace Barebones
 {
   class Effect
@@ -46,13 +44,6 @@ namespace Barebones
        * @return An icon mesh for this effect.
        */
       virtual std::unique_ptr<UrsineEngine::MeshComponent> GetIcon() const { return nullptr; }
-
-      /**
-       * A virtual function that alters the movements for the parent character.
-       *
-       * @param aMoveList The list of moves to modify.
-       */
-      virtual void ModifyMovements(TileList& aMoveList) {}
 
     protected:
 

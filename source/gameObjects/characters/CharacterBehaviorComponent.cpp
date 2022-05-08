@@ -10,8 +10,6 @@
 
 #include "Signals.hpp"
 
-#include "BoardLayoutComponent.hpp"
-
 #include "CharacterDefaultState.hpp"
 #include "CharacterDyingState.hpp"
 #include "CharacterMovingState.hpp"
@@ -32,7 +30,6 @@ CharacterBehaviorComponent::CharacterBehaviorComponent()
   , mType(Type::eNONE)
   , mMaximumHealth(1)
   , mCurrentHealth(1)
-  , mSpeed(1)
 {
 }
 
@@ -175,48 +172,10 @@ std::vector<Barebones::Effect*> CharacterBehaviorComponent::GetEffects()
 }
 
 /******************************************************************************/
-Barebones::TileList CharacterBehaviorComponent::GetMovements(UrsineEngine::GameObject& aBoard,
+Barebones::TileList CharacterBehaviorComponent::GetMovements(UrsineEngine::GameObject& aObject,
                                                              const TileLocation& aLocation) const
 {
-  TileList moves;
-
-  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
-  if(boardLayoutComponent != nullptr)
-  {
-    // Add each tile surrounding this location.
-    auto leftEdge = aLocation.first - 1;
-    auto rightEdge = aLocation.first + 1;
-    auto bottomEdge = aLocation.second - 1;
-    auto topEdge = aLocation.second + 1;
-
-    for(int column = leftEdge; column <= rightEdge; ++column)
-    {
-      for(int row = bottomEdge; row <= topEdge; ++row)
-      {
-        // A tile location is considered a valid movement if:
-        // 1) There is a tile at the location.
-        // 2) There is not already a character at the location.
-        // 3) The location is not the character's current location.
-        //
-        // Effects on this character may change these conditions.
-        TileLocation location(column, row);
-        if(boardLayoutComponent->GetTileAtLocation(location) != nullptr &&
-           boardLayoutComponent->GetCharacterAtLocation(location) == nullptr &&
-           location != aLocation)
-        {
-          moves.emplace_back(location);
-        }
-      }
-    }
-  }
-
-  // Allow each effect to modify the list of movements.
-  for(auto& effect : mEffects)
-  {
-    effect->ModifyMovements(moves);
-  }
-
-  return moves;
+  return TileList();
 }
 
 /******************************************************************************/
