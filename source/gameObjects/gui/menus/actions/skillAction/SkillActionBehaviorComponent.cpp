@@ -25,13 +25,7 @@ void SkillActionBehaviorComponent::SetHovered(bool aHovered)
 }
 
 /******************************************************************************/
-void SkillActionBehaviorComponent::SetSkill(Skill& aSkill)
-{
-  mSkill = &aSkill;
-}
-
-/******************************************************************************/
-void SkillActionBehaviorComponent::ProtectedSelect()
+void SkillActionBehaviorComponent::Select()
 {
   if(mSkill != nullptr)
   {
@@ -40,4 +34,10 @@ void SkillActionBehaviorComponent::ProtectedSelect()
       SkillSelectedFromMenu.Notify(*mSkill);
     }
   }
+}
+
+/******************************************************************************/
+void SkillActionBehaviorComponent::SetSkill(Skill& aSkill)
+{
+  mSkill = &aSkill;
 }

@@ -1,17 +1,17 @@
-#include "SkillMenuInputComponent.hpp"
+#include "SpellMenuInputComponent.hpp"
 
 #include "MenuLayoutComponent.hpp"
 
-using Barebones::SkillMenuInputComponent;
+using Barebones::SpellMenuInputComponent;
 
 /******************************************************************************/
-SkillMenuInputComponent::SkillMenuInputComponent()
+SpellMenuInputComponent::SpellMenuInputComponent()
   : InputComponent()
 {
 }
 
 /******************************************************************************/
-void SkillMenuInputComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
+void SpellMenuInputComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
                                                int aMods)
 {
   auto parent = GetParent();
@@ -49,7 +49,7 @@ void SkillMenuInputComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCod
 }
 
 /******************************************************************************/
-void SkillMenuInputComponent::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
+void SpellMenuInputComponent::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
                                                 int aMods)
 {
   auto parent = GetParent();

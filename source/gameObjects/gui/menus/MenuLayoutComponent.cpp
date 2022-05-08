@@ -123,14 +123,8 @@ void MenuLayoutComponent::SelectCurrentAction()
   if(mCurrentlyHoveredAction != nullptr)
   {
     auto behaviorComp = mCurrentlyHoveredAction->GetFirstComponentOfType<ActionBehaviorComponent>();
-    if(behaviorComp != nullptr)
-    {
-      if(behaviorComp->IsEnabled())
-      {
-        behaviorComp->Select();
+    behaviorComp->Select();
 
-        HandleActionSelected();
-      }
-    }
+    HandleActionSelected();
   }
 }

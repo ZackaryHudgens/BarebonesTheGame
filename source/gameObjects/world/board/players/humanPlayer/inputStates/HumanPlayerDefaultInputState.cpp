@@ -192,51 +192,37 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
 /******************************************************************************/
 void HumanPlayerDefaultInputState::CreateSkillMenu(UrsineEngine::GameObject& aObject)
 {
-  auto board = GetBoard();
-  if(board != nullptr)
+  auto characterBehaviorComponent = aObject.GetFirstComponentOfType<CharacterBehaviorComponent>();
+  if(characterBehaviorComponent != nullptr)
   {
-    auto characterBehaviorComponent = aObject.GetFirstComponentOfType<CharacterBehaviorComponent>();
-    if(characterBehaviorComponent != nullptr)
+    auto skills = characterBehaviorComponent->GetSkills();
+    if(!skills.empty())
     {
-      auto skills = characterBehaviorComponent->GetSkills();
-      if(!skills.empty())
+      // Create a new menu object.
+      auto menu = MenuFactory::CreateMenu(MenuType::eSKILL,
+                                          "skillMenu");
+      auto menuLayout = menu->GetFirstComponentOfType<MenuLayoutComponent>();
+      if(menuLayout != nullptr)
       {
-        // Create a new menu object.
-        auto menu = MenuFactory::CreateMenu(MenuType::eSKILL,
-                                            "skillMenu");
-        auto menuLayout = menu->GetFirstComponentOfType<MenuLayoutComponent>();
-        if(menuLayout != nullptr)
+        // Add each of this character's skills to the menu.
+        for(auto& skill : skills)
         {
-          // Add each of this character's skills to the menu.
-          for(auto& skill : skills)
-          {
-            auto action = ActionFactory::CreateAction(ActionType::eSKILL,
-                                                      skill->GetName());
-            auto skillAction = action->GetFirstComponentOfType<SkillActionBehaviorComponent>();
-
-            // If this skill has no valid tiles at the player's location,
-            // or if this skill is disabled, disable the action before adding
-            // it to the menu.
-            if(skill->GetValidTiles(*board).empty() ||
-               !skill->IsEnabled())
-            {
-              skillAction->SetEnabled(false);
-            }
-
-            skillAction->SetSkill(*skill);
-            menuLayout->AddAction(std::move(action));
-          }
+          auto action = ActionFactory::CreateAction(ActionType::eSKILL,
+                                                    skill->GetName());
+          auto skillAction = action->GetFirstComponentOfType<SkillActionBehaviorComponent>();
+          skillAction->SetSkill(*skill);
+          menuLayout->AddAction(std::move(action));
         }
+      }
 
-        // Add the new menu to the foreground of the current scene.
-        auto scene = env.GetCurrentScene();
-        if(scene != nullptr)
+      // Add the new menu to the foreground of the current scene.
+      auto scene = env.GetCurrentScene();
+      if(scene != nullptr)
+      {
+        auto foreground = scene->GetForeground();
+        if(foreground != nullptr)
         {
-          auto foreground = scene->GetForeground();
-          if(foreground != nullptr)
-          {
-            foreground->AddChild(std::move(menu));
-          }
+          foreground->AddChild(std::move(menu));
         }
       }
     }
