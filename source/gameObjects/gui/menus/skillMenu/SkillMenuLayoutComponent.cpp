@@ -4,6 +4,8 @@
 #include <GameObject.hpp>
 #include <SpriteComponent.hpp>
 
+#include "Colors.hpp"
+
 #include "SkillActionBehaviorComponent.hpp"
 
 using Barebones::SkillMenuLayoutComponent;
@@ -47,13 +49,13 @@ void SkillMenuLayoutComponent::Initialize()
     mSkillNameTextBox->SetFont("Alagard", "Medium");
     mSkillNameTextBox->SetTextSize(72);
     mSkillNameTextBox->SetTextAlignment(TextAlignment::eCENTER);
-    mSkillNameTextBox->SetTextColor(glm::vec4(0.125, 0.125, 0.125, 1.0));
+    mSkillNameTextBox->SetTextColor(glm::vec4(BACKGROUND_COLOR, 1.0));
     mSkillNameTextBox->SetVerticalPadding(mSkillNameVerticalPadding);
 
     mSkillDescriptionTextBox->SetFont("Alagard", "Medium");
     mSkillDescriptionTextBox->SetTextSize(48);
     mSkillDescriptionTextBox->SetTextAlignment(TextAlignment::eCENTER);
-    mSkillDescriptionTextBox->SetTextColor(glm::vec4(0.125, 0.125, 0.125, 1.0));
+    mSkillDescriptionTextBox->SetTextColor(glm::vec4(BACKGROUND_COLOR, 1.0));
     mSkillDescriptionTextBox->SetVerticalPadding(mSkillDescriptionVerticalPadding);
 
     // Make both text boxes stretch across the screen.
@@ -104,6 +106,18 @@ void SkillMenuLayoutComponent::HandleActionHovered()
       {
         mSkillNameTextBox->SetText(skill->GetName());
         mSkillDescriptionTextBox->SetText(skill->GetDescription());
+
+        // If the action is disabled, change the text color.
+        if(!skillAction->IsEnabled())
+        {
+          mSkillNameTextBox->SetTextColor(glm::vec4(DARK_COLOR, 1.0));
+          mSkillDescriptionTextBox->SetTextColor(glm::vec4(DARK_COLOR, 1.0));
+        }
+        else
+        {
+          mSkillNameTextBox->SetTextColor(glm::vec4(BACKGROUND_COLOR, 1.0));
+          mSkillDescriptionTextBox->SetTextColor(glm::vec4(BACKGROUND_COLOR, 1.0));
+        }
       }
     }
   }

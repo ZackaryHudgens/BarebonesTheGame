@@ -192,8 +192,10 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
 /******************************************************************************/
 void HumanPlayerDefaultInputState::CreateSkillMenu(UrsineEngine::GameObject& aObject)
 {
+  auto boardObject = GetBoard();
   auto characterBehaviorComponent = aObject.GetFirstComponentOfType<CharacterBehaviorComponent>();
-  if(characterBehaviorComponent != nullptr)
+  if(boardObject != nullptr &&
+     characterBehaviorComponent != nullptr)
   {
     auto skills = characterBehaviorComponent->GetSkills();
     if(!skills.empty())
@@ -210,6 +212,15 @@ void HumanPlayerDefaultInputState::CreateSkillMenu(UrsineEngine::GameObject& aOb
           auto action = ActionFactory::CreateAction(ActionType::eSKILL,
                                                     skill->GetName());
           auto skillAction = action->GetFirstComponentOfType<SkillActionBehaviorComponent>();
+
+          // If the skill is disabled, or if it doesn't have any valid
+          // tiles, disable the action before adding it to the menu.
+          if(!skill->IsEnabled() ||
+             skill->GetValidTiles(*boardObject).empty())
+          {
+            skillAction->SetEnabled(false);
+          }
+
           skillAction->SetSkill(*skill);
           menuLayout->AddAction(std::move(action));
         }
