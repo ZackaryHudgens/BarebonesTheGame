@@ -3,12 +3,12 @@
 #include <algorithm>
 #include <sstream>
 
-#include <iostream>
-
 #include <Environment.hpp>
 #include <SpriteComponent.hpp>
 
 #include "Signals.hpp"
+
+#include "BoardLayoutComponent.hpp"
 
 #include "CharacterDefaultState.hpp"
 #include "CharacterDyingState.hpp"
@@ -28,6 +28,7 @@ CharacterBehaviorComponent::CharacterBehaviorComponent()
   , mStatusState(nullptr)
   , mSide(Side::eNONE)
   , mType(Type::eNONE)
+  , mSpeed(1)
   , mMaximumHealth(1)
   , mCurrentHealth(1)
 {
@@ -175,7 +176,38 @@ std::vector<Barebones::Effect*> CharacterBehaviorComponent::GetEffects()
 Barebones::TileList CharacterBehaviorComponent::GetMovements(UrsineEngine::GameObject& aObject,
                                                              const TileLocation& aLocation) const
 {
-  return TileList();
+  TileList tiles;
+
+  auto parent = GetParent();
+  auto boardLayoutComponent = aObject.GetFirstComponentOfType<BoardLayoutComponent>();
+  if(parent != nullptr &&
+     boardLayoutComponent != nullptr)
+  {
+    auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
+
+    auto leftEdge = characterLocation.first - 1;
+    auto rightEdge = characterLocation.first + 1;
+    auto bottomEdge = characterLocation.second - 1;
+    auto topEdge = characterLocation.second + 1;
+
+    for(int column = leftEdge; column <= rightEdge; ++column)
+    {
+      for(int row = bottomEdge; row <= topEdge; ++row)
+      {
+        TileLocation newMove(column, row);
+
+        // Before adding this as a valid move, check if there is a tile
+        // at this location and that there isn't already a character there.
+        if(boardLayoutComponent->GetTileAtLocation(newMove) != nullptr &&
+           boardLayoutComponent->GetCharacterAtLocation(newMove) == nullptr)
+        {
+          tiles.emplace_back(newMove);
+        }
+      }
+    }
+  }
+
+  return tiles;
 }
 
 /******************************************************************************/
@@ -235,6 +267,54 @@ void CharacterBehaviorComponent::SetCurrentHealth(int aHealth)
       mStatusState = std::make_unique<CharacterDyingState>(*parent);
     }
   }
+}
+
+/******************************************************************************/
+Barebones::TileAdjacencyGraph CharacterBehaviorComponent::GenerateGraph(UrsineEngine::GameObject& aBoard) const
+{
+  TileAdjacencyGraph graph;
+
+  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
+  if(boardLayoutComponent != nullptr)
+  {
+    auto columns = boardLayoutComponent->GetColumns();
+    auto rows = boardLayoutComponent->GetRows();
+
+    // For each tile, generate a TileAdjacencyList. A tile is considered
+    // adjacent to another tile if the second tile is a valid movement
+    // for this character from the first tile.
+    for(int c = 0; c < columns; ++c)
+    {
+      for(int r = 0; r < rows; ++r)
+      {
+        TileLocation currentLocation(c, r);
+        auto neighbors = GetMovements(aBoard, currentLocation);
+
+        TileAdjacencyList adjacentTiles;
+        adjacentTiles.first = currentLocation;
+
+        // Create an edge for each valid movement.
+        std::vector<TileEdge> edges;
+        for(auto& neighborLocation : neighbors)
+        {
+          // Calculate the distance from the current location to the neighbor.
+          auto distance = std::sqrt(std::pow(currentLocation.first - neighborLocation.first, 2) +
+                                    std::pow(currentLocation.second -neighborLocation.second, 2));
+
+          TileEdge edge(neighborLocation, distance);
+          edges.emplace_back(edge);
+        }
+
+        // Add these edges to the list of adjacent tiles.
+        adjacentTiles.second = edges;
+
+        // Add the list to the graph.
+        graph.emplace_back(adjacentTiles);
+      }
+    }
+  }
+
+  return graph;
 }
 
 /******************************************************************************/

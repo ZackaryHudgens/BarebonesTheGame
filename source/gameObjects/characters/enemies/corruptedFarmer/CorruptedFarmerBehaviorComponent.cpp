@@ -12,8 +12,6 @@ using Barebones::CorruptedFarmerBehaviorComponent;
 CorruptedFarmerBehaviorComponent::CorruptedFarmerBehaviorComponent()
   : EnemyBehaviorComponent()
   , mWaitingForMove(false)
-  , mHorizontalMovement(1)
-  , mVerticalMovement(1)
 {
   CharacterFinishedMoving.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
   {
@@ -24,6 +22,7 @@ CorruptedFarmerBehaviorComponent::CorruptedFarmerBehaviorComponent()
   SetType(Type::eHUMAN);
   SetMaximumHealth(5);
   SetCurrentHealth(5);
+  SetSpeed(2);
 }
 
 /******************************************************************************/
@@ -72,96 +71,6 @@ void CorruptedFarmerBehaviorComponent::TakeTurn(UrsineEngine::GameObject& aBoard
   {
     EndTurn();
   }
-}
-
-/******************************************************************************/
-Barebones::TileList CorruptedFarmerBehaviorComponent::GetMovements(UrsineEngine::GameObject& aObject,
-                                                              const TileLocation& aLocation) const
-{
-  TileList moves;
-
-  auto layout = aObject.GetFirstComponentOfType<BoardLayoutComponent>();
-  if(layout != nullptr)
-  {
-    TileLocation moveLocation = aLocation;
-
-    // Determine movements to the left.
-    for(int left = 0; left < mHorizontalMovement; ++left)
-    {
-      moveLocation.first = aLocation.first - left - 1;
-
-      if(layout->GetCharacterAtLocation(moveLocation) == nullptr)
-      {
-        // Add this location to the move list.
-        moves.emplace_back(moveLocation);
-      }
-      else
-      {
-        // If there is a character at this location,
-        // we can no longer move left.
-        break;
-      }
-    }
-    moveLocation.first = aLocation.first;
-
-    // Determine movements to the right.
-    for(int right = 0; right < mHorizontalMovement; ++right)
-    {
-      moveLocation.first = aLocation.first + right + 1;
-
-      if(layout->GetCharacterAtLocation(moveLocation) == nullptr)
-      {
-        // Add this location to the move list.
-        moves.emplace_back(moveLocation);
-      }
-      else
-      {
-        // If there is a character at this location,
-        // we can no longer move right.
-        break;
-      }
-    }
-    moveLocation.first = aLocation.first;
-
-    // Determine upward movements.
-    for(int up = 0; up < mVerticalMovement; ++up)
-    {
-      moveLocation.second = aLocation.second + up + 1;
-
-      if(layout->GetCharacterAtLocation(moveLocation) == nullptr)
-      {
-        // Add this location to the move list.
-        moves.emplace_back(moveLocation);
-      }
-      else
-      {
-        // If there is a character at this location,
-        // we can no longer move up.
-        break;
-      }
-    }
-    moveLocation.second = aLocation.second;
-
-    // Determine downward movements.
-    for(int down = 0; down < mVerticalMovement; ++down)
-    {
-      moveLocation.second = aLocation.second - down - 1;
-
-      if(layout->GetCharacterAtLocation(moveLocation) == nullptr)
-      {
-        // Add this location to the move list.
-        moves.emplace_back(moveLocation);
-      }
-      else
-      {
-        // If there is a character at this location,
-        // we can no longer move down.
-        break;
-      }
-    }
-  }
-
-  return moves;
 }
 
 /******************************************************************************/

@@ -101,6 +101,9 @@ namespace Barebones
        * pair corresponds to the column; the second integer corresponds
        * to the row.
        *
+       * By default, a character can move to any adjacent tile, so long as
+       * it exists and there isn't already a character there.
+       *
        * @param aObject A GameObject containing a BoardLoyoutComponent.
        * @param aLocation The initial location.
        * @return A list of possible movements.
@@ -128,6 +131,14 @@ namespace Barebones
        * @return The type of this character.
        */
       Type GetType() const { return mType; }
+
+      /**
+       * Returns the speed of this character (the amount of distance the
+       * character can cover in a single move).
+       *
+       * @return The speed of this character.
+       */
+      int GetSpeed() const { return mSpeed; }
 
       /**
        * Returns the maximum health value of this character.
@@ -180,6 +191,14 @@ namespace Barebones
       void AddSkill(std::unique_ptr<Skill> aSkill);
 
       /**
+       * Sets the speed of this character (the amount of distance the
+       * character can cover in a single move).
+       *
+       * @param aSpeed The speed of this character.
+       */
+      void SetSpeed(int aSpeed) { mSpeed = aSpeed; }
+
+      /**
        * Sets the maximum health of this character. If the maximum health is
        * less than the current health, the current health is set equal to
        * the given value.
@@ -195,6 +214,15 @@ namespace Barebones
        * @param aHealth The new current health of this character.
        */
       void SetCurrentHealth(int aHealth);
+
+      /**
+       * Generates a TileAdjacencyGraph using this character's GetMovements()
+       * function for each tile on the board.
+       *
+       * @param aBoard The board to generate a graph for.
+       * @return A TileAdjacencyGraph for the given board.
+       */
+      TileAdjacencyGraph GenerateGraph(UrsineEngine::GameObject& aBoard) const;
 
     private:
 
@@ -216,6 +244,8 @@ namespace Barebones
       Type mType;
 
       std::string mName;
+
+      int mSpeed;
 
       int mMaximumHealth;
       int mCurrentHealth;
