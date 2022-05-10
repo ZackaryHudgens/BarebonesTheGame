@@ -1,6 +1,7 @@
 #ifndef TILEUTIL_HPP
 #define TILEUTIL_HPP
 
+#include <map>
 #include <vector>
 
 namespace Barebones
@@ -14,19 +15,23 @@ namespace Barebones
   typedef std::vector<TileLocation> TileList;
 
   /**
-   * Represents an edge in an undirected graph of tiles.
+   * Represents an edge between tiles in an undirected graph.
+   * The first member is the TileLocation at the end of the edge,
+   * and the second member is the cost associated with traveling
+   * to it.
    */
   typedef std::pair<TileLocation, int> TileEdge;
 
   /**
-   * Maps a tile location to a list of edges.
+   * Maps a tile's location to a list of adjacent tiles.
    */
-  typedef std::pair<TileLocation, std::vector<TileEdge>> TileAdjacencyList;
+  typedef std::map<TileLocation, std::vector<TileEdge>> TileAdjacencyMap;
 
   /**
-   * Represents an undirected graph as a collection of adjacency lists.
+   * Pairs a list of tiles with the cost of traversing those tiles.
    */
-  typedef std::vector<TileAdjacencyList> TileAdjacencyGraph;
+  typedef std::pair<TileList, int> TilePath;
+  typedef std::vector<TilePath> TilePathList;
 }
 
 #endif

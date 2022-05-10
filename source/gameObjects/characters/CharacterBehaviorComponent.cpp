@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <sstream>
 
+#include <iostream>
+
 #include <Environment.hpp>
 #include <SpriteComponent.hpp>
 
@@ -183,12 +185,10 @@ Barebones::TileList CharacterBehaviorComponent::GetMovements(UrsineEngine::GameO
   if(parent != nullptr &&
      boardLayoutComponent != nullptr)
   {
-    auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
-
-    auto leftEdge = characterLocation.first - 1;
-    auto rightEdge = characterLocation.first + 1;
-    auto bottomEdge = characterLocation.second - 1;
-    auto topEdge = characterLocation.second + 1;
+    auto leftEdge = aLocation.first - 1;
+    auto rightEdge = aLocation.first + 1;
+    auto bottomEdge = aLocation.second - 1;
+    auto topEdge = aLocation.second + 1;
 
     for(int column = leftEdge; column <= rightEdge; ++column)
     {
@@ -270,9 +270,9 @@ void CharacterBehaviorComponent::SetCurrentHealth(int aHealth)
 }
 
 /******************************************************************************/
-Barebones::TileAdjacencyGraph CharacterBehaviorComponent::GenerateGraph(UrsineEngine::GameObject& aBoard) const
+Barebones::TileAdjacencyMap CharacterBehaviorComponent::GenerateAdjacencyMap(UrsineEngine::GameObject& aBoard) const
 {
-  TileAdjacencyGraph graph;
+  TileAdjacencyMap adjacencyMap;
 
   auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
   if(boardLayoutComponent != nullptr)
@@ -280,41 +280,39 @@ Barebones::TileAdjacencyGraph CharacterBehaviorComponent::GenerateGraph(UrsineEn
     auto columns = boardLayoutComponent->GetColumns();
     auto rows = boardLayoutComponent->GetRows();
 
-    // For each tile, generate a TileAdjacencyList. A tile is considered
-    // adjacent to another tile if the second tile is a valid movement
-    // for this character from the first tile.
     for(int c = 0; c < columns; ++c)
     {
       for(int r = 0; r < rows; ++r)
       {
         TileLocation currentLocation(c, r);
-        auto neighbors = GetMovements(aBoard, currentLocation);
+        auto movements = GetMovements(aBoard, currentLocation);
 
-        TileAdjacencyList adjacentTiles;
-        adjacentTiles.first = currentLocation;
-
-        // Create an edge for each valid movement.
         std::vector<TileEdge> edges;
-        for(auto& neighborLocation : neighbors)
+        for(const auto& move : movements)
         {
-          // Calculate the distance from the current location to the neighbor.
-          auto distance = std::sqrt(std::pow(currentLocation.first - neighborLocation.first, 2) +
-                                    std::pow(currentLocation.second -neighborLocation.second, 2));
-
-          TileEdge edge(neighborLocation, distance);
+          int distance = std::sqrt(std::pow((move.first - c), 2) +
+                                   std::pow((move.second - r), 2));
+          TileEdge edge(move, distance);
           edges.emplace_back(edge);
         }
 
-        // Add these edges to the list of adjacent tiles.
-        adjacentTiles.second = edges;
-
-        // Add the list to the graph.
-        graph.emplace_back(adjacentTiles);
+        adjacencyMap.emplace(currentLocation, edges);
       }
     }
   }
 
-  return graph;
+  return adjacencyMap;
+}
+
+/******************************************************************************/
+Barebones::TilePathList CharacterBehaviorComponent::GenerateShortestPathList(const TileLocation& aStartingLocation,
+                                                                             const TileAdjacencyMap& aMap) const
+{
+  TilePathList pathList;
+
+
+
+  return pathList;
 }
 
 /******************************************************************************/

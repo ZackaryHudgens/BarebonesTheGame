@@ -162,6 +162,15 @@ namespace Barebones
        */
       void DealDamage(int aValue);
 
+      /**
+       * Generates a TileAdjacencyMap using this character's GetMovements()
+       * function for each tile on the board.
+       *
+       * @param aBoard The board to generate a map for.
+       * @return A TileAdjacencyMap for the given board.
+       */
+      TileAdjacencyMap GenerateAdjacencyMap(UrsineEngine::GameObject& aBoard) const;
+
     protected:
 
       /**
@@ -216,13 +225,16 @@ namespace Barebones
       void SetCurrentHealth(int aHealth);
 
       /**
-       * Generates a TileAdjacencyGraph using this character's GetMovements()
-       * function for each tile on the board.
+       * Generates a list of shortest paths from a given starting tile
+       * to each adjacent tile in the given TileAdjacencyMap.
        *
-       * @param aBoard The board to generate a graph for.
-       * @return A TileAdjacencyGraph for the given board.
+       * @param aStartingLocation The location of the starting tile.
+       * @param aMap The adjacency map to use for calculating paths.
+       * @return A list of shortest paths from the starting tile to each
+       *         adjacent tile.
        */
-      TileAdjacencyGraph GenerateGraph(UrsineEngine::GameObject& aBoard) const;
+      TilePathList GenerateShortestPathList(const TileLocation& aStartingLocation,
+                                            const TileAdjacencyMap& aMap) const;
 
     private:
 
