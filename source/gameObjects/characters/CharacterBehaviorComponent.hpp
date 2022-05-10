@@ -163,11 +163,11 @@ namespace Barebones
       void DealDamage(int aValue);
 
       /**
-       * Generates a TileAdjacencyMap using this character's GetMovements()
-       * function for each tile on the board.
+       * A function that generates a TileAdjacencyMap using this
+       * character's GetMovements() function.
        *
        * @param aBoard The board to generate a map for.
-       * @return A TileAdjacencyMap for the given board.
+       * @return A TileAdjacencyMap for the given board at the starting location.
        */
       TileAdjacencyMap GenerateAdjacencyMap(UrsineEngine::GameObject& aBoard) const;
 

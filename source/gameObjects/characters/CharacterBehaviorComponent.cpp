@@ -185,7 +185,52 @@ Barebones::TileList CharacterBehaviorComponent::GetMovements(UrsineEngine::GameO
   if(parent != nullptr &&
      boardLayoutComponent != nullptr)
   {
-    auto leftEdge = aLocation.first - 1;
+    TileLocation newMove(aLocation.first + 1, aLocation.second);
+
+    // Before adding this as a valid move, check if there is a tile
+    // at this location and that there isn't already a character there.
+    if(boardLayoutComponent->GetTileAtLocation(newMove) != nullptr &&
+       boardLayoutComponent->GetCharacterAtLocation(newMove) == nullptr &&
+       newMove != aLocation)
+    {
+      tiles.emplace_back(newMove);
+    }
+
+    newMove.first = aLocation.first - 1;
+
+    // Before adding this as a valid move, check if there is a tile
+    // at this location and that there isn't already a character there.
+    if(boardLayoutComponent->GetTileAtLocation(newMove) != nullptr &&
+       boardLayoutComponent->GetCharacterAtLocation(newMove) == nullptr &&
+       newMove != aLocation)
+    {
+      tiles.emplace_back(newMove);
+    }
+
+    newMove.first = aLocation.first;
+    newMove.second = aLocation.second + 1;
+
+    // Before adding this as a valid move, check if there is a tile
+    // at this location and that there isn't already a character there.
+    if(boardLayoutComponent->GetTileAtLocation(newMove) != nullptr &&
+       boardLayoutComponent->GetCharacterAtLocation(newMove) == nullptr &&
+       newMove != aLocation)
+    {
+      tiles.emplace_back(newMove);
+    }
+
+    newMove.second = aLocation.second - 1;
+
+    // Before adding this as a valid move, check if there is a tile
+    // at this location and that there isn't already a character there.
+    if(boardLayoutComponent->GetTileAtLocation(newMove) != nullptr &&
+       boardLayoutComponent->GetCharacterAtLocation(newMove) == nullptr &&
+       newMove != aLocation)
+    {
+      tiles.emplace_back(newMove);
+    }
+
+    /*auto leftEdge = aLocation.first - 1;
     auto rightEdge = aLocation.first + 1;
     auto bottomEdge = aLocation.second - 1;
     auto topEdge = aLocation.second + 1;
@@ -199,12 +244,13 @@ Barebones::TileList CharacterBehaviorComponent::GetMovements(UrsineEngine::GameO
         // Before adding this as a valid move, check if there is a tile
         // at this location and that there isn't already a character there.
         if(boardLayoutComponent->GetTileAtLocation(newMove) != nullptr &&
-           boardLayoutComponent->GetCharacterAtLocation(newMove) == nullptr)
+           boardLayoutComponent->GetCharacterAtLocation(newMove) == nullptr &&
+           newMove != aLocation)
         {
           tiles.emplace_back(newMove);
         }
       }
-    }
+    }*/
   }
 
   return tiles;
@@ -284,22 +330,27 @@ Barebones::TileAdjacencyMap CharacterBehaviorComponent::GenerateAdjacencyMap(Urs
     {
       for(int r = 0; r < rows; ++r)
       {
-        TileLocation currentLocation(c, r);
-        auto movements = GetMovements(aBoard, currentLocation);
-
-        std::vector<TileEdge> edges;
-        for(const auto& move : movements)
+        if(boardLayoutComponent->GetCharacterAtLocation(TileLocation(c, r)) == nullptr)
         {
-          int distance = std::sqrt(std::pow((move.first - c), 2) +
-                                   std::pow((move.second - r), 2));
-          TileEdge edge(move, distance);
-          edges.emplace_back(edge);
-        }
+          TileLocation currentLocation(c, r);
+          auto movements = GetMovements(aBoard, currentLocation);
 
-        adjacencyMap.emplace(currentLocation, edges);
+          std::vector<TileEdge> edges;
+          for(const auto& move : movements)
+          {
+            int distance = std::sqrt(std::pow((move.first - c), 2) +
+                                     std::pow((move.second - r), 2));
+            TileEdge edge(move, distance);
+            edges.emplace_back(edge);
+          }
+
+          adjacencyMap.emplace(currentLocation, edges);
+        }
       }
     }
   }
+
+  GenerateShortestPathList(TileLocation(3, 3), adjacencyMap);
 
   return adjacencyMap;
 }
@@ -310,7 +361,131 @@ Barebones::TilePathList CharacterBehaviorComponent::GenerateShortestPathList(con
 {
   TilePathList pathList;
 
+  // Create a list of weighted vertices. As per Dijkstra's algorithm, each
+  // weighted vertex starts with a very large weight value, and the starting
+  // location starts with 0.
+  std::map<TileLocation, int> weightedTiles;
+  std::map<TileLocation, TileLocation> parentMap;
+  for(const auto& tileAdjacencyData : aMap)
+  {
+    if(tileAdjacencyData.first == aStartingLocation)
+    {
+      weightedTiles.emplace(tileAdjacencyData.first, 0);
+    }
+    else
+    {
+      weightedTiles.emplace(tileAdjacencyData.first, INT_MAX);
+    }
 
+    parentMap.emplace(tileAdjacencyData.first, TileLocation(-1, -1));
+  }
+
+  // Returns the tile in the given map with the lowest weight that is not
+  // included in the given processed tile list.
+  auto GetLowestWeightTile = [](const std::map<TileLocation, int>& aMap,
+                                const std::vector<TileEdge>& aProcessedTileList)
+  {
+    int lowestWeight = INT_MAX;
+    TileLocation lowestWeightTile(0, 0);
+
+    bool inShortestPathList = false;
+    for(const auto& weightedTileData : aMap)
+    {
+      // Check if this tile is in the shortest path list.
+      // If it is, skip it.
+      for(const auto& processedTile : aProcessedTileList)
+      {
+        if(processedTile.first == weightedTileData.first)
+        {
+          inShortestPathList = true;
+          break;
+        }
+      }
+
+      // Check if this tile's weight is less than the previous lowest weight.
+      // If it is, update the lowest weight and the lowest weighted tile.
+      if(!inShortestPathList)
+      {
+        if(weightedTileData.second < lowestWeight)
+        {
+          lowestWeight = weightedTileData.second;
+          lowestWeightTile = weightedTileData.first;
+        }
+      }
+
+      inShortestPathList = false;
+    }
+
+    return TileEdge(lowestWeightTile, lowestWeight);
+  };
+
+  std::vector<TileEdge> processedTiles;
+  for(int i = 0; i < weightedTiles.size(); ++i)
+  {
+    // Get the lowest weighted tile.
+    auto currentTileEdge = GetLowestWeightTile(weightedTiles, processedTiles);
+
+    // Add the lowest weighted tile to the processed tile list.
+    processedTiles.emplace_back(currentTileEdge);
+
+    // Update the weight value for all adjacent tiles of the lowest weighted tile.
+    auto adjacencyMap = aMap.find(currentTileEdge.first);
+    if(adjacencyMap != aMap.end())
+    {
+      for(const auto& adjacentTileEdge : adjacencyMap->second)
+      {
+        // Find the adjacent tile in the weighted tile map.
+        auto weightedAdjacentTile = weightedTiles.find(adjacentTileEdge.first);
+        if(weightedAdjacentTile != weightedTiles.end())
+        {
+          // If the weight of the current tile plus the weight of the edge
+          // taken to get to this adjacent tile is less than the weight currently
+          // assigned to this adjacent tile in weightedTiles, then this path
+          // is shorter than any found so far.
+          auto totalWeight = currentTileEdge.second + adjacentTileEdge.second;
+          if(totalWeight < weightedAdjacentTile->second)
+          {
+            weightedAdjacentTile->second = totalWeight;
+
+            // Set this tile's new parent.
+            auto parentLocation = parentMap.find(weightedAdjacentTile->first);
+            if(parentLocation != parentMap.end())
+            {
+              parentLocation->second = currentTileEdge.first;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // For each tile in weightedTiles, determine the path to it
+  // from the starting location.
+  for(const auto& weightedTile : weightedTiles)
+  {
+    TilePath newPath;
+    newPath.second = weightedTile.second;
+
+    // Find the parent of this weighted tile and insert it at
+    // the beginning of the tile path.
+    auto weightedTileParent = parentMap.find(weightedTile.first);
+    while(weightedTileParent != parentMap.end())
+    {
+      newPath.first.insert(newPath.first.begin(), weightedTileParent->first);
+      weightedTileParent = parentMap.find(weightedTileParent->second);
+    }
+
+    pathList.emplace_back(newPath);
+  }
+
+  for(const auto& path : pathList)
+  {
+    for(const auto& tile : path.first)
+    {
+      std::cout << "{ " << tile.first << " " << tile.second << " } ";
+    }
+    std::cout << "Weight: " << path.second << std::endl;
+  }
 
   return pathList;
 }
