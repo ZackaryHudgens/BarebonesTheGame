@@ -3,8 +3,6 @@
 #include <algorithm>
 #include <sstream>
 
-#include <iostream>
-
 #include <Environment.hpp>
 #include <SpriteComponent.hpp>
 
@@ -246,11 +244,6 @@ Barebones::TilePathList CharacterBehaviorComponent::GenerateShortestPathList(Urs
   TilePathList pathList;
 
   auto adjacencyMap = GenerateAdjacencyMap(aBoard);
-
-  for(const auto& fuck : adjacencyMap)
-  {
-    std::cout << fuck.first.first << " " << fuck.first.second << std::endl;
-  }
 
   // Create a list of weighted vertices. As per Dijkstra's algorithm, each
   // weighted vertex starts with a very large weight value, and the starting

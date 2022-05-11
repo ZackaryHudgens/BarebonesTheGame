@@ -45,7 +45,7 @@ Barebones::TileList MoveSkill::GetValidTiles(UrsineEngine::GameObject& aBoard)
 
     for(const auto& shortestPath : shortestPaths)
     {
-      if(shortestPath.second < 3)
+      if(shortestPath.second < characterBehaviorComponent->GetSpeed())
       {
         for(const auto& tile : shortestPath.first)
         {
