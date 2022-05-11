@@ -41,8 +41,18 @@ Barebones::TileList MoveSkill::GetValidTiles(UrsineEngine::GameObject& aBoard)
      boardLayoutComponent != nullptr)
   {
     auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
-    tiles = characterBehaviorComponent->GetMovements(aBoard,
-                                                     characterLocation);
+    auto shortestPaths = characterBehaviorComponent->GenerateShortestPathList(aBoard, characterLocation);
+
+    for(const auto& shortestPath : shortestPaths)
+    {
+      if(shortestPath.second < 3)
+      {
+        for(const auto& tile : shortestPath.first)
+        {
+          tiles.emplace_back(tile);
+        }
+      }
+    }
   }
 
   return tiles;

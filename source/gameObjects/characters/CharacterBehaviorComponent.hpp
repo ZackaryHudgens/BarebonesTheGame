@@ -163,13 +163,16 @@ namespace Barebones
       void DealDamage(int aValue);
 
       /**
-       * A function that generates a TileAdjacencyMap using this
-       * character's GetMovements() function.
+       * Generates a list of shortest paths from a given starting tile
+       * to each tile this character can move to on the given board.
        *
-       * @param aBoard The board to generate a map for.
-       * @return A TileAdjacencyMap for the given board at the starting location.
+       * @param aBoard The board to generate shortest paths for.
+       * @param aStartingLocation The location of the starting tile.
+       * @return A list of shortest paths from the starting tile to each
+       *         adjacent tile.
        */
-      TileAdjacencyMap GenerateAdjacencyMap(UrsineEngine::GameObject& aBoard) const;
+      TilePathList GenerateShortestPathList(UrsineEngine::GameObject& aBoard,
+                                            const TileLocation& aStartingLocation) const;
 
     protected:
 
@@ -225,16 +228,13 @@ namespace Barebones
       void SetCurrentHealth(int aHealth);
 
       /**
-       * Generates a list of shortest paths from a given starting tile
-       * to each adjacent tile in the given TileAdjacencyMap.
+       * A function that generates a TileAdjacencyMap using this
+       * character's GetMovements() function.
        *
-       * @param aStartingLocation The location of the starting tile.
-       * @param aMap The adjacency map to use for calculating paths.
-       * @return A list of shortest paths from the starting tile to each
-       *         adjacent tile.
+       * @param aBoard The board to generate a map for.
+       * @return A TileAdjacencyMap for the given board at the starting location.
        */
-      TilePathList GenerateShortestPathList(const TileLocation& aStartingLocation,
-                                            const TileAdjacencyMap& aMap) const;
+      TileAdjacencyMap GenerateAdjacencyMap(UrsineEngine::GameObject& aBoard) const;
 
     private:
 

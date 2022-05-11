@@ -180,77 +180,41 @@ Barebones::TileList CharacterBehaviorComponent::GetMovements(UrsineEngine::GameO
 {
   TileList tiles;
 
-  auto parent = GetParent();
   auto boardLayoutComponent = aObject.GetFirstComponentOfType<BoardLayoutComponent>();
-  if(parent != nullptr &&
-     boardLayoutComponent != nullptr)
+  if(boardLayoutComponent != nullptr)
   {
+    // Check tile to the right.
     TileLocation newMove(aLocation.first + 1, aLocation.second);
-
-    // Before adding this as a valid move, check if there is a tile
-    // at this location and that there isn't already a character there.
     if(boardLayoutComponent->GetTileAtLocation(newMove) != nullptr &&
-       boardLayoutComponent->GetCharacterAtLocation(newMove) == nullptr &&
-       newMove != aLocation)
+       boardLayoutComponent->GetCharacterAtLocation(newMove) == nullptr)
     {
       tiles.emplace_back(newMove);
     }
 
+    // Check tile to the left.
     newMove.first = aLocation.first - 1;
-
-    // Before adding this as a valid move, check if there is a tile
-    // at this location and that there isn't already a character there.
     if(boardLayoutComponent->GetTileAtLocation(newMove) != nullptr &&
-       boardLayoutComponent->GetCharacterAtLocation(newMove) == nullptr &&
-       newMove != aLocation)
+       boardLayoutComponent->GetCharacterAtLocation(newMove) == nullptr)
     {
       tiles.emplace_back(newMove);
     }
 
+    // Check tile above.
     newMove.first = aLocation.first;
     newMove.second = aLocation.second + 1;
-
-    // Before adding this as a valid move, check if there is a tile
-    // at this location and that there isn't already a character there.
     if(boardLayoutComponent->GetTileAtLocation(newMove) != nullptr &&
-       boardLayoutComponent->GetCharacterAtLocation(newMove) == nullptr &&
-       newMove != aLocation)
+       boardLayoutComponent->GetCharacterAtLocation(newMove) == nullptr)
     {
       tiles.emplace_back(newMove);
     }
 
+    // Check tile below.
     newMove.second = aLocation.second - 1;
-
-    // Before adding this as a valid move, check if there is a tile
-    // at this location and that there isn't already a character there.
     if(boardLayoutComponent->GetTileAtLocation(newMove) != nullptr &&
-       boardLayoutComponent->GetCharacterAtLocation(newMove) == nullptr &&
-       newMove != aLocation)
+       boardLayoutComponent->GetCharacterAtLocation(newMove) == nullptr)
     {
       tiles.emplace_back(newMove);
     }
-
-    /*auto leftEdge = aLocation.first - 1;
-    auto rightEdge = aLocation.first + 1;
-    auto bottomEdge = aLocation.second - 1;
-    auto topEdge = aLocation.second + 1;
-
-    for(int column = leftEdge; column <= rightEdge; ++column)
-    {
-      for(int row = bottomEdge; row <= topEdge; ++row)
-      {
-        TileLocation newMove(column, row);
-
-        // Before adding this as a valid move, check if there is a tile
-        // at this location and that there isn't already a character there.
-        if(boardLayoutComponent->GetTileAtLocation(newMove) != nullptr &&
-           boardLayoutComponent->GetCharacterAtLocation(newMove) == nullptr &&
-           newMove != aLocation)
-        {
-          tiles.emplace_back(newMove);
-        }
-      }
-    }*/
   }
 
   return tiles;
@@ -276,97 +240,24 @@ void CharacterBehaviorComponent::DealDamage(int aValue)
 }
 
 /******************************************************************************/
-void CharacterBehaviorComponent::AddSkill(std::unique_ptr<Skill> aSkill)
-{
-  mSkills.emplace_back(std::move(aSkill));
-}
-
-/******************************************************************************/
-void CharacterBehaviorComponent::SetMaximumHealth(int aHealth)
-{
-  mMaximumHealth = aHealth;
-
-  // If the current health is greater than the new maximum health,
-  // set the current health to the new maximum.
-  if(mCurrentHealth > mMaximumHealth)
-  {
-    SetCurrentHealth(mMaximumHealth);
-  }
-}
-
-/******************************************************************************/
-void CharacterBehaviorComponent::SetCurrentHealth(int aHealth)
-{
-  mCurrentHealth = aHealth;
-
-  CharacterHealthChanged.Notify(*this);
-
-  // If the health is below 0, this character is now dying.
-  if(mCurrentHealth <= 0)
-  {
-    CharacterDied.Notify(*this);
-
-    auto parent = GetParent();
-    if(parent != nullptr)
-    {
-      // Switch to the dying state.
-      mStatusState = std::make_unique<CharacterDyingState>(*parent);
-    }
-  }
-}
-
-/******************************************************************************/
-Barebones::TileAdjacencyMap CharacterBehaviorComponent::GenerateAdjacencyMap(UrsineEngine::GameObject& aBoard) const
-{
-  TileAdjacencyMap adjacencyMap;
-
-  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
-  if(boardLayoutComponent != nullptr)
-  {
-    auto columns = boardLayoutComponent->GetColumns();
-    auto rows = boardLayoutComponent->GetRows();
-
-    for(int c = 0; c < columns; ++c)
-    {
-      for(int r = 0; r < rows; ++r)
-      {
-        if(boardLayoutComponent->GetCharacterAtLocation(TileLocation(c, r)) == nullptr)
-        {
-          TileLocation currentLocation(c, r);
-          auto movements = GetMovements(aBoard, currentLocation);
-
-          std::vector<TileEdge> edges;
-          for(const auto& move : movements)
-          {
-            int distance = std::sqrt(std::pow((move.first - c), 2) +
-                                     std::pow((move.second - r), 2));
-            TileEdge edge(move, distance);
-            edges.emplace_back(edge);
-          }
-
-          adjacencyMap.emplace(currentLocation, edges);
-        }
-      }
-    }
-  }
-
-  GenerateShortestPathList(TileLocation(3, 3), adjacencyMap);
-
-  return adjacencyMap;
-}
-
-/******************************************************************************/
-Barebones::TilePathList CharacterBehaviorComponent::GenerateShortestPathList(const TileLocation& aStartingLocation,
-                                                                             const TileAdjacencyMap& aMap) const
+Barebones::TilePathList CharacterBehaviorComponent::GenerateShortestPathList(UrsineEngine::GameObject& aBoard,
+                                                                             const TileLocation& aStartingLocation) const
 {
   TilePathList pathList;
+
+  auto adjacencyMap = GenerateAdjacencyMap(aBoard);
+
+  for(const auto& fuck : adjacencyMap)
+  {
+    std::cout << fuck.first.first << " " << fuck.first.second << std::endl;
+  }
 
   // Create a list of weighted vertices. As per Dijkstra's algorithm, each
   // weighted vertex starts with a very large weight value, and the starting
   // location starts with 0.
   std::map<TileLocation, int> weightedTiles;
   std::map<TileLocation, TileLocation> parentMap;
-  for(const auto& tileAdjacencyData : aMap)
+  for(const auto& tileAdjacencyData : adjacencyMap)
   {
     if(tileAdjacencyData.first == aStartingLocation)
     {
@@ -429,10 +320,10 @@ Barebones::TilePathList CharacterBehaviorComponent::GenerateShortestPathList(con
     processedTiles.emplace_back(currentTileEdge);
 
     // Update the weight value for all adjacent tiles of the lowest weighted tile.
-    auto adjacencyMap = aMap.find(currentTileEdge.first);
-    if(adjacencyMap != aMap.end())
+    auto adjacencyList = adjacencyMap.find(currentTileEdge.first);
+    if(adjacencyList != adjacencyMap.end())
     {
-      for(const auto& adjacentTileEdge : adjacencyMap->second)
+      for(const auto& adjacentTileEdge : adjacencyList->second)
       {
         // Find the adjacent tile in the weighted tile map.
         auto weightedAdjacentTile = weightedTiles.find(adjacentTileEdge.first);
@@ -478,16 +369,89 @@ Barebones::TilePathList CharacterBehaviorComponent::GenerateShortestPathList(con
     pathList.emplace_back(newPath);
   }
 
-  for(const auto& path : pathList)
+  return pathList;
+}
+
+/******************************************************************************/
+void CharacterBehaviorComponent::AddSkill(std::unique_ptr<Skill> aSkill)
+{
+  mSkills.emplace_back(std::move(aSkill));
+}
+
+/******************************************************************************/
+void CharacterBehaviorComponent::SetMaximumHealth(int aHealth)
+{
+  mMaximumHealth = aHealth;
+
+  // If the current health is greater than the new maximum health,
+  // set the current health to the new maximum.
+  if(mCurrentHealth > mMaximumHealth)
   {
-    for(const auto& tile : path.first)
+    SetCurrentHealth(mMaximumHealth);
+  }
+}
+
+/******************************************************************************/
+void CharacterBehaviorComponent::SetCurrentHealth(int aHealth)
+{
+  mCurrentHealth = aHealth;
+
+  CharacterHealthChanged.Notify(*this);
+
+  // If the health is below 0, this character is now dying.
+  if(mCurrentHealth <= 0)
+  {
+    CharacterDied.Notify(*this);
+
+    auto parent = GetParent();
+    if(parent != nullptr)
     {
-      std::cout << "{ " << tile.first << " " << tile.second << " } ";
+      // Switch to the dying state.
+      mStatusState = std::make_unique<CharacterDyingState>(*parent);
     }
-    std::cout << "Weight: " << path.second << std::endl;
+  }
+}
+
+/******************************************************************************/
+Barebones::TileAdjacencyMap CharacterBehaviorComponent::GenerateAdjacencyMap(UrsineEngine::GameObject& aBoard) const
+{
+  TileAdjacencyMap adjacencyMap;
+
+  auto parent = GetParent();
+  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
+  if(parent != nullptr &&
+     boardLayoutComponent != nullptr)
+  {
+    auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
+    auto columns = boardLayoutComponent->GetColumns();
+    auto rows = boardLayoutComponent->GetRows();
+
+    for(int c = 0; c < columns; ++c)
+    {
+      for(int r = 0; r < rows; ++r)
+      {
+        TileLocation currentLocation(c, r);
+        if(boardLayoutComponent->GetCharacterAtLocation(TileLocation(c, r)) == nullptr ||
+           currentLocation == characterLocation)
+        {
+          auto movements = GetMovements(aBoard, currentLocation);
+
+          std::vector<TileEdge> edges;
+          for(const auto& move : movements)
+          {
+            int distance = std::sqrt(std::pow((move.first - c), 2) +
+                                     std::pow((move.second - r), 2));
+            TileEdge edge(move, distance);
+            edges.emplace_back(edge);
+          }
+
+          adjacencyMap.emplace(currentLocation, edges);
+        }
+      }
+    }
   }
 
-  return pathList;
+  return adjacencyMap;
 }
 
 /******************************************************************************/

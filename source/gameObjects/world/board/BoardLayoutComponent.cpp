@@ -316,9 +316,6 @@ void BoardLayoutComponent::MoveCharacter(const TileLocation& aCurrentLocation,
         newPosition.y = tileMesh->GetHeight();
         charBehaviorComp->MoveToPosition(newPosition,
                                          0.3);
-
-        // TODO: REMOVE
-        charBehaviorComp->GenerateAdjacencyMap(*GetParent());
       }
 
       // Let the tile at the current location know that a character has left.
