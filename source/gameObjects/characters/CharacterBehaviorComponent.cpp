@@ -19,8 +19,6 @@
 
 #include "StatusMessageBehaviorComponent.hpp"
 
-#include <iostream>
-
 using Barebones::CharacterBehaviorComponent;
 
 /******************************************************************************/
@@ -357,11 +355,7 @@ Barebones::TilePathList CharacterBehaviorComponent::GenerateShortestPathList(Urs
     auto weightedTileParent = parentMap.find(weightedTile.first);
     while(weightedTileParent != parentMap.end())
     {
-      //std::cout << "parent of tile: " << weightedTileParent->first.first << " " << weightedTileParent->first.second
-      //          << " is: " << weightedTileParent->second.first << " " << weightedTileParent->second.second << std::endl;
       newPath.first.insert(newPath.first.begin(), weightedTileParent->first);
-
-      //std::cout << "searching for parent of tile: " << weightedTileParent->second.first << " " << weightedTileParent->second.second << std::endl;
       weightedTileParent = parentMap.find(weightedTileParent->second);
     }
 
