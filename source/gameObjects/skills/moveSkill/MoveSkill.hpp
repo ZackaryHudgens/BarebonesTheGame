@@ -33,6 +33,16 @@ namespace Barebones
        */
       void ProtectedExecute(UrsineEngine::GameObject& aBoard,
                             const TileLocation& aLocation) override;
+
+      /**
+       * A handler function that gets called during SetEnabled().
+       *
+       * @param aEnabled Whether this skill was enabled or disabled.
+       */
+      void HandleEnabledChanged(bool aEnabled) override;
+
+    private:
+      int mDistanceRemaining;
   };
 }
 

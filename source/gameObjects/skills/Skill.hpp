@@ -100,6 +100,13 @@ namespace Barebones
                                     const TileLocation& aLocation) = 0;
 
       /**
+       * A virtual function that gets called during SetEnabled().
+       *
+       * @param aEnabled Whether this skill was enabled or disabled.
+       */
+      virtual void HandleEnabledChanged(bool aEnabled) {}
+
+      /**
        * Returns the parent that owns this skill.
        *
        * @return The parent that owns this skill.
