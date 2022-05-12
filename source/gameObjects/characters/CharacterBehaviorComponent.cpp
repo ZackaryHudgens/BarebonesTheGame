@@ -19,6 +19,8 @@
 
 #include "StatusMessageBehaviorComponent.hpp"
 
+#include <iostream>
+
 using Barebones::CharacterBehaviorComponent;
 
 /******************************************************************************/
@@ -270,7 +272,7 @@ Barebones::TilePathList CharacterBehaviorComponent::GenerateShortestPathList(Urs
                                 const std::vector<TileEdge>& aProcessedTileList)
   {
     int lowestWeight = INT_MAX;
-    TileLocation lowestWeightTile(0, 0);
+    TileLocation lowestWeightTile(-1, -1);
 
     bool inShortestPathList = false;
     for(const auto& weightedTileData : aMap)
@@ -306,14 +308,14 @@ Barebones::TilePathList CharacterBehaviorComponent::GenerateShortestPathList(Urs
   std::vector<TileEdge> processedTiles;
   for(int i = 0; i < weightedTiles.size(); ++i)
   {
-    // Get the lowest weighted tile.
-    auto currentTileEdge = GetLowestWeightTile(weightedTiles, processedTiles);
+    // Get the lowest weighted tile that hasn't been processed yet.
+    auto currentTile = GetLowestWeightTile(weightedTiles, processedTiles);
 
     // Add the lowest weighted tile to the processed tile list.
-    processedTiles.emplace_back(currentTileEdge);
+    processedTiles.emplace_back(currentTile);
 
     // Update the weight value for all adjacent tiles of the lowest weighted tile.
-    auto adjacencyList = adjacencyMap.find(currentTileEdge.first);
+    auto adjacencyList = adjacencyMap.find(currentTile.first);
     if(adjacencyList != adjacencyMap.end())
     {
       for(const auto& adjacentTileEdge : adjacencyList->second)
@@ -326,7 +328,7 @@ Barebones::TilePathList CharacterBehaviorComponent::GenerateShortestPathList(Urs
           // taken to get to this adjacent tile is less than the weight currently
           // assigned to this adjacent tile in weightedTiles, then this path
           // is shorter than any found so far.
-          auto totalWeight = currentTileEdge.second + adjacentTileEdge.second;
+          auto totalWeight = currentTile.second + adjacentTileEdge.second;
           if(totalWeight < weightedAdjacentTile->second)
           {
             weightedAdjacentTile->second = totalWeight;
@@ -335,7 +337,7 @@ Barebones::TilePathList CharacterBehaviorComponent::GenerateShortestPathList(Urs
             auto parentLocation = parentMap.find(weightedAdjacentTile->first);
             if(parentLocation != parentMap.end())
             {
-              parentLocation->second = currentTileEdge.first;
+              parentLocation->second = currentTile.first;
             }
           }
         }
@@ -355,7 +357,11 @@ Barebones::TilePathList CharacterBehaviorComponent::GenerateShortestPathList(Urs
     auto weightedTileParent = parentMap.find(weightedTile.first);
     while(weightedTileParent != parentMap.end())
     {
+      //std::cout << "parent of tile: " << weightedTileParent->first.first << " " << weightedTileParent->first.second
+      //          << " is: " << weightedTileParent->second.first << " " << weightedTileParent->second.second << std::endl;
       newPath.first.insert(newPath.first.begin(), weightedTileParent->first);
+
+      //std::cout << "searching for parent of tile: " << weightedTileParent->second.first << " " << weightedTileParent->second.second << std::endl;
       weightedTileParent = parentMap.find(weightedTileParent->second);
     }
 
