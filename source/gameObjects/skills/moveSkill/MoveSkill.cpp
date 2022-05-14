@@ -1,6 +1,7 @@
 #include "MoveSkill.hpp"
 
 #include <algorithm>
+#include <sstream>
 
 #include <iostream>
 
@@ -22,6 +23,11 @@ MoveSkill::MoveSkill(UrsineEngine::GameObject& aParent)
   if(characterBehaviorComponent != nullptr)
   {
     mDistanceRemaining = characterBehaviorComponent->GetSpeed();
+
+    std::stringstream description;
+    description << GetDescription();
+    description << " (" << mDistanceRemaining << " tiles remaining)";
+    SetDescription(description.str());
   }
 }
 
@@ -63,6 +69,11 @@ void MoveSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
       {
         SetEnabled(false);
       }
+
+      std::stringstream description;
+      description << "Moves the character.";
+      description << " (" << mDistanceRemaining << " tiles remaining)";
+      SetDescription(description.str());
     }
 
     boardLayoutComponent->MoveCharacter(characterLocation,
@@ -86,7 +97,7 @@ Barebones::TileList MoveSkill::GetValidTiles(UrsineEngine::GameObject& aBoard)
 
     for(const auto& shortestPath : shortestPaths)
     {
-      if(shortestPath.second < mDistanceRemaining)
+      if(shortestPath.second <= mDistanceRemaining)
       {
         for(const auto& tile : shortestPath.first)
         {
@@ -112,6 +123,11 @@ void MoveSkill::HandleEnabledChanged(bool aEnabled)
       if(characterBehaviorComponent != nullptr)
       {
         mDistanceRemaining = characterBehaviorComponent->GetSpeed();
+
+        std::stringstream description;
+        description << "Moves the character.";
+        description << " (" << mDistanceRemaining << " tiles remaining)";
+        SetDescription(description.str());
       }
     }
   }

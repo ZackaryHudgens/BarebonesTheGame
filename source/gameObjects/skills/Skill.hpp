@@ -32,7 +32,7 @@ namespace Barebones
        *
        * @param aEnabled Whether to enable or disable this skill.
        */
-      void SetEnabled(bool aEnabled) { mEnabled = aEnabled; }
+      void SetEnabled(bool aEnabled);
 
       /**
        * Returns whether this skill is enabled.

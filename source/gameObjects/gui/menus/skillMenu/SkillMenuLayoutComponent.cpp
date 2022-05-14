@@ -18,7 +18,7 @@ SkillMenuLayoutComponent::SkillMenuLayoutComponent()
   , mSkillNameHeight(100)
   , mSkillNameVerticalPadding(25)
   , mSkillDescriptionHeight(65)
-  , mSkillDescriptionVerticalPadding(15)
+  , mSkillDescriptionVerticalPadding(20)
 {
 }
 

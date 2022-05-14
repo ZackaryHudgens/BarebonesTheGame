@@ -26,6 +26,13 @@ void Skill::Execute(UrsineEngine::GameObject& aBoard,
 }
 
 /******************************************************************************/
+void Skill::SetEnabled(bool aEnabled)
+{
+  mEnabled = aEnabled;
+  HandleEnabledChanged(mEnabled);
+}
+
+/******************************************************************************/
 bool Skill::IsTileValid(UrsineEngine::GameObject& aBoard,
                         const TileLocation& aLocation)
 {

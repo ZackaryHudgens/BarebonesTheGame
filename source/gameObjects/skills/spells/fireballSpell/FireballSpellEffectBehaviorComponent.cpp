@@ -32,6 +32,7 @@ void FireballSpellEffectBehaviorComponent::Initialize()
     fireballSprite->SetCurrentShader("defaultShader");
 
     parent->AddComponent(std::move(fireballSprite));
+    parent->SetScale(glm::vec3(1.5, 1.5, 1.0));
   }
 }
 

@@ -1,5 +1,6 @@
 #include <Environment.hpp>
 #include <TextComponent.hpp>
+#include <FPSDisplay.hpp>
 
 #include "BoardFactory.hpp"
 
@@ -107,6 +108,20 @@ int main()
   auto infoPanel = std::make_unique<UrsineEngine::GameObject>("infoPanel");
   infoPanel->AddComponent(std::move(infoPanelBehaviorComponent));
   newScene.AddObject(std::move(infoPanel));
+
+  // Add an FPS display.
+  /*auto fpsDisplayComponent = std::make_unique<UrsineEngine::FPSDisplay>();
+  fpsDisplayComponent->SetFont("Alagard", "Medium");
+
+  std::string vertexFile = "resources/shaders/TextShader.vert";
+  std::string fragmentFile = "resources/shaders/TextShader.frag";
+  UrsineEngine::Shader fpsShader(vertexFile, fragmentFile);
+  fpsDisplayComponent->AddShader("default", fpsShader);
+  fpsDisplayComponent->SetCurrentShader("default");
+
+  auto fpsDisplayObject = std::make_unique<UrsineEngine::GameObject>("fps");
+  fpsDisplayObject->AddComponent(std::move(fpsDisplayComponent));
+  newScene.AddObject(std::move(fpsDisplayObject));*/
 
   env.LoadScene(newScene);
 
