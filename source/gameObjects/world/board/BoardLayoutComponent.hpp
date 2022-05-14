@@ -122,15 +122,24 @@ namespace Barebones
       std::vector<UrsineEngine::GameObject*> GetCharactersOnSide(const Side& aSide);
 
       /**
-       * Moves a character at the first location to the second location.
+       * Moves a character at the given location along the given path.
        *
-       * @param aCurrentLocation The current location of the character.
-       * @param aNewLocation The new location for the character.
+       * @param aCharacterLocation The location of the character.
+       * @param aPath The path of tiles to follow.
        */
-      void MoveCharacter(const TileLocation& aCurrentLocation,
-                         const TileLocation& aNewLocation);
+      void MoveCharacterAlongPath(const TileLocation& aCharacterLocation,
+                                  const TileList& aPath);
 
     private:
+
+      /**
+       * Moves the followed character to the tile at the given location.
+       *
+       * @param aCharacterLocation The location of the character to move.
+       * @param aTileLocation The location of the tile to move to.
+       */
+      void MoveCharacter(const TileLocation& aCharacterLocation,
+                         const TileLocation& aTileLocation);
 
       /**
        * A handler function that gets called whenever a tile finishes
@@ -202,6 +211,9 @@ namespace Barebones
 
       std::vector<std::vector<UrsineEngine::GameObject*>> mTiles;
       std::vector<std::vector<UrsineEngine::GameObject*>> mCharacters;
+
+      CharacterBehaviorComponent* mMovingCharacter;
+      TileList mFollowedPath;
 
       TileLocation mHoveredTileLocation;
 

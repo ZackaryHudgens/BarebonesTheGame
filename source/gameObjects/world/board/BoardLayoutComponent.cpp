@@ -21,6 +21,7 @@ using Barebones::BoardLayoutComponent;
 /******************************************************************************/
 BoardLayoutComponent::BoardLayoutComponent()
   : Component()
+  , mMovingCharacter(nullptr)
   , mHoveredTileLocation(0, 0)
   , mSkillUsedForHighlighting(nullptr)
   , mTileSpacing(0.2)
@@ -295,48 +296,6 @@ UrsineEngine::GameObject* BoardLayoutComponent::GetCharacterAtLocation(const Til
 }
 
 /******************************************************************************/
-void BoardLayoutComponent::MoveCharacter(const TileLocation& aCurrentLocation,
-                                         const TileLocation& aNewLocation)
-{
-  auto character = GetCharacterAtLocation(aCurrentLocation);
-  auto newTile = GetTileAtLocation(aNewLocation);
-  if(character != nullptr &&
-     newTile != nullptr)
-  {
-    // First, check if there is already a character in the new location.
-    if(GetCharacterAtLocation(aNewLocation) == nullptr)
-    {
-      // Next, move the character to the new position in world space.
-      auto tileMesh = newTile->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
-      auto charBehaviorComp = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
-      if(tileMesh != nullptr &&
-         charBehaviorComp != nullptr)
-      {
-        auto newPosition = newTile->GetPosition();
-        newPosition.y = tileMesh->GetHeight();
-        charBehaviorComp->MoveToPosition(newPosition,
-                                         0.3);
-      }
-
-      // Let the tile at the current location know that a character has left.
-      auto currentTile = GetTileAtLocation(aCurrentLocation);
-      if(currentTile != nullptr)
-      {
-        auto tileBehaviorComponent = currentTile->GetFirstComponentOfType<TileBehaviorComponent>();
-        if(tileBehaviorComponent != nullptr)
-        {
-          tileBehaviorComponent->HandleCharacterExited(*character);
-        }
-      }
-
-      // Finally, update the character map.
-      mCharacters[aCurrentLocation.first][aCurrentLocation.second] = nullptr;
-      mCharacters[aNewLocation.first][aNewLocation.second] = character;
-    }
-  }
-}
-
-/******************************************************************************/
 Barebones::TileLocation BoardLayoutComponent::GetLocationOfCharacter(const std::string& aName)
 {
   TileLocation tile(-1, -1);
@@ -401,6 +360,51 @@ std::vector<UrsineEngine::GameObject*> BoardLayoutComponent::GetCharactersOnSide
   }
 
   return characters;
+}
+
+/******************************************************************************/
+void BoardLayoutComponent::MoveCharacterAlongPath(const TileLocation& aCharacterLocation,
+                                                  const TileList& aPath)
+{
+  auto character = GetCharacterAtLocation(aCharacterLocation);
+  if(character != nullptr)
+  {
+    auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
+    if(characterBehaviorComponent != nullptr)
+    {
+      mMovingCharacter = characterBehaviorComponent;
+      mFollowedPath = aPath;
+
+      // Move the character to the first tile in the path.
+      if(!mFollowedPath.empty())
+      {
+        MoveCharacter(aCharacterLocation,
+                      mFollowedPath.front());
+      }
+    }
+  }
+}
+
+/******************************************************************************/
+void BoardLayoutComponent::MoveCharacter(const TileLocation& aCharacterLocation,
+                                         const TileLocation& aTileLocation)
+{
+  if(mMovingCharacter != nullptr)
+  {
+    auto tile = GetTileAtLocation(aTileLocation);
+    if(tile != nullptr)
+    {
+      auto tileMesh = tile->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
+      if(tileMesh != nullptr)
+      {
+        auto position = tile->GetPosition();
+        position.y += (tileMesh->GetHeight() / 2.0);
+        mMovingCharacter->MoveToPosition(position, 0.3);
+
+        // Update the character map.
+      }
+    }
+  }
 }
 
 /******************************************************************************/

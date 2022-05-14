@@ -64,6 +64,9 @@ void MoveSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
                              isPath);
     if(path != shortestPaths.end())
     {
+      boardLayoutComponent->MoveCharacterAlongPath(characterLocation,
+                                                   path->first);
+
       mDistanceRemaining -= path->second;
       if(mDistanceRemaining <= 0)
       {
@@ -75,9 +78,6 @@ void MoveSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
       description << " (" << mDistanceRemaining << " tiles remaining)";
       SetDescription(description.str());
     }
-
-    boardLayoutComponent->MoveCharacter(characterLocation,
-                                        aLocation);
   }
 }
 
