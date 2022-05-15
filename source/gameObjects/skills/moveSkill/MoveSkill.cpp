@@ -56,8 +56,7 @@ void MoveSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
       return success;
     };
 
-    // Subtract the shortest distance from the distance remaining. If no distance
-    // remains, disable this skill.
+    // Find the shortest path to aLocation, then move the character along it.
     auto shortestPaths = characterBehaviorComponent->GenerateShortestPathList(aBoard, characterLocation);
     auto path = std::find_if(shortestPaths.begin(),
                              shortestPaths.end(),
@@ -67,6 +66,8 @@ void MoveSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
       boardLayoutComponent->MoveCharacterAlongPath(characterLocation,
                                                    path->first);
 
+      // Subtract the shortest distance from the distance remaining. If no distance
+      // remains, disable this skill.
       mDistanceRemaining -= path->second;
       if(mDistanceRemaining <= 0)
       {

@@ -215,25 +215,27 @@ bool BoardLayoutComponent::AddCharacterAtLocation(std::unique_ptr<UrsineEngine::
   auto parent = GetParent();
   if(parent != nullptr)
   {
-    if(aLocation.first < mTiles.size() &&
-       aLocation.first >= 0)
+    auto tile = GetTileAtLocation(aLocation);
+    if(tile != nullptr)
     {
-      if(aLocation.second < mTiles[aLocation.first].size() &&
-         aLocation.second >= 0)
+      auto tileMeshComponent = tile->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
+      auto characterMeshComponent = aObject->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
+      if(tileMeshComponent != nullptr &&
+         characterMeshComponent != nullptr)
       {
-        // Move the character to stand on top of the tile.
-        auto tile = mTiles[aLocation.first][aLocation.second];
+        // Set the character's position to be on top of the tile.
         auto newPos = tile->GetPosition();
-        newPos.y = tile->GetFirstComponentOfType<UrsineEngine::MeshComponent>()->GetHeight();
+        newPos.y += tileMeshComponent->GetHeight() / 2.0;
+        newPos.y += characterMeshComponent->GetHeight() / 2.0;
         aObject->SetPosition(newPos);
-
-        // Add the character as a child object of the board.
-        parent->AddChild(std::move(aObject));
-
-        // Add the object to the characters list.
-        mCharacters[aLocation.first][aLocation.second] = parent->GetChildren().back();
-        success = true;
       }
+
+      // Add the character as a child object of the board.
+      parent->AddChild(std::move(aObject));
+
+      // Update the character map.
+      mCharacters[aLocation.first][aLocation.second] = parent->GetChildren().back();
+      success = true;
     }
   }
 
@@ -372,14 +374,15 @@ void BoardLayoutComponent::MoveCharacterAlongPath(const TileLocation& aCharacter
     auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
     if(characterBehaviorComponent != nullptr)
     {
-      mMovingCharacter = characterBehaviorComponent;
+      mMovingCharacter = character;
       mFollowedPath = aPath;
 
       // Move the character to the first tile in the path.
       if(!mFollowedPath.empty())
       {
-        MoveCharacter(aCharacterLocation,
-                      mFollowedPath.front());
+        auto tileLocation = mFollowedPath.front();
+        mFollowedPath.erase(mFollowedPath.begin());
+        MoveCharacter(aCharacterLocation, tileLocation);
       }
     }
   }
@@ -394,14 +397,24 @@ void BoardLayoutComponent::MoveCharacter(const TileLocation& aCharacterLocation,
     auto tile = GetTileAtLocation(aTileLocation);
     if(tile != nullptr)
     {
-      auto tileMesh = tile->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
-      if(tileMesh != nullptr)
+      auto tileMeshComponent = tile->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
+      auto characterBehaviorComponent = mMovingCharacter->GetFirstComponentOfType<CharacterBehaviorComponent>();
+      auto characterMeshComponent = mMovingCharacter->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
+      if(tileMeshComponent != nullptr &&
+         characterBehaviorComponent != nullptr &&
+         characterMeshComponent != nullptr)
       {
         auto position = tile->GetPosition();
-        position.y += (tileMesh->GetHeight() / 2.0);
-        mMovingCharacter->MoveToPosition(position, 0.3);
+        position.y += tileMeshComponent->GetHeight() / 2.0;
+        position.y += characterMeshComponent->GetHeight() / 2.0;
+        characterBehaviorComponent->MoveToPosition(position, 0.3);
 
         // Update the character map.
+        if(aCharacterLocation != aTileLocation)
+        {
+          mCharacters[aTileLocation.first][aTileLocation.second] = mMovingCharacter;
+          mCharacters[aCharacterLocation.first][aCharacterLocation.second] = nullptr;
+        }
       }
     }
   }
@@ -604,14 +617,32 @@ void BoardLayoutComponent::HandleCharacterFinishedMoving(CharacterBehaviorCompon
   auto characterObject = aCharacter.GetParent();
   if(characterObject != nullptr)
   {
-    auto location = GetLocationOfCharacter(characterObject->GetName());
-    auto tile = GetTileAtLocation(location);
+    auto characterLocation = GetLocationOfCharacter(characterObject->GetName());
+    auto tile = GetTileAtLocation(characterLocation);
     if(tile != nullptr)
     {
       auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
       if(tileBehaviorComponent != nullptr)
       {
         tileBehaviorComponent->HandleCharacterEntered(*characterObject);
+      }
+    }
+
+    // After informing the tile, move this character to the next location in
+    // mFollowedPath, if necessary.
+    if(characterObject == mMovingCharacter)
+    {
+      if(!mFollowedPath.empty())
+      {
+        auto tileLocation = mFollowedPath.front();
+        mFollowedPath.erase(mFollowedPath.begin());
+        MoveCharacter(characterLocation,
+                      tileLocation);
+      }
+      else
+      {
+        // The character has finished following the path.
+        mMovingCharacter = nullptr;
       }
     }
   }
