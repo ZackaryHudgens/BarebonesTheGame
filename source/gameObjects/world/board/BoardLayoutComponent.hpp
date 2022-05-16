@@ -36,6 +36,13 @@ namespace Barebones
       void Initialize() override;
 
       /**
+       * Updates the component.
+       *
+       * @param aTime The time of the current Scene'e Update().
+       */
+      void Update(double aTime) override;
+
+      /**
        * Returns the number of columns.
        *
        * @return The number of columns.
@@ -214,6 +221,7 @@ namespace Barebones
 
       UrsineEngine::GameObject* mMovingCharacter;
       TileList mFollowedPath;
+      bool mWaitingForMovingCharacter;
 
       TileLocation mHoveredTileLocation;
 

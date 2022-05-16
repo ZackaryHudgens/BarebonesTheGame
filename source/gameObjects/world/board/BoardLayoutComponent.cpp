@@ -22,6 +22,7 @@ using Barebones::BoardLayoutComponent;
 BoardLayoutComponent::BoardLayoutComponent()
   : Component()
   , mMovingCharacter(nullptr)
+  , mWaitingForMovingCharacter(false)
   , mHoveredTileLocation(0, 0)
   , mSkillUsedForHighlighting(nullptr)
   , mTileSpacing(0.2)
@@ -112,6 +113,23 @@ void BoardLayoutComponent::Initialize()
       mTiles.emplace_back(row);
       mCharacters.emplace_back(characters);
     }
+  }
+}
+
+/******************************************************************************/
+void BoardLayoutComponent::Update(double aTime)
+{
+  if(!mWaitingForMovingCharacter &&
+     mMovingCharacter != nullptr &&
+     !mFollowedPath.empty())
+  {
+    auto characterLocation = GetLocationOfCharacter(mMovingCharacter->GetName());
+    auto tileLocation = mFollowedPath.front();
+    mFollowedPath.erase(mFollowedPath.begin());
+
+    MoveCharacter(characterLocation, tileLocation);
+
+    mWaitingForMovingCharacter = true;
   }
 }
 
@@ -628,21 +646,18 @@ void BoardLayoutComponent::HandleCharacterFinishedMoving(CharacterBehaviorCompon
       }
     }
 
-    // After informing the tile, move this character to the next location in
-    // mFollowedPath, if necessary.
     if(characterObject == mMovingCharacter)
     {
-      if(!mFollowedPath.empty())
+      // We are no longer waiting for this character to finish moving.
+      mWaitingForMovingCharacter = false;
+
+      // If the followed path is empty, then there is no moving character
+      // at the moment.
+      if(mFollowedPath.empty())
       {
-        auto tileLocation = mFollowedPath.front();
-        mFollowedPath.erase(mFollowedPath.begin());
-        MoveCharacter(characterLocation,
-                      tileLocation);
-      }
-      else
-      {
-        // The character has finished following the path.
         mMovingCharacter = nullptr;
+
+        CharacterFinishedMovingAlongPath.Notify(aCharacter);
       }
     }
   }

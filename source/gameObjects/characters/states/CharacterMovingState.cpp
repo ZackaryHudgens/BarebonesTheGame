@@ -47,7 +47,7 @@ std::unique_ptr<Barebones::CharacterState> CharacterMovingState::Update(double a
       }
 
       // Revert to the default state.
-      //newState = std::make_unique<CharacterDefaultState>(*character);
+      newState = std::make_unique<CharacterDefaultState>(*character);
     }
     else
     {

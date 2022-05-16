@@ -32,11 +32,11 @@ namespace Barebones
 
       /**
        * A handler function that gets called whenever a character finishes
-       * moving.
+       * moving along a path.
        *
        * @param aCharacter The character that finished moving.
        */
-      void HandleCharacterFinishedMoving(CharacterBehaviorComponent& aCharacter);
+      void HandleCharacterFinishedMovingAlongPath(CharacterBehaviorComponent& aCharacter);
 
       bool mWaitingForMove;
   };

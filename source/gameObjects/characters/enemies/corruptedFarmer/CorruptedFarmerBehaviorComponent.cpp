@@ -13,9 +13,9 @@ CorruptedFarmerBehaviorComponent::CorruptedFarmerBehaviorComponent()
   : EnemyBehaviorComponent()
   , mWaitingForMove(false)
 {
-  CharacterFinishedMoving.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
+  CharacterFinishedMovingAlongPath.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
   {
-    this->HandleCharacterFinishedMoving(aCharacter);
+    this->HandleCharacterFinishedMovingAlongPath(aCharacter);
   });
 
   SetName("Corrupted Farmer");
@@ -84,7 +84,7 @@ void CorruptedFarmerBehaviorComponent::ProtectedInitialize()
 }
 
 /******************************************************************************/
-void CorruptedFarmerBehaviorComponent::HandleCharacterFinishedMoving(CharacterBehaviorComponent& aCharacter)
+void CorruptedFarmerBehaviorComponent::HandleCharacterFinishedMovingAlongPath(CharacterBehaviorComponent& aCharacter)
 {
   if(&aCharacter == this &&
      mWaitingForMove)

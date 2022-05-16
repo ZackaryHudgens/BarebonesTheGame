@@ -18,6 +18,7 @@ namespace Barebones
    * Character signals
    */
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&>          CharacterFinishedMovingSignal;
+  typedef UrsineEngine::SignalT<CharacterBehaviorComponent&>          CharacterFinishedMovingAlongPathSignal;
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&>          CharacterTurnBeganSignal;
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&>          CharacterTurnEndedSignal;
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&>          CharacterHealthChangedSignal;
@@ -27,15 +28,16 @@ namespace Barebones
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&, Effect&> EffectAddedToCharacterSignal;
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&, Effect&> EffectRemovedFromCharacterSignal;
 
-  extern CharacterFinishedMovingSignal    CharacterFinishedMoving;
-  extern CharacterTurnBeganSignal         CharacterTurnBegan;
-  extern CharacterTurnEndedSignal         CharacterTurnEnded;
-  extern CharacterHealthChangedSignal     CharacterHealthChanged;
-  extern CharacterDiedSignal              CharacterDied;
-  extern SkillExecutedSignal              SkillExecuted;
-  extern SkillCancelledSignal             SkillCancelled;
-  extern EffectAddedToCharacterSignal     EffectAddedToCharacter;
-  extern EffectRemovedFromCharacterSignal EffectRemovedFromCharacter;
+  extern CharacterFinishedMovingSignal          CharacterFinishedMoving;
+  extern CharacterFinishedMovingAlongPathSignal CharacterFinishedMovingAlongPath;
+  extern CharacterTurnBeganSignal               CharacterTurnBegan;
+  extern CharacterTurnEndedSignal               CharacterTurnEnded;
+  extern CharacterHealthChangedSignal           CharacterHealthChanged;
+  extern CharacterDiedSignal                    CharacterDied;
+  extern SkillExecutedSignal                    SkillExecuted;
+  extern SkillCancelledSignal                   SkillCancelled;
+  extern EffectAddedToCharacterSignal           EffectAddedToCharacter;
+  extern EffectRemovedFromCharacterSignal       EffectRemovedFromCharacter;
 
   /**
    * Player signals

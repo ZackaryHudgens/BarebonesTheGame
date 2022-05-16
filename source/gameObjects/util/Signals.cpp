@@ -3,15 +3,16 @@
 /**
  * Character signals
  */
-Barebones::CharacterFinishedMovingSignal    Barebones::CharacterFinishedMoving;
-Barebones::CharacterTurnBeganSignal         Barebones::CharacterTurnBegan;
-Barebones::CharacterTurnEndedSignal         Barebones::CharacterTurnEnded;
-Barebones::CharacterHealthChangedSignal     Barebones::CharacterHealthChanged;
-Barebones::CharacterDiedSignal              Barebones::CharacterDied;
-Barebones::SkillExecutedSignal              Barebones::SkillExecuted;
-Barebones::SkillCancelledSignal             Barebones::SkillCancelled;
-Barebones::EffectAddedToCharacterSignal     Barebones::EffectAddedToCharacter;
-Barebones::EffectRemovedFromCharacterSignal Barebones::EffectRemovedFromCharacter;
+Barebones::CharacterFinishedMovingSignal          Barebones::CharacterFinishedMoving;
+Barebones::CharacterFinishedMovingAlongPathSignal Barebones::CharacterFinishedMovingAlongPath;
+Barebones::CharacterTurnBeganSignal               Barebones::CharacterTurnBegan;
+Barebones::CharacterTurnEndedSignal               Barebones::CharacterTurnEnded;
+Barebones::CharacterHealthChangedSignal           Barebones::CharacterHealthChanged;
+Barebones::CharacterDiedSignal                    Barebones::CharacterDied;
+Barebones::SkillExecutedSignal                    Barebones::SkillExecuted;
+Barebones::SkillCancelledSignal                   Barebones::SkillCancelled;
+Barebones::EffectAddedToCharacterSignal           Barebones::EffectAddedToCharacter;
+Barebones::EffectRemovedFromCharacterSignal       Barebones::EffectRemovedFromCharacter;
 
 /**
  * Player signals
