@@ -401,6 +401,8 @@ void BoardLayoutComponent::MoveCharacterAlongPath(const TileLocation& aCharacter
         auto tileLocation = mFollowedPath.front();
         mFollowedPath.erase(mFollowedPath.begin());
         MoveCharacter(aCharacterLocation, tileLocation);
+
+        CharacterStartedMovingAlongPath.Notify(*characterBehaviorComponent);
       }
     }
   }

@@ -6,6 +6,8 @@
 #include "Skill.hpp"
 #include "TileUtil.hpp"
 
+#include "CharacterBehaviorComponent.hpp"
+
 namespace Barebones
 {
   class HumanPlayerBehaviorComponent : public PlayerBehaviorComponent
@@ -65,10 +67,28 @@ namespace Barebones
        */
       void AddSpell(std::unique_ptr<Skill> aSpell);
 
+      /**
+       * A handler function that gets called whenever a character starts
+       * moving along a designated path.
+       *
+       * @param aCharacter The character that started moving.
+       */
+      void HandleCharacterStartedMovingAlongPath(CharacterBehaviorComponent& aCharacter);
+
+      /**
+       * A handler function that gets called whenever a character finishes
+       * moving along a designated path.
+       *
+       * @param aCharacter The character that finished moving.
+       */
+      void HandleCharacterFinishedMovingAlongPath(CharacterBehaviorComponent& aCharacter);
+
     private:
       TileLocation mLocation;
 
       std::vector<std::unique_ptr<Skill>> mSpells;
+
+      bool mTakingTurn;
   };
 }
 
