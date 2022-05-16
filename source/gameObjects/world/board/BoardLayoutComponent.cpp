@@ -6,6 +6,7 @@
 #include <GameObject.hpp>
 #include <MeshComponent.hpp>
 
+#include "Colors.hpp"
 #include "Signals.hpp"
 
 #include "BoardTurnManagerComponent.hpp"
@@ -15,6 +16,8 @@
 #include "TileBehaviorComponent.hpp"
 
 #include "SkillActionBehaviorComponent.hpp"
+
+#include <iostream>
 
 using Barebones::BoardLayoutComponent;
 
@@ -172,13 +175,15 @@ bool BoardLayoutComponent::AddTileAtLocation(const TileType& aTileType,
                                         0.0,
                                         -1 * (double)aLocation.second - (mTileSpacing * aLocation.second)));
 
-        // If the new tile is at the hovered location, set the hovered flag.
+        // If the new tile is at the hovered location, change the highlight
+        // color and intensity of the tile.
         if(mHoveredTileLocation == aLocation)
         {
           auto tileBehaviorComponent = newTile->GetFirstComponentOfType<TileBehaviorComponent>();
           if(tileBehaviorComponent != nullptr)
           {
-            tileBehaviorComponent->SetHovered(true);
+            tileBehaviorComponent->SetHighlightColor(BACKGROUND_COLOR);
+            tileBehaviorComponent->SetHighlightIntensity(0.4);
           }
         }
 
@@ -474,40 +479,36 @@ void BoardLayoutComponent::HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& 
       if(aPlayer.GetParent() == turnManager->GetCurrentPlayer())
       {
         auto location = aPlayer.GetLocation();
-        if(location.first < mColumns &&
-           location.first >= 0 &&
-           location.second < mRows &&
-           location.second >= 0)
+
+        // Un-hover the tile at the previous location.
+        auto hoveredTile = GetTileAtLocation(mHoveredTileLocation);
+        if(hoveredTile != nullptr)
         {
-          // Un-hover the tile at the previous location.
-          auto hoveredTile = GetTileAtLocation(mHoveredTileLocation);
-          if(hoveredTile != nullptr)
+          auto prevTileBehaviorComp = hoveredTile->GetFirstComponentOfType<TileBehaviorComponent>();
+          if(prevTileBehaviorComp != nullptr)
           {
-            auto prevTileBehaviorComp = hoveredTile->GetFirstComponentOfType<TileBehaviorComponent>();
-            if(prevTileBehaviorComp != nullptr)
-            {
-              prevTileBehaviorComp->SetHovered(false);
-            }
+            prevTileBehaviorComp->SetHighlightIntensity(0.0);
+          }
+        }
+
+        // Hover over the tile at the new location.
+        auto newTile = GetTileAtLocation(location);
+        if(newTile != nullptr)
+        {
+          auto newTileBehaviorComp = newTile->GetFirstComponentOfType<TileBehaviorComponent>();
+          if(newTileBehaviorComp != nullptr)
+          {
+            newTileBehaviorComp->SetHighlightColor(BACKGROUND_COLOR);
+            newTileBehaviorComp->SetHighlightIntensity(0.4);
           }
 
-          // Hover over the tile at the new location.
-          auto newTile = GetTileAtLocation(location);
-          if(newTile != nullptr)
-          {
-            auto newTileBehaviorComp = newTile->GetFirstComponentOfType<TileBehaviorComponent>();
-            if(newTileBehaviorComp != nullptr)
-            {
-              newTileBehaviorComp->SetHovered(true);
-            }
+          mHoveredTileLocation = location;
+        }
 
-            mHoveredTileLocation = location;
-          }
-
-          // Update the highlighted tiles, if necessary.
-          if(mSkillUsedForHighlighting != nullptr)
-          {
-            HandleSkillSelectedFromMenu(*mSkillUsedForHighlighting);
-          }
+        // Update the highlighted tiles, if necessary.
+        if(mSkillUsedForHighlighting != nullptr)
+        {
+          HandleSkillSelectedFromMenu(*mSkillUsedForHighlighting);
         }
       }
     }
@@ -572,7 +573,10 @@ void BoardLayoutComponent::HandleSkillSelectedFromMenu(Skill& aSkill)
       auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
       if(tileBehaviorComponent != nullptr)
       {
-        tileBehaviorComponent->SetHighlighted(false);
+        if(tileLocation != mHoveredTileLocation)
+        {
+          tileBehaviorComponent->SetHighlightIntensity(0.0);
+        }
       }
     }
   }
@@ -591,8 +595,13 @@ void BoardLayoutComponent::HandleSkillSelectedFromMenu(Skill& aSkill)
         auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
         if(tileBehaviorComponent != nullptr)
         {
-          tileBehaviorComponent->SetHighlightColor(glm::vec3(0.682, 0.729, 0.537));
-          tileBehaviorComponent->SetHighlighted(true);
+          // Don't update the highlight color/intensity if this is the
+          // currently hovered tile.
+          if(tileLocation != mHoveredTileLocation)
+          {
+            tileBehaviorComponent->SetHighlightColor(LIGHT_COLOR);
+            tileBehaviorComponent->SetHighlightIntensity(0.4);
+          }
         }
       }
 
@@ -612,9 +621,10 @@ void BoardLayoutComponent::HandleSkillExecuted(Skill& aSkill)
       if(tile != nullptr)
       {
         auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
-        if(tileBehaviorComponent != nullptr)
+        if(tileBehaviorComponent != nullptr &&
+           tileLocation != mHoveredTileLocation)
         {
-          tileBehaviorComponent->SetHighlighted(false);
+          tileBehaviorComponent->SetHighlightIntensity(0.0);
         }
       }
     }

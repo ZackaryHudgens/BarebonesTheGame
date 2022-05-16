@@ -2,6 +2,8 @@
 
 #include <MeshComponent.hpp>
 
+#include "Colors.hpp"
+
 #include "DefaultTileBehaviorComponent.hpp"
 #include "DesecratedTileBehaviorComponent.hpp"
 
@@ -166,18 +168,6 @@ std::unique_ptr<UrsineEngine::GameObject> TileFactory::CreateTile(const TileType
       std::string vertexFile = "resources/shaders/TileShader.vert";
       std::string fragmentFile = "resources/shaders/TileShader.frag";
       UrsineEngine::Shader tileShader(vertexFile, fragmentFile);
-
-      tileShader.Activate();
-      tileShader.SetVec4("highlightColor", glm::vec4(1.0,
-                                                     1.0,
-                                                     1.0,
-                                                     1.0));
-      tileShader.SetVec4("hoverColor", glm::vec4(1.0,
-                                                 1.0,
-                                                 1.0,
-                                                 1.0));
-      tileShader.SetVec4("fadeInColor", glm::vec4(0.89, 0.93, 0.75, 1.0));
-
       tileMesh->AddShader("tileShader", tileShader);
       tileMesh->SetCurrentShader("tileShader");
 
@@ -196,18 +186,6 @@ std::unique_ptr<UrsineEngine::GameObject> TileFactory::CreateTile(const TileType
       std::string vertexFile = "resources/shaders/TileShader.vert";
       std::string fragmentFile = "resources/shaders/TileShader.frag";
       UrsineEngine::Shader tileShader(vertexFile, fragmentFile);
-
-      tileShader.Activate();
-      tileShader.SetVec4("highlightColor", glm::vec4(1.0,
-                                                     1.0,
-                                                     1.0,
-                                                     1.0));
-      tileShader.SetVec4("hoverColor", glm::vec4(1.0,
-                                                 1.0,
-                                                 1.0,
-                                                 1.0));
-      tileShader.SetVec4("fadeInColor", glm::vec4(0.89, 0.93, 0.75, 1.0));
-
       tileMesh->AddShader("tileShader", tileShader);
       tileMesh->SetCurrentShader("tileShader");
 
@@ -224,8 +202,15 @@ std::unique_ptr<UrsineEngine::GameObject> TileFactory::CreateTile(const TileType
     }
   }
 
-  // Finally, add the tile mesh.
+  // Add the tile mesh.
   newTile->AddComponent(std::move(tileMesh));
+
+  // Set the initial highlight color to use while the tile fades in.
+  auto tileBehaviorComponent = newTile->GetFirstComponentOfType<TileBehaviorComponent>();
+  if(tileBehaviorComponent != nullptr)
+  {
+    tileBehaviorComponent->SetHighlightColor(LIGHT_COLOR);
+  }
 
   return std::move(newTile);
 }
