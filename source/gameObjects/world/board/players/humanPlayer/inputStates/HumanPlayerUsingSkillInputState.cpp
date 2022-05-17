@@ -131,7 +131,7 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerUsingSkillInputStat
           
           if(mSkill != nullptr)
           {
-            SkillCancelled.Notify(*mSkill);
+            mSkill->Cancel();
           }
           break;
         }

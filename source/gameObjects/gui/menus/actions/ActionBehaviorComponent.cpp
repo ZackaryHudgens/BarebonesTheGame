@@ -10,10 +10,10 @@ ActionBehaviorComponent::ActionBehaviorComponent()
 }
 
 /******************************************************************************/
-void ActionBehaviorComponent::Select()
+void ActionBehaviorComponent::Execute()
 {
   if(mEnabled)
   {
-    ProtectedSelect();
+    ProtectedExecute();
   }
 }

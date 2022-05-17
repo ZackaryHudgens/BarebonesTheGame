@@ -118,7 +118,7 @@ void MenuLayoutComponent::HoverOverPreviousAction()
 }
 
 /******************************************************************************/
-void MenuLayoutComponent::SelectCurrentAction()
+void MenuLayoutComponent::ExecuteCurrentAction()
 {
   if(mCurrentlyHoveredAction != nullptr)
   {
@@ -127,9 +127,9 @@ void MenuLayoutComponent::SelectCurrentAction()
     {
       if(actionBehaviorComp->IsEnabled())
       {
-        actionBehaviorComp->Select();
+        actionBehaviorComp->Execute();
 
-        HandleActionSelected();
+        HandleActionExecuted();
       }
     }
   }

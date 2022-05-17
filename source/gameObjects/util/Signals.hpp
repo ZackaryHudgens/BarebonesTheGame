@@ -24,6 +24,7 @@ namespace Barebones
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&>          CharacterTurnEndedSignal;
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&>          CharacterHealthChangedSignal;
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&>          CharacterDiedSignal;
+  typedef UrsineEngine::SignalT<Skill&>                               SkillSelectedSignal;
   typedef UrsineEngine::SignalT<Skill&>                               SkillExecutedSignal;
   typedef UrsineEngine::SignalT<Skill&>                               SkillCancelledSignal;
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&, Effect&> EffectAddedToCharacterSignal;
@@ -36,6 +37,7 @@ namespace Barebones
   extern CharacterTurnEndedSignal               CharacterTurnEnded;
   extern CharacterHealthChangedSignal           CharacterHealthChanged;
   extern CharacterDiedSignal                    CharacterDied;
+  extern SkillSelectedSignal                    SkillSelected;
   extern SkillExecutedSignal                    SkillExecuted;
   extern SkillCancelledSignal                   SkillCancelled;
   extern EffectAddedToCharacterSignal           EffectAddedToCharacter;
@@ -70,10 +72,8 @@ namespace Barebones
    * GUI Signals
    */
   typedef UrsineEngine::SignalT<TurnDisplayComponent&> TurnDisplayFinishedSignal;
-  typedef UrsineEngine::SignalT<Skill&> SkillSelectedFromMenuSignal;
 
   extern TurnDisplayFinishedSignal   TurnDisplayFinished;
-  extern SkillSelectedFromMenuSignal SkillSelectedFromMenu;
 
   /**
    * Settings signals

@@ -34,16 +34,15 @@ namespace Barebones
       void HoverOverPreviousAction();
 
       /**
-       * Selects the currently hovered action.
+       * Executes the currently hovered action.
        */
-      void SelectCurrentAction();
+      void ExecuteCurrentAction();
 
     protected:
 
       /**
        * A virtual function that gets called whenever an action is added
-       * to this menu. Inheriting classes should override this function
-       * to arrange the actions accordingly.
+       * to this menu.
        */
       virtual void HandleActionAdded() {}
 
@@ -54,11 +53,10 @@ namespace Barebones
       virtual void HandleActionHovered() {}
 
       /**
-       * A virtual function that gets called whenever an action is selected
-       * from this menu. Inheriting classes should override this function
-       * to arrange the actions accordingly.
+       * A virtual function that gets called whenever an action is executed
+       * from this menu.
        */
-      virtual void HandleActionSelected() {}
+      virtual void HandleActionExecuted() {}
 
       /**
        * Returns the actions in this menu.

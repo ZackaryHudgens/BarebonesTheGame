@@ -64,12 +64,11 @@ namespace Barebones
       void ProtectedInitialize() override;
 
       /**
-       * A handler function that gets called whenever a skill is selected
-       * for use from a menu.
+       * A handler function that gets called whenever a skill is selected.
        *
        * @param aSkill The skill that was selected.
        */
-      void HandleSkillSelectedFromMenu(Skill& aSkill);
+      void HandleSkillSelected(Skill& aSkill);
 
     private:
 

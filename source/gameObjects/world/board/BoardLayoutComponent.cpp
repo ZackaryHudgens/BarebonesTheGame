@@ -54,9 +54,9 @@ BoardLayoutComponent::BoardLayoutComponent()
     this->HandlePlayerTurnEnded(aPlayer);
   });
 
-  SkillSelectedFromMenu.Connect(*this, [this](Skill& aSkill)
+  SkillSelected.Connect(*this, [this](Skill& aSkill)
   {
-    this->HandleSkillSelectedFromMenu(aSkill);
+    this->HandleSkillSelected(aSkill);
   });
 
   SkillExecuted.Connect(*this, [this](Skill& aSkill)
@@ -509,7 +509,7 @@ void BoardLayoutComponent::HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& 
         // Update the highlighted tiles, if necessary.
         if(mSkillUsedForHighlighting != nullptr)
         {
-          HandleSkillSelectedFromMenu(*mSkillUsedForHighlighting);
+          HandleSkillSelected(*mSkillUsedForHighlighting);
         }
       }
     }
@@ -561,7 +561,7 @@ void BoardLayoutComponent::HandlePlayerTurnEnded(PlayerBehaviorComponent& aPlaye
 }
 
 /******************************************************************************/
-void BoardLayoutComponent::HandleSkillSelectedFromMenu(Skill& aSkill)
+void BoardLayoutComponent::HandleSkillSelected(Skill& aSkill)
 {
   mSkillUsedForHighlighting = &aSkill;
 

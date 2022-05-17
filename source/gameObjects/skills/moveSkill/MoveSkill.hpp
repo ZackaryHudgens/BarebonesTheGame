@@ -19,12 +19,6 @@ namespace Barebones
       MoveSkill(UrsineEngine::GameObject& aParent);
 
       /**
-       * A function that gets called whenever this skill is selected
-       * for use, but before being executed.
-       */
-      void Select() override;
-
-      /**
        * Returns a vector of valid tile locations for executing this skill.
        *
        * @param aBoard A GameObject containing a BoardLayoutComponent.
@@ -34,6 +28,11 @@ namespace Barebones
     protected:
 
       /**
+       * Selects this skill for use.
+       */
+      void ProtectedSelect() override;
+
+      /**
        * Executes this skill.
        *
        * @param aBoard The board to execute this skill on.
@@ -41,6 +40,11 @@ namespace Barebones
        */
       void ProtectedExecute(UrsineEngine::GameObject& aBoard,
                             const TileLocation& aLocation) override;
+
+      /**
+       * Cancels the use of this skill.
+       */
+      void ProtectedCancel() override;
 
       /**
        * A handler function that gets called during SetEnabled().

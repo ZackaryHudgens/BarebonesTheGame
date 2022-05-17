@@ -124,9 +124,9 @@ void SkillMenuLayoutComponent::HandleActionHovered()
 }
 
 /******************************************************************************/
-void SkillMenuLayoutComponent::HandleActionSelected()
+void SkillMenuLayoutComponent::HandleActionExecuted()
 {
-  // When a skill is selected, this menu is no longer needed.
+  // When a skill is executed, this menu is no longer needed.
   auto parent = GetParent();
   if(parent != nullptr)
   {

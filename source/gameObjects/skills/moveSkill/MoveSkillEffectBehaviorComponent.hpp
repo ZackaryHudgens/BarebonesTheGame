@@ -48,21 +48,6 @@ namespace Barebones
        */
       void HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& aPlayer);
 
-      /**
-       * A handler function that gets called whenever a skill is executed.
-       *
-       * @param aSkill The skill that was executed.
-       */
-      void HandleSkillExecuted(Skill& aSkill);
-
-      /**
-       * A handler function that gets called whenever the use of a skill
-       * is cancelled.
-       *
-       * @param aSkill The skill that was cancelled.
-       */
-      void HandleSkillCancelled(Skill& aSkill);
-
     private:
       UrsineEngine::GameObject* mBoard;
       MoveSkill* mMoveSkill;

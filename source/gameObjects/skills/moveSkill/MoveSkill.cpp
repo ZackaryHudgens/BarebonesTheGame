@@ -33,7 +33,46 @@ MoveSkill::MoveSkill(UrsineEngine::GameObject& aParent)
 }
 
 /******************************************************************************/
-void MoveSkill::Select()
+Barebones::TileList MoveSkill::GetValidTiles(UrsineEngine::GameObject& aBoard)
+{
+  TileList tiles;
+
+  auto parent = GetParent();
+  auto characterBehaviorComponent = parent->GetFirstComponentOfType<CharacterBehaviorComponent>();
+  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
+  if(characterBehaviorComponent != nullptr &&
+     boardLayoutComponent != nullptr)
+  {
+    auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
+
+    if(mShortestPaths.empty())
+    {
+      mShortestPaths = characterBehaviorComponent->GenerateShortestPathList(aBoard, characterLocation);
+    }
+
+    for(const auto& shortestPath : mShortestPaths)
+    {
+      if(shortestPath.second <= mDistanceRemaining)
+      {
+        for(const auto& tile : shortestPath.first)
+        {
+          tiles.emplace_back(tile);
+        }
+      }
+    }
+
+    if(mSkillEffect != nullptr)
+    {
+      mSkillEffect->SetBoard(aBoard);
+      mSkillEffect->SetShortestPathList(mShortestPaths);
+    }
+  }
+
+  return tiles;
+}
+
+/******************************************************************************/
+void MoveSkill::ProtectedSelect()
 {
   // Create a MoveSkillEffectBehaviorComponent and add it to a GameObject,
   // then add the GameObject to the scene. This component will highlight
@@ -108,46 +147,31 @@ void MoveSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
     }
   }
 
-  mSkillEffect = nullptr;
+  // Schedule the effect object for deletion.
+  if(mSkillEffect != nullptr)
+  {
+    auto skillEffectObject = mSkillEffect->GetParent();
+    if(skillEffectObject != nullptr)
+    {
+      skillEffectObject->ScheduleForDeletion();
+      mSkillEffect = nullptr;
+    }
+  }
 }
 
 /******************************************************************************/
-Barebones::TileList MoveSkill::GetValidTiles(UrsineEngine::GameObject& aBoard)
+void MoveSkill::ProtectedCancel()
 {
-  TileList tiles;
-
-  auto parent = GetParent();
-  auto characterBehaviorComponent = parent->GetFirstComponentOfType<CharacterBehaviorComponent>();
-  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
-  if(characterBehaviorComponent != nullptr &&
-     boardLayoutComponent != nullptr)
+  // Schedule the effect object for deletion.
+  if(mSkillEffect != nullptr)
   {
-    auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
-
-    if(mShortestPaths.empty())
+    auto skillEffectObject = mSkillEffect->GetParent();
+    if(skillEffectObject != nullptr)
     {
-      mShortestPaths = characterBehaviorComponent->GenerateShortestPathList(aBoard, characterLocation);
-    }
-
-    for(const auto& shortestPath : mShortestPaths)
-    {
-      if(shortestPath.second <= mDistanceRemaining)
-      {
-        for(const auto& tile : shortestPath.first)
-        {
-          tiles.emplace_back(tile);
-        }
-      }
-    }
-
-    if(mSkillEffect != nullptr)
-    {
-      mSkillEffect->SetBoard(aBoard);
-      mSkillEffect->SetShortestPathList(mShortestPaths);
+      skillEffectObject->ScheduleForDeletion();
+      mSkillEffect = nullptr;
     }
   }
-
-  return tiles;
 }
 
 /******************************************************************************/

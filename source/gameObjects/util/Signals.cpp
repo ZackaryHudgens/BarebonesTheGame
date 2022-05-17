@@ -10,6 +10,7 @@ Barebones::CharacterTurnBeganSignal               Barebones::CharacterTurnBegan;
 Barebones::CharacterTurnEndedSignal               Barebones::CharacterTurnEnded;
 Barebones::CharacterHealthChangedSignal           Barebones::CharacterHealthChanged;
 Barebones::CharacterDiedSignal                    Barebones::CharacterDied;
+Barebones::SkillSelectedSignal                    Barebones::SkillSelected;
 Barebones::SkillExecutedSignal                    Barebones::SkillExecuted;
 Barebones::SkillCancelledSignal                   Barebones::SkillCancelled;
 Barebones::EffectAddedToCharacterSignal           Barebones::EffectAddedToCharacter;
@@ -36,7 +37,6 @@ Barebones::InputComponentInitializedSignal Barebones::InputComponentInitialized;
  * GUI Signals
  */
 Barebones::TurnDisplayFinishedSignal   Barebones::TurnDisplayFinished;
-Barebones::SkillSelectedFromMenuSignal Barebones::SkillSelectedFromMenu;
 
 /**
  * Settings signals

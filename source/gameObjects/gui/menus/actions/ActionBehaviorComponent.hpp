@@ -21,12 +21,12 @@ namespace Barebones
        *
        * @param aHovered Whether this action was hovered by the user.
        */
-      virtual void SetHovered(bool aHovered) = 0;
+      virtual void SetHovered(bool aHovered) {};
 
       /**
-       * A virtual function that selects this action for use.
+       * Executes this action.
        */
-      void Select();
+      void Execute();
 
       /**
        * Enables or disables this action. Disabled actions can't be selected.
@@ -45,9 +45,12 @@ namespace Barebones
     protected:
 
       /**
-       * A virtual function that gets called during Select().
+       * A virtual function that gets called during Execute().
+       *
+       * This must be overridden to provide functionality when the user
+       * chooses this action.
        */
-      virtual void ProtectedSelect() = 0;
+      virtual void ProtectedExecute() = 0;
 
     private:
       bool mEnabled;

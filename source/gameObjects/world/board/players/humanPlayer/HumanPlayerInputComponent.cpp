@@ -14,9 +14,9 @@ HumanPlayerInputComponent::HumanPlayerInputComponent()
   , mState(nullptr)
   , mEnabled(false)
 {
-  SkillSelectedFromMenu.Connect(*this, [this](Skill& aSkill)
+  SkillSelected.Connect(*this, [this](Skill& aSkill)
   {
-    this->HandleSkillSelectedFromMenu(aSkill);
+    this->HandleSkillSelected(aSkill);
   });
 }
 
@@ -79,7 +79,7 @@ void HumanPlayerInputComponent::ProtectedInitialize()
 }
 
 /******************************************************************************/
-void HumanPlayerInputComponent::HandleSkillSelectedFromMenu(Skill& aSkill)
+void HumanPlayerInputComponent::HandleSkillSelected(Skill& aSkill)
 {
   // When a skill is selected, swap to the Using Skill state.
   auto parent = GetParent();

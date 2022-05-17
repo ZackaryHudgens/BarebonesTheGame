@@ -37,10 +37,10 @@ namespace Barebones
       void HandleActionHovered() override;
 
       /**
-       * A handler function that gets called whenever an action is selected
+       * A handler function that gets called whenever an action is executed
        * from this menu.
        */
-      void HandleActionSelected() override;
+      void HandleActionExecuted() override;
 
     private:
       TextBoxComponent* mSkillNameTextBox;

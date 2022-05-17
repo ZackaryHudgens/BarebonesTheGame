@@ -36,7 +36,7 @@ void SkillMenuInputComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCod
         }
         case UrsineEngine::KeyCode::eKEY_ENTER:
         {
-          layout->SelectCurrentAction();
+          layout->ExecuteCurrentAction();
           break;
         }
         case UrsineEngine::KeyCode::eKEY_ESCAPE:

@@ -17,18 +17,6 @@ namespace Barebones
       SkillActionBehaviorComponent();
 
       /**
-       * Initializes the component.
-       */
-      void Initialize() override;
-
-      /**
-       * Hovers or un-hovers the action.
-       *
-       * @param aHovered Whether this action was hovered by the user.
-       */
-      void SetHovered(bool aHovered) override;
-
-      /**
        * Sets the skill that this action represents.
        *
        * @param aSkill The skill that this action represents.
@@ -45,9 +33,9 @@ namespace Barebones
     protected:
 
       /**
-       * Selects this action.
+       * Executes this action.
        */
-      void ProtectedSelect() override;
+      void ProtectedExecute() override;
 
     private:
       Skill* mSkill;

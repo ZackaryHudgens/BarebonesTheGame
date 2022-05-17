@@ -10,8 +10,6 @@
 #include "Colors.hpp"
 #include "Signals.hpp"
 
-#include <iostream>
-
 using Barebones::MoveSkillEffectBehaviorComponent;
 
 /******************************************************************************/
@@ -23,16 +21,6 @@ MoveSkillEffectBehaviorComponent::MoveSkillEffectBehaviorComponent(Barebones::Mo
   HumanPlayerMoved.Connect(*this, [this](HumanPlayerBehaviorComponent& aPlayer)
   {
     this->HandleHumanPlayerMoved(aPlayer);
-  });
-
-  SkillExecuted.Connect(*this, [this](Skill& aSkill)
-  {
-    this->HandleSkillExecuted(aSkill);
-  });
-
-  SkillCancelled.Connect(*this, [this](Skill& aSkill)
-  {
-    this->HandleSkillCancelled(aSkill);
   });
 }
 
@@ -119,23 +107,4 @@ void MoveSkillEffectBehaviorComponent::HandleHumanPlayerMoved(HumanPlayerBehavio
       }
     }
   }
-}
-
-/******************************************************************************/
-void MoveSkillEffectBehaviorComponent::HandleSkillExecuted(Skill& aSkill)
-{
-  if(mMoveSkill == &aSkill)
-  {
-    auto parent = GetParent();
-    if(parent != nullptr)
-    {
-      parent->ScheduleForDeletion();
-    }
-  }
-}
-
-/******************************************************************************/
-void MoveSkillEffectBehaviorComponent::HandleSkillCancelled(Skill& aSkill)
-{
-  HandleSkillExecuted(aSkill);
 }

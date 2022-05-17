@@ -1,10 +1,5 @@
 #include "SkillActionBehaviorComponent.hpp"
 
-#include <GameObject.hpp>
-#include <MeshComponent.hpp>
-
-#include "Signals.hpp"
-
 using Barebones::SkillActionBehaviorComponent;
 
 /******************************************************************************/
@@ -15,27 +10,16 @@ SkillActionBehaviorComponent::SkillActionBehaviorComponent()
 }
 
 /******************************************************************************/
-void SkillActionBehaviorComponent::Initialize()
-{
-}
-
-/******************************************************************************/
-void SkillActionBehaviorComponent::SetHovered(bool aHovered)
-{
-}
-
-/******************************************************************************/
 void SkillActionBehaviorComponent::SetSkill(Skill& aSkill)
 {
   mSkill = &aSkill;
 }
 
 /******************************************************************************/
-void SkillActionBehaviorComponent::ProtectedSelect()
+void SkillActionBehaviorComponent::ProtectedExecute()
 {
   if(mSkill != nullptr)
   {
     mSkill->Select();
-    SkillSelectedFromMenu.Notify(*mSkill);
   }
 }

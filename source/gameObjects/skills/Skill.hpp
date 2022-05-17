@@ -19,10 +19,9 @@ namespace Barebones
       Skill(UrsineEngine::GameObject& aParent);
 
       /**
-       * A virtual function that gets called whenever this skill is selected
-       * for use, but before being executed.
+       * Selects this skill for use, but doesn't execute it.
        */
-      virtual void Select() {}
+      void Select();
 
       /**
        * Executes this skill.
@@ -32,6 +31,11 @@ namespace Barebones
        */
       void Execute(UrsineEngine::GameObject& aBoard,
                    const TileLocation& aLocation);
+
+      /**
+       * Cancels the usage of this skill.
+       */
+      void Cancel();
 
       /**
        * Enables or disables this skill. Disabled skills can't be used.
@@ -97,13 +101,32 @@ namespace Barebones
     protected:
 
       /**
+       * A virtual function that gets called during Select().
+       *
+       * This can be overridden to perform an action when the user selects
+       * this skill from a menu.
+       */
+      virtual void ProtectedSelect() {}
+
+      /**
        * A virtual function that gets called during Execute().
+       *
+       * This must be overridden to perform some action when the user
+       * chooses to execute this skill.
        *
        * @param aBoard The board to execute this skill on.
        * @param aLocation The location on the board to execute this skill.
        */
       virtual void ProtectedExecute(UrsineEngine::GameObject& aBoard,
                                     const TileLocation& aLocation) = 0;
+
+      /**
+       * A virtual function that gets called during Cancel().
+       *
+       * This can be overridden to perform an action when the user cancels
+       * the usage of this skill.
+       */
+      virtual void ProtectedCancel() {}
 
       /**
        * A virtual function that gets called during SetEnabled().

@@ -180,11 +180,11 @@ namespace Barebones
 
       /**
        * A handler function that gets called whenever a skill is selected
-       * for use from a menu.
+       * for use.
        *
        * @param aSkill The skill that was selected.
        */
-      void HandleSkillSelectedFromMenu(Skill& aSkill);
+      void HandleSkillSelected(Skill& aSkill);
 
       /**
        * A handler function that gets called whenever a skill is executed.

@@ -14,6 +14,13 @@ Skill::Skill(UrsineEngine::GameObject& aParent)
 }
 
 /******************************************************************************/
+void Skill::Select()
+{
+  ProtectedSelect();
+  SkillSelected.Notify(*this);
+}
+
+/******************************************************************************/
 void Skill::Execute(UrsineEngine::GameObject& aBoard,
                     const TileLocation& aLocation)
 {
@@ -23,6 +30,13 @@ void Skill::Execute(UrsineEngine::GameObject& aBoard,
                      aLocation);
     SkillExecuted.Notify(*this);
   }
+}
+
+/******************************************************************************/
+void Skill::Cancel()
+{
+  ProtectedCancel();
+  SkillCancelled.Notify(*this);
 }
 
 /******************************************************************************/
