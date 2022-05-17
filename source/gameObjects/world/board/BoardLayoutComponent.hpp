@@ -228,6 +228,8 @@ namespace Barebones
       Skill* mSkillUsedForHighlighting;
       std::vector<TileLocation> mHighlightedTileLocations;
 
+      double mHighlightIntensity;
+
       double mTileSpacing;
       int mColumns;
       int mRows;

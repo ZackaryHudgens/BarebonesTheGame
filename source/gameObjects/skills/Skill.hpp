@@ -19,6 +19,12 @@ namespace Barebones
       Skill(UrsineEngine::GameObject& aParent);
 
       /**
+       * A virtual function that gets called whenever this skill is selected
+       * for use, but before being executed.
+       */
+      virtual void Select() {}
+
+      /**
        * Executes this skill.
        *
        * @param aBoard The board to execute this skill on.

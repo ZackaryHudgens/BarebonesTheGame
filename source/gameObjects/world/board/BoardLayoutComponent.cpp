@@ -28,6 +28,7 @@ BoardLayoutComponent::BoardLayoutComponent()
   , mWaitingForMovingCharacter(false)
   , mHoveredTileLocation(0, 0)
   , mSkillUsedForHighlighting(nullptr)
+  , mHighlightIntensity(0.7)
   , mTileSpacing(0.2)
   , mColumns(7)
   , mRows(7)
@@ -183,7 +184,7 @@ bool BoardLayoutComponent::AddTileAtLocation(const TileType& aTileType,
           if(tileBehaviorComponent != nullptr)
           {
             tileBehaviorComponent->SetHighlightColor(BACKGROUND_COLOR);
-            tileBehaviorComponent->SetHighlightIntensity(0.4);
+            tileBehaviorComponent->SetHighlightIntensity(mHighlightIntensity);
           }
         }
 
@@ -499,7 +500,7 @@ void BoardLayoutComponent::HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& 
           if(newTileBehaviorComp != nullptr)
           {
             newTileBehaviorComp->SetHighlightColor(BACKGROUND_COLOR);
-            newTileBehaviorComp->SetHighlightIntensity(0.4);
+            newTileBehaviorComp->SetHighlightIntensity(mHighlightIntensity);
           }
 
           mHoveredTileLocation = location;
@@ -600,7 +601,7 @@ void BoardLayoutComponent::HandleSkillSelectedFromMenu(Skill& aSkill)
           if(tileLocation != mHoveredTileLocation)
           {
             tileBehaviorComponent->SetHighlightColor(LIGHT_COLOR);
-            tileBehaviorComponent->SetHighlightIntensity(0.4);
+            tileBehaviorComponent->SetHighlightIntensity(mHighlightIntensity);
           }
         }
       }

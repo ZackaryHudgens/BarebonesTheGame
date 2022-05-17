@@ -3,6 +3,8 @@
 
 #include "Skill.hpp"
 
+#include "MoveSkillEffectBehaviorComponent.hpp"
+
 namespace Barebones
 {
   class MoveSkill : public Skill
@@ -15,6 +17,12 @@ namespace Barebones
        * @param aParent The GameObject that owns this skill.
        */
       MoveSkill(UrsineEngine::GameObject& aParent);
+
+      /**
+       * A function that gets called whenever this skill is selected
+       * for use, but before being executed.
+       */
+      void Select() override;
 
       /**
        * Returns a vector of valid tile locations for executing this skill.
@@ -42,6 +50,10 @@ namespace Barebones
       void HandleEnabledChanged(bool aEnabled) override;
 
     private:
+      MoveSkillEffectBehaviorComponent* mSkillEffect;
+
+      TilePathList mShortestPaths;
+
       int mDistanceRemaining;
   };
 }

@@ -35,6 +35,7 @@ void SkillActionBehaviorComponent::ProtectedSelect()
 {
   if(mSkill != nullptr)
   {
+    mSkill->Select();
     SkillSelectedFromMenu.Notify(*mSkill);
   }
 }
