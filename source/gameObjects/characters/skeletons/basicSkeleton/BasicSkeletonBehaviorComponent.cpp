@@ -15,6 +15,7 @@ BasicSkeletonBehaviorComponent::BasicSkeletonBehaviorComponent()
 {
   SetName("Basic Skeleton");
   SetType(Type::eSKELETON);
+  SetSide(Side::ePLAYER);
   SetMaximumHealth(10);
   SetCurrentHealth(10);
   SetSpeed(4);

@@ -20,6 +20,7 @@ CorruptedFarmerBehaviorComponent::CorruptedFarmerBehaviorComponent()
 
   SetName("Corrupted Farmer");
   SetType(Type::eHUMAN);
+  SetSide(Side::eENEMY);
   SetMaximumHealth(5);
   SetCurrentHealth(5);
   SetSpeed(2);
