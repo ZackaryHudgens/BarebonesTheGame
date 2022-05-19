@@ -1,5 +1,7 @@
 #include "SkillMenuInputComponent.hpp"
 
+#include <GameObject.hpp>
+
 #include "MenuLayoutComponent.hpp"
 
 using Barebones::SkillMenuInputComponent;

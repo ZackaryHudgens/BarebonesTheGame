@@ -2,7 +2,8 @@
 #define MENULAYOUTCOMPONENT_HPP
 
 #include <Component.hpp>
-#include <GameObject.hpp>
+
+#include "MenuAction.hpp"
 
 namespace Barebones
 {
@@ -16,12 +17,19 @@ namespace Barebones
       MenuLayoutComponent();
 
       /**
-       * Adds an action to this menu by taking ownership of it and
-       * adding it as a child of the parent GameObject.
+       * Adds an action to this menu.
        *
-       * @param aObject A GameObject containing an ActionBehaviorComponent.
+       * @param aAction The action to add.
        */
-      void AddAction(std::unique_ptr<UrsineEngine::GameObject> aObject);
+      //void AddAction(const MenuAction& aAction);
+      void AddAction(std::unique_ptr<MenuAction> aAction);
+
+      /**
+       * Returns the actions in this menu.
+       *
+       * @return A vector of actions in this menu.
+       */
+      std::vector<MenuAction*> GetActions();
 
       /**
        * Hovers over the next action in the list.
@@ -59,22 +67,16 @@ namespace Barebones
       virtual void HandleActionExecuted() {}
 
       /**
-       * Returns the actions in this menu.
-       *
-       * @return A vector of actions in this menu.
-       */
-      std::vector<UrsineEngine::GameObject*> GetActions() { return mActions; }
-
-      /**
        * Returns the currently selected action.
        *
        * @return The currently selected action.
        */
-      UrsineEngine::GameObject* GetCurrentlyHoveredAction() { return mCurrentlyHoveredAction; }
+      MenuAction* GetCurrentlyHoveredAction() { return mCurrentlyHoveredAction; }
 
     private:
-      std::vector<UrsineEngine::GameObject*> mActions;
-      UrsineEngine::GameObject* mCurrentlyHoveredAction;
+      //std::vector<MenuAction> mActions;
+      std::vector<std::unique_ptr<MenuAction>> mActions;
+      MenuAction* mCurrentlyHoveredAction;
   };
 }
 

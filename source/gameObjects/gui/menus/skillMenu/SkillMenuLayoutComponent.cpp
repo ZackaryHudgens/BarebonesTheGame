@@ -6,8 +6,6 @@
 
 #include "Colors.hpp"
 
-#include "SkillActionBehaviorComponent.hpp"
-
 using Barebones::SkillMenuLayoutComponent;
 
 /******************************************************************************/
@@ -94,31 +92,23 @@ void SkillMenuLayoutComponent::HandleActionAdded()
 void SkillMenuLayoutComponent::HandleActionHovered()
 {
   auto action = GetCurrentlyHoveredAction();
-  if(action != nullptr)
+  if(action != nullptr &&
+     mSkillNameTextBox != nullptr &&
+     mSkillDescriptionTextBox != nullptr)
   {
-    auto skillAction = action->GetFirstComponentOfType<SkillActionBehaviorComponent>();
-    if(skillAction != nullptr)
-    {
-      auto skill = skillAction->GetSkill();
-      if(skill != nullptr &&
-         mSkillNameTextBox != nullptr &&
-         mSkillDescriptionTextBox != nullptr)
-      {
-        mSkillNameTextBox->SetText(skill->GetName());
-        mSkillDescriptionTextBox->SetText(skill->GetDescription());
+    mSkillNameTextBox->SetText(action->GetName());
+    mSkillDescriptionTextBox->SetText(action->GetDescription());
 
-        // If the action is disabled, change the text color.
-        if(!skillAction->IsEnabled())
-        {
-          mSkillNameTextBox->SetTextColor(glm::vec4(DARK_COLOR, 1.0));
-          mSkillDescriptionTextBox->SetTextColor(glm::vec4(DARK_COLOR, 1.0));
-        }
-        else
-        {
-          mSkillNameTextBox->SetTextColor(glm::vec4(BACKGROUND_COLOR, 1.0));
-          mSkillDescriptionTextBox->SetTextColor(glm::vec4(BACKGROUND_COLOR, 1.0));
-        }
-      }
+    // If the action is disabled, change the text color.
+    if(!action->IsEnabled())
+    {
+      mSkillNameTextBox->SetTextColor(glm::vec4(DARK_COLOR, 1.0));
+      mSkillDescriptionTextBox->SetTextColor(glm::vec4(DARK_COLOR, 1.0));
+    }
+    else
+    {
+      mSkillNameTextBox->SetTextColor(glm::vec4(BACKGROUND_COLOR, 1.0));
+      mSkillDescriptionTextBox->SetTextColor(glm::vec4(BACKGROUND_COLOR, 1.0));
     }
   }
 }

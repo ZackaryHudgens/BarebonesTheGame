@@ -3,10 +3,11 @@
 
 #include <Component.hpp>
 
-#include "HumanPlayerInputState.hpp"
 #include "InputComponent.hpp"
 
-#include "SkillActionBehaviorComponent.hpp"
+#include "HumanPlayerInputState.hpp"
+
+#include "Skill.hpp"
 
 namespace Barebones
 {

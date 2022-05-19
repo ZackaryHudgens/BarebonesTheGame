@@ -2,8 +2,6 @@
 
 #include <algorithm>
 
-#include "ActionBehaviorComponent.hpp"
-
 using Barebones::MenuLayoutComponent;
 
 /******************************************************************************/
@@ -13,66 +11,38 @@ MenuLayoutComponent::MenuLayoutComponent()
 }
 
 /******************************************************************************/
-void MenuLayoutComponent::AddAction(std::unique_ptr<UrsineEngine::GameObject> aObject)
+void MenuLayoutComponent::AddAction(std::unique_ptr<MenuAction> aAction)
 {
-  auto parent = GetParent();
-  if(parent != nullptr)
+  mActions.emplace_back(std::move(aAction));
+  HandleActionAdded();
+
+  // If no action is currently hovered over, hover over this one.
+  if(mCurrentlyHoveredAction == nullptr)
   {
-    parent->AddChild(std::move(aObject));
-    mActions.emplace_back(parent->GetChildren().back());
-
-    HandleActionAdded();
-
-    // If no action is currently hovered over, hover over this one.
-    if(mCurrentlyHoveredAction == nullptr)
-    {
-      mCurrentlyHoveredAction = parent->GetChildren().back();
-      auto behaviorComp = mCurrentlyHoveredAction->GetFirstComponentOfType<ActionBehaviorComponent>();
-      if(behaviorComp != nullptr)
-      {
-        behaviorComp->SetHovered(true);
-      }
-
-      HandleActionHovered();
-    }
+    mCurrentlyHoveredAction = mActions.back().get();
+    HandleActionHovered();
   }
 }
 
 /******************************************************************************/
 void MenuLayoutComponent::HoverOverNextAction()
 {
-  // Un-hover the currently selected action.
-  if(mCurrentlyHoveredAction != nullptr)
-  {
-    auto behaviorComp = mCurrentlyHoveredAction->GetFirstComponentOfType<ActionBehaviorComponent>();
-    if(behaviorComp != nullptr)
-    {
-      behaviorComp->SetHovered(false);
-    }
-  }
-
-  auto currentAction = std::find(mActions.begin(),
-                                 mActions.end(),
+  auto actions = GetActions();
+  auto currentAction = std::find(actions.begin(),
+                                 actions.end(),
                                  mCurrentlyHoveredAction);
-  if(currentAction != mActions.end())
+  if(currentAction != actions.end())
   {
     // If the current action is the last action, then loop around and hover
     // over the first action. Otherwise, hover over the next action.
     auto nextAction = std::next(currentAction);
-    if(nextAction == mActions.end())
+    if(nextAction == actions.end())
     {
-      mCurrentlyHoveredAction = mActions.front();
+      mCurrentlyHoveredAction = actions.front();
     }
     else
     {
       mCurrentlyHoveredAction = (*nextAction);
-    }
-
-    // Set the hovered property of the action.
-    auto behaviorComp = mCurrentlyHoveredAction->GetFirstComponentOfType<ActionBehaviorComponent>();
-    if(behaviorComp != nullptr)
-    {
-      behaviorComp->SetHovered(true);
     }
 
     HandleActionHovered();
@@ -82,35 +52,22 @@ void MenuLayoutComponent::HoverOverNextAction()
 /******************************************************************************/
 void MenuLayoutComponent::HoverOverPreviousAction()
 {
-  // Un-hover the currently selected action.
-  if(mCurrentlyHoveredAction != nullptr)
-  {
-    auto behaviorComp = mCurrentlyHoveredAction->GetFirstComponentOfType<ActionBehaviorComponent>();
-    if(behaviorComp != nullptr)
-    {
-      behaviorComp->SetHovered(false);
-    }
-  }
-
-  auto currentAction = std::find(mActions.begin(),
-                                 mActions.end(),
+  auto actions = GetActions();
+  auto currentAction = std::find(actions.begin(),
+                                 actions.end(),
                                  mCurrentlyHoveredAction);
-  if(currentAction != mActions.end())
+  if(currentAction != actions.end())
   {
-    if(currentAction == mActions.begin())
+    // If the current action is the first action, then loop around and hover
+    // over the last action. Otherwise, hover over the previous action.
+    auto prevAction = std::prev(currentAction);
+    if(prevAction == actions.begin())
     {
-      mCurrentlyHoveredAction = (*std::prev(mActions.end()));
+      mCurrentlyHoveredAction = actions.back();
     }
     else
     {
-      mCurrentlyHoveredAction = (*std::prev(currentAction));
-    }
-
-    // Set the hovered property of the action.
-    auto behaviorComp = mCurrentlyHoveredAction->GetFirstComponentOfType<ActionBehaviorComponent>();
-    if(behaviorComp != nullptr)
-    {
-      behaviorComp->SetHovered(true);
+      mCurrentlyHoveredAction = (*prevAction);
     }
 
     HandleActionHovered();
@@ -122,15 +79,20 @@ void MenuLayoutComponent::ExecuteCurrentAction()
 {
   if(mCurrentlyHoveredAction != nullptr)
   {
-    auto actionBehaviorComp = mCurrentlyHoveredAction->GetFirstComponentOfType<ActionBehaviorComponent>();
-    if(actionBehaviorComp != nullptr)
-    {
-      if(actionBehaviorComp->IsEnabled())
-      {
-        actionBehaviorComp->Execute();
-
-        HandleActionExecuted();
-      }
-    }
+    mCurrentlyHoveredAction->Execute();
+    HandleActionExecuted();
   }
+}
+
+/******************************************************************************/
+std::vector<Barebones::MenuAction*> MenuLayoutComponent::GetActions()
+{
+  std::vector<MenuAction*> actions;
+
+  for(auto& action : mActions)
+  {
+    actions.emplace_back(action.get());
+  }
+
+  return actions;
 }

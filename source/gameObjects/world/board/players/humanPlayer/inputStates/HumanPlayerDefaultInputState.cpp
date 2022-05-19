@@ -6,10 +6,8 @@
 
 #include "BoardLayoutComponent.hpp"
 
-#include "ActionFactory.hpp"
 #include "MenuFactory.hpp"
 #include "MenuLayoutComponent.hpp"
-#include "SkillActionBehaviorComponent.hpp"
 
 #include "CharacterBehaviorComponent.hpp"
 #include "Skill.hpp"
@@ -190,39 +188,40 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
 }
 
 /******************************************************************************/
-void HumanPlayerDefaultInputState::CreateSkillMenu(UrsineEngine::GameObject& aObject)
+void HumanPlayerDefaultInputState::CreateSkillMenu(UrsineEngine::GameObject& aCharacter)
 {
-  auto boardObject = GetBoard();
-  auto characterBehaviorComponent = aObject.GetFirstComponentOfType<CharacterBehaviorComponent>();
-  if(boardObject != nullptr &&
-     characterBehaviorComponent != nullptr)
+  auto characterBehaviorComponent = aCharacter.GetFirstComponentOfType<CharacterBehaviorComponent>();
+  if(characterBehaviorComponent != nullptr)
   {
     auto skills = characterBehaviorComponent->GetSkills();
     if(!skills.empty())
     {
       // Create a new menu object.
-      auto menu = MenuFactory::CreateMenu(MenuType::eSKILL,
-                                          "skillMenu");
-      auto menuLayout = menu->GetFirstComponentOfType<MenuLayoutComponent>();
-      if(menuLayout != nullptr)
+      auto menu = MenuFactory::CreateMenu(MenuType::eSKILL, "skillMenu");
+      auto menuLayoutComponent = menu->GetFirstComponentOfType<MenuLayoutComponent>();
+      if(menuLayoutComponent != nullptr)
       {
-        // Add each of this character's skills to the menu.
-        for(auto& skill : skills)
+        // For each skill, create an action that selects it on execution.
+        for(const auto& skill : skills)
         {
-          auto action = ActionFactory::CreateAction(ActionType::eSKILL,
-                                                    skill->GetName());
-          auto skillAction = action->GetFirstComponentOfType<SkillActionBehaviorComponent>();
+          auto skillAction = std::make_unique<MenuAction>(skill->GetName(), skill->GetDescription());
 
           // If the skill is disabled, or if it doesn't have any valid
           // tiles, disable the action before adding it to the menu.
-          if(!skill->IsEnabled() ||
-             skill->GetValidTiles(*boardObject).empty())
+          auto boardObject = GetBoard();
+          if(boardObject != nullptr)
           {
-            skillAction->SetEnabled(false);
+            if(!skill->IsEnabled() ||
+               skill->GetValidTiles(*boardObject).empty())
+            {
+              skillAction->SetEnabled(false);
+            }
           }
 
-          skillAction->SetSkill(*skill);
-          menuLayout->AddAction(std::move(action));
+          menuLayoutComponent->AddAction(std::move(skillAction));
+
+          auto selectSkill = [skill]() { skill->Select(); };
+          menuLayoutComponent->GetActions().back()->SetFunction(selectSkill);
         }
       }
 
@@ -241,26 +240,39 @@ void HumanPlayerDefaultInputState::CreateSkillMenu(UrsineEngine::GameObject& aOb
 }
 
 /******************************************************************************/
-void HumanPlayerDefaultInputState::CreateSpellMenu(UrsineEngine::GameObject& aObject)
+void HumanPlayerDefaultInputState::CreateSpellMenu(UrsineEngine::GameObject& aPlayer)
 {
-  auto humanPlayerBehaviorComponent = aObject.GetFirstComponentOfType<HumanPlayerBehaviorComponent>();
+/*  auto humanPlayerBehaviorComponent = aPlayer.GetFirstComponentOfType<HumanPlayerBehaviorComponent>();
   if(humanPlayerBehaviorComponent != nullptr)
   {
     auto spells = humanPlayerBehaviorComponent->GetSpells();
     if(!spells.empty())
     {
+      // Create a new menu object.
       auto menu = MenuFactory::CreateMenu(MenuType::eSPELL, "spellMenu");
-      auto menuLayout = menu->GetFirstComponentOfType<MenuLayoutComponent>();
-      if(menuLayout != nullptr)
+      auto menuLayoutComponent = menu->GetFirstComponentOfType<MenuLayoutComponent>();
+      if(menuLayoutComponent != nullptr)
       {
-        // Add each of this character's skills to the menu.
-        for(auto& spell : spells)
+        // For each skill, create an action that selects it on execution.
+        for(const auto& spell : spells)
         {
-          auto action = ActionFactory::CreateAction(ActionType::eSKILL,
-                                                    spell->GetName());
-          auto skillAction = action->GetFirstComponentOfType<SkillActionBehaviorComponent>();
-          skillAction->SetSkill(*spell);
-          menuLayout->AddAction(std::move(action));
+          auto selectSpell = [&spell]() { spell->Select(); };
+          MenuAction spellAction(spell->GetName(), spell->GetDescription());
+          spellAction.SetFunction(selectSpell);
+
+          // If the skill is disabled, or if it doesn't have any valid
+          // tiles, disable the action before adding it to the menu.
+          auto boardObject = GetBoard();
+          if(boardObject != nullptr)
+          {
+            if(!spell->IsEnabled() ||
+               spell->GetValidTiles(*boardObject).empty())
+            {
+              spellAction.SetEnabled(false);
+            }
+          }
+
+          menuLayoutComponent->AddAction(spellAction);
         }
       }
 
@@ -275,5 +287,5 @@ void HumanPlayerDefaultInputState::CreateSpellMenu(UrsineEngine::GameObject& aOb
         }
       }
     }
-  }
+  }*/
 }

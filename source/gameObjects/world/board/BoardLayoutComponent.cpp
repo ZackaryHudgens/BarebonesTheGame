@@ -15,8 +15,6 @@
 
 #include "TileBehaviorComponent.hpp"
 
-#include "SkillActionBehaviorComponent.hpp"
-
 #include <iostream>
 
 using Barebones::BoardLayoutComponent;

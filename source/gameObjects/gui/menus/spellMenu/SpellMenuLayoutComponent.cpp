@@ -5,10 +5,6 @@
 #include <Environment.hpp>
 #include <GameObject.hpp>
 
-#include "SkillActionBehaviorComponent.hpp"
-
-#include <iostream>
-
 using Barebones::SpellMenuLayoutComponent;
 
 /******************************************************************************/
@@ -143,21 +139,12 @@ void SpellMenuLayoutComponent::HandleActionAdded()
 void SpellMenuLayoutComponent::HandleActionHovered()
 {
   auto action = GetCurrentlyHoveredAction();
-  if(action != nullptr)
+  if(action != nullptr &&
+     mSpellNameTextBox != nullptr &&
+     mSpellDescriptionTextBox != nullptr)
   {
-    // Update the spell name and description.
-    auto skillAction = action->GetFirstComponentOfType<SkillActionBehaviorComponent>();
-    if(skillAction != nullptr)
-    {
-      auto skill = skillAction->GetSkill();
-      if(skill != nullptr &&
-         mSpellNameTextBox != nullptr &&
-         mSpellDescriptionTextBox != nullptr)
-      {
-        mSpellNameTextBox->SetText(skill->GetName());
-        mSpellDescriptionTextBox->SetText(skill->GetDescription());
-      }
-    }
+    mSpellNameTextBox->SetText(action->GetName());
+    mSpellDescriptionTextBox->SetText(action->GetDescription());
 
     // Update the sprite based on the position of the current action
     // in the action list.
