@@ -2,6 +2,7 @@
 
 #include "BoardFactory.hpp"
 #include "CharacterFactory.hpp"
+#include "MenuFactory.hpp"
 #include "PlayerFactory.hpp"
 
 #include "BoardLayoutComponent.hpp"
@@ -31,6 +32,9 @@ std::unique_ptr<UrsineEngine::Scene> SceneFactory::CreateScene(const SceneType& 
   {
     case SceneType::eMAIN_MENU:
     {
+      // Create the main menu.
+      auto menu = MenuFactory::CreateMenu(MenuType::eMAIN, "mainMenu");
+      newScene->AddObject(std::move(menu));
       break;
     }
     case SceneType::eBOARD:

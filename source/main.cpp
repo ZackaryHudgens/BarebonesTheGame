@@ -16,7 +16,7 @@ int main()
   UrsineEngine::TextComponent::LoadFont("resources/alagard.ttf");
 
   env.Initialize(options);
-  env.LoadScene(Barebones::SceneFactory::CreateScene(Barebones::SceneType::eBOARD));
+  env.LoadScene(Barebones::SceneFactory::CreateScene(Barebones::SceneType::eMAIN_MENU));
   env.Run();
 
   return 0;

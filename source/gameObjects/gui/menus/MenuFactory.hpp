@@ -7,8 +7,9 @@ namespace Barebones
 {
   enum class MenuType
   {
+    eMAIN,
     eSKILL,
-    eSPELL
+    eSPELL,
   };
 
   class MenuFactory

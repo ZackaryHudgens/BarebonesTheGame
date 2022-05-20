@@ -21,7 +21,6 @@ namespace Barebones
        *
        * @param aAction The action to add.
        */
-      //void AddAction(const MenuAction& aAction);
       void AddAction(std::unique_ptr<MenuAction> aAction);
 
       /**
@@ -74,7 +73,6 @@ namespace Barebones
       MenuAction* GetCurrentlyHoveredAction() { return mCurrentlyHoveredAction; }
 
     private:
-      //std::vector<MenuAction> mActions;
       std::vector<std::unique_ptr<MenuAction>> mActions;
       MenuAction* mCurrentlyHoveredAction;
   };
