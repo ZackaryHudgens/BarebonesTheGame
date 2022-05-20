@@ -3,6 +3,8 @@
 
 #include "HumanPlayerInputState.hpp"
 
+#include "Skill.hpp"
+
 namespace Barebones
 {
   class HumanPlayerDefaultInputState : public HumanPlayerInputState
@@ -43,20 +45,14 @@ namespace Barebones
     private:
 
       /**
-       * Creates a skill menu for a given character and adds it to the
-       * current scene.
+       * Populates a given menu GameObject with an action for each skill
+       * in the given list of skills.
        *
-       * @param aCharacter The character in question.
+       * @param aMenu The menu to populate.
+       * @param aSkills A list of skills to create actions for.
        */
-      void CreateSkillMenu(UrsineEngine::GameObject& aCharacter);
-
-      /**
-       * Creates a spell menu for the current player and adds it to the
-       * current scene.
-       *
-       * @param aPlayer The player GameObject.
-       */
-      void CreateSpellMenu(UrsineEngine::GameObject& aPlayer);
+      void PopulateSkillMenu(UrsineEngine::GameObject& aMenu,
+                             const std::vector<Skill*>& aSkills);
   };
 }
 

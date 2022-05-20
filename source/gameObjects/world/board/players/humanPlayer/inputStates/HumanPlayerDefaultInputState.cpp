@@ -14,8 +14,6 @@
 
 #include "Signals.hpp"
 
-#include <iostream>
-
 using Barebones::HumanPlayerDefaultInputState;
 
 /******************************************************************************/
@@ -103,7 +101,21 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
         }
         case UrsineEngine::KeyCode::eKEY_Q:
         {
-          CreateSpellMenu(*player);
+          // Create a spell menu and populate it with each spell the player has.
+          auto spellMenu = MenuFactory::CreateMenu(MenuType::eSPELL, "spellMenu");
+          auto spells = playerBehaviorComponent->GetSpells();
+          PopulateSkillMenu(*spellMenu.get(), spells);
+
+          // Add the menu to the foreground of the current scene.
+          auto scene = env.GetCurrentScene();
+          if(scene != nullptr)
+          {
+            auto foreground = scene->GetForeground();
+            if(foreground != nullptr)
+            {
+              foreground->AddChild(std::move(spellMenu));
+            }
+          }
           break;
         }
         case UrsineEngine::KeyCode::eKEY_Z:
@@ -127,9 +139,23 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
             auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
             if(characterBehaviorComponent != nullptr)
             {
+              // Only create a menu if the character is on the player's side.
               if(characterBehaviorComponent->GetSide() == playerBehaviorComponent->GetSide())
               {
-                CreateSkillMenu(*character);
+                auto skillMenu = MenuFactory::CreateMenu(MenuType::eSKILL, "skillMenu");
+                auto skills = characterBehaviorComponent->GetSkills();
+                PopulateSkillMenu(*skillMenu.get(), skills);
+
+                // Add the menu to the foreground of the current scene.
+                auto scene = env.GetCurrentScene();
+                if(scene != nullptr)
+                {
+                  auto foreground = scene->GetForeground();
+                  if(foreground != nullptr)
+                  {
+                    foreground->AddChild(std::move(skillMenu));
+                  }
+                }
               }
             }
           }
@@ -188,104 +214,34 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
 }
 
 /******************************************************************************/
-void HumanPlayerDefaultInputState::CreateSkillMenu(UrsineEngine::GameObject& aCharacter)
+void HumanPlayerDefaultInputState::PopulateSkillMenu(UrsineEngine::GameObject& aMenu,
+                                                     const std::vector<Skill*>& aSkills)
 {
-  auto characterBehaviorComponent = aCharacter.GetFirstComponentOfType<CharacterBehaviorComponent>();
-  if(characterBehaviorComponent != nullptr)
+  auto menuLayoutComponent = aMenu.GetFirstComponentOfType<MenuLayoutComponent>();
+  if(menuLayoutComponent != nullptr)
   {
-    auto skills = characterBehaviorComponent->GetSkills();
-    if(!skills.empty())
+    // For each skill, create an action that selects it on execution.
+    for(const auto& skill : aSkills)
     {
-      // Create a new menu object.
-      auto menu = MenuFactory::CreateMenu(MenuType::eSKILL, "skillMenu");
-      auto menuLayoutComponent = menu->GetFirstComponentOfType<MenuLayoutComponent>();
-      if(menuLayoutComponent != nullptr)
+      auto skillAction = std::make_unique<MenuAction>(skill->GetName(),
+                                                      skill->GetDescription());
+      auto selectSkill = [skill]() { skill->Select(); };
+      skillAction->SetFunction(selectSkill);
+
+      // If the skill is disabled, or if it doesn't have any valid
+      // tiles, disable the action before adding it to the menu.
+      auto boardObject = GetBoard();
+      if(boardObject != nullptr)
       {
-        // For each skill, create an action that selects it on execution.
-        for(const auto& skill : skills)
+        if(!skill->IsEnabled() ||
+           skill->GetValidTiles(*boardObject).empty())
         {
-          auto skillAction = std::make_unique<MenuAction>(skill->GetName(), skill->GetDescription());
-
-          // If the skill is disabled, or if it doesn't have any valid
-          // tiles, disable the action before adding it to the menu.
-          auto boardObject = GetBoard();
-          if(boardObject != nullptr)
-          {
-            if(!skill->IsEnabled() ||
-               skill->GetValidTiles(*boardObject).empty())
-            {
-              skillAction->SetEnabled(false);
-            }
-          }
-
-          menuLayoutComponent->AddAction(std::move(skillAction));
-
-          auto selectSkill = [skill]() { skill->Select(); };
-          menuLayoutComponent->GetActions().back()->SetFunction(selectSkill);
+          skillAction->SetEnabled(false);
         }
       }
 
-      // Add the new menu to the foreground of the current scene.
-      auto scene = env.GetCurrentScene();
-      if(scene != nullptr)
-      {
-        auto foreground = scene->GetForeground();
-        if(foreground != nullptr)
-        {
-          foreground->AddChild(std::move(menu));
-        }
-      }
+      menuLayoutComponent->AddAction(std::move(skillAction));
     }
   }
 }
 
-/******************************************************************************/
-void HumanPlayerDefaultInputState::CreateSpellMenu(UrsineEngine::GameObject& aPlayer)
-{
-/*  auto humanPlayerBehaviorComponent = aPlayer.GetFirstComponentOfType<HumanPlayerBehaviorComponent>();
-  if(humanPlayerBehaviorComponent != nullptr)
-  {
-    auto spells = humanPlayerBehaviorComponent->GetSpells();
-    if(!spells.empty())
-    {
-      // Create a new menu object.
-      auto menu = MenuFactory::CreateMenu(MenuType::eSPELL, "spellMenu");
-      auto menuLayoutComponent = menu->GetFirstComponentOfType<MenuLayoutComponent>();
-      if(menuLayoutComponent != nullptr)
-      {
-        // For each skill, create an action that selects it on execution.
-        for(const auto& spell : spells)
-        {
-          auto selectSpell = [&spell]() { spell->Select(); };
-          MenuAction spellAction(spell->GetName(), spell->GetDescription());
-          spellAction.SetFunction(selectSpell);
-
-          // If the skill is disabled, or if it doesn't have any valid
-          // tiles, disable the action before adding it to the menu.
-          auto boardObject = GetBoard();
-          if(boardObject != nullptr)
-          {
-            if(!spell->IsEnabled() ||
-               spell->GetValidTiles(*boardObject).empty())
-            {
-              spellAction.SetEnabled(false);
-            }
-          }
-
-          menuLayoutComponent->AddAction(spellAction);
-        }
-      }
-
-      // Add the new menu to the foreground of the current scene.
-      auto scene = env.GetCurrentScene();
-      if(scene != nullptr)
-      {
-        auto foreground = scene->GetForeground();
-        if(foreground != nullptr)
-        {
-          foreground->AddChild(std::move(menu));
-        }
-      }
-    }
-  }*/
-}
