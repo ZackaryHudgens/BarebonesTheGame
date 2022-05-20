@@ -37,34 +37,29 @@ Barebones::TileList MoveSkill::GetValidTiles(UrsineEngine::GameObject& aBoard)
 {
   TileList tiles;
 
-  auto parent = GetParent();
-  auto characterBehaviorComponent = parent->GetFirstComponentOfType<CharacterBehaviorComponent>();
-  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
-  if(characterBehaviorComponent != nullptr &&
-     boardLayoutComponent != nullptr)
+  // If the shortest path list hasn't been generated in ProtectedSelect(),
+  // generate it here.
+  if(mShortestPaths.empty())
   {
-    auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
-
-    if(mShortestPaths.empty())
+    auto parent = GetParent();
+    auto characterBehaviorComponent = parent->GetFirstComponentOfType<CharacterBehaviorComponent>();
+    auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
+    if(characterBehaviorComponent != nullptr &&
+       boardLayoutComponent != nullptr)
     {
+      auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
       mShortestPaths = characterBehaviorComponent->GenerateShortestPathList(aBoard, characterLocation);
     }
+  }
 
-    for(const auto& shortestPath : mShortestPaths)
+  for(const auto& shortestPath : mShortestPaths)
+  {
+    if(shortestPath.second <= mDistanceRemaining)
     {
-      if(shortestPath.second <= mDistanceRemaining)
+      for(const auto& tile : shortestPath.first)
       {
-        for(const auto& tile : shortestPath.first)
-        {
-          tiles.emplace_back(tile);
-        }
+        tiles.emplace_back(tile);
       }
-    }
-
-    if(mSkillEffect != nullptr)
-    {
-      mSkillEffect->SetBoard(aBoard);
-      mSkillEffect->SetShortestPathList(mShortestPaths);
     }
   }
 
@@ -72,8 +67,21 @@ Barebones::TileList MoveSkill::GetValidTiles(UrsineEngine::GameObject& aBoard)
 }
 
 /******************************************************************************/
-void MoveSkill::ProtectedSelect()
+void MoveSkill::ProtectedSelect(UrsineEngine::GameObject& aBoard)
 {
+  // Generate a list of shortest paths on this board for the parent character.
+  auto parent = GetParent();
+  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
+  if(parent != nullptr)
+  {
+    auto characterBehaviorComponent = parent->GetFirstComponentOfType<CharacterBehaviorComponent>();
+    if(characterBehaviorComponent != nullptr)
+    {
+      auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
+      mShortestPaths = characterBehaviorComponent->GenerateShortestPathList(aBoard, characterLocation);
+    }
+  }
+
   // Create a MoveSkillEffectBehaviorComponent and add it to a GameObject,
   // then add the GameObject to the scene. This component will highlight
   // tiles as the user moves around, to show a preview of each shortest
@@ -86,6 +94,8 @@ void MoveSkill::ProtectedSelect()
     scene->AddObject(std::move(skillEffectObject));
 
     mSkillEffect = scene->GetObjects().back()->GetFirstComponentOfType<MoveSkillEffectBehaviorComponent>();
+    mSkillEffect->SetBoard(aBoard);
+    mSkillEffect->SetShortestPathList(mShortestPaths);
   }
 }
 
@@ -101,6 +111,13 @@ void MoveSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
   {
     auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
 
+    // If the shortest path list hasn't been generated in ProtectedSelect(),
+    // generate it here.
+    if(mShortestPaths.empty())
+    {
+      mShortestPaths = characterBehaviorComponent->GenerateShortestPathList(aBoard, characterLocation);
+    }
+
     // Returns true if aLocation is the last TileLocation in the TileList.
     auto isPath = [&aLocation](const TilePath& aPath)
     {
@@ -114,12 +131,7 @@ void MoveSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
       return success;
     };
 
-    // Find the shortest path to aLocation, then move the character along it.
-    if(mShortestPaths.empty())
-    {
-      mShortestPaths = characterBehaviorComponent->GenerateShortestPathList(aBoard, characterLocation);
-    }
-
+    // Find the path in mShortestPaths that ends in aLocation.
     auto path = std::find_if(mShortestPaths.begin(),
                              mShortestPaths.end(),
                              isPath);
@@ -128,8 +140,8 @@ void MoveSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
       boardLayoutComponent->MoveCharacterAlongPath(characterLocation,
                                                    path->first);
 
-      // After moving the character, the shortest path list will need to be
-      // regenerated on the next Execute().
+      // After moving the character, the board state has changed,
+      // so the shortest paths are no longer valid.
       mShortestPaths.clear();
 
       // Subtract the shortest distance from the distance remaining. If no distance
@@ -140,6 +152,7 @@ void MoveSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
         SetEnabled(false);
       }
 
+      // Update the description.
       std::stringstream description;
       description << "Moves the character.";
       description << " (" << mDistanceRemaining << " tiles remaining)";
@@ -162,6 +175,8 @@ void MoveSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
 /******************************************************************************/
 void MoveSkill::ProtectedCancel()
 {
+  mShortestPaths.clear();
+
   // Schedule the effect object for deletion.
   if(mSkillEffect != nullptr)
   {

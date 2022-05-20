@@ -14,9 +14,9 @@ Skill::Skill(UrsineEngine::GameObject& aParent)
 }
 
 /******************************************************************************/
-void Skill::Select()
+void Skill::Select(UrsineEngine::GameObject& aBoard)
 {
-  ProtectedSelect();
+  ProtectedSelect(aBoard);
   SkillSelected.Notify(*this);
 }
 

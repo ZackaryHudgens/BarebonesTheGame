@@ -54,6 +54,8 @@ void CorruptedFarmerBehaviorComponent::TakeTurn(UrsineEngine::GameObject& aBoard
         }
         else
         {
+          moveSkill->Cancel();
+
           // Check if we can use our pitchfork.
           auto pitchforkSkill = GetSkill("Pitchfork");
           if(pitchforkSkill != nullptr)

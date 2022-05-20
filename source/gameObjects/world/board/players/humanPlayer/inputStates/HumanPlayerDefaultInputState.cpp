@@ -217,27 +217,25 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
 void HumanPlayerDefaultInputState::PopulateSkillMenu(UrsineEngine::GameObject& aMenu,
                                                      const std::vector<Skill*>& aSkills)
 {
+  auto boardObject = GetBoard();
   auto menuLayoutComponent = aMenu.GetFirstComponentOfType<MenuLayoutComponent>();
-  if(menuLayoutComponent != nullptr)
+  if(boardObject != nullptr &&
+     menuLayoutComponent != nullptr)
   {
     // For each skill, create an action that selects it on execution.
     for(const auto& skill : aSkills)
     {
       auto skillAction = std::make_unique<MenuAction>(skill->GetName(),
                                                       skill->GetDescription());
-      auto selectSkill = [skill]() { skill->Select(); };
+      auto selectSkill = [skill, boardObject]() { skill->Select(*boardObject); };
       skillAction->SetFunction(selectSkill);
 
       // If the skill is disabled, or if it doesn't have any valid
       // tiles, disable the action before adding it to the menu.
-      auto boardObject = GetBoard();
-      if(boardObject != nullptr)
+      if(!skill->IsEnabled() ||
+         skill->GetValidTiles(*boardObject).empty())
       {
-        if(!skill->IsEnabled() ||
-           skill->GetValidTiles(*boardObject).empty())
-        {
-          skillAction->SetEnabled(false);
-        }
+        skillAction->SetEnabled(false);
       }
 
       menuLayoutComponent->AddAction(std::move(skillAction));

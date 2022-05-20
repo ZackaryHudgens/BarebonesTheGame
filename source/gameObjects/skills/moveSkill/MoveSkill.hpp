@@ -29,8 +29,10 @@ namespace Barebones
 
       /**
        * Selects this skill for use.
+       *
+       * @param aBoard The board to execute this skill on in the future.
        */
-      void ProtectedSelect() override;
+      void ProtectedSelect(UrsineEngine::GameObject& aBoard) override;
 
       /**
        * Executes this skill.

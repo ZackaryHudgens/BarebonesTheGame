@@ -20,8 +20,10 @@ namespace Barebones
 
       /**
        * Selects this skill for use, but doesn't execute it.
+       *
+       * @param aBoard The board to execute this skill on in the future.
        */
-      void Select();
+      void Select(UrsineEngine::GameObject& aBoard);
 
       /**
        * Executes this skill.
@@ -105,8 +107,10 @@ namespace Barebones
        *
        * This can be overridden to perform an action when the user selects
        * this skill from a menu.
+       *
+       * @param aBoard The board to execute this skill on in the future.
        */
-      virtual void ProtectedSelect() {}
+      virtual void ProtectedSelect(UrsineEngine::GameObject& aBoard) {}
 
       /**
        * A virtual function that gets called during Execute().
