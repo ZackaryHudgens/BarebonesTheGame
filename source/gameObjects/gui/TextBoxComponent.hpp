@@ -38,6 +38,13 @@ namespace Barebones
       void SetText(const std::string& aText);
 
       /**
+       * Returns the text on display.
+       *
+       * @return The text on display.
+       */
+      std::string GetText() const;
+
+      /**
        * Sets the font for the text. If no font with the given family/style
        * combination has been loaded, this function fails.
        *
@@ -88,12 +95,26 @@ namespace Barebones
       void SetWidth(int aWidth);
 
       /**
+       * Returns the width of this text box.
+       *
+       * @return The width of this text box.
+       */
+      int GetWidth() const { return mWidth; }
+
+      /**
        * Sets the height (in pixels) of the background mesh. Note that
        * unless the height is fixed, this may change to fit text.
        *
        * @param aHeight The new height (in pixels) of the background mesh.
        */
       void SetHeight(int aHeight);
+
+      /**
+       * Returns the height of this text box.
+       *
+       * @return The height of this text box.
+       */
+      int GetHeight() const { return mHeight; }
 
       /**
        * Sets the fixed width property of this text box. If the width is

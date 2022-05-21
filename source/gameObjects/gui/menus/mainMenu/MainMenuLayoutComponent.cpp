@@ -2,6 +2,7 @@
 
 #include <Environment.hpp>
 #include <GameObject.hpp>
+#include <MeshComponent.hpp>
 
 #include "Colors.hpp"
 
@@ -21,9 +22,41 @@ void MainMenuLayoutComponent::HandleActionAdded()
   auto parent = GetParent();
   if(parent != nullptr)
   {
-    auto newAction = GetActions().back();
+    // Create a mesh for the background.
+    auto backgroundMesh = std::make_unique<UrsineEngine::MeshComponent>();
+    backgroundMesh->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
+    
+    double overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
+    double overlayHeight = env.GetGraphicsOptions().mOverlayHeight;
+
+    backgroundMesh->AddIndex(0);
+    backgroundMesh->AddIndex(1);
+    backgroundMesh->AddIndex(3);
+    backgroundMesh->AddIndex(3);
+    backgroundMesh->AddIndex(1);
+    backgroundMesh->AddIndex(2);
+
+    UrsineEngine::MeshVertex vertex;
+    vertex.mColor = LIGHT_COLOR;
+    vertex.mPosition = glm::vec3(0.0, 0.0, 0.0);
+    backgroundMesh->AddVertex(vertex);
+    vertex.mPosition = glm::vec3(overlayWidth, 0.0, 0.0);
+    backgroundMesh->AddVertex(vertex);
+    vertex.mPosition = glm::vec3(overlayWidth, overlayHeight, 0.0);
+    backgroundMesh->AddVertex(vertex);
+    vertex.mPosition = glm::vec3(0.0, overlayHeight, 0.0);
+    backgroundMesh->AddVertex(vertex);
+
+    std::string vertexShader = "resources/shaders/UntexturedMeshShader.vert";
+    std::string fragmentShader = "resources/shaders/UntexturedMeshShader.frag";
+    UrsineEngine::Shader shader(vertexShader, fragmentShader);
+    backgroundMesh->AddShader("default", shader);
+    backgroundMesh->SetCurrentShader("default");
+
+    parent->AddComponent(std::move(backgroundMesh));
 
     // Create a new GameObject with a TextBoxComponent, then add it as a child.
+    auto newAction = GetActions().back();
     auto actionObject = std::make_unique<UrsineEngine::GameObject>(newAction->GetName());
     actionObject->AddComponent(std::make_unique<TextBoxComponent>());
     parent->AddChild(std::move(actionObject));
@@ -33,16 +66,14 @@ void MainMenuLayoutComponent::HandleActionAdded()
     // Set the font parameters for this text box.
     newActionTextBox->SetFont("Alagard", "Medium");
     newActionTextBox->SetTextSize(48);
-    newActionTextBox->SetTextAlignment(TextAlignment::eCENTER);
-    newActionTextBox->SetTextColor(glm::vec4(DARK_COLOR, 1.0));
+    newActionTextBox->SetTextAlignment(TextAlignment::eLEFT);
+    newActionTextBox->SetTextColor(glm::vec4(BACKGROUND_COLOR, 1.0));
     newActionTextBox->SetWidth(500);
     newActionTextBox->SetFixedWidth(true);
 
     newActionTextBox->SetText(newAction->GetName());
 
     // Position the text box in the center of the screen.
-    double overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
-    double overlayHeight = env.GetGraphicsOptions().mOverlayHeight;
     double xPos = overlayWidth / 2.0;
     double yPos = overlayHeight / 2.0;
 

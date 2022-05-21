@@ -34,8 +34,10 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
       };
       startAction->SetFunction(startGameFunction);
 
+      auto optionsAction = std::make_unique<MenuAction>("Options");
       auto quitAction = std::make_unique<MenuAction>("Quit");
       newMenu->GetFirstComponentOfType<MenuLayoutComponent>()->AddAction(std::move(startAction));
+      newMenu->GetFirstComponentOfType<MenuLayoutComponent>()->AddAction(std::move(optionsAction));
       newMenu->GetFirstComponentOfType<MenuLayoutComponent>()->AddAction(std::move(quitAction));
       break;
     }

@@ -77,6 +77,19 @@ void TextBoxComponent::SetText(const std::string& aText)
 }
 
 /******************************************************************************/
+std::string TextBoxComponent::GetText() const
+{
+  std::string text;
+
+  if(mText != nullptr)
+  {
+    text = mText->GetText();
+  }
+
+  return text;
+}
+
+/******************************************************************************/
 bool TextBoxComponent::SetFont(const std::string& aFamily,
                                const std::string& aStyle)
 {
