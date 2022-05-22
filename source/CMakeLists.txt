@@ -36,7 +36,8 @@ file(GLOB GAME_SOURCES main.cpp
 
 add_executable(barebones ${GAME_SOURCES})
 target_link_libraries(barebones PUBLIC
-                      ${URSINE_LIBRARIES})
+                      ${URSINE_LIBRARIES}
+                      nlohmann_json::nlohmann_json)
 target_include_directories(barebones PUBLIC
                            ${URSINE_INCLUDE_DIRS}
                            gameObjects/camera

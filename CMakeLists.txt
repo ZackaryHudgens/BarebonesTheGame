@@ -7,6 +7,9 @@ project(Barebones VERSION 0.0.1
 set(CMAKE_PREFIX_PATH "$ENV{URSINE_ENGINE_INSTALL_DIR}/lib/")
 find_package(UrsineEngine REQUIRED)
 
+# Add any third party libraries.
+add_subdirectory("third_party/json-3.10.5")
+
 # Exports compile commands as a .json file; some text editors use
 # this file for syntax highlighting.
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
