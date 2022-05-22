@@ -64,9 +64,8 @@ std::unique_ptr<UrsineEngine::Scene> SceneFactory::CreateScene(const SceneType& 
 
       // Add a CameraBehaviorComponent to the default camera, then make it
       // follow the board.
-      auto cameraBehaviorComponent = std::make_unique<CameraBehaviorComponent>();
-      cameraBehaviorComponent->SetFollowedBoard(*newScene->GetObjects().back());
-      newScene->GetDefaultCamera()->AddComponent(std::move(cameraBehaviorComponent));
+      newScene->GetDefaultCamera()->AddComponent(std::make_unique<CameraBehaviorComponent>());
+      newScene->GetDefaultCamera()->GetFirstComponentOfType<CameraBehaviorComponent>()->SetFollowedBoard(*newScene->GetObjects().back());
 
       // Create an information panel, then make it follow the board.
       auto infoPanelObject = std::make_unique<UrsineEngine::GameObject>("infoPanel");
