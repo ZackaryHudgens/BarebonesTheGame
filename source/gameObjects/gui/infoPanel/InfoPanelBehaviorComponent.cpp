@@ -176,25 +176,11 @@ void InfoPanelBehaviorComponent::HandleCharacterHealthChanged(CharacterBehaviorC
 /******************************************************************************/
 void InfoPanelBehaviorComponent::HandleCharacterDied(CharacterBehaviorComponent& aCharacter)
 {
-  if(mBoard != nullptr)
-  {
-    auto boardLayoutComponent = mBoard->GetFirstComponentOfType<BoardLayoutComponent>();
-    if(boardLayoutComponent != nullptr)
-    {
-      auto characterObject = aCharacter.GetParent();
-      if(characterObject != nullptr)
-      {
-        auto location = boardLayoutComponent->GetLocationOfCharacter(characterObject->GetName());
-        if(location == mFocusedLocation)
-        {
-          if(mTextBox != nullptr)
-          {
-            mTextBox->SetText("Empty Space");
-          }
-        }
-      }
-    }
-  }
+  // If the character that died was at the focused location,
+  // it may have already been removed from the board. In that case,
+  // we can't rely on using GetLocationOfCharacter to check the dead
+  // character's location, so we need to update the text regardless.
+  UpdateText();
 }
 
 /******************************************************************************/

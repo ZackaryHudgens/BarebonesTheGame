@@ -47,7 +47,7 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
       spritesheet.CreateTextureFromFile("resources/sprites/skeletons/basicSkeletonSpritesheet.png");
       newSprite->SetTexture(spritesheet);
 
-      newSprite->CreateAnimation("walking");
+      newSprite->AddAnimation("walking");
 
       UrsineEngine::TextureClip clip;
       clip.mHeight = 16;
@@ -91,7 +91,7 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
       spritesheet.CreateTextureFromFile("resources/sprites/enemies/basicHuman.png");
       newSprite->SetTexture(spritesheet);
 
-      newSprite->CreateAnimation("walking");
+      newSprite->AddAnimation("walking");
 
       UrsineEngine::TextureClip clip;
       clip.mHeight = 16;

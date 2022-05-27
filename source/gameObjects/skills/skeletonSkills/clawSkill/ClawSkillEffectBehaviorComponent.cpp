@@ -42,7 +42,7 @@ void ClawSkillEffectBehaviorComponent::Initialize()
     sprite->SetCurrentShader("defaultShader");
 
     // Create the animations for the sprite.
-    sprite->CreateAnimation("default");
+    sprite->AddAnimation("default");
 
     UrsineEngine::TextureClip clip;
     clip.mHeight = 16;

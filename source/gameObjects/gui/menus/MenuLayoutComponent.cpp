@@ -60,14 +60,13 @@ void MenuLayoutComponent::HoverOverPreviousAction()
   {
     // If the current action is the first action, then loop around and hover
     // over the last action. Otherwise, hover over the previous action.
-    auto prevAction = std::prev(currentAction);
-    if(prevAction == actions.begin())
+    if(currentAction == actions.begin())
     {
       mCurrentlyHoveredAction = actions.back();
     }
     else
     {
-      mCurrentlyHoveredAction = (*prevAction);
+      mCurrentlyHoveredAction = (*std::prev(currentAction));
     }
 
     HandleActionHovered();
