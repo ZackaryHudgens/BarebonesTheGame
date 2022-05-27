@@ -43,27 +43,99 @@ namespace Barebones
       void Update(double aTime) override;
 
       /**
-       * Returns the name of this type of character.
+       * Sets the name for this type of character.
        *
-       * @return The name of this type of character.
+       * @param aName The name for this type of character.
+       */
+      void SetName(const std::string& aName) { mName = aName; }
+
+      /**
+       * Returns the name of this character.
+       *
+       * @return The name of this character.
        */
       std::string GetName() const { return mName; }
 
       /**
-       * Moves the character to a position in world space at the given speed.
+       * Sets the type of this character.
        *
-       * @param aPosition The position to move to.
-       * @param aSpeed The speed to move at.
+       * @param aType The new type of the character.
        */
-      void MoveToPosition(const glm::vec3& aPosition,
-                          double aSpeed);
+      void SetType(const Type& aType) { mType = aType; }
 
       /**
-       * Returns a vector of this character's skills.
+       * Returns the type of this character.
        *
-       * @return This character's skills.
+       * @return The type of this character.
        */
-      std::vector<Skill*> GetSkills();
+      Type GetType() const { return mType; }
+
+      /**
+       * Sets which side this character is on.
+       *
+       * @param aSide The new side for this character.
+       */
+      void SetSide(const Side& aSide) { mSide = aSide; }
+
+      /**
+       * Returns the side this character is on.
+       *
+       * @return The side for this character.
+       */
+      Side GetSide() const { return mSide; }
+
+      /**
+       * Sets the speed of this character (the amount of distance the
+       * character can cover in a single move).
+       *
+       * @param aSpeed The speed of this character.
+       */
+      void SetSpeed(int aSpeed) { mSpeed = aSpeed; }
+
+      /**
+       * Returns the speed of this character.
+       *
+       * @return The speed of this character.
+       */
+      int GetSpeed() const { return mSpeed; }
+
+      /**
+       * Sets the maximum health of this character. If the maximum health is
+       * less than the current health, the current health is set equal to
+       * the given value.
+       *
+       * @param aHealth The new maximum health of this character.
+       */
+      void SetMaximumHealth(int aHealth);
+
+      /**
+       * Returns this character's maximum health.
+       *
+       * @return This character's maximum health.
+       */
+      int GetMaximumHealth() const { return mMaximumHealth; }
+
+      /**
+       * Sets the current health of this character. If the new health value is
+       * 0 or less, this character dies.
+       *
+       * @param aHealth The new current health of this character.
+       */
+      void SetCurrentHealth(int aHealth);
+
+      /**
+       * Returns this character's current health.
+       *
+       * @return This character's current health.
+       */
+      int GetCurrentHealth() const { return mCurrentHealth; }
+
+      /**
+       * Adds a skill to this character.
+       *
+       * @param aSkill The skill to add.
+       */
+      void AddSkill(std::unique_ptr<Skill> aSkill);
 
       /**
        * Returns a pointer to this character's skill with the given name, or
@@ -73,6 +145,13 @@ namespace Barebones
        * @return A pointer to the skill with the given name.
        */
       Skill* GetSkill(const std::string& aName);
+
+      /**
+       * Returns a vector of this character's skills.
+       *
+       * @return This character's skills.
+       */
+      std::vector<Skill*> GetSkills();
 
       /**
        * Adds a status effect to this character.
@@ -112,47 +191,13 @@ namespace Barebones
                                     const TileLocation& aLocation) const;
 
       /**
-       * Sets which side this character is on.
+       * Moves the character to a position in world space at the given speed.
        *
-       * @param aSide The new side for this character.
+       * @param aPosition The position to move to.
+       * @param aSpeed The speed to move at.
        */
-      void SetSide(const Side& aSide) { mSide = aSide; }
-
-      /**
-       * Returns the side this character is on.
-       *
-       * @return The side for this character.
-       */
-      Side GetSide() const { return mSide; }
-
-      /**
-       * Returns the type of this character.
-       *
-       * @return The type of this character.
-       */
-      Type GetType() const { return mType; }
-
-      /**
-       * Returns the speed of this character (the amount of distance the
-       * character can cover in a single move).
-       *
-       * @return The speed of this character.
-       */
-      int GetSpeed() const { return mSpeed; }
-
-      /**
-       * Returns the maximum health value of this character.
-       *
-       * @return This character's maximum health.
-       */
-      int GetMaximumHealth() const { return mMaximumHealth; }
-
-      /**
-       * Returns the current health value of this character.
-       *
-       * @return This character's current health.
-       */
-      int GetCurrentHealth() const { return mCurrentHealth; }
+      void MoveToPosition(const glm::vec3& aPosition,
+                          double aSpeed);
 
       /**
        * Takes a damage value and applies it to this character's health.
@@ -174,58 +219,7 @@ namespace Barebones
       TilePathList GenerateShortestPathList(UrsineEngine::GameObject& aBoard,
                                             const TileLocation& aStartingLocation) const;
 
-    protected:
-
-      /**
-       * A virtual function that gets called during Initialize().
-       */
-      virtual void ProtectedInitialize() {}
-
-      /**
-       * Sets the name for this type of character.
-       *
-       * @param aName The name for this type of character.
-       */
-      void SetName(const std::string& aName) { mName = aName; }
-
-      /**
-       * Sets the type of this character.
-       *
-       * @param aType The new type of the character.
-       */
-      void SetType(const Type& aType) { mType = aType; }
-
-      /**
-       * Adds a skill to this character.
-       *
-       * @param aSkill The skill to add.
-       */
-      void AddSkill(std::unique_ptr<Skill> aSkill);
-
-      /**
-       * Sets the speed of this character (the amount of distance the
-       * character can cover in a single move).
-       *
-       * @param aSpeed The speed of this character.
-       */
-      void SetSpeed(int aSpeed) { mSpeed = aSpeed; }
-
-      /**
-       * Sets the maximum health of this character. If the maximum health is
-       * less than the current health, the current health is set equal to
-       * the given value.
-       *
-       * @param aHealth The new maximum health of this character.
-       */
-      void SetMaximumHealth(int aHealth);
-
-      /**
-       * Sets the current health of this character. If the new health value is
-       * 0 or less, this character dies.
-       *
-       * @param aHealth The new current health of this character.
-       */
-      void SetCurrentHealth(int aHealth);
+    private:
 
       /**
        * A function that generates a TileAdjacencyMap using this
@@ -235,8 +229,6 @@ namespace Barebones
        * @return A TileAdjacencyMap for the given board at the starting location.
        */
       TileAdjacencyMap GenerateAdjacencyMap(UrsineEngine::GameObject& aBoard) const;
-
-    private:
 
       /**
        * Displays a message with the given text in front of and above
