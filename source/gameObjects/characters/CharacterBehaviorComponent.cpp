@@ -26,6 +26,7 @@ CharacterBehaviorComponent::CharacterBehaviorComponent()
   : Component()
   , mMovementState(nullptr)
   , mStatusState(nullptr)
+  , mMover(nullptr)
   , mSide(Side::eNONE)
   , mType(Type::eNONE)
   , mSpeed(1)
@@ -197,52 +198,6 @@ std::vector<Barebones::Effect*> CharacterBehaviorComponent::GetEffects()
 }
 
 /******************************************************************************/
-Barebones::TileList CharacterBehaviorComponent::GetMovements(UrsineEngine::GameObject& aObject,
-                                                             const TileLocation& aLocation) const
-{
-  TileList tiles;
-
-  auto boardLayoutComponent = aObject.GetFirstComponentOfType<BoardLayoutComponent>();
-  if(boardLayoutComponent != nullptr)
-  {
-    // Check tile to the right.
-    TileLocation newMove(aLocation.first + 1, aLocation.second);
-    if(boardLayoutComponent->GetTileAtLocation(newMove) != nullptr &&
-       boardLayoutComponent->GetCharacterAtLocation(newMove) == nullptr)
-    {
-      tiles.emplace_back(newMove);
-    }
-
-    // Check tile to the left.
-    newMove.first = aLocation.first - 1;
-    if(boardLayoutComponent->GetTileAtLocation(newMove) != nullptr &&
-       boardLayoutComponent->GetCharacterAtLocation(newMove) == nullptr)
-    {
-      tiles.emplace_back(newMove);
-    }
-
-    // Check tile above.
-    newMove.first = aLocation.first;
-    newMove.second = aLocation.second + 1;
-    if(boardLayoutComponent->GetTileAtLocation(newMove) != nullptr &&
-       boardLayoutComponent->GetCharacterAtLocation(newMove) == nullptr)
-    {
-      tiles.emplace_back(newMove);
-    }
-
-    // Check tile below.
-    newMove.second = aLocation.second - 1;
-    if(boardLayoutComponent->GetTileAtLocation(newMove) != nullptr &&
-       boardLayoutComponent->GetCharacterAtLocation(newMove) == nullptr)
-    {
-      tiles.emplace_back(newMove);
-    }
-  }
-
-  return tiles;
-}
-
-/******************************************************************************/
 void CharacterBehaviorComponent::MoveToPosition(const glm::vec3& aPosition,
                                                 double aSpeed)
 {
@@ -408,35 +363,38 @@ Barebones::TileAdjacencyMap CharacterBehaviorComponent::GenerateAdjacencyMap(Urs
 {
   TileAdjacencyMap adjacencyMap;
 
-  auto parent = GetParent();
-  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
-  if(parent != nullptr &&
-     boardLayoutComponent != nullptr)
+  if(mMover != nullptr)
   {
-    auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
-    auto columns = boardLayoutComponent->GetColumns();
-    auto rows = boardLayoutComponent->GetRows();
-
-    for(int c = 0; c < columns; ++c)
+    auto parent = GetParent();
+    auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
+    if(parent != nullptr &&
+       boardLayoutComponent != nullptr)
     {
-      for(int r = 0; r < rows; ++r)
+      auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
+      auto columns = boardLayoutComponent->GetColumns();
+      auto rows = boardLayoutComponent->GetRows();
+
+      for(int c = 0; c < columns; ++c)
       {
-        TileLocation currentLocation(c, r);
-        if(boardLayoutComponent->GetCharacterAtLocation(TileLocation(c, r)) == nullptr ||
-           currentLocation == characterLocation)
+        for(int r = 0; r < rows; ++r)
         {
-          auto movements = GetMovements(aBoard, currentLocation);
-
-          std::vector<TileEdge> edges;
-          for(const auto& move : movements)
+          TileLocation currentLocation(c, r);
+          if(boardLayoutComponent->GetCharacterAtLocation(TileLocation(c, r)) == nullptr ||
+             currentLocation == characterLocation)
           {
-            int distance = std::sqrt(std::pow((move.first - c), 2) +
-                                     std::pow((move.second - r), 2));
-            TileEdge edge(move, distance);
-            edges.emplace_back(edge);
-          }
+            auto movements = mMover->GetMovements(aBoard, currentLocation);
 
-          adjacencyMap.emplace(currentLocation, edges);
+            std::vector<TileEdge> edges;
+            for(const auto& move : movements)
+            {
+              int distance = std::sqrt(std::pow((move.first - c), 2) +
+                                       std::pow((move.second - r), 2));
+              TileEdge edge(move, distance);
+              edges.emplace_back(edge);
+            }
+
+            adjacencyMap.emplace(currentLocation, edges);
+          }
         }
       }
     }

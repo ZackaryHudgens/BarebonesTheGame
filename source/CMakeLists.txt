@@ -2,7 +2,11 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/camera/*.?pp
                        gameObjects/camera/states/*.?pp
                        gameObjects/characters/*.?pp
+                       gameObjects/characters/effectList/*.?pp
+                       gameObjects/characters/healthBar/*.?pp
+                       gameObjects/characters/movers/*.?pp
                        gameObjects/characters/states/*.?pp
+                       gameObjects/characters/statusMessage/*.?pp
                        gameObjects/effects/*.?pp
                        gameObjects/gui/*.?pp
                        gameObjects/gui/infoPanel/*.?pp
@@ -40,7 +44,11 @@ target_include_directories(barebones PUBLIC
                            gameObjects/camera
                            gameObjects/camera/states
                            gameObjects/characters
+                           gameObjects/characters/effectList
+                           gameObjects/characters/healthBar
+                           gameObjects/characters/movers
                            gameObjects/characters/states
+                           gameObjects/characters/statusMessage
                            gameObjects/effects
                            gameObjects/gui
                            gameObjects/gui/infoPanel

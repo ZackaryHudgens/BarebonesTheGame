@@ -6,6 +6,7 @@
 #include <Component.hpp>
 #include <GameObject.hpp>
 
+#include "CharacterMover.hpp"
 #include "CharacterState.hpp"
 
 #include "Effect.hpp"
@@ -131,6 +132,21 @@ namespace Barebones
       int GetCurrentHealth() const { return mCurrentHealth; }
 
       /**
+       * Sets the mover for this character. The mover is used in determining
+       * the shortest path list.
+       *
+       * @param aMover The new mover for this character.
+       */
+      void SetMover(std::unique_ptr<CharacterMover> aMover) { mMover.swap(aMover); }
+
+      /**
+       * Returns the mover for this character.
+       *
+       * @return The mover for this character.
+       */
+      CharacterMover* GetMover() { return mMover.get(); }
+
+      /**
        * Adds a skill to this character.
        *
        * @param aSkill The skill to add.
@@ -173,22 +189,6 @@ namespace Barebones
        * @return A list of effects on this character.
        */
       std::vector<Effect*> GetEffects();
-
-      /**
-       * A virtual function that returns a list of possible movements
-       * given a location on a board. The first integer of each
-       * pair corresponds to the column; the second integer corresponds
-       * to the row.
-       *
-       * By default, a character can move to any adjacent tile, so long as
-       * it exists and there isn't already a character there.
-       *
-       * @param aObject A GameObject containing a BoardLoyoutComponent.
-       * @param aLocation The initial location.
-       * @return A list of possible movements.
-       */
-      virtual TileList GetMovements(UrsineEngine::GameObject& aObject,
-                                    const TileLocation& aLocation) const;
 
       /**
        * Moves the character to a position in world space at the given speed.
@@ -240,6 +240,8 @@ namespace Barebones
 
       std::unique_ptr<CharacterState> mMovementState;
       std::unique_ptr<CharacterState> mStatusState;
+
+      std::unique_ptr<CharacterMover> mMover;
 
       std::vector<std::unique_ptr<Effect>> mEffects;
       std::vector<std::unique_ptr<Skill>> mSkills;
