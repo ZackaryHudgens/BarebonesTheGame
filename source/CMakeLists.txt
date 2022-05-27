@@ -2,6 +2,11 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/camera/*.?pp
                        gameObjects/camera/states/*.?pp
                        gameObjects/characters/*.?pp
+                       gameObjects/characters/enemies/*.?pp
+                       gameObjects/characters/enemies/corruptedFarmer/*.?pp
+                       gameObjects/characters/skeletons/*.?pp
+                       gameObjects/characters/skeletons/basicSkeleton/*.?pp
+                       gameObjects/characters/skeletons/boneThrower/*.?pp
                        gameObjects/characters/states/*.?pp
                        gameObjects/effects/*.?pp
                        gameObjects/gui/*.?pp
@@ -19,9 +24,6 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/skills/spells/desecrateSpell/*.?pp
                        gameObjects/skills/spells/fireballSpell/*.?pp
                        gameObjects/util/*.?pp
-                       gameObjects/util/inputManager/*.?pp
-                       gameObjects/util/sceneFactory/*.?pp
-                       gameObjects/util/signals/*.?pp
                        gameObjects/world/background/*.?pp
                        gameObjects/world/board/*.?pp
                        gameObjects/world/board/players/*.?pp
@@ -40,6 +42,11 @@ target_include_directories(barebones PUBLIC
                            gameObjects/camera
                            gameObjects/camera/states
                            gameObjects/characters
+                           gameObjects/characters/enemies
+                           gameObjects/characters/enemies/corruptedFarmer
+                           gameObjects/characters/skeletons
+                           gameObjects/characters/skeletons/basicSkeleton
+                           gameObjects/characters/skeletons/boneThrower
                            gameObjects/characters/states
                            gameObjects/effects
                            gameObjects/gui
@@ -57,9 +64,6 @@ target_include_directories(barebones PUBLIC
                            gameObjects/skills/spells/desecrateSpell
                            gameObjects/skills/spells/fireballSpell
                            gameObjects/util
-                           gameObjects/util/inputManager
-                           gameObjects/util/sceneFactory
-                           gameObjects/util/signals
                            gameObjects/world/background
                            gameObjects/world/board
                            gameObjects/world/board/players

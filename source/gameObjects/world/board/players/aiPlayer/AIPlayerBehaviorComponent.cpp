@@ -4,6 +4,8 @@
 
 #include "BoardLayoutComponent.hpp"
 
+#include "EnemyBehaviorComponent.hpp"
+
 #include "Signals.hpp"
 
 #include <iostream>
@@ -34,12 +36,12 @@ void AIPlayerBehaviorComponent::Update(double aTime)
   {
     if(mCurrentCharacter != nullptr)
     {
-      auto characterBehaviorComponent = mCurrentCharacter->GetFirstComponentOfType<CharacterBehaviorComponent>();
-      if(characterBehaviorComponent != nullptr &&
+      auto enemyBehaviorComponent = mCurrentCharacter->GetFirstComponentOfType<EnemyBehaviorComponent>();
+      if(enemyBehaviorComponent != nullptr &&
          mBoard != nullptr)
       {
         mWaitingToTakeTurn = false;
-        //enemyBehaviorComponent->TakeTurn(*mBoard);
+        enemyBehaviorComponent->TakeTurn(*mBoard);
       }
     }
   }
@@ -59,11 +61,11 @@ void AIPlayerBehaviorComponent::ProtectedTakeTurn(UrsineEngine::GameObject& aBoa
     // Make the first character take a turn.
     if(!mCharacters.empty())
     {
-      auto characterBehaviorComponent = mCharacters.front()->GetFirstComponentOfType<CharacterBehaviorComponent>();
-      if(characterBehaviorComponent != nullptr)
+      auto enemyBehaviorComponent = mCharacters.front()->GetFirstComponentOfType<EnemyBehaviorComponent>();
+      if(enemyBehaviorComponent != nullptr)
       {
         mCurrentCharacter = mCharacters.front();
-        //enemyBehaviorComponent->TakeTurn(aBoard);
+        enemyBehaviorComponent->TakeTurn(aBoard);
       }
     }
     else

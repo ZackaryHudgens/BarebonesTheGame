@@ -44,9 +44,11 @@ void CharacterBehaviorComponent::Initialize()
     mMovementState = std::make_unique<CharacterDefaultState>(*parent);
     mStatusState = std::make_unique<CharacterDefaultState>(*parent);
 
-    // All characters start with the Move skill.
+    // All characters have the move skill.
     AddSkill(std::make_unique<MoveSkill>(*GetParent()));
   }
+
+  ProtectedInitialize();
 }
 
 /******************************************************************************/
@@ -74,43 +76,30 @@ void CharacterBehaviorComponent::Update(double aTime)
 }
 
 /******************************************************************************/
-void CharacterBehaviorComponent::SetMaximumHealth(int aHealth)
+void CharacterBehaviorComponent::MoveToPosition(const glm::vec3& aPosition,
+                                                double aSpeed)
 {
-  mMaximumHealth = aHealth;
-
-  // If the current health is greater than the new maximum health,
-  // set the current health to the new maximum.
-  if(mCurrentHealth > mMaximumHealth)
+  auto parent = GetParent();
+  if(parent != nullptr)
   {
-    SetCurrentHealth(mMaximumHealth);
+    // Switch to the moving state.
+    mMovementState = std::make_unique<CharacterMovingState>(*parent,
+                                                            aPosition,
+                                                            aSpeed);
   }
 }
 
 /******************************************************************************/
-void CharacterBehaviorComponent::SetCurrentHealth(int aHealth)
+std::vector<Barebones::Skill*> CharacterBehaviorComponent::GetSkills()
 {
-  mCurrentHealth = aHealth;
+  std::vector<Skill*> skills;
 
-  CharacterHealthChanged.Notify(*this);
-
-  // If the health is below 0, this character is now dying.
-  if(mCurrentHealth <= 0)
+  for(auto& skill : mSkills)
   {
-    CharacterDied.Notify(*this);
-
-    auto parent = GetParent();
-    if(parent != nullptr)
-    {
-      // Switch to the dying state.
-      mStatusState = std::make_unique<CharacterDyingState>(*parent);
-    }
+    skills.emplace_back(skill.get());
   }
-}
 
-/******************************************************************************/
-void CharacterBehaviorComponent::AddSkill(std::unique_ptr<Skill> aSkill)
-{
-  mSkills.emplace_back(std::move(aSkill));
+  return skills;
 }
 
 /******************************************************************************/
@@ -132,19 +121,6 @@ Barebones::Skill* CharacterBehaviorComponent::GetSkill(const std::string& aName)
   }
 
   return skill;
-}
-
-/******************************************************************************/
-std::vector<Barebones::Skill*> CharacterBehaviorComponent::GetSkills()
-{
-  std::vector<Skill*> skills;
-
-  for(auto& skill : mSkills)
-  {
-    skills.emplace_back(skill.get());
-  }
-
-  return skills;
 }
 
 /******************************************************************************/
@@ -240,20 +216,6 @@ Barebones::TileList CharacterBehaviorComponent::GetMovements(UrsineEngine::GameO
   }
 
   return tiles;
-}
-
-/******************************************************************************/
-void CharacterBehaviorComponent::MoveToPosition(const glm::vec3& aPosition,
-                                                double aSpeed)
-{
-  auto parent = GetParent();
-  if(parent != nullptr)
-  {
-    // Switch to the moving state.
-    mMovementState = std::make_unique<CharacterMovingState>(*parent,
-                                                            aPosition,
-                                                            aSpeed);
-  }
 }
 
 /******************************************************************************/
@@ -401,6 +363,46 @@ Barebones::TilePathList CharacterBehaviorComponent::GenerateShortestPathList(Urs
   }
 
   return pathList;
+}
+
+/******************************************************************************/
+void CharacterBehaviorComponent::AddSkill(std::unique_ptr<Skill> aSkill)
+{
+  mSkills.emplace_back(std::move(aSkill));
+}
+
+/******************************************************************************/
+void CharacterBehaviorComponent::SetMaximumHealth(int aHealth)
+{
+  mMaximumHealth = aHealth;
+
+  // If the current health is greater than the new maximum health,
+  // set the current health to the new maximum.
+  if(mCurrentHealth > mMaximumHealth)
+  {
+    SetCurrentHealth(mMaximumHealth);
+  }
+}
+
+/******************************************************************************/
+void CharacterBehaviorComponent::SetCurrentHealth(int aHealth)
+{
+  mCurrentHealth = aHealth;
+
+  CharacterHealthChanged.Notify(*this);
+
+  // If the health is below 0, this character is now dying.
+  if(mCurrentHealth <= 0)
+  {
+    CharacterDied.Notify(*this);
+
+    auto parent = GetParent();
+    if(parent != nullptr)
+    {
+      // Switch to the dying state.
+      mStatusState = std::make_unique<CharacterDyingState>(*parent);
+    }
+  }
 }
 
 /******************************************************************************/

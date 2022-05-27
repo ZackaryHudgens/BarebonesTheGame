@@ -5,10 +5,12 @@
 #include "EffectListBehaviorComponent.hpp"
 #include "HealthBarMeshComponent.hpp"
 
-#include "ClawSkill.hpp"
-#include "PitchforkSkill.hpp"
+#include "CorruptedFarmerBehaviorComponent.hpp"
+#include "BasicSkeletonBehaviorComponent.hpp"
 
 #include "Colors.hpp"
+
+#include <iostream>
 
 using Barebones::CharacterFactory;
 
@@ -18,91 +20,95 @@ double Barebones::CharacterFactory::mVerticalPadding = 0.2;
 std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(const CharacterType& aType,
                                                                             const std::string& aName)
 {
-  // Create a new GameObject and attach a SpriteComponent and a
-  // CharacterBehaviorComponent to it.
   auto newCharacter = std::make_unique<UrsineEngine::GameObject>(aName);
-  newCharacter->AddComponent(std::make_unique<UrsineEngine::SpriteComponent>());
-  newCharacter->AddComponent(std::make_unique<CharacterBehaviorComponent>());
-  
-  auto newCharacterBehaviorComponent = newCharacter->GetFirstComponentOfType<CharacterBehaviorComponent>();
-  auto newCharacterSpriteComponent = newCharacter->GetFirstComponentOfType<UrsineEngine::SpriteComponent>();
-
-  // Set up the shader.
-  std::string vertexFile = "resources/shaders/TexturedMeshWithFadeShader.vert";
-  std::string fragmentFile = "resources/shaders/TexturedMeshWithFadeShader.frag";
-  UrsineEngine::Shader defaultShader(vertexFile, fragmentFile);
-
-  defaultShader.Activate();
-  defaultShader.SetFloat("fadeValue", 0.0);
-  defaultShader.SetVec4("fadeColor", glm::vec4(BACKGROUND_COLOR, 1.0));
-
-  newCharacterSpriteComponent->AddShader("defaultShader", defaultShader);
-  newCharacterSpriteComponent->SetCurrentShader("defaultShader");
-
   switch(aType)
   {
     case CharacterType::eBASIC_SKELETON:
     {
-      newCharacterBehaviorComponent->SetName("Skelly");
-      newCharacterBehaviorComponent->SetMaximumHealth(10);
-      newCharacterBehaviorComponent->SetCurrentHealth(10);
-      newCharacterBehaviorComponent->SetSide(Side::ePLAYER);
-      newCharacterBehaviorComponent->SetType(Type::eSKELETON);
-      newCharacterBehaviorComponent->SetSpeed(4);
+      newCharacter->AddComponent(std::make_unique<BasicSkeletonBehaviorComponent>());
 
-      newCharacterBehaviorComponent->AddSkill(std::make_unique<ClawSkill>(*newCharacter));
+      // Create and set up the sprite.
+      auto newSprite = std::make_unique<UrsineEngine::SpriteComponent>();
+
+      // Set up the shader.
+      std::string vertexFile = "resources/shaders/TexturedMeshWithFadeShader.vert";
+      std::string fragmentFile = "resources/shaders/TexturedMeshWithFadeShader.frag";
+      UrsineEngine::Shader defaultShader(vertexFile, fragmentFile);
+
+      defaultShader.Activate();
+      defaultShader.SetFloat("fadeValue", 0.0);
+      defaultShader.SetVec4("fadeColor", glm::vec4(BACKGROUND_COLOR, 1.0));
+
+      newSprite->AddShader("defaultShader", defaultShader);
+      newSprite->SetCurrentShader("defaultShader");
 
       // Set up the spritesheet and animations.
       UrsineEngine::Texture spritesheet;
       spritesheet.CreateTextureFromFile("resources/sprites/skeletons/basicSkeletonSpritesheet.png");
-      newCharacterSpriteComponent->SetTexture(spritesheet);
+      newSprite->SetTexture(spritesheet);
 
-      newCharacterSpriteComponent->AddAnimation("walking");
+      newSprite->AddAnimation("walking");
 
       UrsineEngine::TextureClip clip;
       clip.mHeight = 16;
       clip.mWidth = 16;
       clip.mX = 0;
       clip.mY = 0;
-      newCharacterSpriteComponent->AddFrameToAnimation("walking", clip);
+      newSprite->AddFrameToAnimation("walking", clip);
 
       clip.mX = 16;
-      newCharacterSpriteComponent->AddFrameToAnimation("walking", clip);
+      newSprite->AddFrameToAnimation("walking", clip);
 
-      newCharacterSpriteComponent->SetAnimation("walking");
-      newCharacterSpriteComponent->SetSpeedOfAnimation(3.0);
+      newSprite->SetAnimation("walking");
+      newSprite->SetSpeedOfAnimation(3.0);
+
+      // Finally, add the sprite.
+      newCharacter->AddComponent(std::move(newSprite));
+
       break;
     }
     case CharacterType::eCORRUPTED_FARMER:
     {
-      newCharacterBehaviorComponent->SetName("Corrupted Farmer");
-      newCharacterBehaviorComponent->SetMaximumHealth(5);
-      newCharacterBehaviorComponent->SetCurrentHealth(5);
-      newCharacterBehaviorComponent->SetSide(Side::eENEMY);
-      newCharacterBehaviorComponent->SetType(Type::eHUMAN);
-      newCharacterBehaviorComponent->SetSpeed(2);
+      newCharacter->AddComponent(std::make_unique<CorruptedFarmerBehaviorComponent>());
 
-      newCharacterBehaviorComponent->AddSkill(std::make_unique<PitchforkSkill>(*newCharacter));
+      // Create and set up the sprite.
+      auto newSprite = std::make_unique<UrsineEngine::SpriteComponent>();
+
+      // Set up the shader.
+      std::string vertexFile = "resources/shaders/TexturedMeshWithFadeShader.vert";
+      std::string fragmentFile = "resources/shaders/TexturedMeshWithFadeShader.frag";
+      UrsineEngine::Shader defaultShader(vertexFile, fragmentFile);
+
+      defaultShader.Activate();
+      defaultShader.SetFloat("fadeValue", 0.0);
+      defaultShader.SetVec4("fadeColor", glm::vec4(BACKGROUND_COLOR, 1.0));
+
+      newSprite->AddShader("defaultShader", defaultShader);
+      newSprite->SetCurrentShader("defaultShader");
 
       // Set up the spritesheet and animations.
       UrsineEngine::Texture spritesheet;
       spritesheet.CreateTextureFromFile("resources/sprites/enemies/basicHuman.png");
-      newCharacterSpriteComponent->SetTexture(spritesheet);
+      newSprite->SetTexture(spritesheet);
 
-      newCharacterSpriteComponent->AddAnimation("walking");
+      newSprite->AddAnimation("walking");
 
       UrsineEngine::TextureClip clip;
       clip.mHeight = 16;
       clip.mWidth = 16;
       clip.mX = 0;
       clip.mY = 0;
-      newCharacterSpriteComponent->AddFrameToAnimation("walking", clip);
+      newSprite->AddFrameToAnimation("walking", clip);
 
       clip.mX = 16;
-      newCharacterSpriteComponent->AddFrameToAnimation("walking", clip);
+      newSprite->AddFrameToAnimation("walking", clip);
 
-      newCharacterSpriteComponent->SetAnimation("walking");
-      newCharacterSpriteComponent->SetSpeedOfAnimation(3.0);
+      newSprite->SetAnimation("walking");
+      newSprite->SetSpeedOfAnimation(3.0);
+
+      // Finally, add the sprite.
+      newCharacter->AddComponent(std::move(newSprite));
+
       break;
     }
     default:
