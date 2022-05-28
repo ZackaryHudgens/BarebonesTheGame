@@ -50,8 +50,10 @@ std::unique_ptr<UrsineEngine::Scene> SceneFactory::CreateScene(const SceneType& 
 
       // Add characters to the board.
       auto skeleton = CharacterFactory::CreateCharacter(CharacterType::eBASIC_SKELETON, "skeleton");
+      auto skeleton2 = CharacterFactory::CreateCharacter(CharacterType::eBONE_THROWER, "skeleton2");
       auto human = CharacterFactory::CreateCharacter(CharacterType::eCORRUPTED_FARMER, "human");
       boardLayoutComponent->AddCharacterAtLocation(std::move(skeleton), TileLocation(0, 0));
+      boardLayoutComponent->AddCharacterAtLocation(std::move(skeleton2), TileLocation(2, 3));
       boardLayoutComponent->AddCharacterAtLocation(std::move(human), TileLocation(5, 0));
 
       // Create a background.

@@ -6,6 +6,7 @@
 #include <Component.hpp>
 #include <GameObject.hpp>
 
+#include "CharacterController.hpp"
 #include "CharacterMover.hpp"
 #include "CharacterState.hpp"
 
@@ -140,11 +141,12 @@ namespace Barebones
       void SetMover(std::unique_ptr<CharacterMover> aMover) { mMover.swap(aMover); }
 
       /**
-       * Returns the mover for this character.
+       * Sets the controller for this character. The controller is used in
+       * the TakeTurn() function.
        *
-       * @return The mover for this character.
+       * @param aController The new controller for this character.
        */
-      CharacterMover* GetMover() { return mMover.get(); }
+      void SetController(std::unique_ptr<CharacterController> aController) { mController.swap(aController); }
 
       /**
        * Adds a skill to this character.
@@ -200,6 +202,15 @@ namespace Barebones
                           double aSpeed);
 
       /**
+       * Tells this character to take a turn on the given board. This function
+       * uses the assigned CharacterController to control the character for a
+       * turn. If no CharacterController has been set, this function does nothing.
+       *
+       * @param aBoard The board to take a turn on.
+       */
+      void TakeTurn(UrsineEngine::GameObject& aBoard);
+
+      /**
        * Takes a damage value and applies it to this character's health.
        * The damage value is displayed as a status message.
        *
@@ -241,6 +252,7 @@ namespace Barebones
       std::unique_ptr<CharacterState> mMovementState;
       std::unique_ptr<CharacterState> mStatusState;
 
+      std::unique_ptr<CharacterController> mController;
       std::unique_ptr<CharacterMover> mMover;
 
       std::vector<std::unique_ptr<Effect>> mEffects;

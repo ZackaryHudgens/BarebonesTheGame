@@ -8,6 +8,7 @@ namespace Barebones
   enum class CharacterType
   {
     eBASIC_SKELETON,
+    eBONE_THROWER,
     eCORRUPTED_FARMER
   };
 

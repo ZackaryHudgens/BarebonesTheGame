@@ -77,6 +77,39 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
       newCharacterSpriteComponent->SetSpeedOfAnimation(3.0);
       break;
     }
+    case CharacterType::eBONE_THROWER:
+    {
+      newCharacterBehaviorComponent->SetName("Bone Thrower");
+      newCharacterBehaviorComponent->SetMover(std::make_unique<DefaultCharacterMover>());
+      newCharacterBehaviorComponent->SetMaximumHealth(5);
+      newCharacterBehaviorComponent->SetCurrentHealth(5);
+      newCharacterBehaviorComponent->SetSide(Side::ePLAYER);
+      newCharacterBehaviorComponent->SetType(Type::eSKELETON);
+      newCharacterBehaviorComponent->SetSpeed(3);
+
+      newCharacterBehaviorComponent->AddSkill(std::make_unique<ClawSkill>(*newCharacter));
+
+      // Set up the spritesheet and animations.
+      UrsineEngine::Texture spritesheet;
+      spritesheet.CreateTextureFromFile("resources/sprites/skeletons/basicSkeletonSpritesheet.png");
+      newCharacterSpriteComponent->SetTexture(spritesheet);
+
+      newCharacterSpriteComponent->AddAnimation("walking");
+
+      UrsineEngine::TextureClip clip;
+      clip.mHeight = 16;
+      clip.mWidth = 16;
+      clip.mX = 0;
+      clip.mY = 0;
+      newCharacterSpriteComponent->AddFrameToAnimation("walking", clip);
+
+      clip.mX = 16;
+      newCharacterSpriteComponent->AddFrameToAnimation("walking", clip);
+
+      newCharacterSpriteComponent->SetAnimation("walking");
+      newCharacterSpriteComponent->SetSpeedOfAnimation(3.0);
+      break;
+    }
     case CharacterType::eCORRUPTED_FARMER:
     {
       newCharacterBehaviorComponent->SetName("Corrupted Farmer");

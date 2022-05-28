@@ -39,7 +39,7 @@ void AIPlayerBehaviorComponent::Update(double aTime)
          mBoard != nullptr)
       {
         mWaitingToTakeTurn = false;
-        //enemyBehaviorComponent->TakeTurn(*mBoard);
+        characterBehaviorComponent->TakeTurn(*mBoard);
       }
     }
   }
@@ -63,7 +63,7 @@ void AIPlayerBehaviorComponent::ProtectedTakeTurn(UrsineEngine::GameObject& aBoa
       if(characterBehaviorComponent != nullptr)
       {
         mCurrentCharacter = mCharacters.front();
-        //enemyBehaviorComponent->TakeTurn(aBoard);
+        characterBehaviorComponent->TakeTurn(aBoard);
       }
     }
     else
