@@ -8,6 +8,8 @@
 #include "DefaultCharacterMover.hpp"
 #include "DiagonalCharacterMover.hpp"
 
+#include "DefaultCharacterController.hpp"
+
 #include "ClawSkill.hpp"
 #include "PitchforkSkill.hpp"
 
@@ -114,6 +116,7 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
     {
       newCharacterBehaviorComponent->SetName("Corrupted Farmer");
       newCharacterBehaviorComponent->SetMover(std::make_unique<DefaultCharacterMover>());
+      newCharacterBehaviorComponent->SetController(std::make_unique<DefaultCharacterController>(*newCharacter));
       newCharacterBehaviorComponent->SetMaximumHealth(5);
       newCharacterBehaviorComponent->SetCurrentHealth(5);
       newCharacterBehaviorComponent->SetSide(Side::eENEMY);

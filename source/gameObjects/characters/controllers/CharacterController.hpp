@@ -33,13 +33,6 @@ namespace Barebones
     protected:
 
       /**
-       * A virtual function that gets called during Update().
-       *
-       * @param aTime The start time of the current Scene's Update().
-       */
-      virtual void ProtectedUpdate(double aTime) {}
-
-      /**
        * A virtual function that gets called during TakeTurn. Different
        * controllers need to override this function to actually control
        * the character.

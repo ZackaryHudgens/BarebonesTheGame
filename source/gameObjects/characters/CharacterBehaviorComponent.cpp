@@ -73,6 +73,12 @@ void CharacterBehaviorComponent::Update(double aTime)
       mStatusState.swap(newStatusState);
     }
   }
+
+  // Update the controller.
+  if(mController != nullptr)
+  {
+    mController->Update(aTime);
+  }
 }
 
 /******************************************************************************/
@@ -209,6 +215,15 @@ void CharacterBehaviorComponent::MoveToPosition(const glm::vec3& aPosition,
     mMovementState = std::make_unique<CharacterMovingState>(*parent,
                                                             aPosition,
                                                             aSpeed);
+  }
+}
+
+/******************************************************************************/
+void CharacterBehaviorComponent::TakeTurn(UrsineEngine::GameObject& aBoard)
+{
+  if(mController != nullptr)
+  {
+    mController->TakeTurn(aBoard);
   }
 }
 

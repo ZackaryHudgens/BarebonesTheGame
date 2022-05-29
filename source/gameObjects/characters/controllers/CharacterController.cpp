@@ -20,8 +20,6 @@ CharacterController::CharacterController(UrsineEngine::GameObject& aCharacter)
 /******************************************************************************/
 void CharacterController::Update(double aTime)
 {
-  ProtectedUpdate(aTime);
-
   if(mEndingTurn)
   {
     auto elapsedTime = aTime - mTimeStartedEnding;
