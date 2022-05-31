@@ -2,6 +2,7 @@
 #define CHARACTERBEHAVIORCOMPONENT_HPP
 
 #include <map>
+#include <queue>
 
 #include <Component.hpp>
 #include <GameObject.hpp>
@@ -257,6 +258,10 @@ namespace Barebones
 
       std::vector<std::unique_ptr<Effect>> mEffects;
       std::vector<std::unique_ptr<Skill>> mSkills;
+
+      std::queue<std::string> mStatusMessageQueue;
+      double mStatusMessageWaitTime;
+      double mLastStatusMessageCreatedTime;
 
       Side mSide;
       Type mType;

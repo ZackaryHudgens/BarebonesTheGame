@@ -28,6 +28,8 @@ CharacterBehaviorComponent::CharacterBehaviorComponent()
   , mStatusState(nullptr)
   , mController(nullptr)
   , mMover(nullptr)
+  , mStatusMessageWaitTime(0.3)
+  , mLastStatusMessageCreatedTime(0.0)
   , mSide(Side::eNONE)
   , mType(Type::eNONE)
   , mSpeed(1)
@@ -78,6 +80,17 @@ void CharacterBehaviorComponent::Update(double aTime)
   if(mController != nullptr)
   {
     mController->Update(aTime);
+  }
+
+  // Update the status message queue.
+  if(!mStatusMessageQueue.empty())
+  {
+    auto timeSinceLastStatusMessage = env.GetTime() - mLastStatusMessageCreatedTime;
+    if(timeSinceLastStatusMessage >= mStatusMessageWaitTime)
+    {
+      DisplayStatusMessage(mStatusMessageQueue.front());
+      mStatusMessageQueue.pop();
+    }
   }
 }
 
@@ -160,8 +173,8 @@ void CharacterBehaviorComponent::AddEffect(std::unique_ptr<Effect> aEffect)
 {
   if(aEffect != nullptr)
   {
-    // Display a status message when this effect is added.
-    DisplayStatusMessage(aEffect->GetStatusMessage());
+    // Add a status message to the queue.
+    mStatusMessageQueue.emplace(aEffect->GetStatusMessage());
 
     mEffects.emplace_back(std::move(aEffect));
     EffectAddedToCharacter.Notify(*this, *mEffects.back());
@@ -181,10 +194,10 @@ void CharacterBehaviorComponent::RemoveEffect(const std::string& aName)
                                   findEffect);
   if(foundEffect != mEffects.end())
   {
-    // Display a status message when this effect is removed.
+    // Add a status message to the queue.
     std::stringstream removedMessage;
     removedMessage << foundEffect->get()->GetName() << "\nremoved!";
-    DisplayStatusMessage(removedMessage.str());
+    mStatusMessageQueue.emplace(removedMessage.str());
 
     EffectRemovedFromCharacter.Notify(*this, *(*foundEffect));
     mEffects.erase(foundEffect);
@@ -240,10 +253,10 @@ void CharacterBehaviorComponent::DealDamage(int aValue)
     mMovementState = std::make_unique<CharacterShakingState>(*parent);
   }
 
-  // Create a status message to display the amount of damage dealt.
+  // Add a status message to the queue.
   std::stringstream damageText;
   damageText << aValue;
-  DisplayStatusMessage(damageText.str());
+  mStatusMessageQueue.emplace(damageText.str());
 }
 
 /******************************************************************************/
@@ -457,5 +470,7 @@ void CharacterBehaviorComponent::DisplayStatusMessage(const std::string& aText)
 
     // Add the status message to the scene.
     scene->AddObject(std::move(statusMessageObject));
+
+    mLastStatusMessageCreatedTime = env.GetTime();
   }
 }
