@@ -237,10 +237,8 @@ void HumanPlayerDefaultInputState::PopulateSkillMenu(UrsineEngine::GameObject& a
         auto selectSkill = [skill, boardObject]() { skill->Select(*boardObject); };
         skillAction->SetFunction(selectSkill);
 
-        // If the skill is disabled, or if it doesn't have any valid
-        // tiles, disable the action before adding it to the menu.
-        if(!skill->IsEnabled() ||
-           skill->GetValidTiles(*boardObject, currentLocation).empty())
+        // If the skill is disabled, disable the action before adding it to the menu.
+        if(!skill->IsEnabled())
         {
           skillAction->SetEnabled(false);
         }

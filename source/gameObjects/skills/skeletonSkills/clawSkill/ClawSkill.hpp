@@ -25,6 +25,15 @@ namespace Barebones
       TileList GetValidTiles(UrsineEngine::GameObject& aBoard,
                              const TileLocation& aSourceLocation) override;
 
+      /**
+       * Returns a vector of tiles to highlight.
+       *
+       * @param aBoard The board GameObject to use this skill on.
+       * @param aSourceLocation The location to get highlighted tiles for.
+       */
+      TileList GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
+                                   const TileLocation& aSourceLocation) override;
+
     protected:
 
       /**

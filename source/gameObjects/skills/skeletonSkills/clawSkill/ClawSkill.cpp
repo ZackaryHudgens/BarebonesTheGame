@@ -89,6 +89,37 @@ Barebones::TileList ClawSkill::GetValidTiles(UrsineEngine::GameObject& aBoard,
   return tiles;
 }
 
+/******************************************************************************/
+Barebones::TileList ClawSkill::GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
+                                                   const TileLocation& aSourceLocation)
+{
+  TileList tiles;
+
+  auto parent = GetParent();
+  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
+  if(parent != nullptr &&
+     boardLayoutComponent != nullptr)
+  {
+    auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
+    auto targetLocation = characterLocation;
+    targetLocation.first += 1;
+    tiles.emplace_back(targetLocation);
+
+    targetLocation = characterLocation;
+    targetLocation.first -= 1;
+    tiles.emplace_back(targetLocation);
+
+    targetLocation = characterLocation;
+    targetLocation.second += 1;
+    tiles.emplace_back(targetLocation);
+
+    targetLocation = characterLocation;
+    targetLocation.second -= 1;
+    tiles.emplace_back(targetLocation);
+  }
+
+  return tiles;
+}
 
 /******************************************************************************/
 bool ClawSkill::IsEnemyAtLocation(UrsineEngine::GameObject& aBoard,
