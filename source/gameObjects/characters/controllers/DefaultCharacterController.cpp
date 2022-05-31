@@ -10,6 +10,9 @@ using Barebones::DefaultCharacterController;
 DefaultCharacterController::DefaultCharacterController(UrsineEngine::GameObject& aCharacter)
   : CharacterController(aCharacter)
   , mWaitingForMove(false)
+  , mBoard(nullptr)
+  , mUsingSkill(false)
+  , mTileToUseSkillOn(-1, -1)
 {
   CharacterFinishedMovingAlongPath.Connect(mObserver, [this](CharacterBehaviorComponent& aCharacter)
   {
@@ -20,6 +23,8 @@ DefaultCharacterController::DefaultCharacterController(UrsineEngine::GameObject&
 /******************************************************************************/
 void DefaultCharacterController::ProtectedTakeTurn(UrsineEngine::GameObject& aBoard)
 {
+  mBoard = &aBoard;
+
   auto character = GetCharacter();
   if(character != nullptr)
   {
@@ -28,8 +33,10 @@ void DefaultCharacterController::ProtectedTakeTurn(UrsineEngine::GameObject& aBo
     if(boardLayoutComponent != nullptr &&
        characterBehaviorComponent != nullptr)
     {
+      auto pitchforkSkill = characterBehaviorComponent->GetSkill("Pitchfork");
       auto moveSkill = characterBehaviorComponent->GetSkill("Move");
-      if(moveSkill != nullptr)
+      if(pitchforkSkill != nullptr &&
+         moveSkill != nullptr)
       {
         // Get each character on the opposing side.
         std::vector<UrsineEngine::GameObject*> opposingCharacters;
@@ -87,6 +94,12 @@ void DefaultCharacterController::ProtectedTakeTurn(UrsineEngine::GameObject& aBo
         // Move to the closest tile.
         moveSkill->Execute(aBoard, moveLocation);
         mWaitingForMove = true;
+
+        if(pitchforkSkill->IsTileValid(aBoard, moveLocation, targetLocation))
+        {
+          mTileToUseSkillOn = targetLocation;
+          mUsingSkill = true;
+        }
       }
     }
   }
@@ -98,6 +111,17 @@ void DefaultCharacterController::HandleCharacterFinishedMovingAlongPath(Characte
   if(aCharacter.GetParent() == GetCharacter() &&
      mWaitingForMove)
   {
+    if(mUsingSkill)
+    {
+      auto pitchforkSkill = aCharacter.GetSkill("Pitchfork");
+      if(pitchforkSkill != nullptr)
+      {
+        pitchforkSkill->Execute(*mBoard, mTileToUseSkillOn);
+        mUsingSkill = false;
+        mTileToUseSkillOn = TileLocation(-1, -1);
+      }
+    }
+
     EndTurn();
   }
 }

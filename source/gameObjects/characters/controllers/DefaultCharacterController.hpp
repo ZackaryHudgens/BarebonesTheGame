@@ -41,6 +41,11 @@ namespace Barebones
 
       UrsineEngine::Observer mObserver;
       bool mWaitingForMove;
+
+      UrsineEngine::GameObject* mBoard;
+
+      bool mUsingSkill;
+      TileLocation mTileToUseSkillOn;
   };
 }
 
