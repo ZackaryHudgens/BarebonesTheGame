@@ -10,6 +10,7 @@
 
 #include "DefaultCharacterController.hpp"
 
+#include "BoneThrowSkill.hpp"
 #include "ClawSkill.hpp"
 #include "PitchforkSkill.hpp"
 
@@ -89,7 +90,7 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
       newCharacterBehaviorComponent->SetType(Type::eSKELETON);
       newCharacterBehaviorComponent->SetSpeed(3);
 
-      newCharacterBehaviorComponent->AddSkill(std::make_unique<ClawSkill>(*newCharacter));
+      newCharacterBehaviorComponent->AddSkill(std::make_unique<BoneThrowSkill>(*newCharacter));
 
       // Set up the spritesheet and animations.
       UrsineEngine::Texture spritesheet;
