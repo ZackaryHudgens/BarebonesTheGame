@@ -70,7 +70,7 @@ void DefaultCharacterController::ProtectedTakeTurn(UrsineEngine::GameObject& aBo
 
         // For each tile this character can move to, compare it to the
         // target location, then move to the closest tile.
-        auto tiles = moveSkill->GetValidTiles(aBoard);
+        auto tiles = moveSkill->GetValidTiles(aBoard, characterLocation);
         TileLocation moveLocation(0, 0);
         lowestDistance = INT_MAX;
         for(const auto tile : tiles)

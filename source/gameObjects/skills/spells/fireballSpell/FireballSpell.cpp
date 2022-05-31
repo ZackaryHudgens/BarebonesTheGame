@@ -27,7 +27,8 @@ FireballSpell::FireballSpell(UrsineEngine::GameObject& aParent)
 }
 
 /******************************************************************************/
-Barebones::TileList FireballSpell::GetValidTiles(UrsineEngine::GameObject& aBoard)
+Barebones::TileList FireballSpell::GetValidTiles(UrsineEngine::GameObject& aBoard,
+                                                 const TileLocation& aSourceLocation)
 {
   TileList tiles;
 
@@ -52,33 +53,24 @@ Barebones::TileList FireballSpell::GetValidTiles(UrsineEngine::GameObject& aBoar
 }
 
 /******************************************************************************/
-Barebones::TileList FireballSpell::GetTilesToHighlight(UrsineEngine::GameObject& aBoard)
+Barebones::TileList FireballSpell::GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
+                                                       const TileLocation& aSourceLocation)
 {
   TileList tiles;
 
-  auto parent = GetParent();
-  if(parent != nullptr)
+  auto leftEdge = aSourceLocation.first - mRadius;
+  auto rightEdge = aSourceLocation.first + mRadius;
+  auto bottomEdge = aSourceLocation.second - mRadius;
+  auto topEdge = aSourceLocation.second + mRadius;
+
+  for(int column = leftEdge; column <= rightEdge; ++column)
   {
-    auto humanPlayerBehaviorComponent = parent->GetFirstComponentOfType<HumanPlayerBehaviorComponent>();
-    if(humanPlayerBehaviorComponent != nullptr)
+    for(int row = bottomEdge; row <= topEdge; ++row)
     {
-      auto playerLocation = humanPlayerBehaviorComponent->GetLocation();
-
-      auto leftEdge = playerLocation.first - mRadius;
-      auto rightEdge = playerLocation.first + mRadius;
-      auto bottomEdge = playerLocation.second - mRadius;
-      auto topEdge = playerLocation.second + mRadius;
-
-      for(int column = leftEdge; column <= rightEdge; ++column)
-      {
-        for(int row = bottomEdge; row <= topEdge; ++row)
-        {
-          TileLocation affectedTile;
-          affectedTile.first = column;
-          affectedTile.second = row;
-          tiles.emplace_back(affectedTile);
-        }
-      }
+      TileLocation affectedTile;
+      affectedTile.first = column;
+      affectedTile.second = row;
+      tiles.emplace_back(affectedTile);
     }
   }
 
@@ -92,7 +84,7 @@ void FireballSpell::ProtectedExecute(UrsineEngine::GameObject& aBoard,
   auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
   if(boardLayoutComponent != nullptr)
   {
-    for(auto& affectedTile : GetTilesToHighlight(aBoard))
+    for(auto& affectedTile : GetTilesToHighlight(aBoard, aLocation))
     {
       // Place a spell effect on this tile.
       std::stringstream nameStream;

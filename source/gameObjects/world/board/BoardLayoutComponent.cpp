@@ -585,7 +585,7 @@ void BoardLayoutComponent::HandleSkillSelected(Skill& aSkill)
   auto parent = GetParent();
   if(parent != nullptr)
   {
-    auto tileLocations = aSkill.GetTilesToHighlight(*parent);
+    auto tileLocations = aSkill.GetTilesToHighlight(*parent, mHoveredTileLocation);
     for(const auto tileLocation : tileLocations)
     {
       auto tile = GetTileAtLocation(tileLocation);

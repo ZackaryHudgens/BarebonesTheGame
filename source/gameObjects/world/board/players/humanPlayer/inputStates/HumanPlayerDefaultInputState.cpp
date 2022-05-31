@@ -218,27 +218,35 @@ void HumanPlayerDefaultInputState::PopulateSkillMenu(UrsineEngine::GameObject& a
                                                      const std::vector<Skill*>& aSkills)
 {
   auto boardObject = GetBoard();
+  auto playerObject = GetPlayer();
   auto menuLayoutComponent = aMenu.GetFirstComponentOfType<MenuLayoutComponent>();
   if(boardObject != nullptr &&
+     playerObject != nullptr &&
      menuLayoutComponent != nullptr)
   {
-    // For each skill, create an action that selects it on execution.
-    for(const auto& skill : aSkills)
+    auto humanPlayerBehaviorComponent = playerObject->GetFirstComponentOfType<HumanPlayerBehaviorComponent>();
+    if(humanPlayerBehaviorComponent != nullptr)
     {
-      auto skillAction = std::make_unique<MenuAction>(skill->GetName(),
-                                                      skill->GetDescription());
-      auto selectSkill = [skill, boardObject]() { skill->Select(*boardObject); };
-      skillAction->SetFunction(selectSkill);
+      auto currentLocation = humanPlayerBehaviorComponent->GetLocation();
 
-      // If the skill is disabled, or if it doesn't have any valid
-      // tiles, disable the action before adding it to the menu.
-      if(!skill->IsEnabled() ||
-         skill->GetValidTiles(*boardObject).empty())
+      // For each skill, create an action that selects it on execution.
+      for(const auto& skill : aSkills)
       {
-        skillAction->SetEnabled(false);
-      }
+        auto skillAction = std::make_unique<MenuAction>(skill->GetName(),
+                                                        skill->GetDescription());
+        auto selectSkill = [skill, boardObject]() { skill->Select(*boardObject); };
+        skillAction->SetFunction(selectSkill);
 
-      menuLayoutComponent->AddAction(std::move(skillAction));
+        // If the skill is disabled, or if it doesn't have any valid
+        // tiles, disable the action before adding it to the menu.
+        if(!skill->IsEnabled() ||
+           skill->GetValidTiles(*boardObject, currentLocation).empty())
+        {
+          skillAction->SetEnabled(false);
+        }
+
+        menuLayoutComponent->AddAction(std::move(skillAction));
+      }
     }
   }
 }

@@ -33,7 +33,8 @@ MoveSkill::MoveSkill(UrsineEngine::GameObject& aParent)
 }
 
 /******************************************************************************/
-Barebones::TileList MoveSkill::GetValidTiles(UrsineEngine::GameObject& aBoard)
+Barebones::TileList MoveSkill::GetValidTiles(UrsineEngine::GameObject& aBoard,
+                                             const TileLocation& aSourceLocation)
 {
   TileList tiles;
 
@@ -47,8 +48,7 @@ Barebones::TileList MoveSkill::GetValidTiles(UrsineEngine::GameObject& aBoard)
     if(characterBehaviorComponent != nullptr &&
        boardLayoutComponent != nullptr)
     {
-      auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
-      mShortestPaths = characterBehaviorComponent->GenerateShortestPathList(aBoard, characterLocation);
+      mShortestPaths = characterBehaviorComponent->GenerateShortestPathList(aBoard, aSourceLocation);
     }
   }
 

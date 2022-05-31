@@ -54,61 +54,50 @@ void ClawSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
 }
 
 /******************************************************************************/
-Barebones::TileList ClawSkill::GetValidTiles(UrsineEngine::GameObject& aBoard)
+Barebones::TileList ClawSkill::GetValidTiles(UrsineEngine::GameObject& aBoard,
+                                             const TileLocation& aSourceLocation)
 {
   TileList tiles;
 
-  auto parent = GetParent();
-  if(parent != nullptr)
+  // Check to the right.
+  auto targetLocation = aSourceLocation;
+  targetLocation.first += 1;
+  if(IsEnemyAtLocation(aBoard,
+                       targetLocation))
   {
-    auto characterBehaviorComponent = parent->GetFirstComponentOfType<CharacterBehaviorComponent>();
-    if(characterBehaviorComponent != nullptr)
-    {
-      auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
-      if(boardLayoutComponent != nullptr)
-      {
-        auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
+    tiles.emplace_back(targetLocation);
+  }
 
-        // Check to the right.
-        auto targetLocation = characterLocation;
-        targetLocation.first = characterLocation.first + 1;
-        if(IsEnemyAtLocation(aBoard,
-                             targetLocation))
-        {
-          tiles.emplace_back(targetLocation);
-        }
+  // Check to the left.
+  targetLocation = aSourceLocation;
+  targetLocation.first -= 1;
+  if(IsEnemyAtLocation(aBoard,
+                       targetLocation))
+  {
+    tiles.emplace_back(targetLocation);
+  }
 
-        // Check to the left.
-        targetLocation.first = characterLocation.first - 1;
-        if(IsEnemyAtLocation(aBoard,
-                             targetLocation))
-        {
-          tiles.emplace_back(targetLocation);
-        }
+  // Check above.
+  targetLocation = aSourceLocation;
+  targetLocation.second += 1;
+  if(IsEnemyAtLocation(aBoard,
+                       targetLocation))
+  {
+    tiles.emplace_back(targetLocation);
+  }
 
-        targetLocation.first = characterLocation.first;
-
-        // Check above.
-        targetLocation.second = characterLocation.second + 1;
-        if(IsEnemyAtLocation(aBoard,
-                             targetLocation))
-        {
-          tiles.emplace_back(targetLocation);
-        }
-
-        // Check below.
-        targetLocation.second = characterLocation.second - 1;
-        if(IsEnemyAtLocation(aBoard,
-                             targetLocation))
-        {
-          tiles.emplace_back(targetLocation);
-        }
-      }
-    }
+  // Check below.
+  targetLocation = aSourceLocation;
+  targetLocation.second -= 1;
+  if(IsEnemyAtLocation(aBoard,
+                       targetLocation))
+  {
+    tiles.emplace_back(targetLocation);
   }
 
   return tiles;
 }
+
 
 /******************************************************************************/
 bool ClawSkill::IsEnemyAtLocation(UrsineEngine::GameObject& aBoard,

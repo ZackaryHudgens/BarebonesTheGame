@@ -19,6 +19,13 @@ namespace Barebones
       Skill(UrsineEngine::GameObject& aParent);
 
       /**
+       * Returns the owning GameObject.
+       *
+       * @return The GameObject that owns this skill.
+       */
+      UrsineEngine::GameObject* GetParent() { return mParent; }
+
+      /**
        * Selects this skill for use, but doesn't execute it.
        *
        * @param aBoard The board to execute this skill on in the future.
@@ -55,23 +62,28 @@ namespace Barebones
 
       /**
        * A virtual function that returns a vector of valid tile locations
-       * for executing this skill.
+       * for executing this skill from a given location.
        *
        * @param aBoard The board GameObject to use this skill on.
+       * @param aSourceLocation The location to get valid tiles for.
        */
-      virtual TileList GetValidTiles(UrsineEngine::GameObject& aBoard) { return TileList(); }
+      virtual TileList GetValidTiles(UrsineEngine::GameObject& aBoard,
+                                     const TileLocation& aSourceLocation) { return TileList(); }
 
       /**
        * Returns true if the given tile location on the given board
        * is valid for executing this skill. This function uses the virtual
-       * GetValidTiles() function.
+       * GetValidTiles() function to determine validity.
        *
        * @param aBoard The board GameObject to use this skill on.
-       * @param aLocation The TileLocation to use this skill on.
-       * @return True if the TileLocation is valid, false otherwise.
+       * @param aSourceLocation The location to get valid tiles for.
+       * @param aTargetLocation The location to check validity of.
+       * @return True if aTargetLocation is in the valid tiles list,
+       *         false otherwise.
        */
       bool IsTileValid(UrsineEngine::GameObject& aBoard,
-                       const TileLocation& aLocation);
+                       const TileLocation& aSourceLocation,
+                       const TileLocation& aTargetLocation);
 
       /**
        * A virtual function that returns a vector of tiles to highlight when
@@ -83,8 +95,10 @@ namespace Barebones
        * By default, all valid tiles are highlighted.
        *
        * @param aBoard The board GameObject to use this skill on.
+       * @param aSourceLocation The location to get highlighted tiles for.
        */
-      virtual TileList GetTilesToHighlight(UrsineEngine::GameObject& aBoard) { return GetValidTiles(aBoard); }
+      virtual TileList GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
+                                           const TileLocation& aSourceLocation) { return GetValidTiles(aBoard, aSourceLocation); }
 
       /**
        * Returns the name of the skill.
@@ -138,13 +152,6 @@ namespace Barebones
        * @param aEnabled Whether this skill was enabled or disabled.
        */
       virtual void HandleEnabledChanged(bool aEnabled) {}
-
-      /**
-       * Returns the parent that owns this skill.
-       *
-       * @return The parent that owns this skill.
-       */
-      UrsineEngine::GameObject* GetParent() { return mParent; }
 
       /**
        * Sets the name of the skill.

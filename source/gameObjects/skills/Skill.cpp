@@ -48,14 +48,15 @@ void Skill::SetEnabled(bool aEnabled)
 
 /******************************************************************************/
 bool Skill::IsTileValid(UrsineEngine::GameObject& aBoard,
-                        const TileLocation& aLocation)
+                        const TileLocation& aSourceLocation,
+                        const TileLocation& aTargetLocation)
 {
   bool success = false;
 
-  auto tiles = GetValidTiles(aBoard);
+  auto tiles = GetValidTiles(aBoard, aSourceLocation);
   auto foundTile = std::find(tiles.begin(),
                              tiles.end(),
-                             aLocation);
+                             aTargetLocation);
   if(foundTile != tiles.end())
   {
     success = true;

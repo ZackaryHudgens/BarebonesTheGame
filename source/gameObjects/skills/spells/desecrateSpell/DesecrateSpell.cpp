@@ -26,7 +26,8 @@ DesecrateSpell::DesecrateSpell(UrsineEngine::GameObject& aParent)
 }
 
 /******************************************************************************/
-Barebones::TileList DesecrateSpell::GetValidTiles(UrsineEngine::GameObject& aBoard)
+Barebones::TileList DesecrateSpell::GetValidTiles(UrsineEngine::GameObject& aBoard,
+                                                  const TileLocation& aSourceLocation)
 {
   TileList tiles;
 
@@ -51,33 +52,24 @@ Barebones::TileList DesecrateSpell::GetValidTiles(UrsineEngine::GameObject& aBoa
 }
 
 /******************************************************************************/
-Barebones::TileList DesecrateSpell::GetTilesToHighlight(UrsineEngine::GameObject& aBoard)
+Barebones::TileList DesecrateSpell::GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
+                                                        const TileLocation& aSourceLocation)
 {
   TileList tiles;
 
-  auto parent = GetParent();
-  if(parent != nullptr)
+  auto leftEdge = aSourceLocation.first - mRadius;
+  auto rightEdge = aSourceLocation.first + mRadius;
+  auto bottomEdge = aSourceLocation.second - mRadius;
+  auto topEdge = aSourceLocation.second + mRadius;
+
+  for(int column = leftEdge; column <= rightEdge; ++column)
   {
-    auto humanPlayerBehaviorComponent = parent->GetFirstComponentOfType<HumanPlayerBehaviorComponent>();
-    if(humanPlayerBehaviorComponent != nullptr)
+    for(int row = bottomEdge; row <= topEdge; ++row)
     {
-      auto playerLocation = humanPlayerBehaviorComponent->GetLocation();
-
-      auto leftEdge = playerLocation.first - mRadius;
-      auto rightEdge = playerLocation.first + mRadius;
-      auto bottomEdge = playerLocation.second - mRadius;
-      auto topEdge = playerLocation.second + mRadius;
-
-      for(int column = leftEdge; column <= rightEdge; ++column)
-      {
-        for(int row = bottomEdge; row <= topEdge; ++row)
-        {
-          TileLocation affectedTile;
-          affectedTile.first = column;
-          affectedTile.second = row;
-          tiles.emplace_back(affectedTile);
-        }
-      }
+      TileLocation affectedTile;
+      affectedTile.first = column;
+      affectedTile.second = row;
+      tiles.emplace_back(affectedTile);
     }
   }
 
@@ -91,7 +83,7 @@ void DesecrateSpell::ProtectedExecute(UrsineEngine::GameObject& aBoard,
   auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
   if(boardLayoutComponent != nullptr)
   {
-    for(const auto& tileLocation : GetTilesToHighlight(aBoard))
+    for(const auto& tileLocation : GetTilesToHighlight(aBoard, aLocation))
     {
       // For each affected tile, create a new desecrated tile at that location.
       boardLayoutComponent->RemoveTileAtLocation(tileLocation);

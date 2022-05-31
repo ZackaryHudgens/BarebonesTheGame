@@ -112,13 +112,19 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerUsingSkillInputStat
           // execute it, then return to the default input state.
           if(mSkill != nullptr)
           {
-            if(mSkill->IsTileValid(*board,
-                                   currentLocation))
+            auto skillOwner = mSkill->GetParent();
+            if(skillOwner != nullptr)
             {
-              mSkill->Execute(*board,
-                              currentLocation);
-              newState = std::make_unique<HumanPlayerDefaultInputState>(*player);
-              newState->SetBoard(*board);
+              auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(skillOwner->GetName());
+              if(mSkill->IsTileValid(*board,
+                                     characterLocation,
+                                     currentLocation))
+              {
+                mSkill->Execute(*board,
+                                currentLocation);
+                newState = std::make_unique<HumanPlayerDefaultInputState>(*player);
+                newState->SetBoard(*board);
+              }
             }
           }
           break;
