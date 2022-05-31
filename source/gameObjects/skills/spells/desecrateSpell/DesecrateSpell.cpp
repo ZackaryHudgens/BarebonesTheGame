@@ -52,8 +52,8 @@ Barebones::TileList DesecrateSpell::GetValidTiles(UrsineEngine::GameObject& aBoa
 }
 
 /******************************************************************************/
-Barebones::TileList DesecrateSpell::GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
-                                                        const TileLocation& aSourceLocation)
+Barebones::TileList DesecrateSpell::GetAffectedTiles(UrsineEngine::GameObject& aBoard,
+                                                     const TileLocation& aSourceLocation)
 {
   TileList tiles;
 
@@ -77,17 +77,21 @@ Barebones::TileList DesecrateSpell::GetTilesToHighlight(UrsineEngine::GameObject
 }
 
 /******************************************************************************/
+Barebones::TileList DesecrateSpell::GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
+                                                        const TileLocation& aSourceLocation)
+{
+  // Highlight all affected tiles.
+  return GetAffectedTiles(aBoard, aSourceLocation);
+}
+
+/******************************************************************************/
 void DesecrateSpell::ProtectedExecute(UrsineEngine::GameObject& aBoard,
                                       const TileLocation& aLocation)
 {
   auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
   if(boardLayoutComponent != nullptr)
   {
-    for(const auto& tileLocation : GetTilesToHighlight(aBoard, aLocation))
-    {
-      // For each affected tile, create a new desecrated tile at that location.
-      boardLayoutComponent->RemoveTileAtLocation(tileLocation);
-      boardLayoutComponent->AddTileAtLocation(TileType::eDESECRATED, tileLocation);
-    }
+    boardLayoutComponent->RemoveTileAtLocation(aLocation);
+    boardLayoutComponent->AddTileAtLocation(TileType::eDESECRATED, aLocation);
   }
 }

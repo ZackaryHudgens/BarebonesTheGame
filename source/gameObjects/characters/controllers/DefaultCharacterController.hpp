@@ -39,12 +39,12 @@ namespace Barebones
        */
       void HandleCharacterFinishedMovingAlongPath(CharacterBehaviorComponent& aCharacter);
 
+      UrsineEngine::GameObject* mBoard;
+
       UrsineEngine::Observer mObserver;
       bool mWaitingForMove;
 
-      UrsineEngine::GameObject* mBoard;
-
-      bool mUsingSkill;
+      Skill* mSkillToUse;
       TileLocation mTileToUseSkillOn;
   };
 }

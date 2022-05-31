@@ -29,6 +29,7 @@ void ClawSkillEffectBehaviorComponent::Initialize()
   {
     // Create a sprite and add it to the parent.
     auto sprite = std::make_unique<UrsineEngine::SpriteComponent>();
+    sprite->SetRenderOption(GL_DEPTH_TEST, false);
 
     UrsineEngine::Texture texture;
     texture.CreateTextureFromFile("resources/sprites/clawEffectSpritesheet.png");

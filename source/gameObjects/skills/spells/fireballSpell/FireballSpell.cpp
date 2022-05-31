@@ -24,6 +24,8 @@ FireballSpell::FireballSpell(UrsineEngine::GameObject& aParent)
   ss << "Deals 30 damage to each\n";
   ss << "creature within the radius.";
   SetDescription(ss.str());
+
+  SetDamage(30);
 }
 
 /******************************************************************************/
@@ -53,8 +55,8 @@ Barebones::TileList FireballSpell::GetValidTiles(UrsineEngine::GameObject& aBoar
 }
 
 /******************************************************************************/
-Barebones::TileList FireballSpell::GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
-                                                       const TileLocation& aSourceLocation)
+Barebones::TileList FireballSpell::GetAffectedTiles(UrsineEngine::GameObject& aBoard,
+                                                    const TileLocation& aSourceLocation)
 {
   TileList tiles;
 
@@ -78,63 +80,54 @@ Barebones::TileList FireballSpell::GetTilesToHighlight(UrsineEngine::GameObject&
 }
 
 /******************************************************************************/
+Barebones::TileList FireballSpell::GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
+                                                       const TileLocation& aSourceLocation)
+{
+  // Highlight all affected tiles.
+  return GetAffectedTiles(aBoard, aSourceLocation);
+}
+
+/******************************************************************************/
 void FireballSpell::ProtectedExecute(UrsineEngine::GameObject& aBoard,
                                      const TileLocation& aLocation)
 {
   auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
   if(boardLayoutComponent != nullptr)
   {
-    for(auto& affectedTile : GetTilesToHighlight(aBoard, aLocation))
+    // Place a spell effect on this tile.
+    std::stringstream nameStream;
+    auto tile = boardLayoutComponent->GetTileAtLocation(aLocation);
+    if(tile != nullptr)
     {
-      // Place a spell effect on this tile.
-      std::stringstream nameStream;
-      auto tile = boardLayoutComponent->GetTileAtLocation(affectedTile);
-      if(tile != nullptr)
+      // Create a GameObject with a unique name for the fireball sprite.
+      nameStream << "fireballEffect" << aLocation.first << aLocation.second;
+      auto spellEffectObject = std::make_unique<UrsineEngine::GameObject>(nameStream.str());
+      nameStream.str("");
+
+      // Add the spell effect to the GameObject, then retrieve the height of the sprite.
+      spellEffectObject->AddComponent(std::make_unique<FireballSpellEffectBehaviorComponent>());
+      auto fireballSprite = spellEffectObject->GetFirstComponentOfType<UrsineEngine::SpriteComponent>();
+      fireballSprite->SetRenderOption(GL_DEPTH_TEST, false);
+      auto fireballHeight = fireballSprite->GetHeight();
+
+      // Retrieve the height of the tile.
+      double tileHeight = 0.0;
+      auto tileMesh = tile->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
+      if(tileMesh != nullptr)
       {
-        // Create a GameObject with a unique name for the fireball sprite.
-        nameStream << "fireballEffect" << affectedTile.first << affectedTile.second;
-        auto spellEffectObject = std::make_unique<UrsineEngine::GameObject>(nameStream.str());
-        nameStream.str("");
+        tileHeight = tileMesh->GetHeight();
+      }
 
-        // Add the spell effect to the GameObject, then retrieve the height of the sprite.
-        spellEffectObject->AddComponent(std::make_unique<FireballSpellEffectBehaviorComponent>());
-        auto fireballSprite = spellEffectObject->GetFirstComponentOfType<UrsineEngine::SpriteComponent>();
-        auto fireballHeight = fireballSprite->GetHeight();
+      // Place the fireball sprite on the tile.
+      auto tilePos = tile->GetPosition();
+      tilePos.y += ((tileHeight / 2.0) + (fireballHeight / 2.0));
+      spellEffectObject->SetPosition(tilePos);
 
-        // Retrieve the height of the tile.
-        double tileHeight = 0.0;
-        auto tileMesh = tile->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
-        if(tileMesh != nullptr)
-        {
-          tileHeight = tileMesh->GetHeight();
-        }
-
-        // Place the fireball sprite on the tile. If there is a character
-        // on the tile, place the sprite slightly in front of the character.
-        auto tilePos = tile->GetPosition();
-        tilePos.y += ((tileHeight / 2.0) + (fireballHeight / 2.0));
-
-        auto character = boardLayoutComponent->GetCharacterAtLocation(affectedTile);
-        if(character != nullptr)
-        {
-          tilePos.z = character->GetPosition().z + 0.1;
-
-          // Also deal damage to the character.
-          auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
-          if(characterBehaviorComponent != nullptr)
-          {
-            characterBehaviorComponent->DealDamage(30);
-          }
-        }
-
-        spellEffectObject->SetPosition(tilePos);
-
-        // Finally, add the fireball sprite to the current scene.
-        auto scene = env.GetCurrentScene();
-        if(scene != nullptr)
-        {
-          scene->AddObject(std::move(spellEffectObject));
-        }
+      // Finally, add the fireball sprite to the current scene.
+      auto scene = env.GetCurrentScene();
+      if(scene != nullptr)
+      {
+        scene->AddObject(std::move(spellEffectObject));
       }
     }
   }

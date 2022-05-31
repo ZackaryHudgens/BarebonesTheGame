@@ -86,6 +86,19 @@ namespace Barebones
                        const TileLocation& aTargetLocation);
 
       /**
+       * A virtual function that returns a vector of tiles that are affected
+       * by this skill at a given location. This function is called during
+       * Execute() to determine which tiles to perform an action on.
+       *
+       * By default, the only affected tile is the given one.
+       *
+       * @param aBoard The board GameObject to use this skill on.
+       * @param aSourceLocation The location of the tile in question.
+       */
+      virtual TileList GetAffectedTiles(UrsineEngine::GameObject& aBoard,
+                                        const TileLocation& aSourceLocation);
+
+      /**
        * A virtual function that returns a vector of tiles to highlight when
        * the player selects this skill but before executing it. This is
        * different from GetValidTiles() in that a skill might have an
@@ -113,6 +126,13 @@ namespace Barebones
        * @return The description of the skill.
        */
       std::string GetDescription() const { return mDescription; }
+
+      /**
+       * Returns the damage this skill deals.
+       *
+       * @return This skill's damage.
+       */
+      int GetDamage() const { return mDamage; }
 
     protected:
 
@@ -167,11 +187,20 @@ namespace Barebones
        */
       void SetDescription(const std::string& aDescription) { mDescription = aDescription; }
 
+      /**
+       * Sets the damage this skill deals.
+       *
+       * @param aDamage The damage of this skill.
+       */
+      void SetDamage(int aDamage) { mDamage = aDamage; }
+
     private:
       UrsineEngine::GameObject* mParent;
 
       std::string mDescription;
       std::string mName;
+
+      int mDamage;
 
       bool mEnabled;
   };

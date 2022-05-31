@@ -11,7 +11,7 @@ DefaultCharacterController::DefaultCharacterController(UrsineEngine::GameObject&
   : CharacterController(aCharacter)
   , mWaitingForMove(false)
   , mBoard(nullptr)
-  , mUsingSkill(false)
+  , mSkillToUse(nullptr)
   , mTileToUseSkillOn(-1, -1)
 {
   CharacterFinishedMovingAlongPath.Connect(mObserver, [this](CharacterBehaviorComponent& aCharacter)
@@ -33,11 +33,19 @@ void DefaultCharacterController::ProtectedTakeTurn(UrsineEngine::GameObject& aBo
     if(boardLayoutComponent != nullptr &&
        characterBehaviorComponent != nullptr)
     {
-      auto pitchforkSkill = characterBehaviorComponent->GetSkill("Pitchfork");
       auto moveSkill = characterBehaviorComponent->GetSkill("Move");
-      if(pitchforkSkill != nullptr &&
-         moveSkill != nullptr)
+      if(moveSkill != nullptr)
       {
+        // Determine the highest damaging skill this character has.
+        int highestDamage = 0;
+        for(const auto& skill : characterBehaviorComponent->GetSkills())
+        {
+          if(skill->GetDamage() > highestDamage)
+          {
+            mSkillToUse = skill;
+          }
+        }
+
         // Get each character on the opposing side.
         std::vector<UrsineEngine::GameObject*> opposingCharacters;
         switch(characterBehaviorComponent->GetSide())
@@ -88,18 +96,23 @@ void DefaultCharacterController::ProtectedTakeTurn(UrsineEngine::GameObject& aBo
           {
             moveLocation = tile;
             lowestDistance = distance;
+
+            // If we have a skill to use, and this tile is valid for using
+            // that skill, then we don't need to move any closer.
+            if(mSkillToUse != nullptr)
+            {
+              if(mSkillToUse->IsTileValid(aBoard, moveLocation, targetLocation))
+              {
+                mTileToUseSkillOn = targetLocation;
+                break;
+              }
+            }
           }
         }
 
         // Move to the closest tile.
         moveSkill->Execute(aBoard, moveLocation);
         mWaitingForMove = true;
-
-        if(pitchforkSkill->IsTileValid(aBoard, moveLocation, targetLocation))
-        {
-          mTileToUseSkillOn = targetLocation;
-          mUsingSkill = true;
-        }
       }
     }
   }
@@ -111,15 +124,10 @@ void DefaultCharacterController::HandleCharacterFinishedMovingAlongPath(Characte
   if(aCharacter.GetParent() == GetCharacter() &&
      mWaitingForMove)
   {
-    if(mUsingSkill)
+    if(mSkillToUse != nullptr)
     {
-      auto pitchforkSkill = aCharacter.GetSkill("Pitchfork");
-      if(pitchforkSkill != nullptr)
-      {
-        pitchforkSkill->Execute(*mBoard, mTileToUseSkillOn);
-        mUsingSkill = false;
-        mTileToUseSkillOn = TileLocation(-1, -1);
-      }
+      mSkillToUse->Execute(*mBoard, mTileToUseSkillOn);
+      mTileToUseSkillOn = TileLocation(-1, -1);
     }
 
     EndTurn();

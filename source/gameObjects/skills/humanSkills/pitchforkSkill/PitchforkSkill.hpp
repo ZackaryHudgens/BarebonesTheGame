@@ -47,8 +47,6 @@ namespace Barebones
        */
       bool IsEnemyAtLocation(UrsineEngine::GameObject& aBoard,
                              const TileLocation& aLocation);
-
-      int mDamage;
   };
 }
 #endif

@@ -12,29 +12,16 @@ using Barebones::PitchforkSkill;
 /******************************************************************************/
 PitchforkSkill::PitchforkSkill(UrsineEngine::GameObject& aParent)
   : Skill(aParent)
-  , mDamage(1)
 {
   SetName("Pitchfork");
   SetDescription("Stabs with a pitchfork.");
+  SetDamage(1);
 }
 
 /******************************************************************************/
 void PitchforkSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
                                       const TileLocation& aLocation)
 {
-  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
-  if(boardLayoutComponent != nullptr)
-  {
-    auto targetCharacterObject = boardLayoutComponent->GetCharacterAtLocation(aLocation);
-    if(targetCharacterObject != nullptr)
-    {
-      auto targetCharacterBehaviorComponent = targetCharacterObject->GetFirstComponentOfType<CharacterBehaviorComponent>();
-      if(targetCharacterBehaviorComponent != nullptr)
-      {
-        targetCharacterBehaviorComponent->DealDamage(mDamage);
-      }
-    }
-  }
 }
 
 /******************************************************************************/

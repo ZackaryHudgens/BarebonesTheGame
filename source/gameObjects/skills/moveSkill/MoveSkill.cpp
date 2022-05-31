@@ -71,11 +71,12 @@ void MoveSkill::ProtectedSelect(UrsineEngine::GameObject& aBoard)
 {
   // Generate a list of shortest paths on this board for the parent character.
   auto parent = GetParent();
-  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
   if(parent != nullptr)
   {
+    auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
     auto characterBehaviorComponent = parent->GetFirstComponentOfType<CharacterBehaviorComponent>();
-    if(characterBehaviorComponent != nullptr)
+    if(boardLayoutComponent != nullptr &&
+       characterBehaviorComponent != nullptr)
     {
       auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
       mShortestPaths = characterBehaviorComponent->GenerateShortestPathList(aBoard, characterLocation);

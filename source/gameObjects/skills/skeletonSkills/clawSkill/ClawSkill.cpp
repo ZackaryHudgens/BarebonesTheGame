@@ -14,10 +14,10 @@ using Barebones::ClawSkill;
 /******************************************************************************/
 ClawSkill::ClawSkill(UrsineEngine::GameObject& aParent)
   : Skill(aParent)
-  , mDamage(1)
 {
   SetName("Claw");
   SetDescription("Slashes with bony claws.");
+  SetDamage(3);
 }
 
 /******************************************************************************/
@@ -30,24 +30,15 @@ void ClawSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
     auto targetCharacterObject = boardLayoutComponent->GetCharacterAtLocation(aLocation);
     if(targetCharacterObject != nullptr)
     {
-      auto targetCharacterBehaviorComponent = targetCharacterObject->GetFirstComponentOfType<CharacterBehaviorComponent>();
-      if(targetCharacterBehaviorComponent != nullptr)
+      auto scene = env.GetCurrentScene();
+      if(scene != nullptr)
       {
-        auto scene = env.GetCurrentScene();
-        if(scene != nullptr)
-        {
-          // Create an effect in front of the target character.
-          auto effectObject = std::make_unique<UrsineEngine::GameObject>("clawEffect");
-          effectObject->AddComponent(std::make_unique<ClawSkillEffectBehaviorComponent>());
+        // Create an effect in front of the target character.
+        auto effectObject = std::make_unique<UrsineEngine::GameObject>("clawEffect");
+        effectObject->AddComponent(std::make_unique<ClawSkillEffectBehaviorComponent>());
+        effectObject->SetPosition(targetCharacterObject->GetPosition());
 
-          auto targetPosition = targetCharacterObject->GetPosition();
-          targetPosition.z += 0.1;
-          effectObject->SetPosition(targetPosition);
-
-          scene->AddObject(std::move(effectObject));
-        }
-
-        targetCharacterBehaviorComponent->DealDamage(mDamage);
+        scene->AddObject(std::move(effectObject));
       }
     }
   }
