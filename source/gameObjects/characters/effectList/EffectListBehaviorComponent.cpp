@@ -15,7 +15,7 @@ EffectListBehaviorComponent::EffectListBehaviorComponent()
   , mIconsPerRow(5)
   , mHorizontalPadding(0.1)
   , mVerticalPadding(0.1)
-  , mIconScale(0.2)
+  , mIconScale(0.3)
 {
   EffectAddedToCharacter.Connect(*this, [this](CharacterBehaviorComponent& aCharacter,
                                                Effect& aEffect)
@@ -86,8 +86,10 @@ void EffectListBehaviorComponent::HandleEffectAddedToCharacter(CharacterBehavior
     if(mesh != nullptr &&
        parent != nullptr)
     {
+      mesh->SetRenderOption(GL_DEPTH_TEST, false);
+
       auto newObject = std::make_unique<UrsineEngine::GameObject>(aEffect.GetName());
-      newObject->SetScale(glm::vec3(0.2, 0.2, 1.0));
+      newObject->SetScale(glm::vec3(mIconScale, mIconScale, 1.0));
       newObject->AddComponent(std::move(mesh));
       parent->AddChild(std::move(newObject));
 
@@ -149,7 +151,7 @@ void EffectListBehaviorComponent::RepositionIcons()
           {
             // Calculate this icon's x-position using the character's position
             // or the position of the previously placed icon.
-            glm::vec3 iconPos;
+            glm::vec3 iconPos(0.0, 0.0, 0.0);
             double iconHalfWidth = (iconMesh->GetWidth() / 2.0) * mIconScale;
             double iconHalfHeight = (iconMesh->GetHeight() / 2.0) * mIconScale;
 
@@ -168,8 +170,13 @@ void EffectListBehaviorComponent::RepositionIcons()
             {
               double characterMeshHalfWidth = characterMesh->GetWidth() / 2.0;
 
-              iconPos = characterObject->GetPosition();
-              iconPos.x -= characterMeshHalfWidth - iconHalfWidth;
+              auto parent = GetParent();
+              if(parent != nullptr)
+              {
+                iconPos = parent->GetPosition();
+              }
+
+              iconPos.x -= (characterMeshHalfWidth - iconHalfWidth);
             }
 
             // Calculate this icon's y-position using the number of rows.

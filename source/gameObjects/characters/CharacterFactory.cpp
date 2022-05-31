@@ -13,6 +13,7 @@
 #include "BoneThrowSkill.hpp"
 #include "ClawSkill.hpp"
 #include "PitchforkSkill.hpp"
+#include "TentacleSlapSkill.hpp"
 
 #include "Colors.hpp"
 
@@ -125,6 +126,7 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
       newCharacterBehaviorComponent->SetSpeed(2);
 
       newCharacterBehaviorComponent->AddSkill(std::make_unique<PitchforkSkill>(*newCharacter));
+      newCharacterBehaviorComponent->AddSkill(std::make_unique<TentacleSlapSkill>(*newCharacter));
 
       // Set up the spritesheet and animations.
       UrsineEngine::Texture spritesheet;
