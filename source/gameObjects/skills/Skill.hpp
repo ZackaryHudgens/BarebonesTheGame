@@ -41,13 +41,6 @@ namespace Barebones
       int GetDamage() const { return mDamage; }
 
       /**
-       * Returns the owning GameObject.
-       *
-       * @return The GameObject that owns this skill.
-       */
-      UrsineEngine::GameObject* GetParent() { return mParent; }
-
-      /**
        * Selects this skill for use, but doesn't execute it.
        *
        * @param aBoard The board to execute this skill on in the future.
@@ -86,16 +79,23 @@ namespace Barebones
        * A virtual function that returns a vector of valid tile locations
        * for executing this skill from a given location.
        *
+       * Alternatively, if no location is given, the skill will use the
+       * location of the owning GameObject on the given board.
+       *
        * @param aBoard The board GameObject to use this skill on.
        * @param aSourceLocation The location to get valid tiles for.
        */
       virtual TileList GetValidTiles(UrsineEngine::GameObject& aBoard,
                                      const TileLocation& aSourceLocation) { return TileList(); }
+      TileList GetValidTiles(UrsineEngine::GameObject& aBoard);
 
       /**
        * Returns true if the given tile location on the given board
        * is valid for executing this skill. This function uses the virtual
        * GetValidTiles() function to determine validity.
+       *
+       * If no source location is given, the skill will use the
+       * location of the owning GameObject on the given board.
        *
        * @param aBoard The board GameObject to use this skill on.
        * @param aSourceLocation The location to get valid tiles for.
@@ -106,6 +106,8 @@ namespace Barebones
       bool IsTileValid(UrsineEngine::GameObject& aBoard,
                        const TileLocation& aSourceLocation,
                        const TileLocation& aTargetLocation);
+      bool IsTileValid(UrsineEngine::GameObject& aBoard,
+                       const TileLocation& aTargetLocation);
 
       /**
        * A virtual function that returns a vector of tiles that are affected
@@ -115,7 +117,7 @@ namespace Barebones
        * By default, the only affected tile is the given one.
        *
        * @param aBoard The board GameObject to use this skill on.
-       * @param aSourceLocation The location of the tile in question.
+       * @param aSourceLocation The location to get affected tiles for.
        */
       virtual TileList GetAffectedTiles(UrsineEngine::GameObject& aBoard,
                                         const TileLocation& aSourceLocation);
@@ -168,6 +170,13 @@ namespace Barebones
       virtual void ProtectedCancel() {}
 
       /**
+       * A virtual function that gets called during SetEnabled().
+       *
+       * @param aEnabled Whether this skill was enabled or disabled.
+       */
+      virtual void HandleEnabledChanged(bool aEnabled) {}
+
+      /**
        * A virtual function that gets called during Execute(). This returns
        * a GameObject that contains some logic for displaying a sprite or
        * other visual effect, and then deletes itself. When the object deletes
@@ -183,6 +192,13 @@ namespace Barebones
                                                                            const TileLocation& aLocation) { return nullptr; }
 
       /**
+       * Returns the owning GameObject.
+       *
+       * @return The GameObject that owns this skill.
+       */
+      UrsineEngine::GameObject* GetParent() { return mParent; }
+
+      /**
        * A handler function that gets called whenever a GameObject is
        * about to be deleted. If the object is the visual effect this
        * skill is waiting on, this skill is then executed.
@@ -190,13 +206,6 @@ namespace Barebones
        * @param aObject The GameObject about to be deleted.
        */
       void HandleObjectPendingDeletion(UrsineEngine::GameObject* aObject);
-
-      /**
-       * A virtual function that gets called during SetEnabled().
-       *
-       * @param aEnabled Whether this skill was enabled or disabled.
-       */
-      virtual void HandleEnabledChanged(bool aEnabled) {}
 
       /**
        * Checks if the given location on the given board has an enemy.

@@ -24,11 +24,11 @@ namespace Barebones
       MoveSkillEffectBehaviorComponent(MoveSkill& aSkill);
 
       /**
-       * Sets the board to use when highlighting tiles.
+       * Sets the board to highlight tiles on.
        *
        * @param aBoard The board to use when highlighting tiles.
        */
-      void SetBoard(UrsineEngine::GameObject& aBoard);
+      void SetBoard(UrsineEngine::GameObject& aBoard) { mBoard = &aBoard; }
 
       /**
        * Sets the list of shortest paths to use when highlighting
@@ -36,7 +36,14 @@ namespace Barebones
        *
        * @param aPathList The list of paths to use when highlighting tiles.
        */
-      void SetShortestPathList(const TilePathList& aPathList);
+      void SetShortestPathList(const TilePathList& aPathList) { mShortestPaths = aPathList; }
+
+      /**
+       * Sets the starting location to use when highlighting tiles.
+       *
+       * @param aLocation The starting location to use when highlighting tiles.
+       */
+      void SetStartingLocation(const TileLocation& aLocation) { mStartingLocation = aLocation; }
 
     protected:
 
@@ -54,6 +61,7 @@ namespace Barebones
 
       TilePathList mShortestPaths;
       TileList mHighlightedTiles;
+      TileLocation mStartingLocation;
   };
 }
 

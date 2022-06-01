@@ -12,9 +12,3 @@ BoneThrowSkill::BoneThrowSkill(UrsineEngine::GameObject& aParent)
   SetDescription("Throw 'em a bone.");
   SetDamage(2);
 }
-
-/******************************************************************************/
-void BoneThrowSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
-                                      const TileLocation& aSourceLocation)
-{
-}

@@ -80,23 +80,24 @@ void MoveSkill::ProtectedSelect(UrsineEngine::GameObject& aBoard)
     {
       auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
       mShortestPaths = characterBehaviorComponent->GenerateShortestPathList(aBoard, characterLocation);
+
+      // Create a MoveSkillEffectBehaviorComponent and add it to a GameObject,
+      // then add the GameObject to the scene. This component will highlight
+      // tiles as the user moves around, to show a preview of each shortest
+      // path before the user executes this skill.
+      auto scene = env.GetCurrentScene();
+      if(scene != nullptr)
+      {
+        auto skillEffectObject = std::make_unique<UrsineEngine::GameObject>("moveSkillEffect");
+        skillEffectObject->AddComponent(std::make_unique<MoveSkillEffectBehaviorComponent>(*this));
+        scene->AddObject(std::move(skillEffectObject));
+
+        mSkillEffect = scene->GetObjects().back()->GetFirstComponentOfType<MoveSkillEffectBehaviorComponent>();
+        mSkillEffect->SetBoard(aBoard);
+        mSkillEffect->SetShortestPathList(mShortestPaths);
+        mSkillEffect->SetStartingLocation(characterLocation);
+      }
     }
-  }
-
-  // Create a MoveSkillEffectBehaviorComponent and add it to a GameObject,
-  // then add the GameObject to the scene. This component will highlight
-  // tiles as the user moves around, to show a preview of each shortest
-  // path before the user executes this skill.
-  auto scene = env.GetCurrentScene();
-  if(scene != nullptr)
-  {
-    auto skillEffectObject = std::make_unique<UrsineEngine::GameObject>("moveSkillEffect");
-    skillEffectObject->AddComponent(std::make_unique<MoveSkillEffectBehaviorComponent>(*this));
-    scene->AddObject(std::move(skillEffectObject));
-
-    mSkillEffect = scene->GetObjects().back()->GetFirstComponentOfType<MoveSkillEffectBehaviorComponent>();
-    mSkillEffect->SetBoard(aBoard);
-    mSkillEffect->SetShortestPathList(mShortestPaths);
   }
 }
 

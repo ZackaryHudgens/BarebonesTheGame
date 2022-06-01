@@ -17,23 +17,12 @@ MoveSkillEffectBehaviorComponent::MoveSkillEffectBehaviorComponent(Barebones::Mo
   : Component()
   , mBoard(nullptr)
   , mMoveSkill(&aSkill)
+  , mStartingLocation(-1, -1)
 {
   HumanPlayerMoved.Connect(*this, [this](HumanPlayerBehaviorComponent& aPlayer)
   {
     this->HandleHumanPlayerMoved(aPlayer);
   });
-}
-
-/******************************************************************************/
-void MoveSkillEffectBehaviorComponent::SetBoard(UrsineEngine::GameObject& aBoard)
-{
-  mBoard = &aBoard;
-}
-
-/******************************************************************************/
-void MoveSkillEffectBehaviorComponent::SetShortestPathList(const TilePathList& aPathList)
-{
-  mShortestPaths = aPathList;
 }
 
 /******************************************************************************/
@@ -45,11 +34,8 @@ void MoveSkillEffectBehaviorComponent::HandleHumanPlayerMoved(HumanPlayerBehavio
      mMoveSkill != nullptr)
   {
     auto boardLayoutComponent = mBoard->GetFirstComponentOfType<BoardLayoutComponent>();
-    auto skillOwner = mMoveSkill->GetParent();
-    if(boardLayoutComponent != nullptr &&
-       skillOwner != nullptr)
+    if(boardLayoutComponent != nullptr)
     {
-      auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(skillOwner->GetName());
       auto playerLocation = aPlayer.GetLocation();
 
       // Returns true if playerLocation is the last TileLocation in the TileList.
@@ -83,7 +69,7 @@ void MoveSkillEffectBehaviorComponent::HandleHumanPlayerMoved(HumanPlayerBehavio
 
       // If the tile is a valid movement, highlight each tile
       // along the path taken to get there.
-      if(mMoveSkill->IsTileValid(*mBoard, characterLocation, playerLocation))
+      if(mMoveSkill->IsTileValid(*mBoard, mStartingLocation, playerLocation))
       {
         auto path = std::find_if(mShortestPaths.begin(),
                                  mShortestPaths.end(),
