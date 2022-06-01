@@ -19,6 +19,27 @@ namespace Barebones
       Skill(UrsineEngine::GameObject& aParent);
 
       /**
+       * Returns the name of the skill.
+       *
+       * @return The name of the skill.
+       */
+      std::string GetName() const { return mName; }
+
+      /**
+       * Returns the description of the skill.
+       *
+       * @return The description of the skill.
+       */
+      std::string GetDescription() const { return mDescription; }
+
+      /**
+       * Returns the damage this skill deals.
+       *
+       * @return This skill's damage.
+       */
+      int GetDamage() const { return mDamage; }
+
+      /**
        * Returns the owning GameObject.
        *
        * @return The GameObject that owns this skill.
@@ -113,27 +134,6 @@ namespace Barebones
       virtual TileList GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
                                            const TileLocation& aSourceLocation) { return GetValidTiles(aBoard, aSourceLocation); }
 
-      /**
-       * Returns the name of the skill.
-       *
-       * @return The name of the skill.
-       */
-      std::string GetName() const { return mName; }
-
-      /**
-       * Returns the description of the skill.
-       *
-       * @return The description of the skill.
-       */
-      std::string GetDescription() const { return mDescription; }
-
-      /**
-       * Returns the damage this skill deals.
-       *
-       * @return This skill's damage.
-       */
-      int GetDamage() const { return mDamage; }
-
     protected:
 
       /**
@@ -172,6 +172,16 @@ namespace Barebones
        * @param aEnabled Whether this skill was enabled or disabled.
        */
       virtual void HandleEnabledChanged(bool aEnabled) {}
+
+      /**
+       * Checks if the given location on the given board has an enemy.
+       *
+       * @param aBoard The board to check.
+       * @param aLocation The location on the board to check.
+       * @return True if there is an enemy, false otherwise.
+       */
+      bool IsEnemyAtLocation(UrsineEngine::GameObject& aBoard,
+                             const TileLocation& aLocation);
 
       /**
        * Sets the name of the skill.

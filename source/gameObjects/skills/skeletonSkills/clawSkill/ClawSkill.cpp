@@ -13,7 +13,7 @@ using Barebones::ClawSkill;
 
 /******************************************************************************/
 ClawSkill::ClawSkill(UrsineEngine::GameObject& aParent)
-  : Skill(aParent)
+  : SimpleSkill(aParent, 1)
 {
   SetName("Claw");
   SetDescription("Slashes with bony claws.");
@@ -42,120 +42,4 @@ void ClawSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
       }
     }
   }
-}
-
-/******************************************************************************/
-Barebones::TileList ClawSkill::GetValidTiles(UrsineEngine::GameObject& aBoard,
-                                             const TileLocation& aSourceLocation)
-{
-  TileList tiles;
-
-  // Check to the right.
-  auto targetLocation = aSourceLocation;
-  targetLocation.first += 1;
-  if(IsEnemyAtLocation(aBoard,
-                       targetLocation))
-  {
-    tiles.emplace_back(targetLocation);
-  }
-
-  // Check to the left.
-  targetLocation = aSourceLocation;
-  targetLocation.first -= 1;
-  if(IsEnemyAtLocation(aBoard,
-                       targetLocation))
-  {
-    tiles.emplace_back(targetLocation);
-  }
-
-  // Check above.
-  targetLocation = aSourceLocation;
-  targetLocation.second += 1;
-  if(IsEnemyAtLocation(aBoard,
-                       targetLocation))
-  {
-    tiles.emplace_back(targetLocation);
-  }
-
-  // Check below.
-  targetLocation = aSourceLocation;
-  targetLocation.second -= 1;
-  if(IsEnemyAtLocation(aBoard,
-                       targetLocation))
-  {
-    tiles.emplace_back(targetLocation);
-  }
-
-  return tiles;
-}
-
-/******************************************************************************/
-Barebones::TileList ClawSkill::GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
-                                                   const TileLocation& aSourceLocation)
-{
-  TileList tiles;
-
-  auto parent = GetParent();
-  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
-  if(parent != nullptr &&
-     boardLayoutComponent != nullptr)
-  {
-    auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
-    auto targetLocation = characterLocation;
-    targetLocation.first += 1;
-    tiles.emplace_back(targetLocation);
-
-    targetLocation = characterLocation;
-    targetLocation.first -= 1;
-    tiles.emplace_back(targetLocation);
-
-    targetLocation = characterLocation;
-    targetLocation.second += 1;
-    tiles.emplace_back(targetLocation);
-
-    targetLocation = characterLocation;
-    targetLocation.second -= 1;
-    tiles.emplace_back(targetLocation);
-  }
-
-  return tiles;
-}
-
-/******************************************************************************/
-bool ClawSkill::IsEnemyAtLocation(UrsineEngine::GameObject& aBoard,
-                                   const TileLocation& aLocation)
-{
-  bool success = false;
-
-  // Get the side of the parent character.
-  Side characterSide = Side::eNONE;
-  auto parent = GetParent();
-  if(parent != nullptr)
-  {
-    auto characterBehaviorComponent = parent->GetFirstComponentOfType<CharacterBehaviorComponent>();
-    if(characterBehaviorComponent != nullptr)
-    {
-      characterSide = characterBehaviorComponent->GetSide();
-    }
-  }
-
-  // Any character not on the parent character's side is considered an enemy.
-  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
-  if(boardLayoutComponent != nullptr)
-  {
-    auto target = boardLayoutComponent->GetCharacterAtLocation(aLocation);
-    if(target != nullptr)
-    {
-      auto characterBehaviorComponent = target->GetFirstComponentOfType<CharacterBehaviorComponent>();
-      if(characterBehaviorComponent != nullptr)
-      {
-        if(characterBehaviorComponent->GetSide() != characterSide)
-        {
-          success = true;
-        }
-      }
-    }
-  }
-
-  return success;
 }
