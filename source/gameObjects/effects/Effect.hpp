@@ -7,6 +7,8 @@
 
 namespace Barebones
 {
+  class CharacterBehaviorComponent;
+
   class Effect
   {
     public:
@@ -44,6 +46,22 @@ namespace Barebones
        * @return An icon mesh for this effect.
        */
       virtual std::unique_ptr<UrsineEngine::MeshComponent> GetIcon() const { return nullptr; }
+
+      /**
+       * A virtual function that gets called whenever this effect is
+       * added to a character.
+       *
+       * @param aCharacter The character this effect was added to.
+       */
+      virtual void HandleAddedToCharacter(CharacterBehaviorComponent& aCharacter) {}
+
+      /**
+       * A virtual function that gets called whenever this effect is
+       * removed from a character.
+       *
+       * @param aCharacter The character this effect was removed from.
+       */
+      virtual void HandleRemovedFromCharacter(CharacterBehaviorComponent& aCharacter) {}
 
     protected:
 

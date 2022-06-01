@@ -177,6 +177,8 @@ void CharacterBehaviorComponent::AddEffect(std::unique_ptr<Effect> aEffect)
     mStatusMessageQueue.emplace(aEffect->GetStatusMessage());
 
     mEffects.emplace_back(std::move(aEffect));
+
+    mEffects.back()->HandleAddedToCharacter(*this);
     EffectAddedToCharacter.Notify(*this, *mEffects.back());
   }
 }
@@ -199,6 +201,7 @@ void CharacterBehaviorComponent::RemoveEffect(const std::string& aName)
     removedMessage << foundEffect->get()->GetName() << "\nremoved!";
     mStatusMessageQueue.emplace(removedMessage.str());
 
+    (*foundEffect)->HandleRemovedFromCharacter(*this);
     EffectRemovedFromCharacter.Notify(*this, *(*foundEffect));
     mEffects.erase(foundEffect);
   }

@@ -2,11 +2,14 @@
 
 #include <SpriteComponent.hpp>
 
+#include "CharacterBehaviorComponent.hpp"
+
 using Barebones::SlowEffect;
 
 /******************************************************************************/
 SlowEffect::SlowEffect()
   : Effect()
+  , mCharacterSpeed(0)
 {
   SetName("Slow");
   SetDescription("This character's speed is reduced.");
@@ -29,4 +32,17 @@ std::unique_ptr<UrsineEngine::MeshComponent> SlowEffect::GetIcon() const
   sprite->SetCurrentShader("default");
 
   return std::move(sprite);
+}
+
+/******************************************************************************/
+void SlowEffect::HandleAddedToCharacter(CharacterBehaviorComponent& aCharacter)
+{
+  mCharacterSpeed = aCharacter.GetSpeed();
+  aCharacter.SetSpeed(mCharacterSpeed - 1);
+}
+
+/******************************************************************************/
+void SlowEffect::HandleRemovedFromCharacter(CharacterBehaviorComponent& aCharacter)
+{
+  aCharacter.SetSpeed(mCharacterSpeed);
 }
