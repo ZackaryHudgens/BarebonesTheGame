@@ -1,8 +1,5 @@
 #include "ClawSkill.hpp"
 
-#include <Environment.hpp>
-#include <Scene.hpp>
-
 #include "CharacterBehaviorComponent.hpp"
 
 #include "BoardLayoutComponent.hpp"
@@ -21,25 +18,23 @@ ClawSkill::ClawSkill(UrsineEngine::GameObject& aParent)
 }
 
 /******************************************************************************/
-void ClawSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
-                                 const TileLocation& aLocation)
+std::unique_ptr<UrsineEngine::GameObject> ClawSkill::CreateVisualEffect(UrsineEngine::GameObject& aBoard,
+                                                                        const TileLocation& aLocation)
 {
+  std::unique_ptr<UrsineEngine::GameObject> visualEffect = nullptr;
+
   auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
   if(boardLayoutComponent != nullptr)
   {
     auto targetCharacterObject = boardLayoutComponent->GetCharacterAtLocation(aLocation);
     if(targetCharacterObject != nullptr)
     {
-      auto scene = env.GetCurrentScene();
-      if(scene != nullptr)
-      {
-        // Create an effect in front of the target character.
-        auto effectObject = std::make_unique<UrsineEngine::GameObject>("clawEffect");
-        effectObject->AddComponent(std::make_unique<ClawSkillEffectBehaviorComponent>());
-        effectObject->SetPosition(targetCharacterObject->GetPosition());
-
-        scene->AddObject(std::move(effectObject));
-      }
+      // Create an effect in front of the target character.
+      visualEffect = std::make_unique<UrsineEngine::GameObject>("clawEffect");
+      visualEffect->AddComponent(std::make_unique<ClawSkillEffectBehaviorComponent>());
+      visualEffect->SetPosition(targetCharacterObject->GetPosition());
     }
   }
+
+  return std::move(visualEffect);
 }

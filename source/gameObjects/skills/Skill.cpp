@@ -2,6 +2,9 @@
 
 #include <algorithm>
 
+#include <CoreSignals.hpp>
+#include <Environment.hpp>
+
 #include "BoardLayoutComponent.hpp"
 #include "CharacterBehaviorComponent.hpp"
 
@@ -12,9 +15,16 @@ using Barebones::Skill;
 /******************************************************************************/
 Skill::Skill(UrsineEngine::GameObject& aParent)
   : mParent(&aParent)
+  , mVisualEffect(nullptr)
+  , mBoard(nullptr)
+  , mExecuteLocation(-1, -1)
   , mDamage(-1)
   , mEnabled(true)
 {
+  UrsineEngine::ObjectPendingDeletion.Connect(mObserver, [this](UrsineEngine::GameObject* aObject)
+  {
+    this->HandleObjectPendingDeletion(aObject);
+  });
 }
 
 /******************************************************************************/
@@ -30,27 +40,44 @@ void Skill::Execute(UrsineEngine::GameObject& aBoard,
 {
   if(mEnabled)
   {
-    auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
-    if(boardLayoutComponent != nullptr)
-    {
-      for(const auto& affectedTile : GetAffectedTiles(aBoard, aLocation))
-      {
-        auto character = boardLayoutComponent->GetCharacterAtLocation(affectedTile);
-        if(character != nullptr)
-        {
-          auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
-          if(characterBehaviorComponent != nullptr &&
-             mDamage >= 0)
-          {
-            characterBehaviorComponent->DealDamage(mDamage);
-          }
-        }
+    mBoard = &aBoard;
+    mExecuteLocation = aLocation;
 
-        ProtectedExecute(aBoard, affectedTile);
+    auto visualEffect = CreateVisualEffect(aBoard, aLocation);
+    if(visualEffect != nullptr)
+    {
+      // Add the visual effect to the scene.
+      auto scene = env.GetCurrentScene();
+      if(scene != nullptr)
+      {
+        scene->AddObject(std::move(visualEffect));
+        mVisualEffect = scene->GetObjects().back();
       }
     }
+    else
+    {
+      auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
+      if(boardLayoutComponent != nullptr)
+      {
+        for(const auto& affectedTile : GetAffectedTiles(aBoard, aLocation))
+        {
+          auto character = boardLayoutComponent->GetCharacterAtLocation(affectedTile);
+          if(character != nullptr)
+          {
+            auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
+            if(characterBehaviorComponent != nullptr &&
+               mDamage >= 0)
+            {
+              characterBehaviorComponent->DealDamage(mDamage);
+            }
+          }
 
-    SkillExecuted.Notify(*this);
+          ProtectedExecute(aBoard, affectedTile);
+        }
+      }
+
+      SkillExecuted.Notify(*this);
+    }
   }
 }
 
@@ -94,6 +121,39 @@ Barebones::TileList Skill::GetAffectedTiles(UrsineEngine::GameObject& aBoard,
   TileList tiles;
   tiles.emplace_back(aSourceLocation);
   return tiles;
+}
+
+/******************************************************************************/
+void Skill::HandleObjectPendingDeletion(UrsineEngine::GameObject* aObject)
+{
+  if(aObject == mVisualEffect &&
+     mBoard != nullptr)
+  {
+    auto boardLayoutComponent = mBoard->GetFirstComponentOfType<BoardLayoutComponent>();
+    if(boardLayoutComponent != nullptr)
+    {
+      for(const auto& affectedTile : GetAffectedTiles(*mBoard, mExecuteLocation))
+      {
+        auto character = boardLayoutComponent->GetCharacterAtLocation(affectedTile);
+        if(character != nullptr)
+        {
+          auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
+          if(characterBehaviorComponent != nullptr &&
+             mDamage >= 0)
+          {
+            characterBehaviorComponent->DealDamage(mDamage);
+          }
+        }
+
+        ProtectedExecute(*mBoard, affectedTile);
+      }
+    }
+
+    SkillExecuted.Notify(*this);
+
+    mVisualEffect = nullptr;
+    mBoard = nullptr;
+  }
 }
 
 /******************************************************************************/

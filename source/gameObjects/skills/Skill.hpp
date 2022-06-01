@@ -2,6 +2,7 @@
 #define SKILL_HPP
 
 #include <GameObject.hpp>
+#include <Observer.hpp>
 
 #include "TileUtil.hpp"
 
@@ -149,14 +150,14 @@ namespace Barebones
       /**
        * A virtual function that gets called during Execute().
        *
-       * This must be overridden to perform some action when the user
+       * This can be overridden to perform some action when the user
        * chooses to execute this skill.
        *
        * @param aBoard The board to execute this skill on.
        * @param aLocation The location on the board to execute this skill.
        */
       virtual void ProtectedExecute(UrsineEngine::GameObject& aBoard,
-                                    const TileLocation& aLocation) = 0;
+                                    const TileLocation& aLocation) {};
 
       /**
        * A virtual function that gets called during Cancel().
@@ -165,6 +166,30 @@ namespace Barebones
        * the usage of this skill.
        */
       virtual void ProtectedCancel() {}
+
+      /**
+       * A virtual function that gets called during Execute(). This returns
+       * a GameObject that contains some logic for displaying a sprite or
+       * other visual effect, and then deletes itself. When the object deletes
+       * itself, damage is dealt and ProtectedExecute() is called.
+       *
+       * If no visual effect is created, the skill is executed immediately.
+       *
+       * @param aBoard The board to create a visual effect on.
+       * @param aLocation The location to create a visual effect at.
+       * @return A GameObject that represents any visual effect for this skill.
+       */
+      virtual std::unique_ptr<UrsineEngine::GameObject> CreateVisualEffect(UrsineEngine::GameObject& aBoard,
+                                                                           const TileLocation& aLocation) { return nullptr; }
+
+      /**
+       * A handler function that gets called whenever a GameObject is
+       * about to be deleted. If the object is the visual effect this
+       * skill is waiting on, this skill is then executed.
+       *
+       * @param aObject The GameObject about to be deleted.
+       */
+      void HandleObjectPendingDeletion(UrsineEngine::GameObject* aObject);
 
       /**
        * A virtual function that gets called during SetEnabled().
@@ -206,6 +231,12 @@ namespace Barebones
 
     private:
       UrsineEngine::GameObject* mParent;
+      UrsineEngine::GameObject* mVisualEffect;
+
+      UrsineEngine::GameObject* mBoard;
+      TileLocation mExecuteLocation;
+
+      UrsineEngine::Observer mObserver;
 
       std::string mDescription;
       std::string mName;
