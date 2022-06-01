@@ -466,7 +466,6 @@ void CharacterBehaviorComponent::DisplayStatusMessage(const std::string& aText)
 
     // Position the status message to be centered in front of the character.
     auto messagePos = parent->GetPosition();
-    messagePos.z += 0.1;
     messagePos.x -= ((statusMessageComponent->GetTextComponent()->GetWidth() * 0.01) / 2.0);
     statusMessageObject->SetPosition(messagePos);
     statusMessageObject->SetScale(glm::vec3(0.01, 0.01, 1.0));

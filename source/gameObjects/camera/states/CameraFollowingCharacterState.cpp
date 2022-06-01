@@ -13,41 +13,61 @@ CameraFollowingCharacterState::CameraFollowingCharacterState(UrsineEngine::GameO
   , mYDistance(5.0)
   , mZDistance(5.0)
   , mRotation(-40.0)
+  , mSpeed(0.3)
+  , mMoving(true)
 {
-  // Initialize the camera position and orientation.
-  auto cameraBehaviorComponent = aCamera.GetFirstComponentOfType<CameraBehaviorComponent>();
-  if(cameraBehaviorComponent != nullptr)
+}
+
+/******************************************************************************/
+std::unique_ptr<Barebones::CameraState> CameraFollowingCharacterState::Update(double aTime)
+{
+  if(mMoving)
   {
-    auto zoomDistance = cameraBehaviorComponent->GetZoomDistance();
-    aCamera.SetPosition(glm::vec3(aCharacter.GetPosition().x,
-                                  aCharacter.GetPosition().y + mYDistance + zoomDistance,
-                                  aCharacter.GetPosition().z + mZDistance + zoomDistance));
+    auto camera = GetCamera();
+    if(camera != nullptr &&
+       mCharacter != nullptr)
+    {
+      auto targetPosition = mCharacter->GetPosition();
+      targetPosition.y += mYDistance;
+      targetPosition.z += mZDistance;
+
+      auto cameraBehaviorComponent = camera->GetFirstComponentOfType<CameraBehaviorComponent>();
+      if(cameraBehaviorComponent != nullptr)
+      {
+        auto zoomDistance = cameraBehaviorComponent->GetZoomDistance();
+        targetPosition.y += zoomDistance;
+        targetPosition.z += zoomDistance;
+      }
+
+      auto position = glm::mix(camera->GetPosition(),
+                               targetPosition,
+                               mSpeed);
+
+      // If the position is close enough to the target position,
+      // move directly to the target position and stop moving.
+      if(std::abs(targetPosition.x - position.x) <= 0.005 &&
+         std::abs(targetPosition.y - position.y) <= 0.005 &&
+         std::abs(targetPosition.z - position.z) <= 0.005)
+      {
+        camera->SetPosition(targetPosition);
+        mMoving = false;
+      }
+      else
+      {
+        camera->SetPosition(position);
+      }
+    }
   }
+
+  return nullptr;
 }
 
 /******************************************************************************/
 std::unique_ptr<Barebones::CameraState> CameraFollowingCharacterState::HandleObjectMoved(UrsineEngine::GameObject* aObject)
 {
-  if(mCharacter == aObject &&
-     mCharacter != nullptr)
+  if(mCharacter == aObject)
   {
-    // Calculate the new position for the camera.
-    auto newPos = mCharacter->GetPosition();
-    newPos.y += mYDistance;
-    newPos.z += mZDistance;
-
-    auto camera = GetCamera();
-    if(camera != nullptr)
-    {
-      auto cameraBehaviorComponent = camera->GetFirstComponentOfType<CameraBehaviorComponent>();
-      if(cameraBehaviorComponent != nullptr)
-      {
-        newPos.y += cameraBehaviorComponent->GetZoomDistance();
-        newPos.z += cameraBehaviorComponent->GetZoomDistance();
-      }
-
-      camera->SetPosition(newPos);
-    }
+    mMoving = true;
   }
 
   return nullptr;

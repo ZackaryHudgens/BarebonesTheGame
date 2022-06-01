@@ -19,6 +19,14 @@ namespace Barebones
                                     UrsineEngine::GameObject& aCharacter);
 
       /**
+       * Updates the state.
+       *
+       * @param aTime The start time of the current Scene's Update().
+       * @return A unique_ptr to a new state, if necessary.
+       */
+      std::unique_ptr<CameraState> Update(double aTime) override;
+
+      /**
        * A handler function that gets called whenever a GameObject moves in the
        * current Scene.
        *
@@ -41,6 +49,10 @@ namespace Barebones
       double mYDistance;
       double mZDistance;
       double mRotation;
+
+      double mSpeed;
+
+      bool mMoving;
   };
 }
 

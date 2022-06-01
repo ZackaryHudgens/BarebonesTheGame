@@ -22,6 +22,8 @@ void StatusMessageBehaviorComponent::Initialize()
     textObject->AddComponent(std::make_unique<UrsineEngine::TextComponent>());
     mTextComponent = textObject->GetComponentsOfType<UrsineEngine::TextComponent>().back();
 
+    mTextComponent->SetRenderOption(GL_DEPTH_TEST, false);
+
     std::string vertexFile = "resources/shaders/OutlinedTextShader.vert";
     std::string fragmentFile = "resources/shaders/OutlinedTextShader.frag";
     UrsineEngine::Shader outlineTextShader(vertexFile, fragmentFile);
@@ -50,7 +52,7 @@ void StatusMessageBehaviorComponent::Update(double aTime)
     pos.y += 0.01;
     parent->SetPosition(pos);
 
-    if(pos.y >= 1.5)
+    if(pos.y >= 2.0)
     {
       parent->ScheduleForDeletion();
     }
