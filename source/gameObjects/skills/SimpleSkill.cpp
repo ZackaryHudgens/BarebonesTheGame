@@ -82,12 +82,10 @@ Barebones::TileList SimpleSkill::GetTilesToHighlight(UrsineEngine::GameObject& a
 {
   TileList tiles;
 
-  auto character = GetCharacter();
   auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
-  if(character != nullptr &&
-     boardLayoutComponent != nullptr)
+  if(boardLayoutComponent != nullptr)
   {
-    auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(character->GetName());
+    auto characterLocation = GetCharacterLocation(aBoard);
 
     // Check tiles to the right.
     auto targetLocation = characterLocation;

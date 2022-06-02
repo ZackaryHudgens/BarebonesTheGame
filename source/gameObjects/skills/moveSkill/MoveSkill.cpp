@@ -78,7 +78,7 @@ void MoveSkill::ProtectedSelect(UrsineEngine::GameObject& aBoard)
     if(boardLayoutComponent != nullptr &&
        characterBehaviorComponent != nullptr)
     {
-      auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(character->GetName());
+      auto characterLocation = GetCharacterLocation(aBoard);
       mShortestPaths = characterBehaviorComponent->GenerateShortestPathList(aBoard, characterLocation);
 
       // Create a MoveSkillEffectBehaviorComponent and add it to a GameObject,
@@ -111,7 +111,7 @@ void MoveSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
   if(characterBehaviorComponent != nullptr &&
      boardLayoutComponent != nullptr)
   {
-    auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(character->GetName());
+    auto characterLocation = GetCharacterLocation(aBoard);
 
     // If the shortest path list hasn't been generated in ProtectedSelect(),
     // generate it here.
