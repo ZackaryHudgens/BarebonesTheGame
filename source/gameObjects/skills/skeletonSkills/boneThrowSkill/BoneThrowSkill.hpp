@@ -12,9 +12,9 @@ namespace Barebones
       /**
        * Constructor.
        *
-       * @param aParent The GameObject that owns this skill.
+       * @param aCharacter The character GameObject that owns this skill.
        */
-      BoneThrowSkill(UrsineEngine::GameObject& aParent);
+      BoneThrowSkill(UrsineEngine::GameObject& aCharacter);
   };
 }
 

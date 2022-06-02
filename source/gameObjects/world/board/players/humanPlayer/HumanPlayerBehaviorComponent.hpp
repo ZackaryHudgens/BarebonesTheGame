@@ -3,7 +3,6 @@
 
 #include "PlayerBehaviorComponent.hpp"
 
-#include "Skill.hpp"
 #include "TileUtil.hpp"
 
 #include "CharacterBehaviorComponent.hpp"
@@ -20,11 +19,6 @@ namespace Barebones
       HumanPlayerBehaviorComponent();
 
       /**
-       * Initializes the component.
-       */
-      void Initialize() override;
-
-      /**
        * Sets the location of the player on the board.
        *
        * @param aLocation The new location of the player.
@@ -37,13 +31,6 @@ namespace Barebones
        * @return The location of the player.
        */
       TileLocation GetLocation() const { return mLocation; }
-
-      /**
-       * Returns a vector of this player's spells.
-       *
-       * @return This player's spells.
-       */
-      std::vector<Skill*> GetSpells();
 
     protected:
 
@@ -59,13 +46,6 @@ namespace Barebones
        * ends.
        */
       void ProtectedEndTurn() override;
-
-      /**
-       * Adds a spell to this player.
-       *
-       * @param aSpell The spell to add.
-       */
-      void AddSpell(std::unique_ptr<Skill> aSpell);
 
       /**
        * A handler function that gets called whenever a character starts
@@ -85,8 +65,6 @@ namespace Barebones
 
     private:
       TileLocation mLocation;
-
-      std::vector<std::unique_ptr<Skill>> mSpells;
 
       bool mTakingTurn;
   };

@@ -12,10 +12,10 @@ namespace Barebones
       /**
        * Constructor.
        *
-       * @param aParent The GameObject that owns this skill.
+       * @param aCharacter The character GameObject that owns this skill.
        * @param aRange The range of this skill.
        */
-      SimpleSkill(UrsineEngine::GameObject& aParent, int aRange);
+      SimpleSkill(UrsineEngine::GameObject& aCharacter, int aRange);
 
       /**
        * Returns a vector of valid tile locations for executing this skill.

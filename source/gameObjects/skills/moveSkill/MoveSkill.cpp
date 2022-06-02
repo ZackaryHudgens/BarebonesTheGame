@@ -11,8 +11,8 @@
 using Barebones::MoveSkill;
 
 /******************************************************************************/
-MoveSkill::MoveSkill(UrsineEngine::GameObject& aParent)
-  : Skill(aParent)
+MoveSkill::MoveSkill(UrsineEngine::GameObject& aCharacter)
+  : Skill(aCharacter)
   , mSkillEffect(nullptr)
   , mDistanceRemaining(0)
 {
@@ -20,7 +20,7 @@ MoveSkill::MoveSkill(UrsineEngine::GameObject& aParent)
   SetDescription("Moves the character.");
 
   // Initialize the distance remaining if possible.
-  auto characterBehaviorComponent = aParent.GetFirstComponentOfType<CharacterBehaviorComponent>();
+  auto characterBehaviorComponent = aCharacter.GetFirstComponentOfType<CharacterBehaviorComponent>();
   if(characterBehaviorComponent != nullptr)
   {
     mDistanceRemaining = characterBehaviorComponent->GetSpeed();
@@ -42,8 +42,8 @@ Barebones::TileList MoveSkill::GetValidTiles(UrsineEngine::GameObject& aBoard,
   // generate it here.
   if(mShortestPaths.empty())
   {
-    auto parent = GetParent();
-    auto characterBehaviorComponent = parent->GetFirstComponentOfType<CharacterBehaviorComponent>();
+    auto character = GetCharacter();
+    auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
     auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
     if(characterBehaviorComponent != nullptr &&
        boardLayoutComponent != nullptr)
@@ -70,15 +70,15 @@ Barebones::TileList MoveSkill::GetValidTiles(UrsineEngine::GameObject& aBoard,
 void MoveSkill::ProtectedSelect(UrsineEngine::GameObject& aBoard)
 {
   // Generate a list of shortest paths on this board for the parent character.
-  auto parent = GetParent();
-  if(parent != nullptr)
+  auto character = GetCharacter();
+  if(character != nullptr)
   {
     auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
-    auto characterBehaviorComponent = parent->GetFirstComponentOfType<CharacterBehaviorComponent>();
+    auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
     if(boardLayoutComponent != nullptr &&
        characterBehaviorComponent != nullptr)
     {
-      auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
+      auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(character->GetName());
       mShortestPaths = characterBehaviorComponent->GenerateShortestPathList(aBoard, characterLocation);
 
       // Create a MoveSkillEffectBehaviorComponent and add it to a GameObject,
@@ -105,13 +105,13 @@ void MoveSkill::ProtectedSelect(UrsineEngine::GameObject& aBoard)
 void MoveSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
                                  const TileLocation& aLocation)
 {
-  auto parent = GetParent();
-  auto characterBehaviorComponent = parent->GetFirstComponentOfType<CharacterBehaviorComponent>();
+  auto character = GetCharacter();
+  auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
   auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
   if(characterBehaviorComponent != nullptr &&
      boardLayoutComponent != nullptr)
   {
-    auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
+    auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(character->GetName());
 
     // If the shortest path list hasn't been generated in ProtectedSelect(),
     // generate it here.
@@ -197,10 +197,10 @@ void MoveSkill::HandleEnabledChanged(bool aEnabled)
   // When enabled, update the distance remaining to the parent character's speed.
   if(aEnabled)
   {
-    auto parent = GetParent();
-    if(parent != nullptr)
+    auto character = GetCharacter();
+    if(character != nullptr)
     {
-      auto characterBehaviorComponent = parent->GetFirstComponentOfType<CharacterBehaviorComponent>();
+      auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
       if(characterBehaviorComponent != nullptr)
       {
         mDistanceRemaining = characterBehaviorComponent->GetSpeed();

@@ -13,8 +13,8 @@
 using Barebones::Skill;
 
 /******************************************************************************/
-Skill::Skill(UrsineEngine::GameObject& aParent)
-  : mParent(&aParent)
+Skill::Skill(UrsineEngine::GameObject& aCharacter)
+  : mCharacter(&aCharacter)
   , mVisualEffect(nullptr)
   , mBoard(nullptr)
   , mExecuteLocation(-1, -1)
@@ -164,10 +164,10 @@ bool Skill::IsEnemyAtLocation(UrsineEngine::GameObject& aBoard,
 
   // Get the side of the parent character.
   Side characterSide = Side::eNONE;
-  auto parent = GetParent();
-  if(parent != nullptr)
+  auto character = GetCharacter();
+  if(character != nullptr)
   {
-    auto characterBehaviorComponent = parent->GetFirstComponentOfType<CharacterBehaviorComponent>();
+    auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
     if(characterBehaviorComponent != nullptr)
     {
       characterSide = characterBehaviorComponent->GetSide();

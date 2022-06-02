@@ -12,9 +12,9 @@ namespace Barebones
       /**
        * Constructor.
        *
-       * @param aParent The GameObject that owns this skill.
+       * @param aCharacter The character GameObject that owns this skill.
        */
-      TentacleSlapSkill(UrsineEngine::GameObject& aParent);
+      TentacleSlapSkill(UrsineEngine::GameObject& aCharacter);
 
     protected:
 

@@ -4,9 +4,6 @@
 
 #include "Signals.hpp"
 
-#include "DesecrateSpell.hpp"
-#include "FireballSpell.hpp"
-
 using Barebones::HumanPlayerBehaviorComponent;
 
 /******************************************************************************/
@@ -29,34 +26,10 @@ HumanPlayerBehaviorComponent::HumanPlayerBehaviorComponent()
 }
 
 /******************************************************************************/
-void HumanPlayerBehaviorComponent::Initialize()
-{
-  auto parent = GetParent();
-  if(parent != nullptr)
-  {
-    AddSpell(std::make_unique<DesecrateSpell>(*parent));
-    AddSpell(std::make_unique<FireballSpell>(*parent));
-  }
-}
-
-/******************************************************************************/
 void HumanPlayerBehaviorComponent::SetLocation(const TileLocation& aLocation)
 {
   mLocation = aLocation;
   HumanPlayerMoved.Notify(*this);
-}
-
-/******************************************************************************/
-std::vector<Barebones::Skill*> HumanPlayerBehaviorComponent::GetSpells()
-{
-  std::vector<Skill*> spells;
-
-  for(auto& spell : mSpells)
-  {
-    spells.emplace_back(spell.get());
-  }
-
-  return spells;
 }
 
 /******************************************************************************/
@@ -90,12 +63,6 @@ void HumanPlayerBehaviorComponent::ProtectedEndTurn()
       inputComponent->SetEnabled(false);
     }
   }
-}
-
-/******************************************************************************/
-void HumanPlayerBehaviorComponent::AddSpell(std::unique_ptr<Skill> aSpell)
-{
-  mSpells.emplace_back(std::move(aSpell));
 }
 
 /******************************************************************************/

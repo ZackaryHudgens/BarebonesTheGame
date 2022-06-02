@@ -10,8 +10,8 @@
 using Barebones::TentacleSlapSkill;
 
 /******************************************************************************/
-TentacleSlapSkill::TentacleSlapSkill(UrsineEngine::GameObject& aParent)
-  : SimpleSkill(aParent, 1)
+TentacleSlapSkill::TentacleSlapSkill(UrsineEngine::GameObject& aCharacter)
+  : SimpleSkill(aCharacter, 1)
 {
   SetName("Tentacle Slap");
   SetDescription("Slaps with an outstretched tentacle. Slows the target.");

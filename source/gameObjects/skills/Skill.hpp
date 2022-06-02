@@ -15,9 +15,9 @@ namespace Barebones
       /**
        * Constructor.
        *
-       * @param aParent The GameObject that owns this skill.
+       * @param aCharacter The character GameObject that owns this skill.
        */
-      Skill(UrsineEngine::GameObject& aParent);
+      Skill(UrsineEngine::GameObject& aCharacter);
 
       /**
        * Returns the name of the skill.
@@ -192,11 +192,11 @@ namespace Barebones
                                                                            const TileLocation& aLocation) { return nullptr; }
 
       /**
-       * Returns the owning GameObject.
+       * Returns the owning character GameObject.
        *
-       * @return The GameObject that owns this skill.
+       * @return The character GameObject that owns this skill.
        */
-      UrsineEngine::GameObject* GetParent() { return mParent; }
+      UrsineEngine::GameObject* GetCharacter() { return mCharacter; }
 
       /**
        * A handler function that gets called whenever a GameObject is
@@ -239,7 +239,7 @@ namespace Barebones
       void SetDamage(int aDamage) { mDamage = aDamage; }
 
     private:
-      UrsineEngine::GameObject* mParent;
+      UrsineEngine::GameObject* mCharacter;
       UrsineEngine::GameObject* mVisualEffect;
 
       UrsineEngine::GameObject* mBoard;

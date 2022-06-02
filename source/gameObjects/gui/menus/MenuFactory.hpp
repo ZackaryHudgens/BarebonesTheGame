@@ -8,8 +8,7 @@ namespace Barebones
   enum class MenuType
   {
     eMAIN,
-    eSKILL,
-    eSPELL,
+    eSKILL
   };
 
   class MenuFactory
@@ -18,7 +17,7 @@ namespace Barebones
 
       /**
        * Creates a GameObject and adds the proper components
-       * based on the type of meny given, then returns it as
+       * based on the type of menu given, then returns it as
        * a std::unique_ptr.
        *
        * @param aType The type of menu to create.
