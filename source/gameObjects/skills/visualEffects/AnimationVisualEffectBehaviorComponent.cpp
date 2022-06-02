@@ -1,28 +1,29 @@
-#include "ClawSkillEffectBehaviorComponent.hpp"
+#include "AnimationVisualEffectBehaviorComponent.hpp"
 
-#include <Environment.hpp>
+#include <CoreSignals.hpp>
 #include <GameObject.hpp>
-#include <Shader.hpp>
 
-#include <iostream>
-
-using Barebones::ClawSkillEffectBehaviorComponent;
+using Barebones::AnimationVisualEffectBehaviorComponent;
 
 /******************************************************************************/
-ClawSkillEffectBehaviorComponent::ClawSkillEffectBehaviorComponent()
+AnimationVisualEffectBehaviorComponent::AnimationVisualEffectBehaviorComponent(const std::string& aSpritesheet,
+                                                                               const std::vector<UrsineEngine::TextureClip> aClips,
+                                                                               double aSpeed)
   : Component()
   , mSprite(nullptr)
+  , mSpritesheet(aSpritesheet)
+  , mClips(aClips)
+  , mSpeed(aSpeed)
 {
   UrsineEngine::SpriteAnimationComplete.Connect(*this, [this](const std::string& aName,
                                                               UrsineEngine::SpriteComponent& aSprite)
   {
-    this->HandleSpriteAnimationComplete(aName,
-                                        aSprite);
+    this->HandleSpriteAnimationComplete(aName, aSprite);
   });
 }
 
 /******************************************************************************/
-void ClawSkillEffectBehaviorComponent::Initialize()
+void AnimationVisualEffectBehaviorComponent::Initialize()
 {
   auto parent = GetParent();
   if(parent != nullptr)
@@ -32,7 +33,7 @@ void ClawSkillEffectBehaviorComponent::Initialize()
     sprite->SetRenderOption(GL_DEPTH_TEST, false);
 
     UrsineEngine::Texture texture;
-    texture.CreateTextureFromFile("resources/sprites/clawEffectSpritesheet.png");
+    texture.CreateTextureFromFile(mSpritesheet);
     sprite->SetTexture(texture);
 
     std::string vertexFile = "resources/shaders/TexturedMeshShader.vert";
@@ -44,22 +45,13 @@ void ClawSkillEffectBehaviorComponent::Initialize()
 
     // Create the animations for the sprite.
     sprite->AddAnimation("default");
-
-    UrsineEngine::TextureClip clip;
-    clip.mHeight = 16;
-    clip.mWidth = 16;
-    clip.mX = 0;
-    clip.mY = 0;
-    sprite->AddFrameToAnimation("default", clip);
-
-    clip.mX = 16;
-    sprite->AddFrameToAnimation("default", clip);
-
-    clip.mX = 32;
-    sprite->AddFrameToAnimation("default", clip);
+    for(const auto& clip : mClips)
+    {
+      sprite->AddFrameToAnimation("default", clip);
+    }
 
     sprite->SetAnimation("default");
-    sprite->SetSpeedOfAnimation(15.0);
+    sprite->SetSpeedOfAnimation(mSpeed);
 
     parent->AddComponent(std::move(sprite));
     mSprite = parent->GetComponentsOfType<UrsineEngine::SpriteComponent>().back();
@@ -67,8 +59,8 @@ void ClawSkillEffectBehaviorComponent::Initialize()
 }
 
 /******************************************************************************/
-void ClawSkillEffectBehaviorComponent::HandleSpriteAnimationComplete(const std::string& aName,
-                                                                     UrsineEngine::SpriteComponent& aSprite)
+void AnimationVisualEffectBehaviorComponent::HandleSpriteAnimationComplete(const std::string& aName,
+                                                                           UrsineEngine::SpriteComponent& aSprite)
 {
   if(mSprite == &aSprite)
   {

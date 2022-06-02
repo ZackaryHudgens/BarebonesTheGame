@@ -14,16 +14,13 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/gui/menus/*.?pp
                        gameObjects/gui/menus/mainMenu/*.?pp
                        gameObjects/gui/menus/skillMenu/*.?pp
-                       gameObjects/gui/menus/spellMenu/*.?pp
                        gameObjects/skills/*.?pp
                        gameObjects/skills/moveSkill/*.?pp
                        gameObjects/skills/skeletonSkills/clawSkill/*.?pp
                        gameObjects/skills/skeletonSkills/boneThrowSkill/*.?pp
                        gameObjects/skills/humanSkills/pitchforkSkill/*.?pp
                        gameObjects/skills/humanSkills/tentacleSlapSkill/*.?pp
-                       gameObjects/skills/spells/*.?pp
-                       gameObjects/skills/spells/desecrateSpell/*.?pp
-                       gameObjects/skills/spells/fireballSpell/*.?pp
+                       gameObjects/skills/visualEffects/*.?pp
                        gameObjects/util/*.?pp
                        gameObjects/util/inputManager/*.?pp
                        gameObjects/util/sceneFactory/*.?pp
@@ -58,16 +55,13 @@ target_include_directories(barebones PUBLIC
                            gameObjects/gui/menus
                            gameObjects/gui/menus/mainMenu
                            gameObjects/gui/menus/skillMenu
-                           gameObjects/gui/menus/spellMenu
                            gameObjects/skills
                            gameObjects/skills/moveSkill
                            gameObjects/skills/skeletonSkills/clawSkill
                            gameObjects/skills/skeletonSkills/boneThrowSkill
                            gameObjects/skills/humanSkills/pitchforkSkill
                            gameObjects/skills/humanSkills/tentacleSlapSkill
-                           gameObjects/skills/spells
-                           gameObjects/skills/spells/desecrateSpell
-                           gameObjects/skills/spells/fireballSpell
+                           gameObjects/skills/visualEffects
                            gameObjects/util
                            gameObjects/util/inputManager
                            gameObjects/util/sceneFactory
