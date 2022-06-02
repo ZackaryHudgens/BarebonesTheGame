@@ -5,8 +5,8 @@
 using Barebones::SimpleSkill;
 
 /******************************************************************************/
-SimpleSkill::SimpleSkill(UrsineEngine::GameObject& aParent, int aRange)
-  : Skill(aParent)
+SimpleSkill::SimpleSkill(UrsineEngine::GameObject& aCharacter, int aRange)
+  : Skill(aCharacter)
   , mRange(aRange)
 {
 }
@@ -82,12 +82,10 @@ Barebones::TileList SimpleSkill::GetTilesToHighlight(UrsineEngine::GameObject& a
 {
   TileList tiles;
 
-  auto parent = GetParent();
   auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
-  if(parent != nullptr &&
-     boardLayoutComponent != nullptr)
+  if(boardLayoutComponent != nullptr)
   {
-    auto characterLocation = boardLayoutComponent->GetLocationOfCharacter(parent->GetName());
+    auto characterLocation = GetCharacterLocation(aBoard);
 
     // Check tiles to the right.
     auto targetLocation = characterLocation;

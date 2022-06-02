@@ -13,8 +13,8 @@
 using Barebones::Skill;
 
 /******************************************************************************/
-Skill::Skill(UrsineEngine::GameObject& aParent)
-  : mParent(&aParent)
+Skill::Skill(UrsineEngine::GameObject& aCharacter)
+  : mCharacter(&aCharacter)
   , mVisualEffect(nullptr)
   , mBoard(nullptr)
   , mExecuteLocation(-1, -1)
@@ -96,6 +96,12 @@ void Skill::SetEnabled(bool aEnabled)
 }
 
 /******************************************************************************/
+Barebones::TileList Skill::GetValidTiles(UrsineEngine::GameObject& aBoard)
+{
+  return GetValidTiles(aBoard, GetCharacterLocation(aBoard));
+}
+
+/******************************************************************************/
 bool Skill::IsTileValid(UrsineEngine::GameObject& aBoard,
                         const TileLocation& aSourceLocation,
                         const TileLocation& aTargetLocation)
@@ -112,6 +118,13 @@ bool Skill::IsTileValid(UrsineEngine::GameObject& aBoard,
   }
 
   return success;
+}
+
+/******************************************************************************/
+bool Skill::IsTileValid(UrsineEngine::GameObject& aBoard,
+                        const TileLocation& aTargetLocation)
+{
+  return IsTileValid(aBoard, GetCharacterLocation(aBoard), aTargetLocation);
 }
 
 /******************************************************************************/
@@ -157,6 +170,22 @@ void Skill::HandleObjectPendingDeletion(UrsineEngine::GameObject* aObject)
 }
 
 /******************************************************************************/
+Barebones::TileLocation Skill::GetCharacterLocation(UrsineEngine::GameObject& aBoard)
+{
+  TileLocation characterLocation(-1, -1);
+
+  auto character = GetCharacter();
+  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
+  if(character != nullptr &&
+     boardLayoutComponent != nullptr)
+  {
+    characterLocation = boardLayoutComponent->GetLocationOfCharacter(character->GetName());
+  }
+
+  return characterLocation;
+}
+
+/******************************************************************************/
 bool Skill::IsEnemyAtLocation(UrsineEngine::GameObject& aBoard,
                               const TileLocation& aLocation)
 {
@@ -164,10 +193,10 @@ bool Skill::IsEnemyAtLocation(UrsineEngine::GameObject& aBoard,
 
   // Get the side of the parent character.
   Side characterSide = Side::eNONE;
-  auto parent = GetParent();
-  if(parent != nullptr)
+  auto character = GetCharacter();
+  if(character != nullptr)
   {
-    auto characterBehaviorComponent = parent->GetFirstComponentOfType<CharacterBehaviorComponent>();
+    auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
     if(characterBehaviorComponent != nullptr)
     {
       characterSide = characterBehaviorComponent->GetSide();

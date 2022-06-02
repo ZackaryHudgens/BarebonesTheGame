@@ -99,25 +99,6 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
 
           break;
         }
-        case UrsineEngine::KeyCode::eKEY_Q:
-        {
-          // Create a spell menu and populate it with each spell the player has.
-          auto spellMenu = MenuFactory::CreateMenu(MenuType::eSPELL, "spellMenu");
-          auto spells = playerBehaviorComponent->GetSpells();
-          PopulateSkillMenu(*spellMenu.get(), spells);
-
-          // Add the menu to the foreground of the current scene.
-          auto scene = env.GetCurrentScene();
-          if(scene != nullptr)
-          {
-            auto foreground = scene->GetForeground();
-            if(foreground != nullptr)
-            {
-              foreground->AddChild(std::move(spellMenu));
-            }
-          }
-          break;
-        }
         case UrsineEngine::KeyCode::eKEY_Z:
         {
           CameraZoomChangeRequested.Notify(2.5);

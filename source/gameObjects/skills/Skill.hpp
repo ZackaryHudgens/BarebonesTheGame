@@ -15,9 +15,9 @@ namespace Barebones
       /**
        * Constructor.
        *
-       * @param aParent The GameObject that owns this skill.
+       * @param aCharacter The character GameObject that owns this skill.
        */
-      Skill(UrsineEngine::GameObject& aParent);
+      Skill(UrsineEngine::GameObject& aCharacter);
 
       /**
        * Returns the name of the skill.
@@ -95,7 +95,8 @@ namespace Barebones
        * GetValidTiles() function to determine validity.
        *
        * If no source location is given, the skill will use the
-       * location of the owning GameObject on the given board.
+       * location of the owning GameObject on the given board as
+       * the source location.
        *
        * @param aBoard The board GameObject to use this skill on.
        * @param aSourceLocation The location to get valid tiles for.
@@ -192,20 +193,18 @@ namespace Barebones
                                                                            const TileLocation& aLocation) { return nullptr; }
 
       /**
-       * Returns the owning GameObject.
+       * Returns the owning character GameObject.
        *
-       * @return The GameObject that owns this skill.
+       * @return The character GameObject that owns this skill.
        */
-      UrsineEngine::GameObject* GetParent() { return mParent; }
+      UrsineEngine::GameObject* GetCharacter() { return mCharacter; }
 
       /**
-       * A handler function that gets called whenever a GameObject is
-       * about to be deleted. If the object is the visual effect this
-       * skill is waiting on, this skill is then executed.
+       * Returns the location of the owning character on the given board.
        *
-       * @param aObject The GameObject about to be deleted.
+       * @param aBoard The board to calculate character location for.
        */
-      void HandleObjectPendingDeletion(UrsineEngine::GameObject* aObject);
+      TileLocation GetCharacterLocation(UrsineEngine::GameObject& aBoard);
 
       /**
        * Checks if the given location on the given board has an enemy.
@@ -239,7 +238,27 @@ namespace Barebones
       void SetDamage(int aDamage) { mDamage = aDamage; }
 
     private:
-      UrsineEngine::GameObject* mParent;
+
+      /**
+       * Deals damage to the character at the given location, then calls
+       * ProtectedExecute() for custom behavior.
+       *
+       * @param aBoard The board to execute this skill on.
+       * @param aLocation The location to execute this skill on.
+       */
+      void PrivateExecute(UrsineEngine::GameObject& aBoard,
+                          const TileLocation& aLocation);
+
+      /**
+       * A handler function that gets called whenever a GameObject is
+       * about to be deleted. If the object is the visual effect this
+       * skill is waiting on, this skill is then executed.
+       *
+       * @param aObject The GameObject about to be deleted.
+       */
+      void HandleObjectPendingDeletion(UrsineEngine::GameObject* aObject);
+
+      UrsineEngine::GameObject* mCharacter;
       UrsineEngine::GameObject* mVisualEffect;
 
       UrsineEngine::GameObject* mBoard;

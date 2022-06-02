@@ -9,8 +9,8 @@
 using Barebones::ClawSkill;
 
 /******************************************************************************/
-ClawSkill::ClawSkill(UrsineEngine::GameObject& aParent)
-  : SimpleSkill(aParent, 1)
+ClawSkill::ClawSkill(UrsineEngine::GameObject& aCharacter)
+  : SimpleSkill(aCharacter, 1)
 {
   SetName("Claw");
   SetDescription("Slashes with bony claws.");

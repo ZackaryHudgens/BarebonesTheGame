@@ -5,8 +5,8 @@
 using Barebones::BoneThrowSkill;
 
 /******************************************************************************/
-BoneThrowSkill::BoneThrowSkill(UrsineEngine::GameObject& aParent)
-  : SimpleSkill(aParent, 2)
+BoneThrowSkill::BoneThrowSkill(UrsineEngine::GameObject& aCharacter)
+  : SimpleSkill(aCharacter, 2)
 {
   SetName("Bone Throw");
   SetDescription("Throw 'em a bone.");

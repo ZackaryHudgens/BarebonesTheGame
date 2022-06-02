@@ -3,8 +3,8 @@
 using Barebones::PitchforkSkill;
 
 /******************************************************************************/
-PitchforkSkill::PitchforkSkill(UrsineEngine::GameObject& aParent)
-  : SimpleSkill(aParent, 1)
+PitchforkSkill::PitchforkSkill(UrsineEngine::GameObject& aCharacter)
+  : SimpleSkill(aCharacter, 1)
 {
   SetName("Pitchfork");
   SetDescription("Stabs with a pitchfork.");
