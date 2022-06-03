@@ -39,7 +39,7 @@ void SkillMenuLayoutComponent::Initialize()
 
     // Set the background texture for both text boxes.
     UrsineEngine::Texture backgroundTexture;
-    backgroundTexture.CreateTextureFromFile("resources/sprites/menuBox.png");
+    backgroundTexture.CreateTextureFromFile("resources/sprites/gui/menuBox.png");
     mSkillNameTextBox->SetTexture(backgroundTexture);
     mSkillDescriptionTextBox->SetTexture(backgroundTexture);
 

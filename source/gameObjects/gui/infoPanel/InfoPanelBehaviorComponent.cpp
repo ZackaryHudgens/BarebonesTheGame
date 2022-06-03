@@ -65,7 +65,7 @@ void InfoPanelBehaviorComponent::Initialize()
     mTextBox = parent->GetFirstComponentOfType<TextBoxComponent>();
 
     UrsineEngine::Texture backgroundTexture;
-    backgroundTexture.CreateTextureFromFile("resources/sprites/menuBox.png");
+    backgroundTexture.CreateTextureFromFile("resources/sprites/gui/menuBox.png");
     mTextBox->SetTexture(backgroundTexture);
 
     mTextBox->SetFont("Alagard", "Medium");

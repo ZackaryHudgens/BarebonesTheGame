@@ -35,7 +35,7 @@ std::unique_ptr<UrsineEngine::GameObject> ClawSkill::CreateVisualEffect(UrsineEn
       nameStream << "clawVisualEffect_" << aLocation.first << "_" << aLocation.second;
       visualEffect = std::make_unique<UrsineEngine::GameObject>(nameStream.str());
 
-      std::string spritesheet = "resources/sprites/clawEffectSpritesheet.png";
+      std::string spritesheet = "resources/sprites/skills/claw.png";
 
       // Set up the frame data.
       std::vector<UrsineEngine::TextureClip> clips;

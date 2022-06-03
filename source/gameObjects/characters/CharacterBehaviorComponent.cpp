@@ -76,12 +76,6 @@ void CharacterBehaviorComponent::Update(double aTime)
     }
   }
 
-  // Update the controller.
-  if(mController != nullptr)
-  {
-    mController->Update(aTime);
-  }
-
   // Update the status message queue.
   if(!mStatusMessageQueue.empty())
   {

@@ -35,7 +35,7 @@ void TurnDisplayComponent::Initialize()
     mTextBox = parent->GetComponentsOfType<TextBoxComponent>().back();
 
     UrsineEngine::Texture backgroundTexture;
-    backgroundTexture.CreateTextureFromFile("resources/sprites/menuBox.png");
+    backgroundTexture.CreateTextureFromFile("resources/sprites/gui/menuBox.png");
     mTextBox->SetTexture(backgroundTexture);
 
     mTextBox->SetFont("Alagard", "Medium");

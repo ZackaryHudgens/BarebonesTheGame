@@ -2,9 +2,10 @@
 
 #include <sstream>
 
+#include <SpriteComponent.hpp>
+
 #include "BoardLayoutComponent.hpp"
 
-#include "AnimationVisualEffectBehaviorComponent.hpp"
 #include "ProjectileVisualEffectBehaviorComponent.hpp"
 
 using Barebones::BoneThrowSkill;
@@ -30,32 +31,29 @@ std::unique_ptr<UrsineEngine::GameObject> BoneThrowSkill::CreateVisualEffect(Urs
     auto targetCharacterObject = boardLayoutComponent->GetCharacterAtLocation(aLocation);
     if(targetCharacterObject != nullptr)
     {
-      // Create an effect in front of the target character.
       std::stringstream nameStream;
       nameStream << "boneVisualEffect_" << aLocation.first << "_" << aLocation.second;
       visualEffect = std::make_unique<UrsineEngine::GameObject>(nameStream.str());
+      visualEffect->SetScale(glm::vec3(0.7, 0.7, 1.0));
 
-      std::string spritesheet = "resources/sprites/clawEffectSpritesheet.png";
+      // Add a projectile behavior component to the visual effect object.
+      visualEffect->AddComponent(std::make_unique<ProjectileVisualEffectBehaviorComponent>(targetCharacterObject->GetPosition(), 0.5));
 
-      // Set up the frame data.
-      std::vector<UrsineEngine::TextureClip> clips;
-      UrsineEngine::TextureClip clip;
-      clip.mHeight = 16;
-      clip.mWidth = 16;
-      clip.mX = 0;
-      clip.mY = 0;
-      clips.emplace_back(clip);
+      // Create a sprite and add it to the visual effect object.
+      auto spriteComponent = std::make_unique<UrsineEngine::SpriteComponent>();
+      spriteComponent->SetRenderOption(GL_DEPTH_TEST, false);
 
-      clip.mX = 16;
-      clips.emplace_back(clip);
+      UrsineEngine::Texture texture;
+      texture.CreateTextureFromFile("resources/sprites/skills/bone.png");
+      spriteComponent->SetTexture(texture);
 
-      clip.mX = 32;
-      clips.emplace_back(clip);
+      std::string vertexFile = "resources/shaders/TexturedMeshWithFadeShader.vert";
+      std::string fragmentFile = "resources/shaders/TexturedMeshWithFadeShader.frag";
+      UrsineEngine::Shader shader(vertexFile, fragmentFile);
+      spriteComponent->AddShader("default", shader);
+      spriteComponent->SetCurrentShader("default");
 
-      visualEffect->AddComponent(std::make_unique<AnimationVisualEffectBehaviorComponent>(spritesheet,
-                                                                                          clips,
-                                                                                          1.0));
-      visualEffect->AddComponent(std::make_unique<ProjectileVisualEffectBehaviorComponent>(targetCharacterObject->GetPosition(), 0.3));
+      visualEffect->AddComponent(std::move(spriteComponent));
 
       auto characterObject = boardLayoutComponent->GetCharacterAtLocation(GetCharacterLocation(aBoard));
       if(characterObject != nullptr)

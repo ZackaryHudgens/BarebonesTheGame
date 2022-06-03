@@ -158,22 +158,22 @@ std::unique_ptr<UrsineEngine::GameObject> TileFactory::CreateTile(const TileType
   tileMesh->AddIndex(22);
   tileMesh->AddIndex(23);
 
+  // Finally, set up the shader and add it to the tile mesh.
+  std::string vertexFile = "resources/shaders/TileShader.vert";
+  std::string fragmentFile = "resources/shaders/TileShader.frag";
+  UrsineEngine::Shader tileShader(vertexFile, fragmentFile);
+  tileMesh->AddShader("tileShader", tileShader);
+  tileMesh->SetCurrentShader("tileShader");
+
   switch(aType)
   {
     case TileType::eDEFAULT:
     {
       newTile->AddComponent(std::make_unique<DefaultTileBehaviorComponent>());
 
-      // Set up the shader and add it to the tile mesh.
-      std::string vertexFile = "resources/shaders/TileShader.vert";
-      std::string fragmentFile = "resources/shaders/TileShader.frag";
-      UrsineEngine::Shader tileShader(vertexFile, fragmentFile);
-      tileMesh->AddShader("tileShader", tileShader);
-      tileMesh->SetCurrentShader("tileShader");
-
       // Add the texture to the tile mesh.
       UrsineEngine::Texture brickTexture;
-      brickTexture.CreateTextureFromFile("resources/sprites/tileTemplate.png");
+      brickTexture.CreateTextureFromFile("resources/sprites/tiles/tileTemplate.png");
       tileMesh->AddTexture(brickTexture);
 
       break;
@@ -182,16 +182,9 @@ std::unique_ptr<UrsineEngine::GameObject> TileFactory::CreateTile(const TileType
     {
       newTile->AddComponent(std::make_unique<DesecratedTileBehaviorComponent>());
 
-      // Set up the shader and add it to the tile mesh.
-      std::string vertexFile = "resources/shaders/TileShader.vert";
-      std::string fragmentFile = "resources/shaders/TileShader.frag";
-      UrsineEngine::Shader tileShader(vertexFile, fragmentFile);
-      tileMesh->AddShader("tileShader", tileShader);
-      tileMesh->SetCurrentShader("tileShader");
-
       // Add the texture to the tile mesh.
       UrsineEngine::Texture brickTexture;
-      brickTexture.CreateTextureFromFile("resources/sprites/desecratedTile.png");
+      brickTexture.CreateTextureFromFile("resources/sprites/tiles/desecratedTile.png");
       tileMesh->AddTexture(brickTexture);
 
       break;
