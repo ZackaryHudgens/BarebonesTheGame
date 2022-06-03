@@ -56,27 +56,7 @@ void Skill::Execute(UrsineEngine::GameObject& aBoard,
     }
     else
     {
-      auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
-      if(boardLayoutComponent != nullptr)
-      {
-        for(const auto& affectedTile : GetAffectedTiles(aBoard, aLocation))
-        {
-          auto character = boardLayoutComponent->GetCharacterAtLocation(affectedTile);
-          if(character != nullptr)
-          {
-            auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
-            if(characterBehaviorComponent != nullptr &&
-               mDamage >= 0)
-            {
-              characterBehaviorComponent->DealDamage(mDamage);
-            }
-          }
-
-          ProtectedExecute(aBoard, affectedTile);
-        }
-      }
-
-      SkillExecuted.Notify(*this);
+      PrivateExecute(aBoard, mExecuteLocation);
     }
   }
 }
@@ -137,39 +117,6 @@ Barebones::TileList Skill::GetAffectedTiles(UrsineEngine::GameObject& aBoard,
 }
 
 /******************************************************************************/
-void Skill::HandleObjectPendingDeletion(UrsineEngine::GameObject* aObject)
-{
-  if(aObject == mVisualEffect &&
-     mBoard != nullptr)
-  {
-    auto boardLayoutComponent = mBoard->GetFirstComponentOfType<BoardLayoutComponent>();
-    if(boardLayoutComponent != nullptr)
-    {
-      for(const auto& affectedTile : GetAffectedTiles(*mBoard, mExecuteLocation))
-      {
-        auto character = boardLayoutComponent->GetCharacterAtLocation(affectedTile);
-        if(character != nullptr)
-        {
-          auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
-          if(characterBehaviorComponent != nullptr &&
-             mDamage >= 0)
-          {
-            characterBehaviorComponent->DealDamage(mDamage);
-          }
-        }
-
-        ProtectedExecute(*mBoard, affectedTile);
-      }
-    }
-
-    SkillExecuted.Notify(*this);
-
-    mVisualEffect = nullptr;
-    mBoard = nullptr;
-  }
-}
-
-/******************************************************************************/
 Barebones::TileLocation Skill::GetCharacterLocation(UrsineEngine::GameObject& aBoard)
 {
   TileLocation characterLocation(-1, -1);
@@ -222,4 +169,44 @@ bool Skill::IsEnemyAtLocation(UrsineEngine::GameObject& aBoard,
   }
 
   return success;
+}
+
+/******************************************************************************/
+void Skill::PrivateExecute(UrsineEngine::GameObject& aBoard,
+                           const TileLocation& aLocation)
+{
+  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
+  if(boardLayoutComponent != nullptr)
+  {
+    for(const auto& affectedTile : GetAffectedTiles(*mBoard, mExecuteLocation))
+    {
+      auto character = boardLayoutComponent->GetCharacterAtLocation(affectedTile);
+      if(character != nullptr)
+      {
+        auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
+        if(characterBehaviorComponent != nullptr &&
+           mDamage >= 0)
+        {
+          characterBehaviorComponent->DealDamage(mDamage);
+        }
+      }
+
+      ProtectedExecute(*mBoard, affectedTile);
+    }
+  }
+
+  SkillExecuted.Notify(*this);
+}
+
+/******************************************************************************/
+void Skill::HandleObjectPendingDeletion(UrsineEngine::GameObject* aObject)
+{
+  if(aObject == mVisualEffect &&
+     mBoard != nullptr)
+  {
+    PrivateExecute(*mBoard, mExecuteLocation);
+
+    mVisualEffect = nullptr;
+    mBoard = nullptr;
+  }
 }
