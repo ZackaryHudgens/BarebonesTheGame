@@ -46,6 +46,8 @@ namespace Barebones
     private:
       UrsineEngine::GameObject* mCharacter;
 
+      glm::vec3 mTargetPosition;
+
       double mYDistance;
       double mZDistance;
       double mRotation;

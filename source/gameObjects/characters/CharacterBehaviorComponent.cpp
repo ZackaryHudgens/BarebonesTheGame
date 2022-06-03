@@ -167,13 +167,25 @@ void CharacterBehaviorComponent::AddEffect(std::unique_ptr<Effect> aEffect)
 {
   if(aEffect != nullptr)
   {
-    // Add a status message to the queue.
-    mStatusMessageQueue.emplace(aEffect->GetStatusMessage());
+    std::string effectName = aEffect->GetName();
+    auto findEffect = [&effectName](const std::unique_ptr<Effect>& aEffect)
+    {
+      return aEffect->GetName() == effectName;
+    };
 
-    mEffects.emplace_back(std::move(aEffect));
+    auto foundEffect = std::find_if(mEffects.begin(),
+                                    mEffects.end(),
+                                    findEffect);
+    if(foundEffect == mEffects.end())
+    {
+      // Add a status message to the queue.
+      mStatusMessageQueue.emplace(aEffect->GetStatusMessage());
 
-    mEffects.back()->HandleAddedToCharacter(*this);
-    EffectAddedToCharacter.Notify(*this, *mEffects.back());
+      mEffects.emplace_back(std::move(aEffect));
+
+      mEffects.back()->HandleAddedToCharacter(*this);
+      EffectAddedToCharacter.Notify(*this, *mEffects.back());
+    }
   }
 }
 

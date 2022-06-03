@@ -2,6 +2,7 @@
 #define CHARACTERCONTROLLER_HPP
 
 #include <GameObject.hpp>
+#include <Observer.hpp>
 
 namespace Barebones
 {
@@ -26,7 +27,7 @@ namespace Barebones
     protected:
 
       /**
-       * A virtual function that gets called during TakeTurn. Different
+       * A virtual function that gets called during TakeTurn(). Different
        * controllers need to override this function to actually control
        * the character.
        *
@@ -52,7 +53,19 @@ namespace Barebones
       UrsineEngine::GameObject* GetCharacter() { return mCharacter; }
 
     private:
+
+      /**
+       * A handler function that gets called when the scene's camera
+       * finishes moving.
+       */
+      void HandleCameraFinishedMoving();
+
+      UrsineEngine::Observer mObserver;
+
       UrsineEngine::GameObject* mCharacter;
+      UrsineEngine::GameObject* mBoard;
+
+      bool mWaitingForCamera;
   };
 }
 

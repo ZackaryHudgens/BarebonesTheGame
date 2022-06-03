@@ -25,6 +25,8 @@ void DefaultCharacterController::ProtectedTakeTurn(UrsineEngine::GameObject& aBo
 {
   mBoard = &aBoard;
 
+  bool takingTurn = false;
+
   auto character = GetCharacter();
   if(character != nullptr)
   {
@@ -36,6 +38,8 @@ void DefaultCharacterController::ProtectedTakeTurn(UrsineEngine::GameObject& aBo
       auto moveSkill = characterBehaviorComponent->GetSkill("Move");
       if(moveSkill != nullptr)
       {
+        takingTurn = true;
+
         // Determine the highest damaging skill this character has.
         int highestDamage = 0;
         for(const auto& skill : characterBehaviorComponent->GetSkills())
@@ -115,6 +119,11 @@ void DefaultCharacterController::ProtectedTakeTurn(UrsineEngine::GameObject& aBo
         mWaitingForMove = true;
       }
     }
+  }
+
+  if(!takingTurn)
+  {
+    EndTurn();
   }
 }
 

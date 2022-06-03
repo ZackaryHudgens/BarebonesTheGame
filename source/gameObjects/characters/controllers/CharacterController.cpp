@@ -10,8 +10,14 @@ using Barebones::CharacterController;
 
 /******************************************************************************/
 CharacterController::CharacterController(UrsineEngine::GameObject& aCharacter)
-  : mCharacter(&aCharacter)
+  : mBoard(nullptr)
+  , mCharacter(&aCharacter)
+  , mWaitingForCamera(false)
 {
+  CameraFinishedMoving.Connect(mObserver, [this]()
+  {
+    this->HandleCameraFinishedMoving();
+  });
 }
 
 /******************************************************************************/
@@ -23,10 +29,10 @@ void CharacterController::TakeTurn(UrsineEngine::GameObject& aBoard)
     if(characterBehaviorComponent != nullptr)
     {
       CharacterTurnBegan.Notify(*characterBehaviorComponent);
+      mWaitingForCamera = true;
+      mBoard = &aBoard;
     }
   }
-
-  ProtectedTakeTurn(aBoard);
 }
 
 /******************************************************************************/
@@ -39,5 +45,16 @@ void CharacterController::EndTurn()
     {
       CharacterTurnEnded.Notify(*characterBehaviorComponent);
     }
+  }
+}
+
+/******************************************************************************/
+void CharacterController::HandleCameraFinishedMoving()
+{
+  if(mWaitingForCamera &&
+     mBoard != nullptr)
+  {
+    mWaitingForCamera = false;
+    ProtectedTakeTurn(*mBoard);
   }
 }
