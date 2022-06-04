@@ -52,6 +52,10 @@ void StatusMessageBehaviorComponent::Update(double aTime)
     pos.y += 0.01;
     parent->SetPosition(pos);
 
+    auto scalar = parent->GetScalarTransform()[0][0];
+    scalar += 0.00001;
+    parent->Scale(glm::vec3(scalar, scalar, 1.0));
+
     if(pos.y >= 2.0)
     {
       parent->ScheduleForDeletion();

@@ -179,7 +179,12 @@ void CharacterBehaviorComponent::AddEffect(std::unique_ptr<Effect> aEffect)
     if(foundEffect == mEffects.end())
     {
       // Add a status message to the queue.
-      mStatusMessageQueue.emplace(aEffect->GetStatusMessage());
+      auto parent = GetParent();
+      if(parent != nullptr)
+      {
+        mStatusMessageQueue.emplace(aEffect->GetStatusMessage(),
+                                    parent->GetPosition());
+      }
 
       mEffects.emplace_back(std::move(aEffect));
 
@@ -203,9 +208,14 @@ void CharacterBehaviorComponent::RemoveEffect(const std::string& aName)
   if(foundEffect != mEffects.end())
   {
     // Add a status message to the queue.
-    std::stringstream removedMessage;
-    removedMessage << foundEffect->get()->GetName() << "\nremoved!";
-    mStatusMessageQueue.emplace(removedMessage.str());
+    auto parent = GetParent();
+    if(parent != nullptr)
+    {
+      std::stringstream removedMessage;
+      removedMessage << foundEffect->get()->GetName() << "\nremoved!";
+      mStatusMessageQueue.emplace(removedMessage.str(),
+                                  parent->GetPosition());
+    }
 
     (*foundEffect)->HandleRemovedFromCharacter(*this);
     EffectRemovedFromCharacter.Notify(*this, *(*foundEffect));
@@ -255,17 +265,21 @@ void CharacterBehaviorComponent::DealDamage(int aValue)
   // Apply the damage.
   SetCurrentHealth(GetCurrentHealth() - aValue);
 
-  // Switch to the shaking state.
+  // Switch to the shaking state, if we aren't already there.
   auto parent = GetParent();
   if(parent != nullptr)
   {
-    mMovementState = std::make_unique<CharacterShakingState>(*parent);
-  }
+    if(dynamic_cast<CharacterShakingState*>(mMovementState.get()) == nullptr)
+    {
+      mMovementState = std::make_unique<CharacterShakingState>(*parent);
+    }
 
-  // Add a status message to the queue.
-  std::stringstream damageText;
-  damageText << aValue;
-  mStatusMessageQueue.emplace(damageText.str());
+    // Add a status message to the queue.
+    std::stringstream damageText;
+    damageText << aValue;
+    mStatusMessageQueue.emplace(damageText.str(),
+                                parent->GetPosition());
+  }
 }
 
 /******************************************************************************/
@@ -442,7 +456,7 @@ Barebones::TileAdjacencyMap CharacterBehaviorComponent::GenerateAdjacencyMap(Urs
 }
 
 /******************************************************************************/
-void CharacterBehaviorComponent::DisplayStatusMessage(const std::string& aText)
+void CharacterBehaviorComponent::DisplayStatusMessage(const StatusMessageInfo& aInfo)
 {
   // Create a status message and add it to the scene.
   auto scene = env.GetCurrentScene();
@@ -453,14 +467,14 @@ void CharacterBehaviorComponent::DisplayStatusMessage(const std::string& aText)
     // Generate a name for the status message object.
     int nameIndex = 0;
     std::stringstream nameStream;
-    nameStream << parent->GetName() << "StatusMessage" << aText;
+    nameStream << parent->GetName() << "StatusMessage" << aInfo.first;
 
     do
     {
       ++nameIndex;
 
       nameStream.str("");
-      nameStream << parent->GetName() << "StatusMessage" << aText << nameIndex;
+      nameStream << parent->GetName() << "StatusMessage" << aInfo.first << nameIndex;
     }
     while(scene->GetObject(nameStream.str()) != nullptr);
 
@@ -468,10 +482,10 @@ void CharacterBehaviorComponent::DisplayStatusMessage(const std::string& aText)
     auto statusMessageObject = std::make_unique<UrsineEngine::GameObject>(nameStream.str());
     statusMessageObject->AddComponent(std::make_unique<StatusMessageBehaviorComponent>());
     auto statusMessageComponent = statusMessageObject->GetComponentsOfType<StatusMessageBehaviorComponent>().back();
-    statusMessageComponent->SetText(aText);
+    statusMessageComponent->SetText(aInfo.first);
 
     // Position the status message to be centered in front of the character.
-    auto messagePos = parent->GetPosition();
+    auto messagePos = aInfo.second;
     messagePos.x -= ((statusMessageComponent->GetTextComponent()->GetWidth() * 0.01) / 2.0);
     statusMessageObject->SetPosition(messagePos);
     statusMessageObject->SetScale(glm::vec3(0.01, 0.01, 1.0));

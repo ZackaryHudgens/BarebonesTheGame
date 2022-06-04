@@ -233,6 +233,9 @@ namespace Barebones
 
     private:
 
+      // Pairs a string to display with a position to display it at.
+      typedef std::pair<std::string, glm::vec3> StatusMessageInfo;
+
       /**
        * A function that generates a TileAdjacencyMap using this
        * character's GetMovements() function.
@@ -243,12 +246,11 @@ namespace Barebones
       TileAdjacencyMap GenerateAdjacencyMap(UrsineEngine::GameObject& aBoard) const;
 
       /**
-       * Displays a message with the given text in front of and above
-       * the character.
+       * Displays a message with the given text in front of the character.
        *
-       * @param aText The text to display.
+       * @param aInfo The status message to display.
        */
-      void DisplayStatusMessage(const std::string& aText);
+      void DisplayStatusMessage(const StatusMessageInfo& aInfo);
 
       std::unique_ptr<CharacterState> mMovementState;
       std::unique_ptr<CharacterState> mStatusState;
@@ -259,7 +261,7 @@ namespace Barebones
       std::vector<std::unique_ptr<Effect>> mEffects;
       std::vector<std::unique_ptr<Skill>> mSkills;
 
-      std::queue<std::string> mStatusMessageQueue;
+      std::queue<StatusMessageInfo> mStatusMessageQueue;
       double mStatusMessageWaitTime;
       double mLastStatusMessageCreatedTime;
 
