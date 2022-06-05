@@ -24,9 +24,6 @@ namespace Barebones
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&>          CharacterTurnEndedSignal;
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&>          CharacterHealthChangedSignal;
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&>          CharacterDiedSignal;
-  typedef UrsineEngine::SignalT<Skill&>                               SkillSelectedSignal;
-  typedef UrsineEngine::SignalT<Skill&>                               SkillExecutedSignal;
-  typedef UrsineEngine::SignalT<Skill&>                               SkillCancelledSignal;
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&, Effect&> EffectAddedToCharacterSignal;
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&, Effect&> EffectRemovedFromCharacterSignal;
 
@@ -37,11 +34,21 @@ namespace Barebones
   extern CharacterTurnEndedSignal               CharacterTurnEnded;
   extern CharacterHealthChangedSignal           CharacterHealthChanged;
   extern CharacterDiedSignal                    CharacterDied;
-  extern SkillSelectedSignal                    SkillSelected;
-  extern SkillExecutedSignal                    SkillExecuted;
-  extern SkillCancelledSignal                   SkillCancelled;
   extern EffectAddedToCharacterSignal           EffectAddedToCharacter;
   extern EffectRemovedFromCharacterSignal       EffectRemovedFromCharacter;
+
+  /**
+   * Skill signals
+   */
+  typedef UrsineEngine::SignalT<Skill&>                    SkillSelectedSignal;
+  typedef UrsineEngine::SignalT<Skill&>                    SkillExecutedSignal;
+  typedef UrsineEngine::SignalT<Skill&>                    SkillCancelledSignal;
+  typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> SkillExecuteRequestedFromVisualEffectSignal;
+
+  extern SkillSelectedSignal  SkillSelected;
+  extern SkillExecutedSignal  SkillExecuted;
+  extern SkillCancelledSignal SkillCancelled;
+  extern SkillExecuteRequestedFromVisualEffectSignal SkillExecuteRequestedFromVisualEffect;
 
   /**
    * Player signals

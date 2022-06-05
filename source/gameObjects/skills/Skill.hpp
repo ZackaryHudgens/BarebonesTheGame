@@ -250,13 +250,12 @@ namespace Barebones
                           const TileLocation& aLocation);
 
       /**
-       * A handler function that gets called whenever a GameObject is
-       * about to be deleted. If the object is the visual effect this
-       * skill is waiting on, this skill is then executed.
+       * A handler function that gets executed whenever a visual effect
+       * GameObject requests the execution of its associated skill.
        *
-       * @param aObject The GameObject about to be deleted.
+       * @param aVisualEffect The visual effect GameObject.
        */
-      void HandleObjectPendingDeletion(UrsineEngine::GameObject* aObject);
+      void HandleSkillExecuteRequestedFromVisualEffect(UrsineEngine::GameObject& aVisualEffect);
 
       UrsineEngine::GameObject* mCharacter;
       UrsineEngine::GameObject* mVisualEffect;

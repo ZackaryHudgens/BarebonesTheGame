@@ -21,9 +21,9 @@ Skill::Skill(UrsineEngine::GameObject& aCharacter)
   , mDamage(-1)
   , mEnabled(true)
 {
-  UrsineEngine::ObjectPendingDeletion.Connect(mObserver, [this](UrsineEngine::GameObject* aObject)
+  SkillExecuteRequestedFromVisualEffect.Connect(mObserver, [this](UrsineEngine::GameObject& aVisualEffect)
   {
-    this->HandleObjectPendingDeletion(aObject);
+    this->HandleSkillExecuteRequestedFromVisualEffect(aVisualEffect);
   });
 }
 
@@ -199,9 +199,9 @@ void Skill::PrivateExecute(UrsineEngine::GameObject& aBoard,
 }
 
 /******************************************************************************/
-void Skill::HandleObjectPendingDeletion(UrsineEngine::GameObject* aObject)
+void Skill::HandleSkillExecuteRequestedFromVisualEffect(UrsineEngine::GameObject& aVisualEffect)
 {
-  if(aObject == mVisualEffect &&
+  if(&aVisualEffect == mVisualEffect &&
      mBoard != nullptr)
   {
     PrivateExecute(*mBoard, mExecuteLocation);

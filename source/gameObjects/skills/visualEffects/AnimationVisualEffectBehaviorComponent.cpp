@@ -3,6 +3,8 @@
 #include <CoreSignals.hpp>
 #include <GameObject.hpp>
 
+#include "Signals.hpp"
+
 using Barebones::AnimationVisualEffectBehaviorComponent;
 
 /******************************************************************************/
@@ -67,6 +69,7 @@ void AnimationVisualEffectBehaviorComponent::HandleSpriteAnimationComplete(const
     auto parent = GetParent();
     if(parent != nullptr)
     {
+      SkillExecuteRequestedFromVisualEffect.Notify(*parent);
       parent->ScheduleForDeletion();
     }
   }

@@ -18,9 +18,8 @@ void StatusMessageBehaviorComponent::Initialize()
   if(parent != nullptr)
   {
     // Create the text.
-    auto textObject = std::make_unique<UrsineEngine::GameObject>("textObject");
-    textObject->AddComponent(std::make_unique<UrsineEngine::TextComponent>());
-    mTextComponent = textObject->GetComponentsOfType<UrsineEngine::TextComponent>().back();
+    parent->AddComponent(std::make_unique<UrsineEngine::TextComponent>());
+    mTextComponent = parent->GetComponentsOfType<UrsineEngine::TextComponent>().back();
 
     mTextComponent->SetRenderOption(GL_DEPTH_TEST, false);
 
@@ -37,8 +36,6 @@ void StatusMessageBehaviorComponent::Initialize()
     mTextComponent->SetFont("Alagard", "Medium");
     mTextComponent->SetSize(42);
     mTextComponent->SetText(mText);
-
-    parent->AddChild(std::move(textObject));
   }
 }
 
@@ -49,12 +46,8 @@ void StatusMessageBehaviorComponent::Update(double aTime)
   if(parent != nullptr)
   {
     auto pos = parent->GetPosition();
-    pos.y += 0.01;
+    pos.y += 0.02;
     parent->SetPosition(pos);
-
-    auto scalar = parent->GetScalarTransform()[0][0];
-    scalar += 0.00001;
-    parent->Scale(glm::vec3(scalar, scalar, 1.0));
 
     if(pos.y >= 2.0)
     {

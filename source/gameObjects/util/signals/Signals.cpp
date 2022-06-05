@@ -10,11 +10,16 @@ Barebones::CharacterTurnBeganSignal               Barebones::CharacterTurnBegan;
 Barebones::CharacterTurnEndedSignal               Barebones::CharacterTurnEnded;
 Barebones::CharacterHealthChangedSignal           Barebones::CharacterHealthChanged;
 Barebones::CharacterDiedSignal                    Barebones::CharacterDied;
-Barebones::SkillSelectedSignal                    Barebones::SkillSelected;
-Barebones::SkillExecutedSignal                    Barebones::SkillExecuted;
-Barebones::SkillCancelledSignal                   Barebones::SkillCancelled;
 Barebones::EffectAddedToCharacterSignal           Barebones::EffectAddedToCharacter;
 Barebones::EffectRemovedFromCharacterSignal       Barebones::EffectRemovedFromCharacter;
+
+/**
+ * Skill signals
+ */
+Barebones::SkillSelectedSignal  Barebones::SkillSelected;
+Barebones::SkillExecutedSignal  Barebones::SkillExecuted;
+Barebones::SkillCancelledSignal Barebones::SkillCancelled;
+Barebones::SkillExecuteRequestedFromVisualEffectSignal Barebones::SkillExecuteRequestedFromVisualEffect;
 
 /**
  * Player signals

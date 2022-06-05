@@ -2,6 +2,8 @@
 
 #include <GameObject.hpp>
 
+#include "Signals.hpp"
+
 using Barebones::ProjectileVisualEffectBehaviorComponent;
 
 /******************************************************************************/
@@ -32,6 +34,7 @@ void ProjectileVisualEffectBehaviorComponent::Update(double aTime)
       parent->SetPosition(mTargetPosition);
       mSpeed = 0.0;
 
+      SkillExecuteRequestedFromVisualEffect.Notify(*parent);
       parent->ScheduleForDeletion();
     }
     else
