@@ -5,6 +5,9 @@
 
 #include "SlowEffect.hpp"
 
+#include "ColorChangeVisualEffectBehaviorComponent.hpp"
+
+#include "Colors.hpp"
 #include "Side.hpp"
 
 using Barebones::TentacleSlapSkill;
@@ -35,4 +38,26 @@ void TentacleSlapSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
       }
     }
   }
+}
+
+/******************************************************************************/
+std::unique_ptr<UrsineEngine::GameObject> TentacleSlapSkill::CreateVisualEffect(UrsineEngine::GameObject& aBoard,
+                                                                                const TileLocation& aLocation)
+{
+  std::unique_ptr<UrsineEngine::GameObject> visualEffect = nullptr;
+
+  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
+  if(boardLayoutComponent != nullptr)
+  {
+    auto character = boardLayoutComponent->GetCharacterAtLocation(aLocation);
+    if(character != nullptr)
+    {
+      visualEffect = std::make_unique<UrsineEngine::GameObject>("tentacleSlapVisualEffect");
+      visualEffect->AddComponent(std::make_unique<ColorChangeVisualEffectBehaviorComponent>(*character,
+                                                                                            LIGHT_COLOR,
+                                                                                            0.1));
+    }
+  }
+
+  return std::move(visualEffect);
 }
