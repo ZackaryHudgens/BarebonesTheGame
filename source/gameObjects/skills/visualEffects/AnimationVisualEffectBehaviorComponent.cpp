@@ -69,7 +69,7 @@ void AnimationVisualEffectBehaviorComponent::HandleSpriteAnimationComplete(const
     auto parent = GetParent();
     if(parent != nullptr)
     {
-      SkillExecuteRequestedFromVisualEffect.Notify(*parent);
+      SkillVisualEffectFinished.Notify(*parent);
       parent->ScheduleForDeletion();
     }
   }

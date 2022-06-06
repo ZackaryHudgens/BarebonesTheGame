@@ -1,11 +1,11 @@
 #ifndef BONETHROWSKILL_HPP
 #define BONETHROWSKILL_HPP
 
-#include "SimpleSkill.hpp"
+#include "SingleTargetSkill.hpp"
 
 namespace Barebones
 {
-  class BoneThrowSkill : public SimpleSkill
+  class BoneThrowSkill : public SingleTargetSkill
   {
     public:
 
@@ -19,15 +19,13 @@ namespace Barebones
     protected:
 
       /**
-       * Creates a visual effect for this skill and returns it as a
-       * std::unique_ptr.
+       * Creates visual effects before executing this skill.
        *
        * @param aBoard The board to execute this skill on.
        * @param aLocation The location on the board to execute this skill.
-       * @return A visual effect for this skill.
        */
-      std::unique_ptr<UrsineEngine::GameObject> CreateVisualEffect(UrsineEngine::GameObject& aBoard,
-                                                                   const TileLocation& aLocation) override;
+      void PreExecute(UrsineEngine::GameObject& aBoard,
+                      const TileLocation& aLocation) override;
   };
 }
 

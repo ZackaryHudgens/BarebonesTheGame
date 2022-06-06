@@ -1,18 +1,18 @@
-#include "SimpleSkill.hpp"
+#include "SingleTargetSkill.hpp"
 
 #include "BoardLayoutComponent.hpp"
 
-using Barebones::SimpleSkill;
+using Barebones::SingleTargetSkill;
 
 /******************************************************************************/
-SimpleSkill::SimpleSkill(UrsineEngine::GameObject& aCharacter, int aRange)
+SingleTargetSkill::SingleTargetSkill(UrsineEngine::GameObject& aCharacter, int aRange)
   : Skill(aCharacter)
   , mRange(aRange)
 {
 }
 
 /******************************************************************************/
-Barebones::TileList SimpleSkill::GetValidTiles(UrsineEngine::GameObject& aBoard,
+Barebones::TileList SingleTargetSkill::GetValidTiles(UrsineEngine::GameObject& aBoard,
                                                const TileLocation& aSourceLocation)
 {
   TileList tiles;
@@ -77,7 +77,7 @@ Barebones::TileList SimpleSkill::GetValidTiles(UrsineEngine::GameObject& aBoard,
 }
 
 /******************************************************************************/
-Barebones::TileList SimpleSkill::GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
+Barebones::TileList SingleTargetSkill::GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
                                                      const TileLocation& aSourceLocation)
 {
   TileList tiles;

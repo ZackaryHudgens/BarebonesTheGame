@@ -1,11 +1,11 @@
-#ifndef SIMPLESKILL_HPP
-#define SIMPLESKILL_HPP
+#ifndef AREAOFEFFECTSKILL_HPP
+#define AREAOFEFFECTSKILL_HPP
 
 #include "Skill.hpp"
 
 namespace Barebones
 {
-  class SimpleSkill : public Skill
+  class AreaOfEffectSkill : public Skill
   {
     public:
 
@@ -13,9 +13,9 @@ namespace Barebones
        * Constructor.
        *
        * @param aCharacter The character GameObject that owns this skill.
-       * @param aRange The range of this skill.
+       * @param aRadius The radius of this skill.
        */
-      SimpleSkill(UrsineEngine::GameObject& aCharacter, int aRange);
+      AreaOfEffectSkill(UrsineEngine::GameObject& aCharacter, int aRadius);
 
       /**
        * Returns a vector of valid tile locations for executing this skill.
@@ -27,6 +27,15 @@ namespace Barebones
                              const TileLocation& aSourceLocation) override;
 
       /**
+       * Returns all tiles affected by this skill.
+       *
+       * @param aBoard The board GameObject to use this skill on.
+       * @param aSourceLocation The location to get affected tiles for.
+       */
+      TileList GetAffectedTiles(UrsineEngine::GameObject& aBoard,
+                                const TileLocation& aSourceLocation) override;
+
+      /**
        * Returns a vector of tiles to highlight.
        *
        * @param aBoard The board GameObject to use this skill on.
@@ -36,7 +45,7 @@ namespace Barebones
                                    const TileLocation& aSourceLocation) override;
 
     private:
-      int mRange;
+      int mRadius;
   };
 }
 

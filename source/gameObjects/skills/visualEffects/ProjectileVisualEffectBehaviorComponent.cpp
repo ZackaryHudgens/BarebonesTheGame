@@ -34,7 +34,7 @@ void ProjectileVisualEffectBehaviorComponent::Update(double aTime)
       parent->SetPosition(mTargetPosition);
       mSpeed = 0.0;
 
-      SkillExecuteRequestedFromVisualEffect.Notify(*parent);
+      SkillVisualEffectFinished.Notify(*parent);
       parent->ScheduleForDeletion();
     }
     else

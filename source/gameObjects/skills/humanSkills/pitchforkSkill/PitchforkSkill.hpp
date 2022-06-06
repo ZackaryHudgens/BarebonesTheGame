@@ -1,11 +1,11 @@
 #ifndef PITCHFORKSKILL_HPP
 #define PITCHFORKSKILL_HPP
 
-#include "SimpleSkill.hpp"
+#include "SingleTargetSkill.hpp"
 
 namespace Barebones
 {
-  class PitchforkSkill : public SimpleSkill
+  class PitchforkSkill : public SingleTargetSkill
   {
     public:
 

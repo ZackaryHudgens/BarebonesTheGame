@@ -15,15 +15,14 @@ using Barebones::Skill;
 /******************************************************************************/
 Skill::Skill(UrsineEngine::GameObject& aCharacter)
   : mCharacter(&aCharacter)
-  , mVisualEffect(nullptr)
   , mBoard(nullptr)
   , mExecuteLocation(-1, -1)
   , mDamage(-1)
   , mEnabled(true)
 {
-  SkillExecuteRequestedFromVisualEffect.Connect(mObserver, [this](UrsineEngine::GameObject& aVisualEffect)
+  SkillVisualEffectFinished.Connect(mObserver, [this](UrsineEngine::GameObject& aVisualEffect)
   {
-    this->HandleSkillExecuteRequestedFromVisualEffect(aVisualEffect);
+    this->HandleSkillVisualEffectFinished(aVisualEffect);
   });
 }
 
@@ -43,20 +42,13 @@ void Skill::Execute(UrsineEngine::GameObject& aBoard,
     mBoard = &aBoard;
     mExecuteLocation = aLocation;
 
-    auto visualEffect = CreateVisualEffect(aBoard, aLocation);
-    if(visualEffect != nullptr)
+    PreExecute(aBoard, aLocation);
+
+    // After calling PreExecute, if any visual effects have been added, don't
+    // execute the skill yet. Otherwise, execute the skill immediately.
+    if(mVisualEffects.empty())
     {
-      // Add the visual effect to the scene.
-      auto scene = env.GetCurrentScene();
-      if(scene != nullptr)
-      {
-        scene->AddObject(std::move(visualEffect));
-        mVisualEffect = scene->GetObjects().back();
-      }
-    }
-    else
-    {
-      PrivateExecute(aBoard, mExecuteLocation);
+      PrivateExecute(aBoard, aLocation);
     }
   }
 }
@@ -114,6 +106,21 @@ Barebones::TileList Skill::GetAffectedTiles(UrsineEngine::GameObject& aBoard,
   TileList tiles;
   tiles.emplace_back(aSourceLocation);
   return tiles;
+}
+
+/******************************************************************************/
+void Skill::AddVisualEffect(std::unique_ptr<UrsineEngine::GameObject> aObject)
+{
+  auto scene = env.GetCurrentScene();
+  if(scene != nullptr)
+  {
+    auto added = scene->AddObject(std::move(aObject));
+
+    if(added)
+    {
+      mVisualEffects.emplace_back(scene->GetObjects().back());
+    }
+  }
 }
 
 /******************************************************************************/
@@ -199,14 +206,29 @@ void Skill::PrivateExecute(UrsineEngine::GameObject& aBoard,
 }
 
 /******************************************************************************/
-void Skill::HandleSkillExecuteRequestedFromVisualEffect(UrsineEngine::GameObject& aVisualEffect)
+void Skill::HandleSkillVisualEffectFinished(UrsineEngine::GameObject& aVisualEffect)
 {
-  if(&aVisualEffect == mVisualEffect &&
-     mBoard != nullptr)
+  auto name = aVisualEffect.GetName();
+  auto findObject = [&name](UrsineEngine::GameObject* aObject)
   {
-    PrivateExecute(*mBoard, mExecuteLocation);
+    return aObject->GetName() == name;
+  };
 
-    mVisualEffect = nullptr;
-    mBoard = nullptr;
+  auto foundObject = std::find_if(mVisualEffects.begin(),
+                                  mVisualEffects.end(),
+                                  findObject);
+  if(foundObject != mVisualEffects.end())
+  {
+    mVisualEffects.erase(foundObject);
+  }
+
+  // If no visual effects remain, execute this skill.
+  if(mVisualEffects.empty())
+  {
+    if(mBoard != nullptr)
+    {
+      PrivateExecute(*mBoard, mExecuteLocation);
+      mBoard = nullptr;
+    }
   }
 }

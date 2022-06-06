@@ -163,6 +163,19 @@ namespace Barebones
                                     const TileLocation& aLocation) {};
 
       /**
+       * A virtual function that gets called during Execute(), before
+       * actually executing the skill.
+       *
+       * This can be overridden to add visual effects, or to perform any
+       * logic necessary just before the skill is executed.
+       *
+       * @param aBoard The board to execute this skill on.
+       * @param aLocation The location on the board to execute this skill.
+       */
+      virtual void PreExecute(UrsineEngine::GameObject& aBoard,
+                              const TileLocation& aLocation) {}
+
+      /**
        * A virtual function that gets called during Cancel().
        *
        * This can be overridden to perform an action when the user cancels
@@ -178,19 +191,14 @@ namespace Barebones
       virtual void HandleEnabledChanged(bool aEnabled) {}
 
       /**
-       * A virtual function that gets called during Execute(). This returns
-       * a GameObject that contains some logic for displaying a sprite or
-       * other visual effect, and then deletes itself. When the object deletes
-       * itself, damage is dealt and ProtectedExecute() is called.
+       * Takes a GameObject and adds it to the current scene, keeping track
+       * of it as a visual effect associated with this skill. Once all visual
+       * effects associated with this skill have finished, the skill will
+       * be executed.
        *
-       * If no visual effect is created, the skill is executed immediately.
-       *
-       * @param aBoard The board to create a visual effect on.
-       * @param aLocation The location to create a visual effect at.
-       * @return A GameObject that represents any visual effect for this skill.
+       * @param aObject The visual effect GameObject to add.
        */
-      virtual std::unique_ptr<UrsineEngine::GameObject> CreateVisualEffect(UrsineEngine::GameObject& aBoard,
-                                                                           const TileLocation& aLocation) { return nullptr; }
+      void AddVisualEffect(std::unique_ptr<UrsineEngine::GameObject> aObject);
 
       /**
        * Returns the owning character GameObject.
@@ -251,14 +259,14 @@ namespace Barebones
 
       /**
        * A handler function that gets executed whenever a visual effect
-       * GameObject requests the execution of its associated skill.
+       * GameObject finishes its animation, movement, etc.
        *
        * @param aVisualEffect The visual effect GameObject.
        */
-      void HandleSkillExecuteRequestedFromVisualEffect(UrsineEngine::GameObject& aVisualEffect);
+      void HandleSkillVisualEffectFinished(UrsineEngine::GameObject& aVisualEffect);
 
       UrsineEngine::GameObject* mCharacter;
-      UrsineEngine::GameObject* mVisualEffect;
+      std::vector<UrsineEngine::GameObject*> mVisualEffects;
 
       UrsineEngine::GameObject* mBoard;
       TileLocation mExecuteLocation;

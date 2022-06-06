@@ -14,7 +14,7 @@ using Barebones::TentacleSlapSkill;
 
 /******************************************************************************/
 TentacleSlapSkill::TentacleSlapSkill(UrsineEngine::GameObject& aCharacter)
-  : SimpleSkill(aCharacter, 1)
+  : SingleTargetSkill(aCharacter, 1)
 {
   SetName("Tentacle Slap");
   SetDescription("Slaps with an outstretched tentacle. Slows the target.");
@@ -41,23 +41,21 @@ void TentacleSlapSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
 }
 
 /******************************************************************************/
-std::unique_ptr<UrsineEngine::GameObject> TentacleSlapSkill::CreateVisualEffect(UrsineEngine::GameObject& aBoard,
-                                                                                const TileLocation& aLocation)
+void TentacleSlapSkill::PreExecute(UrsineEngine::GameObject& aBoard,
+                                   const TileLocation& aLocation)
 {
-  std::unique_ptr<UrsineEngine::GameObject> visualEffect = nullptr;
-
   auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
   if(boardLayoutComponent != nullptr)
   {
     auto character = boardLayoutComponent->GetCharacterAtLocation(aLocation);
     if(character != nullptr)
     {
-      visualEffect = std::make_unique<UrsineEngine::GameObject>("tentacleSlapVisualEffect");
+      auto visualEffect = std::make_unique<UrsineEngine::GameObject>("tentacleSlapVisualEffect");
       visualEffect->AddComponent(std::make_unique<ColorChangeVisualEffectBehaviorComponent>(*character,
                                                                                             LIGHT_COLOR,
                                                                                             0.1));
+
+      AddVisualEffect(std::move(visualEffect));
     }
   }
-
-  return std::move(visualEffect);
 }

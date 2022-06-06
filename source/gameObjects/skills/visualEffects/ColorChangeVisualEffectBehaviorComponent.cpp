@@ -50,7 +50,7 @@ void ColorChangeVisualEffectBehaviorComponent::Update(double aTime)
             auto parent = GetParent();
             if(parent != nullptr)
             {
-              SkillExecuteRequestedFromVisualEffect.Notify(*parent);
+              SkillVisualEffectFinished.Notify(*parent);
             }
           }
         }

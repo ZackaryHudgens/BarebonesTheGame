@@ -12,7 +12,7 @@ using Barebones::BoneThrowSkill;
 
 /******************************************************************************/
 BoneThrowSkill::BoneThrowSkill(UrsineEngine::GameObject& aCharacter)
-  : SimpleSkill(aCharacter, 2)
+  : SingleTargetSkill(aCharacter, 2)
 {
   SetName("Bone Throw");
   SetDescription("Throw 'em a bone.");
@@ -20,11 +20,9 @@ BoneThrowSkill::BoneThrowSkill(UrsineEngine::GameObject& aCharacter)
 }
 
 /******************************************************************************/
-std::unique_ptr<UrsineEngine::GameObject> BoneThrowSkill::CreateVisualEffect(UrsineEngine::GameObject& aBoard,
-                                                                             const TileLocation& aLocation)
+void BoneThrowSkill::PreExecute(UrsineEngine::GameObject& aBoard,
+                                const TileLocation& aLocation)
 {
-  std::unique_ptr<UrsineEngine::GameObject> visualEffect = nullptr;
-
   auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
   if(boardLayoutComponent != nullptr)
   {
@@ -33,7 +31,7 @@ std::unique_ptr<UrsineEngine::GameObject> BoneThrowSkill::CreateVisualEffect(Urs
     {
       std::stringstream nameStream;
       nameStream << "boneVisualEffect_" << aLocation.first << "_" << aLocation.second;
-      visualEffect = std::make_unique<UrsineEngine::GameObject>(nameStream.str());
+      auto visualEffect = std::make_unique<UrsineEngine::GameObject>(nameStream.str());
       visualEffect->SetScale(glm::vec3(0.7, 0.7, 1.0));
 
       // Add a projectile behavior component to the visual effect object.
@@ -60,8 +58,8 @@ std::unique_ptr<UrsineEngine::GameObject> BoneThrowSkill::CreateVisualEffect(Urs
       {
         visualEffect->SetPosition(characterObject->GetPosition());
       }
+
+      AddVisualEffect(std::move(visualEffect));
     }
   }
-
-  return std::move(visualEffect);
 }

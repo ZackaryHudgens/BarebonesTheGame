@@ -11,7 +11,7 @@ using Barebones::ClawSkill;
 
 /******************************************************************************/
 ClawSkill::ClawSkill(UrsineEngine::GameObject& aCharacter)
-  : SimpleSkill(aCharacter, 1)
+  : SingleTargetSkill(aCharacter, 1)
 {
   SetName("Claw");
   SetDescription("Slashes with bony claws.");
@@ -19,11 +19,9 @@ ClawSkill::ClawSkill(UrsineEngine::GameObject& aCharacter)
 }
 
 /******************************************************************************/
-std::unique_ptr<UrsineEngine::GameObject> ClawSkill::CreateVisualEffect(UrsineEngine::GameObject& aBoard,
-                                                                        const TileLocation& aLocation)
+void ClawSkill::PreExecute(UrsineEngine::GameObject& aBoard,
+                           const TileLocation& aLocation)
 {
-  std::unique_ptr<UrsineEngine::GameObject> visualEffect = nullptr;
-
   auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
   if(boardLayoutComponent != nullptr)
   {
@@ -33,7 +31,7 @@ std::unique_ptr<UrsineEngine::GameObject> ClawSkill::CreateVisualEffect(UrsineEn
       // Create an effect in front of the target character.
       std::stringstream nameStream;
       nameStream << "clawVisualEffect_" << aLocation.first << "_" << aLocation.second;
-      visualEffect = std::make_unique<UrsineEngine::GameObject>(nameStream.str());
+      auto visualEffect = std::make_unique<UrsineEngine::GameObject>(nameStream.str());
 
       std::string spritesheet = "resources/sprites/skills/claw.png";
 
@@ -56,8 +54,8 @@ std::unique_ptr<UrsineEngine::GameObject> ClawSkill::CreateVisualEffect(UrsineEn
                                                                                           clips,
                                                                                           15.0));
       visualEffect->SetPosition(targetCharacterObject->GetPosition());
+
+      AddVisualEffect(std::move(visualEffect));
     }
   }
-
-  return std::move(visualEffect);
 }

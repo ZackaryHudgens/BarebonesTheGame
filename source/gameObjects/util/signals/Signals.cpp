@@ -19,7 +19,7 @@ Barebones::EffectRemovedFromCharacterSignal       Barebones::EffectRemovedFromCh
 Barebones::SkillSelectedSignal  Barebones::SkillSelected;
 Barebones::SkillExecutedSignal  Barebones::SkillExecuted;
 Barebones::SkillCancelledSignal Barebones::SkillCancelled;
-Barebones::SkillExecuteRequestedFromVisualEffectSignal Barebones::SkillExecuteRequestedFromVisualEffect;
+Barebones::SkillVisualEffectFinishedSignal Barebones::SkillVisualEffectFinished;
 
 /**
  * Player signals

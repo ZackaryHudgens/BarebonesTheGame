@@ -43,12 +43,12 @@ namespace Barebones
   typedef UrsineEngine::SignalT<Skill&>                    SkillSelectedSignal;
   typedef UrsineEngine::SignalT<Skill&>                    SkillExecutedSignal;
   typedef UrsineEngine::SignalT<Skill&>                    SkillCancelledSignal;
-  typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> SkillExecuteRequestedFromVisualEffectSignal;
+  typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> SkillVisualEffectFinishedSignal;
 
   extern SkillSelectedSignal  SkillSelected;
   extern SkillExecutedSignal  SkillExecuted;
   extern SkillCancelledSignal SkillCancelled;
-  extern SkillExecuteRequestedFromVisualEffectSignal SkillExecuteRequestedFromVisualEffect;
+  extern SkillVisualEffectFinishedSignal SkillVisualEffectFinished;
 
   /**
    * Player signals
