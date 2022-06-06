@@ -4,8 +4,6 @@
 
 #include "Signals.hpp"
 
-#include <iostream>
-
 using Barebones::EffectListBehaviorComponent;
 
 /******************************************************************************/

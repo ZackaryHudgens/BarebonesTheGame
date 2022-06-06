@@ -2,8 +2,6 @@
 
 #include <GameObject.hpp>
 
-#include <iostream>
-
 using Barebones::TextBoxComponent;
 
 /******************************************************************************/

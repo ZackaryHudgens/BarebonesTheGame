@@ -137,6 +137,7 @@ void DefaultCharacterController::HandleCharacterFinishedMovingAlongPath(Characte
     {
       mSkillToUse->Execute(*mBoard, mTileToUseSkillOn);
       mTileToUseSkillOn = TileLocation(-1, -1);
+      mWaitingForMove = false;
     }
 
     EndTurn();

@@ -119,6 +119,7 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerUsingSkillInputStat
               newState->SetBoard(*board);
             }
           }
+
           break;
         }
         case UrsineEngine::KeyCode::eKEY_ESCAPE:
@@ -131,6 +132,7 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerUsingSkillInputStat
           {
             mSkill->Cancel();
           }
+
           break;
         }
         default:

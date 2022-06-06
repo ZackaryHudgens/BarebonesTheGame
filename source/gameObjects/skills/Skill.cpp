@@ -220,15 +220,16 @@ void Skill::HandleSkillVisualEffectFinished(UrsineEngine::GameObject& aVisualEff
   if(foundObject != mVisualEffects.end())
   {
     mVisualEffects.erase(foundObject);
-  }
 
-  // If no visual effects remain, execute this skill.
-  if(mVisualEffects.empty())
-  {
-    if(mBoard != nullptr)
+    // If no visual effects remain, execute this skill.
+    if(mVisualEffects.empty())
     {
-      PrivateExecute(*mBoard, mExecuteLocation);
-      mBoard = nullptr;
+      if(mBoard != nullptr)
+      {
+        PrivateExecute(*mBoard, mExecuteLocation);
+        mBoard = nullptr;
+        mExecuteLocation = TileLocation(-1, -1);
+      }
     }
   }
 }

@@ -8,8 +8,6 @@
 
 #include "HumanPlayerBehaviorComponent.hpp"
 
-#include <iostream>
-
 using Barebones::CameraFollowingPlayerState;
 
 /******************************************************************************/

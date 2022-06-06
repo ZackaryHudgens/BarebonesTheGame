@@ -5,8 +5,6 @@
 #include "Colors.hpp"
 #include "Signals.hpp"
 
-#include <iostream>
-
 using Barebones::HealthBarMeshComponent;
 
 /******************************************************************************/

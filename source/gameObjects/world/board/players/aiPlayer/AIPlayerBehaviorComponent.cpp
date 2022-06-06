@@ -6,8 +6,6 @@
 
 #include "Signals.hpp"
 
-#include <iostream>
-
 using Barebones::AIPlayerBehaviorComponent;
 
 /******************************************************************************/
