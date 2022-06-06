@@ -46,6 +46,12 @@ void ColorChangeVisualEffectBehaviorComponent::Update(double aTime)
           if(mFadeValue >= 1.0)
           {
             mFadingIn = false;
+
+            auto parent = GetParent();
+            if(parent != nullptr)
+            {
+              SkillExecuteRequestedFromVisualEffect.Notify(*parent);
+            }
           }
         }
         else
@@ -56,7 +62,6 @@ void ColorChangeVisualEffectBehaviorComponent::Update(double aTime)
             auto parent = GetParent();
             if(parent != nullptr)
             {
-              SkillExecuteRequestedFromVisualEffect.Notify(*parent);
               parent->ScheduleForDeletion();
             }
           }
