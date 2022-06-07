@@ -11,11 +11,8 @@ namespace Barebones
 
       /**
        * Constructor.
-       *
-       * @param aCharacter The character GameObject that owns this skill.
-       * @param aRadius The radius of this skill.
        */
-      AreaOfEffectSkill(UrsineEngine::GameObject& aCharacter, int aRadius);
+      AreaOfEffectSkill();
 
       /**
        * Returns a vector of valid tile locations for executing this skill.
@@ -43,6 +40,20 @@ namespace Barebones
        */
       TileList GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
                                    const TileLocation& aSourceLocation) override;
+
+      /**
+       * Sets the radius of this skill.
+       *
+       * @param aRadius The new radius of this skill.
+       */
+      void SetRadius(int aRadius) { mRadius = aRadius; }
+
+      /**
+       * Returns the radius of this skill.
+       *
+       * @return The radius of this skill.
+       */
+      int GetRadius() const { return mRadius; }
 
     private:
       int mRadius;

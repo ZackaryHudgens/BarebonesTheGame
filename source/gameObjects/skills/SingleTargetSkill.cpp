@@ -5,9 +5,9 @@
 using Barebones::SingleTargetSkill;
 
 /******************************************************************************/
-SingleTargetSkill::SingleTargetSkill(UrsineEngine::GameObject& aCharacter, int aRange)
-  : Skill(aCharacter)
-  , mRange(aRange)
+SingleTargetSkill::SingleTargetSkill()
+  : Skill()
+  , mRange(0)
 {
 }
 

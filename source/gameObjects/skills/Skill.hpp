@@ -4,6 +4,8 @@
 #include <GameObject.hpp>
 #include <Observer.hpp>
 
+#include "SkillAction.hpp"
+
 #include "TileUtil.hpp"
 
 namespace Barebones
@@ -14,10 +16,15 @@ namespace Barebones
 
       /**
        * Constructor.
-       *
-       * @param aCharacter The character GameObject that owns this skill.
        */
-      Skill(UrsineEngine::GameObject& aCharacter);
+      Skill();
+
+      /**
+       * Sets the character that owns this skill.
+       *
+       * @param aCharacter The new owning character of this skill.
+       */
+      void SetCharacter(UrsineEngine::GameObject& aCharacter) { mCharacter = &aCharacter; }
 
       /**
        * Returns the name of the skill.
@@ -32,13 +39,6 @@ namespace Barebones
        * @return The description of the skill.
        */
       std::string GetDescription() const { return mDescription; }
-
-      /**
-       * Returns the damage this skill deals.
-       *
-       * @return This skill's damage.
-       */
-      int GetDamage() const { return mDamage; }
 
       /**
        * Selects this skill for use, but doesn't execute it.
@@ -60,6 +60,61 @@ namespace Barebones
        * Cancels the usage of this skill.
        */
       void Cancel();
+
+      /**
+       * Adds an action to shis skill. Actions are executed during Execute()
+       * and define what this skill does.
+       *
+       * @param aAction The action to add.
+       */
+      void AddAction(std::unique_ptr<SkillAction> aAction);
+
+      /**
+       * Returns a vector of actions of the given type.
+       *
+       * @return A vector of actions of the given type.
+       */
+      template<typename T>
+      std::vector<T*> GetActionsOfType() const
+      {
+        std::vector<T*> actions;
+
+        for(const auto& action : mActions)
+        {
+          auto actionAsType = dynamic_cast<T*>(action.get());
+          if(actionAsType != nullptr)
+          {
+            actions.emplace_back(actionAsType);
+          }
+        }
+
+        return actions;
+      }
+
+      /**
+       * Returns the first action of the given type. Useful if the caller knows
+       * that this skill only has one action of the given type.
+       *
+       * @return A pointer to the first action of the given type, or nullptr
+       *         if no action of the given type exists.
+       */
+      template<typename T>
+      T* GetFirstActionOfType() const
+      {
+        T* actionOfType = nullptr;
+
+        for(const auto& action : mActions)
+        {
+          auto actionAsType = dynamic_cast<T*>(action.get());
+          if(actionAsType != nullptr)
+          {
+            actionOfType = actionAsType;
+            break;
+          }
+        }
+
+        return actionOfType;
+      }
 
       /**
        * Enables or disables this skill. Disabled skills can't be used.
@@ -163,6 +218,14 @@ namespace Barebones
                                     const TileLocation& aLocation) {};
 
       /**
+       * A virtual function that gets called during Cancel().
+       *
+       * This can be overridden to perform an action when the user cancels
+       * the usage of this skill.
+       */
+      virtual void ProtectedCancel() {}
+
+      /**
        * A virtual function that gets called during Execute(), before
        * actually executing the skill.
        *
@@ -174,14 +237,6 @@ namespace Barebones
        */
       virtual void PreExecute(UrsineEngine::GameObject& aBoard,
                               const TileLocation& aLocation) {}
-
-      /**
-       * A virtual function that gets called during Cancel().
-       *
-       * This can be overridden to perform an action when the user cancels
-       * the usage of this skill.
-       */
-      virtual void ProtectedCancel() {}
 
       /**
        * A virtual function that gets called during SetEnabled().
@@ -238,13 +293,6 @@ namespace Barebones
        */
       void SetDescription(const std::string& aDescription) { mDescription = aDescription; }
 
-      /**
-       * Sets the damage this skill deals.
-       *
-       * @param aDamage The damage of this skill.
-       */
-      void SetDamage(int aDamage) { mDamage = aDamage; }
-
     private:
 
       /**
@@ -265,6 +313,8 @@ namespace Barebones
        */
       void HandleSkillVisualEffectFinished(UrsineEngine::GameObject& aVisualEffect);
 
+      std::vector<std::unique_ptr<SkillAction>> mActions;
+
       UrsineEngine::GameObject* mCharacter;
       std::vector<UrsineEngine::GameObject*> mVisualEffects;
 
@@ -275,8 +325,6 @@ namespace Barebones
 
       std::string mDescription;
       std::string mName;
-
-      int mDamage;
 
       bool mEnabled;
   };

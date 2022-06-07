@@ -5,9 +5,9 @@
 using Barebones::AreaOfEffectSkill;
 
 /******************************************************************************/
-AreaOfEffectSkill::AreaOfEffectSkill(UrsineEngine::GameObject& aCharacter, int aRadius)
-  : Skill(aCharacter)
-  , mRadius(aRadius)
+AreaOfEffectSkill::AreaOfEffectSkill()
+  : Skill()
+  , mRadius(0)
 {
 }
 

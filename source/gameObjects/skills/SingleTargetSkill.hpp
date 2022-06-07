@@ -11,11 +11,8 @@ namespace Barebones
 
       /**
        * Constructor.
-       *
-       * @param aCharacter The character GameObject that owns this skill.
-       * @param aRange The range of this skill.
        */
-      SingleTargetSkill(UrsineEngine::GameObject& aCharacter, int aRange);
+      SingleTargetSkill();
 
       /**
        * Returns a vector of valid tile locations for executing this skill.
@@ -34,6 +31,20 @@ namespace Barebones
        */
       TileList GetTilesToHighlight(UrsineEngine::GameObject& aBoard,
                                    const TileLocation& aSourceLocation) override;
+
+      /**
+       * Sets the range of this skill.
+       *
+       * @param aRange The new range of this skill.
+       */
+      void SetRange(int aRange) { mRange = aRange; }
+
+      /**
+       * Returns the range of this skill.
+       *
+       * @return The range of this skill.
+       */
+      int GetRange() const { return mRange; }
 
     private:
       int mRange;

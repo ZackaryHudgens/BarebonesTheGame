@@ -13,11 +13,10 @@
 using Barebones::Skill;
 
 /******************************************************************************/
-Skill::Skill(UrsineEngine::GameObject& aCharacter)
-  : mCharacter(&aCharacter)
+Skill::Skill()
+  : mCharacter(nullptr)
   , mBoard(nullptr)
   , mExecuteLocation(-1, -1)
-  , mDamage(-1)
   , mEnabled(true)
 {
   SkillVisualEffectFinished.Connect(mObserver, [this](UrsineEngine::GameObject& aVisualEffect)
@@ -182,25 +181,13 @@ bool Skill::IsEnemyAtLocation(UrsineEngine::GameObject& aBoard,
 void Skill::PrivateExecute(UrsineEngine::GameObject& aBoard,
                            const TileLocation& aLocation)
 {
-  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
-  if(boardLayoutComponent != nullptr)
+  // Execute each action, then call ProtectedExecute() for any custom logic.
+  for(auto& action : mActions)
   {
-    for(const auto& affectedTile : GetAffectedTiles(*mBoard, mExecuteLocation))
-    {
-      auto character = boardLayoutComponent->GetCharacterAtLocation(affectedTile);
-      if(character != nullptr)
-      {
-        auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
-        if(characterBehaviorComponent != nullptr &&
-           mDamage >= 0)
-        {
-          characterBehaviorComponent->DealDamage(mDamage);
-        }
-      }
-
-      ProtectedExecute(*mBoard, affectedTile);
-    }
+    action->Execute(aBoard, aLocation);
   }
+
+  ProtectedExecute(aBoard, aLocation);
 
   SkillExecuted.Notify(*this);
 }
