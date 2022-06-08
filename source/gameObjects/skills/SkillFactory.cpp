@@ -1,5 +1,6 @@
 #include "SkillFactory.hpp"
 
+#include "AreaOfEffectSkill.hpp"
 #include "SingleTargetSkill.hpp"
 
 #include "VisualEffectFactory.hpp"
@@ -34,8 +35,10 @@ std::unique_ptr<Barebones::Skill> SkillFactory::CreateSkill(const SkillType& aTy
     }
     case SkillType::eBONE_THROW:
     {
-      auto skill = std::make_unique<SingleTargetSkill>();
-      skill->SetRange(2);
+      //auto skill = std::make_unique<SingleTargetSkill>();
+      //skill->SetRange(2);
+      auto skill = std::make_unique<AreaOfEffectSkill>();
+      skill->SetRadius(2);
 
       skill->SetName("Bone Throw");
 

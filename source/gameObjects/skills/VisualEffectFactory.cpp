@@ -54,40 +54,43 @@ std::unique_ptr<UrsineEngine::GameObject> VisualEffectFactory::CreateVisualEffec
     }
     case VisualEffectType::eBONE_THROW:
     {
+      newObject->SetScale(glm::vec3(0.7, 0.7, 1.0));
+
+      glm::vec3 targetPosition(0.0, 0.0, 0.0);
       auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
       if(boardLayoutComponent != nullptr)
       {
         auto targetCharacter = boardLayoutComponent->GetCharacterAtLocation(aTargetLocation);
         if(targetCharacter != nullptr)
         { 
-          newObject->SetScale(glm::vec3(0.7, 0.7, 1.0));
-
-          // Add a projectile behavior component to the visual effect object.
-          newObject->AddComponent(std::make_unique<ProjectileVisualEffectBehaviorComponent>(targetCharacter->GetPosition(), 0.5));
-
-          // Create a sprite and add it to the visual effect object.
-          auto spriteComponent = std::make_unique<UrsineEngine::SpriteComponent>();
-          spriteComponent->SetRenderOption(GL_DEPTH_TEST, false);
-
-          UrsineEngine::Texture texture;
-          texture.CreateTextureFromFile("resources/sprites/skills/bone.png");
-          spriteComponent->SetTexture(texture);
-
-          std::string vertexFile = "resources/shaders/TexturedMeshShader.vert";
-          std::string fragmentFile = "resources/shaders/TexturedMeshShader.frag";
-          UrsineEngine::Shader shader(vertexFile, fragmentFile);
-          spriteComponent->AddShader("default", shader);
-          spriteComponent->SetCurrentShader("default");
-
-          newObject->AddComponent(std::move(spriteComponent));
-
-          // Set the visual effect object to start at the source location.
-          auto sourceCharacter = boardLayoutComponent->GetCharacterAtLocation(aSourceLocation);
-          if(sourceCharacter != nullptr)
-          {
-            newObject->SetPosition(sourceCharacter->GetPosition());
-          }
+          targetPosition = targetCharacter->GetPosition();
         }
+      }
+
+      // Add a projectile behavior component to the visual effect object.
+      newObject->AddComponent(std::make_unique<ProjectileVisualEffectBehaviorComponent>(targetPosition, 0.5));
+
+      // Create a sprite and add it to the visual effect object.
+      auto spriteComponent = std::make_unique<UrsineEngine::SpriteComponent>();
+      spriteComponent->SetRenderOption(GL_DEPTH_TEST, false);
+
+      UrsineEngine::Texture texture;
+      texture.CreateTextureFromFile("resources/sprites/skills/bone.png");
+      spriteComponent->SetTexture(texture);
+
+      std::string vertexFile = "resources/shaders/TexturedMeshShader.vert";
+      std::string fragmentFile = "resources/shaders/TexturedMeshShader.frag";
+      UrsineEngine::Shader shader(vertexFile, fragmentFile);
+      spriteComponent->AddShader("default", shader);
+      spriteComponent->SetCurrentShader("default");
+
+      newObject->AddComponent(std::move(spriteComponent));
+
+      // Set the visual effect object to start at the source location.
+      auto sourceCharacter = boardLayoutComponent->GetCharacterAtLocation(aSourceLocation);
+      if(sourceCharacter != nullptr)
+      {
+        newObject->SetPosition(sourceCharacter->GetPosition());
       }
 
       break;

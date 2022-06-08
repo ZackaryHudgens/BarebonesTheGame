@@ -208,10 +208,15 @@ bool Skill::IsEnemyAtLocation(UrsineEngine::GameObject& aBoard,
 void Skill::PrivateExecute(UrsineEngine::GameObject& aBoard,
                            const TileLocation& aLocation)
 {
-  // Execute each action, then call ProtectedExecute() for any custom logic.
-  for(auto& action : mActions)
+  // Execute each action on each affected tile, then call ProtectedExecute()
+  // for any custom logic.
+  auto affectedTiles = GetAffectedTiles(aBoard, aLocation);
+  for(const auto& tile : affectedTiles)
   {
-    action->Execute(aBoard, aLocation);
+    for(auto& action : mActions)
+    {
+      action->Execute(aBoard, tile);
+    }
   }
 
   ProtectedExecute(aBoard, aLocation);
