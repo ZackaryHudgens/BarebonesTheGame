@@ -25,20 +25,6 @@ namespace Barebones
        */
       static std::unique_ptr<Skill> CreateSkill(const SkillType& aType);
   };
-
-  class SkillVisualEffectFactory
-  {
-    public:
-
-      /**
-       * Returns a skill with the proper actions attached based on
-       * the type of skill given.
-       *
-       * @param aType The type of skill to create.
-       * @return A unique pointer to a new skill.
-       */
-      static std::unique_ptr<Skill> CreateSkill(const SkillType& aType);
-  };
 }
 
 #endif

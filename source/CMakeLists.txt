@@ -15,12 +15,8 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/gui/menus/mainMenu/*.?pp
                        gameObjects/gui/menus/skillMenu/*.?pp
                        gameObjects/skills/*.?pp
-                       gameObjects/skills/skillActions/*.?pp
                        gameObjects/skills/moveSkill/*.?pp
-                       gameObjects/skills/skeletonSkills/clawSkill/*.?pp
-                       gameObjects/skills/skeletonSkills/boneThrowSkill/*.?pp
-                       gameObjects/skills/humanSkills/pitchforkSkill/*.?pp
-                       gameObjects/skills/humanSkills/tentacleSlapSkill/*.?pp
+                       gameObjects/skills/skillActions/*.?pp
                        gameObjects/skills/visualEffects/*.?pp
                        gameObjects/util/*.?pp
                        gameObjects/util/inputManager/*.?pp
@@ -57,12 +53,8 @@ target_include_directories(barebones PUBLIC
                            gameObjects/gui/menus/mainMenu
                            gameObjects/gui/menus/skillMenu
                            gameObjects/skills
-                           gameObjects/skills/skillActions
                            gameObjects/skills/moveSkill
-                           gameObjects/skills/skeletonSkills/clawSkill
-                           gameObjects/skills/skeletonSkills/boneThrowSkill
-                           gameObjects/skills/humanSkills/pitchforkSkill
-                           gameObjects/skills/humanSkills/tentacleSlapSkill
+                           gameObjects/skills/skillActions
                            gameObjects/skills/visualEffects
                            gameObjects/util
                            gameObjects/util/inputManager

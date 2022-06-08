@@ -10,10 +10,7 @@
 
 #include "DefaultCharacterController.hpp"
 
-#include "BoneThrowSkill.hpp"
-#include "ClawSkill.hpp"
-#include "PitchforkSkill.hpp"
-#include "TentacleSlapSkill.hpp"
+#include "SkillFactory.hpp"
 
 #include "Colors.hpp"
 
@@ -58,7 +55,7 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
       newCharacterBehaviorComponent->SetType(Type::eSKELETON);
       newCharacterBehaviorComponent->SetSpeed(4);
 
-      newCharacterBehaviorComponent->AddSkill(std::make_unique<ClawSkill>(*newCharacter));
+      newCharacterBehaviorComponent->AddSkill(SkillFactory::CreateSkill(SkillType::eCLAW));
 
       // Set up the spritesheet and animations.
       UrsineEngine::Texture spritesheet;
@@ -91,7 +88,7 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
       newCharacterBehaviorComponent->SetType(Type::eSKELETON);
       newCharacterBehaviorComponent->SetSpeed(3);
 
-      newCharacterBehaviorComponent->AddSkill(std::make_unique<BoneThrowSkill>(*newCharacter));
+      newCharacterBehaviorComponent->AddSkill(SkillFactory::CreateSkill(SkillType::eBONE_THROW));
 
       // Set up the spritesheet and animations.
       UrsineEngine::Texture spritesheet;
@@ -125,8 +122,7 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
       newCharacterBehaviorComponent->SetType(Type::eHUMAN);
       newCharacterBehaviorComponent->SetSpeed(2);
 
-      newCharacterBehaviorComponent->AddSkill(std::make_unique<PitchforkSkill>(*newCharacter));
-      newCharacterBehaviorComponent->AddSkill(std::make_unique<TentacleSlapSkill>(*newCharacter));
+      newCharacterBehaviorComponent->AddSkill(SkillFactory::CreateSkill(SkillType::eTENTACLE_SLAP));
 
       // Set up the spritesheet and animations.
       UrsineEngine::Texture spritesheet;

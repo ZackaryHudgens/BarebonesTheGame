@@ -2,7 +2,10 @@
 
 #include "SingleTargetSkill.hpp"
 
+#include "VisualEffectFactory.hpp"
+
 #include "DamageAction.hpp"
+#include "EffectAction.hpp"
 
 using Barebones::SkillFactory;
 
@@ -18,9 +21,13 @@ std::unique_ptr<Barebones::Skill> SkillFactory::CreateSkill(const SkillType& aTy
       auto skill = std::make_unique<SingleTargetSkill>();
       skill->SetRange(1);
 
+      skill->SetName("Claw");
+
       auto damageAction = std::make_unique<DamageAction>();
       damageAction->SetDamage(3);
       skill->AddAction(std::move(damageAction));
+
+      skill->AddVisualEffect(VisualEffectType::eCLAW);
 
       newSkill = std::move(skill);
       break;
@@ -30,9 +37,13 @@ std::unique_ptr<Barebones::Skill> SkillFactory::CreateSkill(const SkillType& aTy
       auto skill = std::make_unique<SingleTargetSkill>();
       skill->SetRange(2);
 
+      skill->SetName("Bone Throw");
+
       auto damageAction = std::make_unique<DamageAction>();
       damageAction->SetDamage(2);
       skill->AddAction(std::move(damageAction));
+
+      skill->AddVisualEffect(VisualEffectType::eBONE_THROW);
 
       newSkill = std::move(skill);
       break;
@@ -42,9 +53,17 @@ std::unique_ptr<Barebones::Skill> SkillFactory::CreateSkill(const SkillType& aTy
       auto skill = std::make_unique<SingleTargetSkill>();
       skill->SetRange(1);
 
+      skill->SetName("Tentacle Slap");
+
       auto damageAction = std::make_unique<DamageAction>();
       damageAction->SetDamage(2);
       skill->AddAction(std::move(damageAction));
+
+      auto effectAction = std::make_unique<EffectAction>();
+      effectAction->SetEffectType(EffectType::eSLOW);
+      skill->AddAction(std::move(effectAction));
+
+      skill->AddVisualEffect(VisualEffectType::eCLAW);
 
       newSkill = std::move(skill);
       break;

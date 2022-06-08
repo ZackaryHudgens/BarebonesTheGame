@@ -8,6 +8,8 @@
 
 #include "TileUtil.hpp"
 
+#include "VisualEffectFactory.hpp"
+
 namespace Barebones
 {
   class Skill
@@ -27,11 +29,25 @@ namespace Barebones
       void SetCharacter(UrsineEngine::GameObject& aCharacter) { mCharacter = &aCharacter; }
 
       /**
+       * Sets the name of the skill.
+       *
+       * @param aName The name of the skill.
+       */
+      void SetName(const std::string& aName) { mName = aName; }
+
+      /**
        * Returns the name of the skill.
        *
        * @return The name of the skill.
        */
       std::string GetName() const { return mName; }
+
+      /**
+       * Sets the description of the skill.
+       *
+       * @param aDescription The description of the skill.
+       */
+      void SetDescription(const std::string& aDescription) { mDescription = aDescription; }
 
       /**
        * Returns the description of the skill.
@@ -115,6 +131,15 @@ namespace Barebones
 
         return actionOfType;
       }
+
+      /**
+       * Adds a visual effect type to this skill. During Execute(), this skill
+       * will create a visual effect object of each type added through this
+       * function.
+       *
+       * @param aType The type of visual effect to add.
+       */
+      void AddVisualEffect(const VisualEffectType& aType) { mVisualEffects.emplace_back(aType); }
 
       /**
        * Enables or disables this skill. Disabled skills can't be used.
@@ -226,34 +251,11 @@ namespace Barebones
       virtual void ProtectedCancel() {}
 
       /**
-       * A virtual function that gets called during Execute(), before
-       * actually executing the skill.
-       *
-       * This can be overridden to add visual effects, or to perform any
-       * logic necessary just before the skill is executed.
-       *
-       * @param aBoard The board to execute this skill on.
-       * @param aLocation The location on the board to execute this skill.
-       */
-      virtual void PreExecute(UrsineEngine::GameObject& aBoard,
-                              const TileLocation& aLocation) {}
-
-      /**
        * A virtual function that gets called during SetEnabled().
        *
        * @param aEnabled Whether this skill was enabled or disabled.
        */
       virtual void HandleEnabledChanged(bool aEnabled) {}
-
-      /**
-       * Takes a GameObject and adds it to the current scene, keeping track
-       * of it as a visual effect associated with this skill. Once all visual
-       * effects associated with this skill have finished, the skill will
-       * be executed.
-       *
-       * @param aObject The visual effect GameObject to add.
-       */
-      void AddVisualEffect(std::unique_ptr<UrsineEngine::GameObject> aObject);
 
       /**
        * Returns the owning character GameObject.
@@ -279,20 +281,6 @@ namespace Barebones
       bool IsEnemyAtLocation(UrsineEngine::GameObject& aBoard,
                              const TileLocation& aLocation);
 
-      /**
-       * Sets the name of the skill.
-       *
-       * @param aName The name of the skill.
-       */
-      void SetName(const std::string& aName) { mName = aName; }
-
-      /**
-       * Sets the description of the skill.
-       *
-       * @param aDescription The description of the skill.
-       */
-      void SetDescription(const std::string& aDescription) { mDescription = aDescription; }
-
     private:
 
       /**
@@ -314,17 +302,18 @@ namespace Barebones
       void HandleSkillVisualEffectFinished(UrsineEngine::GameObject& aVisualEffect);
 
       std::vector<std::unique_ptr<SkillAction>> mActions;
+      std::vector<VisualEffectType> mVisualEffects;
+      std::vector<UrsineEngine::GameObject*> mActiveVisualEffects;
 
       UrsineEngine::GameObject* mCharacter;
-      std::vector<UrsineEngine::GameObject*> mVisualEffects;
 
       UrsineEngine::GameObject* mBoard;
       TileLocation mExecuteLocation;
 
       UrsineEngine::Observer mObserver;
 
-      std::string mDescription;
       std::string mName;
+      std::string mDescription;
 
       bool mEnabled;
   };

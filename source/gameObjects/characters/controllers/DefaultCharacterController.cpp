@@ -2,6 +2,8 @@
 
 #include "BoardLayoutComponent.hpp"
 
+#include "DamageAction.hpp"
+
 #include "Signals.hpp"
 
 using Barebones::DefaultCharacterController;
@@ -44,9 +46,13 @@ void DefaultCharacterController::ProtectedTakeTurn(UrsineEngine::GameObject& aBo
         int highestDamage = 0;
         for(const auto& skill : characterBehaviorComponent->GetSkills())
         {
-          if(skill->GetDamage() > highestDamage)
+          auto damageAction = skill->GetFirstActionOfType<DamageAction>();
+          if(damageAction != nullptr)
           {
-            mSkillToUse = skill;
+            if(damageAction->GetDamage() > highestDamage)
+            {
+              mSkillToUse = skill;
+            }
           }
         }
 

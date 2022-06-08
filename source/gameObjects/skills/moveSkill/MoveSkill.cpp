@@ -11,25 +11,13 @@
 using Barebones::MoveSkill;
 
 /******************************************************************************/
-MoveSkill::MoveSkill(UrsineEngine::GameObject& aCharacter)
-  : Skill(aCharacter)
+MoveSkill::MoveSkill()
+  : Skill()
   , mSkillEffect(nullptr)
   , mDistanceRemaining(0)
 {
   SetName("Move");
   SetDescription("Moves the character.");
-
-  // Initialize the distance remaining if possible.
-  auto characterBehaviorComponent = aCharacter.GetFirstComponentOfType<CharacterBehaviorComponent>();
-  if(characterBehaviorComponent != nullptr)
-  {
-    mDistanceRemaining = characterBehaviorComponent->GetSpeed();
-
-    std::stringstream description;
-    description << GetDescription();
-    description << " (" << mDistanceRemaining << " tiles remaining)";
-    SetDescription(description.str());
-  }
 }
 
 /******************************************************************************/

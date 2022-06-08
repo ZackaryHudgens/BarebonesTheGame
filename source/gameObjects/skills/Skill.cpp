@@ -1,6 +1,7 @@
 #include "Skill.hpp"
 
 #include <algorithm>
+#include <sstream>
 
 #include <CoreSignals.hpp>
 #include <Environment.hpp>
@@ -41,11 +42,46 @@ void Skill::Execute(UrsineEngine::GameObject& aBoard,
     mBoard = &aBoard;
     mExecuteLocation = aLocation;
 
-    PreExecute(aBoard, aLocation);
+    // Create visual effects and add them to the current scene.
+    auto scene = env.GetCurrentScene();
+    if(scene != nullptr)
+    {
+      std::stringstream nameStream;
+      int nameIndex = 0;
+      for(const auto& visualEffectType : mVisualEffects)
+      {
+        // Create a visual effect for each affected tile.
+        for(const auto& affectedTile : GetAffectedTiles(aBoard, aLocation))
+        {
+          do
+          {
+            // Generate a name for this visual effect.
+            nameStream.str("");
+            if(mCharacter != nullptr)
+            {
+              nameStream << mCharacter->GetName() << "_";
+            }
+            nameStream << "visualEffect_" << affectedTile.first << "_" << affectedTile.second << "_";
 
-    // After calling PreExecute, if any visual effects have been added, don't
-    // execute the skill yet. Otherwise, execute the skill immediately.
-    if(mVisualEffects.empty())
+            ++nameIndex;
+            nameStream << nameIndex;
+          }
+          while(scene->GetObject(nameStream.str()) != nullptr);
+
+          // Create the visual effect and add it to the scene.
+          auto visualEffectObject = VisualEffectFactory::CreateVisualEffect(nameStream.str(),
+                                                                            visualEffectType,
+                                                                            aBoard,
+                                                                            GetCharacterLocation(aBoard),
+                                                                            affectedTile);
+          scene->AddObject(std::move(visualEffectObject));
+          mActiveVisualEffects.emplace_back(scene->GetObjects().back());
+        }
+      }
+    }
+
+    // If there are no active visual effects, execute the skill immediately.
+    if(mActiveVisualEffects.empty())
     {
       PrivateExecute(aBoard, aLocation);
     }
@@ -57,6 +93,12 @@ void Skill::Cancel()
 {
   ProtectedCancel();
   SkillCancelled.Notify(*this);
+}
+
+/******************************************************************************/
+void Skill::AddAction(std::unique_ptr<SkillAction> aAction)
+{
+  mActions.emplace_back(std::move(aAction));
 }
 
 /******************************************************************************/
@@ -105,21 +147,6 @@ Barebones::TileList Skill::GetAffectedTiles(UrsineEngine::GameObject& aBoard,
   TileList tiles;
   tiles.emplace_back(aSourceLocation);
   return tiles;
-}
-
-/******************************************************************************/
-void Skill::AddVisualEffect(std::unique_ptr<UrsineEngine::GameObject> aObject)
-{
-  auto scene = env.GetCurrentScene();
-  if(scene != nullptr)
-  {
-    auto added = scene->AddObject(std::move(aObject));
-
-    if(added)
-    {
-      mVisualEffects.emplace_back(scene->GetObjects().back());
-    }
-  }
 }
 
 /******************************************************************************/
@@ -201,15 +228,15 @@ void Skill::HandleSkillVisualEffectFinished(UrsineEngine::GameObject& aVisualEff
     return aObject->GetName() == name;
   };
 
-  auto foundObject = std::find_if(mVisualEffects.begin(),
-                                  mVisualEffects.end(),
+  auto foundObject = std::find_if(mActiveVisualEffects.begin(),
+                                  mActiveVisualEffects.end(),
                                   findObject);
-  if(foundObject != mVisualEffects.end())
+  if(foundObject != mActiveVisualEffects.end())
   {
-    mVisualEffects.erase(foundObject);
+    mActiveVisualEffects.erase(foundObject);
 
     // If no visual effects remain, execute this skill.
-    if(mVisualEffects.empty())
+    if(mActiveVisualEffects.empty())
     {
       if(mBoard != nullptr)
       {

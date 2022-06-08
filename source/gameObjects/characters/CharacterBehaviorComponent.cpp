@@ -49,7 +49,7 @@ void CharacterBehaviorComponent::Initialize()
     mStatusState = std::make_unique<CharacterDefaultState>(*parent);
 
     // All characters start with the Move skill.
-    AddSkill(std::make_unique<MoveSkill>(*GetParent()));
+    AddSkill(std::make_unique<MoveSkill>());
   }
 }
 
@@ -126,6 +126,12 @@ void CharacterBehaviorComponent::SetCurrentHealth(int aHealth)
 void CharacterBehaviorComponent::AddSkill(std::unique_ptr<Skill> aSkill)
 {
   mSkills.emplace_back(std::move(aSkill));
+
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    mSkills.back()->SetCharacter(*parent);
+  }
 }
 
 /******************************************************************************/
