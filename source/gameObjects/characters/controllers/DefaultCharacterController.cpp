@@ -11,14 +11,20 @@ using Barebones::DefaultCharacterController;
 /******************************************************************************/
 DefaultCharacterController::DefaultCharacterController(UrsineEngine::GameObject& aCharacter)
   : CharacterController(aCharacter)
-  , mWaitingForMove(false)
   , mBoard(nullptr)
   , mSkillToUse(nullptr)
   , mTileToUseSkillOn(-1, -1)
+  , mWaitingForMove(false)
+  , mWaitingForSkill(false)
 {
   CharacterFinishedMovingAlongPath.Connect(mObserver, [this](CharacterBehaviorComponent& aCharacter)
   {
     this->HandleCharacterFinishedMovingAlongPath(aCharacter);
+  });
+
+  SkillExecuted.Connect(mObserver, [this](Skill& aSkill)
+  {
+    this->HandleSkillExecuted(aSkill);
   });
 }
 
@@ -41,20 +47,6 @@ void DefaultCharacterController::ProtectedTakeTurn(UrsineEngine::GameObject& aBo
       if(moveSkill != nullptr)
       {
         takingTurn = true;
-
-        // Determine the highest damaging skill this character has.
-        int highestDamage = 0;
-        for(const auto& skill : characterBehaviorComponent->GetSkills())
-        {
-          auto damageAction = skill->GetFirstActionOfType<DamageAction>();
-          if(damageAction != nullptr)
-          {
-            if(damageAction->GetDamage() > highestDamage)
-            {
-              mSkillToUse = skill;
-            }
-          }
-        }
 
         // Get each character on the opposing side.
         std::vector<UrsineEngine::GameObject*> opposingCharacters;
@@ -93,6 +85,21 @@ void DefaultCharacterController::ProtectedTakeTurn(UrsineEngine::GameObject& aBo
           }
         }
 
+        // Determine the highest damaging skill this character has.
+        Skill* highestDamagingSkill = nullptr;
+        int highestDamage = 0;
+        for(const auto& skill : characterBehaviorComponent->GetSkills())
+        {
+          auto damageAction = skill->GetFirstActionOfType<DamageAction>();
+          if(damageAction != nullptr)
+          {
+            if(damageAction->GetDamage() > highestDamage)
+            {
+              highestDamagingSkill = skill;
+            }
+          }
+        }
+
         // For each tile this character can move to, compare it to the
         // target location, then move to the closest tile.
         auto tiles = moveSkill->GetValidTiles(aBoard, characterLocation);
@@ -107,12 +114,13 @@ void DefaultCharacterController::ProtectedTakeTurn(UrsineEngine::GameObject& aBo
             moveLocation = tile;
             lowestDistance = distance;
 
-            // If we have a skill to use, and this tile is valid for using
-            // that skill, then we don't need to move any closer.
-            if(mSkillToUse != nullptr)
+            // If this tile is valid for our highest damaging skill, then
+            // we don't need to move any closer.
+            if(highestDamagingSkill != nullptr)
             {
-              if(mSkillToUse->IsTileValid(aBoard, moveLocation, targetLocation))
+              if(highestDamagingSkill->IsTileValid(aBoard, moveLocation, targetLocation))
               {
+                mSkillToUse = highestDamagingSkill;
                 mTileToUseSkillOn = targetLocation;
                 break;
               }
@@ -139,12 +147,30 @@ void DefaultCharacterController::HandleCharacterFinishedMovingAlongPath(Characte
   if(aCharacter.GetParent() == GetCharacter() &&
      mWaitingForMove)
   {
+    // If we have a skill to use, execute it and wait for it to finish.
+    // Otherwise, end our turn now.
     if(mSkillToUse != nullptr)
     {
       mSkillToUse->Execute(*mBoard, mTileToUseSkillOn);
       mTileToUseSkillOn = TileLocation(-1, -1);
       mWaitingForMove = false;
+      mWaitingForSkill = true;
     }
+    else
+    {
+      EndTurn();
+    }
+  }
+}
+
+/******************************************************************************/
+void DefaultCharacterController::HandleSkillExecuted(Skill& aSkill)
+{
+  if(&aSkill == mSkillToUse &&
+     mWaitingForSkill)
+  {
+    mWaitingForSkill = false;
+    mSkillToUse = nullptr;
 
     EndTurn();
   }

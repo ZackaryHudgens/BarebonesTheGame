@@ -39,13 +39,23 @@ namespace Barebones
        */
       void HandleCharacterFinishedMovingAlongPath(CharacterBehaviorComponent& aCharacter);
 
+      /**
+       * A handler function that gets called whenever a skill finishes
+       * executing.
+       *
+       * @param aSkill The skill that finished executing.
+       */
+      void HandleSkillExecuted(Skill& aSkill);
+
       UrsineEngine::GameObject* mBoard;
 
       UrsineEngine::Observer mObserver;
-      bool mWaitingForMove;
 
       Skill* mSkillToUse;
       TileLocation mTileToUseSkillOn;
+
+      bool mWaitingForMove;
+      bool mWaitingForSkill;
   };
 }
 
