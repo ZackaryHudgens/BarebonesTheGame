@@ -8,6 +8,7 @@ namespace Barebones
   enum class MenuType
   {
     eMAIN,
+    eOPTIONS,
     eSKILL
   };
 

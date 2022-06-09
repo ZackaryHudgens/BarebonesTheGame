@@ -4,6 +4,7 @@
 
 #include <Environment.hpp>
 
+#include "Colors.hpp"
 #include "Signals.hpp"
 
 #include "PlayerBehaviorComponent.hpp"
@@ -41,8 +42,14 @@ void TurnDisplayComponent::Initialize()
     mTextBox->SetFont("Alagard", "Medium");
     mTextBox->SetTextSize(96);
     mTextBox->SetTextAlignment(TextAlignment::eCENTER);
-    mTextBox->SetTextColor(glm::vec4(0.125, 0.125, 0.125, 1.0));
     mTextBox->SetVerticalPadding(mTextBoxVerticalPadding);
+
+    auto textShader = mTextBox->GetTextShader();
+    if(textShader != nullptr)
+    {
+      textShader->Activate();
+      textShader->SetVec4("textColor", glm::vec4(BACKGROUND_COLOR, 1.0));
+    }
 
     // Set the dimensions of the text box to stretch across the screen.
     double overlayWidth = env.GetGraphicsOptions().mOverlayWidth;

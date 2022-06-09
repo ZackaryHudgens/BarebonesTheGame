@@ -82,7 +82,13 @@ void MainMenuLayoutComponent::HandleActionAdded()
     newActionTextBox->SetFont("Alagard", "Medium");
     newActionTextBox->SetTextSize(48);
     newActionTextBox->SetTextAlignment(TextAlignment::eCENTER);
-    newActionTextBox->SetTextColor(glm::vec4(BACKGROUND_COLOR, 1.0));
+
+    auto textShader = newActionTextBox->GetTextShader();
+    if(textShader != nullptr)
+    {
+      textShader->Activate();
+      textShader->SetVec4("textColor", glm::vec4(BACKGROUND_COLOR, 1.0));
+    }
 
     newActionTextBox->SetText(newAction->GetName());
 

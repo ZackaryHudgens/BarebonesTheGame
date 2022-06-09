@@ -78,8 +78,11 @@ void MenuLayoutComponent::ExecuteCurrentAction()
 {
   if(mCurrentlyHoveredAction != nullptr)
   {
-    mCurrentlyHoveredAction->Execute();
-    HandleActionExecuted();
+    if(mCurrentlyHoveredAction->IsEnabled())
+    {
+      mCurrentlyHoveredAction->Execute();
+      HandleActionExecuted();
+    }
   }
 }
 

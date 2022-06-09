@@ -32,8 +32,8 @@ void TextBoxComponent::Initialize()
     std::string vertexFile = "resources/shaders/TextShader.vert";
     std::string fragmentFile = "resources/shaders/TextShader.frag";
     UrsineEngine::Shader textShader(vertexFile, fragmentFile);
-    textComponent->AddShader("textShader", textShader);
-    textComponent->SetCurrentShader("textShader");
+    textComponent->AddShader("default", textShader);
+    textComponent->SetCurrentShader("default");
 
     auto textObject = std::make_unique<UrsineEngine::GameObject>("textObject");
     textObject->AddComponent(std::move(textComponent));
@@ -50,8 +50,8 @@ void TextBoxComponent::Initialize()
     vertexFile = "resources/shaders/TexturedMeshShader.vert";
     fragmentFile = "resources/shaders/TexturedMeshShader.frag";
     UrsineEngine::Shader backgroundShader(vertexFile, fragmentFile);
-    backgroundSpriteComponent->AddShader("backgroundShader", backgroundShader);
-    backgroundSpriteComponent->SetCurrentShader("backgroundShader");
+    backgroundSpriteComponent->AddShader("default", backgroundShader);
+    backgroundSpriteComponent->SetCurrentShader("default");
 
     auto backgroundSpriteObject = std::make_unique<UrsineEngine::GameObject>("backgroundSpriteObject");
     backgroundSpriteObject->AddComponent(std::move(backgroundSpriteComponent));
@@ -128,20 +128,6 @@ bool TextBoxComponent::SetTextSize(int aSize)
 }
 
 /******************************************************************************/
-void TextBoxComponent::SetTextColor(const glm::vec4& aColor)
-{
-  if(mText != nullptr)
-  {
-    auto textShader = mText->GetCurrentShader();
-    if(textShader != nullptr)
-    {
-      textShader->Activate();
-      textShader->SetVec4("textColor", aColor);
-    }
-  }
-}
-
-/******************************************************************************/
 void TextBoxComponent::SetTextAlignment(const TextAlignment& aAlignment)
 {
   mTextAlignment = aAlignment;
@@ -155,6 +141,54 @@ void TextBoxComponent::SetTexture(const UrsineEngine::Texture& aTexture)
   {
     mBackground->SetTexture(aTexture);
   }
+}
+
+/******************************************************************************/
+void TextBoxComponent::SetTextShader(const UrsineEngine::Shader& aShader)
+{
+  if(mText != nullptr)
+  {
+    mText->RemoveShader("default");
+    mText->AddShader("default", aShader);
+    mText->SetCurrentShader("default");
+  }
+}
+
+/******************************************************************************/
+const UrsineEngine::Shader* TextBoxComponent::GetTextShader() const
+{
+  const UrsineEngine::Shader* shader = nullptr;
+
+  if(mText != nullptr)
+  {
+    shader = mText->GetCurrentShader();
+  }
+
+  return shader;
+}
+
+/******************************************************************************/
+void TextBoxComponent::SetBackgroundShader(const UrsineEngine::Shader& aShader)
+{
+  if(mBackground != nullptr)
+  {
+    mBackground->RemoveShader("default");
+    mBackground->AddShader("default", aShader);
+    mBackground->SetCurrentShader("default");
+  }
+}
+
+/******************************************************************************/
+const UrsineEngine::Shader* TextBoxComponent::GetBackgroundShader() const
+{
+  const UrsineEngine::Shader* shader = nullptr;
+
+  if(mBackground != nullptr)
+  {
+    shader = mBackground->GetCurrentShader();
+  }
+
+  return shader;
 }
 
 /******************************************************************************/

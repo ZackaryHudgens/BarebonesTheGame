@@ -47,14 +47,26 @@ void SkillMenuLayoutComponent::Initialize()
     mSkillNameTextBox->SetFont("Alagard", "Medium");
     mSkillNameTextBox->SetTextSize(72);
     mSkillNameTextBox->SetTextAlignment(TextAlignment::eCENTER);
-    mSkillNameTextBox->SetTextColor(glm::vec4(BACKGROUND_COLOR, 1.0));
     mSkillNameTextBox->SetVerticalPadding(mSkillNameVerticalPadding);
+
+    auto skillTextShader = mSkillNameTextBox->GetTextShader();
+    if(skillTextShader != nullptr)
+    {
+      skillTextShader->Activate();
+      skillTextShader->SetVec4("textColor", glm::vec4(BACKGROUND_COLOR, 1.0));
+    }
 
     mSkillDescriptionTextBox->SetFont("Alagard", "Medium");
     mSkillDescriptionTextBox->SetTextSize(48);
     mSkillDescriptionTextBox->SetTextAlignment(TextAlignment::eCENTER);
-    mSkillDescriptionTextBox->SetTextColor(glm::vec4(BACKGROUND_COLOR, 1.0));
     mSkillDescriptionTextBox->SetVerticalPadding(mSkillDescriptionVerticalPadding);
+
+    auto descriptionTextShader = mSkillNameTextBox->GetTextShader();
+    if(descriptionTextShader != nullptr)
+    {
+      descriptionTextShader->Activate();
+      descriptionTextShader->SetVec4("textColor", glm::vec4(BACKGROUND_COLOR, 1.0));
+    }
 
     // Make both text boxes stretch across the screen.
     double overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
@@ -100,15 +112,35 @@ void SkillMenuLayoutComponent::HandleActionHovered()
     mSkillDescriptionTextBox->SetText(action->GetDescription());
 
     // If the action is disabled, change the text color.
+    auto skillTextShader = mSkillNameTextBox->GetTextShader();
+    auto descriptionTextShader = mSkillDescriptionTextBox->GetTextShader();
     if(!action->IsEnabled())
     {
-      mSkillNameTextBox->SetTextColor(glm::vec4(DARK_COLOR, 1.0));
-      mSkillDescriptionTextBox->SetTextColor(glm::vec4(DARK_COLOR, 1.0));
+      if(skillTextShader != nullptr)
+      {
+        skillTextShader->Activate();
+        skillTextShader->SetVec4("textColor", (glm::vec4(DARK_COLOR, 1.0)));
+      }
+
+      if(descriptionTextShader != nullptr)
+      {
+        descriptionTextShader->Activate();
+        descriptionTextShader->SetVec4("textColor", (glm::vec4(DARK_COLOR, 1.0)));
+      }
     }
     else
     {
-      mSkillNameTextBox->SetTextColor(glm::vec4(BACKGROUND_COLOR, 1.0));
-      mSkillDescriptionTextBox->SetTextColor(glm::vec4(BACKGROUND_COLOR, 1.0));
+      if(skillTextShader != nullptr)
+      {
+        skillTextShader->Activate();
+        skillTextShader->SetVec4("textColor", glm::vec4(BACKGROUND_COLOR, 1.0));
+      }
+
+      if(descriptionTextShader != nullptr)
+      {
+        descriptionTextShader->Activate();
+        descriptionTextShader->SetVec4("textColor", glm::vec4(BACKGROUND_COLOR, 1.0));
+      }
     }
   }
 }

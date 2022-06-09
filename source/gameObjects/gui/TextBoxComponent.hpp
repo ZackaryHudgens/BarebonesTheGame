@@ -65,13 +65,6 @@ namespace Barebones
       bool SetTextSize(int aSize);
 
       /**
-       * Sets the color of the text.
-       *
-       * @param aColor The new color of the text.
-       */
-      void SetTextColor(const glm::vec4& aColor);
-
-      /**
        * Sets the alignment of the text. Text is aligned with regard to
        * the background mesh.
        *
@@ -85,6 +78,34 @@ namespace Barebones
        * @param aTexture The new background texture.
        */
       void SetTexture(const UrsineEngine::Texture& aTexture);
+
+      /**
+       * Sets the shader to use when rendering text.
+       *
+       * @param aShader The shader to use when rendering text.
+       */
+      void SetTextShader(const UrsineEngine::Shader& aShader);
+
+      /**
+       * Returns a pointer to the current text shader.
+       *
+       * @return A pointer to the current text shader.
+       */
+      const UrsineEngine::Shader* GetTextShader() const;
+
+      /**
+       * Sets the shader to use when rendering the background.
+       *
+       * @param aShader The shader to use when rendering the background.
+       */
+      void SetBackgroundShader(const UrsineEngine::Shader& aShader);
+
+      /**
+       * Returns a pointer to the current background shader.
+       *
+       * @return A pointer to the current background shader.
+       */
+      const UrsineEngine::Shader* GetBackgroundShader() const;
 
       /**
        * Sets the width (in pixels) of the background mesh. Note that

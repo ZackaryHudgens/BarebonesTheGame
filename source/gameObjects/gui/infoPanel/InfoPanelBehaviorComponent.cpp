@@ -71,7 +71,13 @@ void InfoPanelBehaviorComponent::Initialize()
     mTextBox->SetFont("Alagard", "Medium");
     mTextBox->SetTextSize(72);
     mTextBox->SetTextAlignment(TextAlignment::eCENTER);
-    mTextBox->SetTextColor(glm::vec4(BACKGROUND_COLOR, 1.0));
+
+    auto textShader = mTextBox->GetTextShader();
+    if(textShader != nullptr)
+    {
+      textShader->Activate();
+      textShader->SetVec4("textColor", (glm::vec4(BACKGROUND_COLOR, 1.0)));
+    }
 
     mTextBox->SetHorizontalPadding(mTextBoxHorizontalPadding);
     mTextBox->SetVerticalPadding(mTextBoxVerticalPadding);

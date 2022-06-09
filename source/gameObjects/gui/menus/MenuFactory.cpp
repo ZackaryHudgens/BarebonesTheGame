@@ -26,24 +26,58 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
       newMenu->AddComponent(std::make_unique<MainMenuInputComponent>());
       newMenu->AddComponent(std::make_unique<MainMenuLayoutComponent>());
 
-      auto startAction = std::make_unique<MenuAction>("Start Game");
-      auto startGameFunction = []()
+      // Add the start action.
+      newMenu->GetFirstComponentOfType<MenuLayoutComponent>()->AddAction(std::make_unique<MenuAction>("Start Game"));
+      auto startAction = newMenu->GetFirstComponentOfType<MenuLayoutComponent>()->GetActions().back();
+
+      auto startFunction = []()
       {
         env.LoadScene(SceneFactory::CreateScene(SceneType::eBOARD));
       };
-      startAction->SetFunction(startGameFunction);
+      startAction->SetFunction(startFunction);
 
-      auto optionsAction = std::make_unique<MenuAction>("Options");
-      auto quitAction = std::make_unique<MenuAction>("Quit");
-      newMenu->GetFirstComponentOfType<MenuLayoutComponent>()->AddAction(std::move(startAction));
-      newMenu->GetFirstComponentOfType<MenuLayoutComponent>()->AddAction(std::move(optionsAction));
-      newMenu->GetFirstComponentOfType<MenuLayoutComponent>()->AddAction(std::move(quitAction));
+      // Add the options action.
+      newMenu->GetFirstComponentOfType<MenuLayoutComponent>()->AddAction(std::make_unique<MenuAction>("Options"));
+      auto optionsAction = newMenu->GetFirstComponentOfType<MenuLayoutComponent>()->GetActions().back();
+
+      auto optionsFunction = [aName]()
+      {
+        auto scene = env.GetCurrentScene();
+        if(scene != nullptr)
+        {
+          auto menuObject = scene->GetObject(aName);
+          if(menuObject != nullptr)
+          {
+            menuObject->ScheduleForDeletion();
+          }
+
+          auto newMenu = MenuFactory::CreateMenu(MenuType::eMAIN, "optionsMenu");
+          scene->AddObject(std::move(newMenu));
+        }
+      };
+      optionsAction->SetFunction(optionsFunction);
+
+      // Add the exit action.
+      newMenu->GetFirstComponentOfType<MenuLayoutComponent>()->AddAction(std::make_unique<MenuAction>("Exit"));
+      auto exitAction = newMenu->GetFirstComponentOfType<MenuLayoutComponent>()->GetActions().back();
+
+      auto exitFunction = []()
+      {
+        env.Exit();
+      };
+      exitAction->SetFunction(exitFunction);
+
+      break;
+    }
+    case MenuType::eOPTIONS:
+    {
       break;
     }
     case MenuType::eSKILL:
     {
       newMenu->AddComponent(std::make_unique<SkillMenuInputComponent>());
       newMenu->AddComponent(std::make_unique<SkillMenuLayoutComponent>());
+
       break;
     }
     default:
