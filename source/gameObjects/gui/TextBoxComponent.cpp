@@ -174,6 +174,32 @@ void TextBoxComponent::SetHeight(int aHeight)
 }
 
 /******************************************************************************/
+int TextBoxComponent::GetTextWidth() const
+{
+  int width = 0;
+
+  if(mText != nullptr)
+  {
+    width = mText->GetWidth();
+  }
+
+  return width;
+}
+
+/******************************************************************************/
+int TextBoxComponent::GetTextHeight() const
+{
+  int height = 0;
+
+  if(mText != nullptr)
+  {
+    height = mText->GetHeight();
+  }
+
+  return height;
+}
+
+/******************************************************************************/
 void TextBoxComponent::SetHorizontalPadding(int aPadding)
 {
   mHorizontalPadding = aPadding;

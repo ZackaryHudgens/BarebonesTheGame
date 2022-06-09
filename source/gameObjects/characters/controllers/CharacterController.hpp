@@ -18,6 +18,13 @@ namespace Barebones
       CharacterController(UrsineEngine::GameObject& aCharacter);
 
       /**
+       * Updates the controller.
+       *
+       * @param aTime The start time of the current scene's Update().
+       */
+      void Update(double aTime);
+
+      /**
        * Controls the assigned character for a turn.
        *
        * @param aBoard The board to take a turn on.
@@ -64,6 +71,10 @@ namespace Barebones
 
       UrsineEngine::GameObject* mCharacter;
       UrsineEngine::GameObject* mBoard;
+
+      bool mEndingTurn;
+      double mEndTurnDelay;
+      double mTimeEndedTurn;
 
       bool mWaitingForCamera;
   };

@@ -117,6 +117,20 @@ namespace Barebones
       int GetHeight() const { return mHeight; }
 
       /**
+       * Returns the width of the text only.
+       *
+       * @return The width of the text only.
+       */
+      int GetTextWidth() const;
+
+      /**
+       * Returns the height of the text only.
+       *
+       * @return The height of the text only.
+       */
+      int GetTextHeight() const;
+
+      /**
        * Sets the fixed width property of this text box. If the width is
        * fixed, then it won't be changed when resizing to fit text.
        *

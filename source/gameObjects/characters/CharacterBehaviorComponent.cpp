@@ -86,6 +86,12 @@ void CharacterBehaviorComponent::Update(double aTime)
       mStatusMessageQueue.pop();
     }
   }
+
+  // Update the controller.
+  if(mController != nullptr)
+  {
+    mController->Update(aTime);
+  }
 }
 
 /******************************************************************************/

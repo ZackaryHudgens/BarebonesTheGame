@@ -32,9 +32,15 @@ std::unique_ptr<UrsineEngine::Scene> SceneFactory::CreateScene(const SceneType& 
   {
     case SceneType::eMAIN_MENU:
     {
+      // Create a background.
+      auto backgroundObject = std::make_unique<UrsineEngine::GameObject>("background");
+      backgroundObject->AddComponent(std::make_unique<Barebones::BackgroundMeshComponent>());
+      newScene->AddObject(std::move(backgroundObject));
+
       // Create the main menu.
       auto menu = MenuFactory::CreateMenu(MenuType::eMAIN, "mainMenu");
       newScene->AddObject(std::move(menu));
+
       break;
     }
     case SceneType::eBOARD:

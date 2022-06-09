@@ -16,6 +16,11 @@ namespace Barebones
        */
       MainMenuLayoutComponent();
 
+      /**
+       * Initializes the component.
+       */
+      void Initialize() override;
+
     protected:
 
       /**
@@ -37,10 +42,17 @@ namespace Barebones
       void HandleActionExecuted() override;
 
     private:
+      UrsineEngine::GameObject* mCursor;
+
       std::vector<TextBoxComponent*> mTextBoxes;
       TextBoxComponent* mHoveredTextBox;
 
       int mVerticalPadding;
+      int mHorizontalPadding;
+      int mTextboxHeight;
+      int mTextBoxWidth;
+
+      int mCursorHorizontalPadding;
   };
 }
 
