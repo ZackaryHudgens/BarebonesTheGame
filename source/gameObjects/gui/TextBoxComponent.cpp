@@ -25,40 +25,40 @@ void TextBoxComponent::Initialize()
   auto parent = GetParent();
   if(parent != nullptr)
   {
-    // Create a TextComponent and a GameObject to hold it.
-    auto textComponent = std::make_unique<UrsineEngine::TextComponent>();
-    textComponent->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
-
-    std::string vertexFile = "resources/shaders/TextShader.vert";
-    std::string fragmentFile = "resources/shaders/TextShader.frag";
-    UrsineEngine::Shader textShader(vertexFile, fragmentFile);
-    textComponent->AddShader("default", textShader);
-    textComponent->SetCurrentShader("default");
-
-    auto textObject = std::make_unique<UrsineEngine::GameObject>("textObject");
-    textObject->AddComponent(std::move(textComponent));
-    textObject->SetPosition(glm::vec3(0.0, 0.0, 0.1));
-    parent->AddChild(std::move(textObject));
-
-    mText = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::TextComponent>();
-
     // Create a SpriteComponent and a GameObject to hold it.
     auto backgroundSpriteComponent = std::make_unique<UrsineEngine::SpriteComponent>();
     backgroundSpriteComponent->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
     backgroundSpriteComponent->SetHasTransparency(false);
 
-    vertexFile = "resources/shaders/TexturedMeshShader.vert";
-    fragmentFile = "resources/shaders/TexturedMeshShader.frag";
+    std::string vertexFile = "resources/shaders/TexturedMeshShader.vert";
+    std::string fragmentFile = "resources/shaders/TexturedMeshShader.frag";
     UrsineEngine::Shader backgroundShader(vertexFile, fragmentFile);
     backgroundSpriteComponent->AddShader("default", backgroundShader);
     backgroundSpriteComponent->SetCurrentShader("default");
+    backgroundSpriteComponent->SetRenderOption(GL_DEPTH_TEST, false);
 
     auto backgroundSpriteObject = std::make_unique<UrsineEngine::GameObject>("backgroundSpriteObject");
     backgroundSpriteObject->AddComponent(std::move(backgroundSpriteComponent));
-    backgroundSpriteObject->SetPosition(glm::vec3(0.0, 0.0, -0.1));
     parent->AddChild(std::move(backgroundSpriteObject));
 
     mBackground = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::SpriteComponent>();
+
+    // Create a TextComponent and a GameObject to hold it.
+    auto textComponent = std::make_unique<UrsineEngine::TextComponent>();
+    textComponent->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
+
+    vertexFile = "resources/shaders/TextShader.vert";
+    fragmentFile = "resources/shaders/TextShader.frag";
+    UrsineEngine::Shader textShader(vertexFile, fragmentFile);
+    textComponent->AddShader("default", textShader);
+    textComponent->SetCurrentShader("default");
+    textComponent->SetRenderOption(GL_DEPTH_TEST, false);
+
+    auto textObject = std::make_unique<UrsineEngine::GameObject>("textObject");
+    textObject->AddComponent(std::move(textComponent));
+    parent->AddChild(std::move(textObject));
+
+    mText = parent->GetChildren().back()->GetFirstComponentOfType<UrsineEngine::TextComponent>();
   }
 }
 

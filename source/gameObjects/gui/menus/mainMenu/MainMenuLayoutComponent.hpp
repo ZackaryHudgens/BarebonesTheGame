@@ -16,12 +16,20 @@ namespace Barebones
        */
       MainMenuLayoutComponent();
 
+    protected:
+
       /**
        * Initializes the component.
        */
-      void Initialize() override;
+      void ProtectedInitialize() override;
 
-    protected:
+      /**
+       * A handler function that gets called whenever the hidden status of
+       * this menu changes.
+       *
+       * @param aHidden The new hidden status of the menu.
+       */
+      void HandleHiddenStatusChanged(bool aHidden) override;
 
       /**
        * A handler function that gets called whenever an action is added
@@ -34,12 +42,6 @@ namespace Barebones
        * action changes.
        */
       void HandleActionHovered() override;
-
-      /**
-       * A handler function that gets called whenever an action is executed
-       * from this menu.
-       */
-      void HandleActionExecuted() override;
 
     private:
       UrsineEngine::GameObject* mCursor;

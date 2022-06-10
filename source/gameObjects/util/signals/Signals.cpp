@@ -41,7 +41,8 @@ Barebones::InputComponentInitializedSignal Barebones::InputComponentInitialized;
 /**
  * GUI Signals
  */
-Barebones::TurnDisplayFinishedSignal   Barebones::TurnDisplayFinished;
+Barebones::TurnDisplayFinishedSignal Barebones::TurnDisplayFinished;
+Barebones::MenuLayoutComponentInitializedSignal Barebones::MenuLayoutComponentInitialized;
 
 /**
  * Camera signals

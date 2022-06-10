@@ -17,12 +17,12 @@ namespace Barebones
        */
       SkillMenuLayoutComponent();
 
+    protected:
+
       /**
        * Initializes the component.
        */
-      void Initialize() override;
-
-    protected:
+      void ProtectedInitialize() override;
 
       /**
        * A handler function that gets called whenever an action is added

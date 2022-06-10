@@ -21,7 +21,7 @@ SkillMenuLayoutComponent::SkillMenuLayoutComponent()
 }
 
 /******************************************************************************/
-void SkillMenuLayoutComponent::Initialize()
+void SkillMenuLayoutComponent::ProtectedInitialize()
 {
   auto parent = GetParent();
   if(parent != nullptr)

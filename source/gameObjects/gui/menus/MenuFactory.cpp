@@ -40,18 +40,12 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
       newMenu->GetFirstComponentOfType<MenuLayoutComponent>()->AddAction(std::make_unique<MenuAction>("Options"));
       auto optionsAction = newMenu->GetFirstComponentOfType<MenuLayoutComponent>()->GetActions().back();
 
-      auto optionsFunction = [aName]()
+      auto optionsFunction = []()
       {
         auto scene = env.GetCurrentScene();
         if(scene != nullptr)
         {
-          auto menuObject = scene->GetObject(aName);
-          if(menuObject != nullptr)
-          {
-            menuObject->ScheduleForDeletion();
-          }
-
-          auto newMenu = MenuFactory::CreateMenu(MenuType::eMAIN, "optionsMenu");
+          auto newMenu = MenuFactory::CreateMenu(MenuType::eOPTIONS, "optionsMenu");
           scene->AddObject(std::move(newMenu));
         }
       };
@@ -71,6 +65,11 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
     }
     case MenuType::eOPTIONS:
     {
+      newMenu->AddComponent(std::make_unique<MainMenuInputComponent>());
+      newMenu->AddComponent(std::make_unique<MainMenuLayoutComponent>());
+
+      newMenu->GetFirstComponentOfType<MenuLayoutComponent>()->AddAction(std::make_unique<MenuAction>("Window Type"));
+
       break;
     }
     case MenuType::eSKILL:

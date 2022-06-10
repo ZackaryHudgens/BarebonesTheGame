@@ -9,6 +9,7 @@ namespace Barebones
   {
     eMAIN,
     eOPTIONS,
+    eWINDOW_TYPE,
     eSKILL
   };
 

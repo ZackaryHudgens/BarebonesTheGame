@@ -13,6 +13,7 @@ namespace Barebones
   class HumanPlayerBehaviorComponent;
   class Skill;
   class TurnDisplayComponent;
+  class MenuLayoutComponent;
 
   /**
    * Character signals
@@ -79,8 +80,10 @@ namespace Barebones
    * GUI Signals
    */
   typedef UrsineEngine::SignalT<TurnDisplayComponent&> TurnDisplayFinishedSignal;
+  typedef UrsineEngine::SignalT<MenuLayoutComponent&> MenuLayoutComponentInitializedSignal;
 
-  extern TurnDisplayFinishedSignal   TurnDisplayFinished;
+  extern TurnDisplayFinishedSignal TurnDisplayFinished;
+  extern MenuLayoutComponentInitializedSignal MenuLayoutComponentInitialized;
 
   /**
    * Camera signals

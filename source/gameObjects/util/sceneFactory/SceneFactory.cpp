@@ -9,6 +9,7 @@
 #include "BoardTurnManagerComponent.hpp"
 
 #include "InputManagerComponent.hpp"
+#include "MenuManagerComponent.hpp"
 
 #include "CameraBehaviorComponent.hpp"
 
@@ -27,6 +28,11 @@ std::unique_ptr<UrsineEngine::Scene> SceneFactory::CreateScene(const SceneType& 
   auto inputManagerObject = std::make_unique<UrsineEngine::GameObject>("inputManager");
   inputManagerObject->AddComponent(std::make_unique<InputManagerComponent>());
   newScene->AddObject(std::move(inputManagerObject));
+
+  // Create a MenuManager;
+  auto menuManagerObject = std::make_unique<UrsineEngine::GameObject>("menuManager");
+  menuManagerObject->AddComponent(std::make_unique<MenuManagerComponent>());
+  newScene->AddObject(std::move(menuManagerObject));
 
   switch(aType)
   {

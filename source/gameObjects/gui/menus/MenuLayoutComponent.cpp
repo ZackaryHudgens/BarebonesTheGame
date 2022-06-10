@@ -2,12 +2,21 @@
 
 #include <algorithm>
 
+#include "Signals.hpp"
+
 using Barebones::MenuLayoutComponent;
 
 /******************************************************************************/
 MenuLayoutComponent::MenuLayoutComponent()
   : mCurrentlyHoveredAction(nullptr)
 {
+}
+
+/******************************************************************************/
+void MenuLayoutComponent::Initialize()
+{
+  ProtectedInitialize();
+  MenuLayoutComponentInitialized.Notify(*this);
 }
 
 /******************************************************************************/
@@ -84,6 +93,13 @@ void MenuLayoutComponent::ExecuteCurrentAction()
       HandleActionExecuted();
     }
   }
+}
+
+/******************************************************************************/
+void MenuLayoutComponent::SetHidden(bool aHidden)
+{
+  mHidden = aHidden;
+  HandleHiddenStatusChanged(mHidden);
 }
 
 /******************************************************************************/

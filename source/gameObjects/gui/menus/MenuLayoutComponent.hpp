@@ -17,6 +17,11 @@ namespace Barebones
       MenuLayoutComponent();
 
       /**
+       * Initializes the component.
+       */
+      void Initialize() override;
+
+      /**
        * Adds an action to this menu.
        *
        * @param aAction The action to add.
@@ -45,7 +50,35 @@ namespace Barebones
        */
       void ExecuteCurrentAction();
 
+      /**
+       * Sets whether this menu is hidden. In order for this function to
+       * do anything, HandleHiddenStatusChanged() needs to be overridden.
+       *
+       * @param aHidden The new hidden status of the menu.
+       */
+      void SetHidden(bool aHidden);
+
+      /**
+       * Returns the hidden status of this menu.
+       *
+       * @return The hidden status of this menu.
+       */
+      bool IsHidden() const { return mHidden; }
+
     protected:
+
+      /**
+       * A virtual function that gets called during Initialize().
+       */
+      virtual void ProtectedInitialize() {}
+
+      /**
+       * A virtual function that gets called whenever the hidden status of
+       * this menu changes.
+       *
+       * @param aHidden The new hidden status of the menu.
+       */
+      virtual void HandleHiddenStatusChanged(bool aHidden) {}
 
       /**
        * A virtual function that gets called whenever an action is added
@@ -75,6 +108,8 @@ namespace Barebones
     private:
       std::vector<std::unique_ptr<MenuAction>> mActions;
       MenuAction* mCurrentlyHoveredAction;
+
+      bool mHidden;
   };
 }
 

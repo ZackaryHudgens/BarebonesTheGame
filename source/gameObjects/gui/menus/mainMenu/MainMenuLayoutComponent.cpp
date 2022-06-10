@@ -15,7 +15,7 @@ MainMenuLayoutComponent::MainMenuLayoutComponent()
   : MenuLayoutComponent()
   , mCursor(nullptr)
   , mHoveredTextBox(nullptr)
-  , mVerticalPadding(25)
+  , mVerticalPadding(20)
   , mHorizontalPadding(15)
   , mTextboxHeight(70)
   , mTextBoxWidth(500)
@@ -24,7 +24,7 @@ MainMenuLayoutComponent::MainMenuLayoutComponent()
 }
 
 /******************************************************************************/
-void MainMenuLayoutComponent::Initialize()
+void MainMenuLayoutComponent::ProtectedInitialize()
 {
   auto parent = GetParent();
   if(parent != nullptr)
@@ -48,6 +48,46 @@ void MainMenuLayoutComponent::Initialize()
     cursorObject->SetScale(glm::vec3(5.0, 5.0, 1.0));
     parent->AddChild(std::move(cursorObject));
     mCursor = parent->GetChildren().back();
+  }
+}
+
+/******************************************************************************/
+void MainMenuLayoutComponent::HandleHiddenStatusChanged(bool aHidden)
+{
+  if(mCursor != nullptr)
+  {
+    auto cursorPos = mCursor->GetPosition();
+
+    if(aHidden)
+    {
+      cursorPos.z += 1.0;
+    }
+    else
+    {
+      cursorPos.z -= 1.0;
+    }
+
+    mCursor->SetPosition(cursorPos);
+  }
+
+  for(auto& textBox : mTextBoxes)
+  {
+    auto textBoxParent = textBox->GetParent();
+    if(textBoxParent != nullptr)
+    {
+      auto textBoxPos = textBoxParent->GetPosition();
+
+      if(aHidden)
+      {
+        textBoxPos.z += 1.0;
+      }
+      else
+      {
+        textBoxPos.z -= 1.0;
+      }
+
+      textBoxParent->SetPosition(textBoxPos);
+    }
   }
 }
 
@@ -82,6 +122,7 @@ void MainMenuLayoutComponent::HandleActionAdded()
     newActionTextBox->SetFont("Alagard", "Medium");
     newActionTextBox->SetTextSize(48);
     newActionTextBox->SetTextAlignment(TextAlignment::eCENTER);
+    newActionTextBox->SetText(newAction->GetName());
 
     auto textShader = newActionTextBox->GetTextShader();
     if(textShader != nullptr)
@@ -89,8 +130,6 @@ void MainMenuLayoutComponent::HandleActionAdded()
       textShader->Activate();
       textShader->SetVec4("textColor", glm::vec4(BACKGROUND_COLOR, 1.0));
     }
-
-    newActionTextBox->SetText(newAction->GetName());
 
     // Position the text box in the center of the screen.
     double overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
@@ -138,9 +177,4 @@ void MainMenuLayoutComponent::HandleActionHovered()
       }
     }
   }
-}
-
-/******************************************************************************/
-void MainMenuLayoutComponent::HandleActionExecuted()
-{
 }
