@@ -178,3 +178,32 @@ void MainMenuLayoutComponent::HandleActionHovered()
     }
   }
 }
+
+/******************************************************************************/
+void MainMenuLayoutComponent::HandleActionEnabledChanged(MenuAction& aAction)
+{
+  // Find the text box that corresponds to the action.
+  auto actionName = aAction.GetName();
+
+  auto findTextBox = [&actionName](const TextBoxComponent* aTextBox)
+  {
+    return actionName == aTextBox->GetText();
+  };
+
+  auto foundTextBox = std::find_if(mTextBoxes.begin(),
+                                   mTextBoxes.end(),
+                                   findTextBox);
+  if(foundTextBox != mTextBoxes.end())
+  {
+    // Change the text color based on whether the action was enabled
+    // or disabled.
+    if(aAction.IsEnabled())
+    {
+      (*foundTextBox)->GetTextShader()->SetVec4("textColor", glm::vec4(BACKGROUND_COLOR, 1.0));
+    }
+    else
+    {
+      (*foundTextBox)->GetTextShader()->SetVec4("textColor", glm::vec4(DARK_COLOR, 1.0));
+    }
+  }
+}

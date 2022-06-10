@@ -99,6 +99,14 @@ namespace Barebones
       virtual void HandleActionExecuted() {}
 
       /**
+       * A virtual function that gets called whenever an action in this menu
+       * is enabled or disabled.
+       *
+       * @param aAction The action that changed.
+       */
+      virtual void HandleActionEnabledChanged(MenuAction& aAction) {}
+
+      /**
        * Returns the currently selected action.
        *
        * @return The currently selected action.
@@ -106,6 +114,15 @@ namespace Barebones
       MenuAction* GetCurrentlyHoveredAction() { return mCurrentlyHoveredAction; }
 
     private:
+
+      /**
+       * A handler function that gets called whenever a MenuAction is enabled
+       * or disabled.
+       *
+       * @param aAction The action that changed.
+       */
+      void HandleMenuActionEnabledChanged(MenuAction& aAction);
+
       std::vector<std::unique_ptr<MenuAction>> mActions;
       MenuAction* mCurrentlyHoveredAction;
 

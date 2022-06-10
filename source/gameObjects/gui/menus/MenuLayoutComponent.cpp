@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "Signals.hpp"
+#include <iostream>
 
 using Barebones::MenuLayoutComponent;
 
@@ -10,6 +11,10 @@ using Barebones::MenuLayoutComponent;
 MenuLayoutComponent::MenuLayoutComponent()
   : mCurrentlyHoveredAction(nullptr)
 {
+  MenuActionEnabledChanged.Connect(*this, [this](MenuAction& aAction)
+  {
+    this->HandleMenuActionEnabledChanged(aAction);
+  });
 }
 
 /******************************************************************************/
@@ -113,4 +118,21 @@ std::vector<Barebones::MenuAction*> MenuLayoutComponent::GetActions()
   }
 
   return actions;
+}
+
+/******************************************************************************/
+void MenuLayoutComponent::HandleMenuActionEnabledChanged(MenuAction& aAction)
+{
+  auto findAction = [aAction](const std::unique_ptr<MenuAction>& aActionToCompare)
+  {
+    return aActionToCompare->GetName() == aAction.GetName();
+  };
+
+  auto foundAction = std::find_if(mActions.begin(),
+                                  mActions.end(),
+                                  findAction);
+  if(foundAction != mActions.end())
+  {
+    HandleActionEnabledChanged(*(*foundAction).get());
+  }
 }

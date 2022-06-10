@@ -43,6 +43,14 @@ namespace Barebones
        */
       void HandleActionHovered() override;
 
+      /**
+       * A handler function that gets called whenever an action in this menu
+       * is enabled or disabled.
+       *
+       * @param aAction The action that changed.
+       */
+      void HandleActionEnabledChanged(MenuAction& aAction) override;
+
     private:
       UrsineEngine::GameObject* mCursor;
 

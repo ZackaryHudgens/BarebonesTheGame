@@ -1,5 +1,7 @@
 #include "MenuAction.hpp"
 
+#include "Signals.hpp"
+
 using Barebones::MenuAction;
 
 /******************************************************************************/
@@ -18,4 +20,11 @@ void MenuAction::Execute()
   {
     mFunction();
   }
+}
+
+/******************************************************************************/
+void MenuAction::SetEnabled(bool aEnabled)
+{
+  mEnabled = aEnabled;
+  MenuActionEnabledChanged.Notify(*this);
 }

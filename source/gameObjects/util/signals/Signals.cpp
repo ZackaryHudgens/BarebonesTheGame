@@ -43,6 +43,7 @@ Barebones::InputComponentInitializedSignal Barebones::InputComponentInitialized;
  */
 Barebones::TurnDisplayFinishedSignal Barebones::TurnDisplayFinished;
 Barebones::MenuLayoutComponentInitializedSignal Barebones::MenuLayoutComponentInitialized;
+Barebones::MenuActionEnabledChangedSignal Barebones::MenuActionEnabledChanged;
 
 /**
  * Camera signals
