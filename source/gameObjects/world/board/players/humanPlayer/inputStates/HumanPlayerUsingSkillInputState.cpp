@@ -2,6 +2,10 @@
 
 #include <algorithm>
 
+#include <Environment.hpp>
+
+#include "MenuFactory.hpp"
+
 #include "Signals.hpp"
 
 #include "BoardLayoutComponent.hpp"
@@ -104,6 +108,17 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerUsingSkillInputStat
         case UrsineEngine::KeyCode::eKEY_X:
         {
           CameraZoomChangeRequested.Notify(0.0);
+          break;
+        }
+        case UrsineEngine::KeyCode::eKEY_Q:
+        {
+          // Create a pause menu and add it to the scene.
+          auto pauseMenu = MenuFactory::CreateMenu(MenuType::ePAUSE, "pauseMenu");
+          auto scene = env.GetCurrentScene();
+          if(scene != nullptr)
+          {
+            scene->AddObject(std::move(pauseMenu));
+          }
           break;
         }
         case UrsineEngine::KeyCode::eKEY_ENTER:

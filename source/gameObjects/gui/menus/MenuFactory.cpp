@@ -162,18 +162,6 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
       };
       menuLayoutComponent->GetActions().back()->SetFunction(resolutionFunction4);
 
-      menuLayoutComponent->AddAction(std::make_unique<MenuAction>("1920x1200"));
-
-      auto resolutionFunction5 = [graphicsOptions]()
-      {
-        UrsineEngine::GraphicsOptions newOptions = graphicsOptions;
-        newOptions.mWidth = 1920;
-        newOptions.mHeight = 1200;
-
-        env.Initialize(newOptions);
-      };
-      menuLayoutComponent->GetActions().back()->SetFunction(resolutionFunction5);
-
       menuLayoutComponent->AddAction(std::make_unique<MenuAction>("2560x1440"));
 
       auto resolutionFunction6 = [graphicsOptions]()
@@ -209,13 +197,8 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
 
       auto graphicsOptions = env.GetGraphicsOptions();
 
-      // Add the windowed option.
+      // Add the windowed action.
       menuLayoutComponent->AddAction(std::make_unique<MenuAction>("Windowed"));
-      if(graphicsOptions.mWindowMode == UrsineEngine::WindowMode::eWINDOWED)
-      {
-        menuLayoutComponent->GetActions().back()->SetEnabled(false);
-      }
-
       auto windowedFunction = [graphicsOptions]()
       {
         UrsineEngine::GraphicsOptions newOptions = graphicsOptions;
@@ -227,11 +210,6 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
 
       // Add the fullscreen action.
       menuLayoutComponent->AddAction(std::make_unique<MenuAction>("Fullscreen"));
-      if(graphicsOptions.mWindowMode == UrsineEngine::WindowMode::eFULLSCREEN)
-      {
-        menuLayoutComponent->GetActions().back()->SetEnabled(false);
-      }
-
       auto fullscreenFunction = [graphicsOptions]()
       {
         UrsineEngine::GraphicsOptions newOptions = graphicsOptions;
@@ -243,11 +221,6 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
 
       // Add the borderless action.
       menuLayoutComponent->AddAction(std::make_unique<MenuAction>("Borderless"));
-      if(graphicsOptions.mWindowMode == UrsineEngine::WindowMode::eBORDERLESS_FULLSCREEN)
-      {
-        menuLayoutComponent->GetActions().back()->SetEnabled(false);
-      }
-
       auto borderlessFunction = [graphicsOptions]()
       {
         UrsineEngine::GraphicsOptions newOptions = graphicsOptions;
@@ -256,6 +229,52 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
         env.Initialize(newOptions);
       };
       menuLayoutComponent->GetActions().back()->SetFunction(borderlessFunction);
+
+      break;
+    }
+    case MenuType::ePAUSE:
+    {
+      newMenu->AddComponent(std::make_unique<MainMenuInputComponent>());
+      newMenu->AddComponent(std::make_unique<MainMenuLayoutComponent>());
+
+      auto menuLayoutComponent = newMenu->GetFirstComponentOfType<MenuLayoutComponent>();
+
+      // Add the resume action.
+      menuLayoutComponent->AddAction(std::make_unique<MenuAction>("Resume"));
+      auto resumeFunction = [aName]()
+      {
+        auto scene = env.GetCurrentScene();
+        if(scene != nullptr)
+        {
+          auto menuObject = scene->GetObject(aName);
+          if(menuObject != nullptr)
+          {
+            menuObject->ScheduleForDeletion();
+          }
+        }
+      };
+      menuLayoutComponent->GetActions().back()->SetFunction(resumeFunction);
+
+      // Add the options action.
+      menuLayoutComponent->AddAction(std::make_unique<MenuAction>("Options"));
+      auto optionsFunction = []()
+      {
+        auto scene = env.GetCurrentScene();
+        if(scene != nullptr)
+        {
+          auto newMenu = MenuFactory::CreateMenu(MenuType::eOPTIONS, "optionsMenu");
+          scene->AddObject(std::move(newMenu));
+        }
+      };
+      menuLayoutComponent->GetActions().back()->SetFunction(optionsFunction);
+
+      // Add the exit action.
+      menuLayoutComponent->AddAction(std::make_unique<MenuAction>("Exit to Title"));
+      auto exitFunction = []()
+      {
+        env.LoadScene(SceneFactory::CreateScene(SceneType::eMAIN_MENU));
+      };
+      menuLayoutComponent->GetActions().back()->SetFunction(exitFunction);
 
       break;
     }

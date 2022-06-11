@@ -11,6 +11,7 @@ namespace Barebones
     eOPTIONS,
     eRESOLUTION,
     eWINDOW_TYPE,
+    ePAUSE,
     eSKILL
   };
 
