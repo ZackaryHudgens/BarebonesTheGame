@@ -54,40 +54,12 @@ void MainMenuLayoutComponent::ProtectedInitialize()
 /******************************************************************************/
 void MainMenuLayoutComponent::HandleHiddenStatusChanged(bool aHidden)
 {
-  if(mCursor != nullptr)
+  auto parent = GetParent();
+  if(parent != nullptr)
   {
-    auto cursorPos = mCursor->GetPosition();
-
-    if(aHidden)
-    {
-      cursorPos.z += 1.0;
-    }
-    else
-    {
-      cursorPos.z -= 1.0;
-    }
-
-    mCursor->SetPosition(cursorPos);
-  }
-
-  for(auto& textBox : mTextBoxes)
-  {
-    auto textBoxParent = textBox->GetParent();
-    if(textBoxParent != nullptr)
-    {
-      auto textBoxPos = textBoxParent->GetPosition();
-
-      if(aHidden)
-      {
-        textBoxPos.z += 1.0;
-      }
-      else
-      {
-        textBoxPos.z -= 1.0;
-      }
-
-      textBoxParent->SetPosition(textBoxPos);
-    }
+    auto parentPos = parent->GetPosition();
+    aHidden ? parentPos.z += 1.1 : parentPos.z -= 1.1;
+    parent->SetPosition(parentPos);
   }
 }
 
@@ -131,22 +103,73 @@ void MainMenuLayoutComponent::HandleActionAdded()
       textShader->SetVec4("textColor", glm::vec4(BACKGROUND_COLOR, 1.0));
     }
 
-    // Position the text box in the center of the screen.
-    double overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
-    double overlayHeight = env.GetGraphicsOptions().mOverlayHeight;
-    double xPos = overlayWidth / 2.0;
-    double yPos = overlayHeight / 2.0;
-
-    auto yOffset = mTextboxHeight + mVerticalPadding;
-    yPos -= (yOffset * mTextBoxes.size());
-
-    newActionTextBox->GetParent()->SetPosition(glm::vec3(xPos, yPos, 0.1));
     mTextBoxes.emplace_back(newActionTextBox);
+    RepositionTextBoxes();
+    RepositionCursor();
   }
 }
 
 /******************************************************************************/
 void MainMenuLayoutComponent::HandleActionHovered()
+{
+  RepositionCursor();
+}
+
+/******************************************************************************/
+void MainMenuLayoutComponent::HandleActionEnabledChanged(MenuAction& aAction)
+{
+  // Find the text box that corresponds to the action.
+  auto actionName = aAction.GetName();
+
+  auto findTextBox = [&actionName](const TextBoxComponent* aTextBox)
+  {
+    return actionName == aTextBox->GetText();
+  };
+
+  auto foundTextBox = std::find_if(mTextBoxes.begin(),
+                                   mTextBoxes.end(),
+                                   findTextBox);
+  if(foundTextBox != mTextBoxes.end())
+  {
+    // Change the text color based on whether the action was enabled
+    // or disabled.
+    if(aAction.IsEnabled())
+    {
+      (*foundTextBox)->GetTextShader()->SetVec4("textColor", glm::vec4(BACKGROUND_COLOR, 1.0));
+    }
+    else
+    {
+      (*foundTextBox)->GetTextShader()->SetVec4("textColor", glm::vec4(DARK_COLOR, 1.0));
+    }
+  }
+}
+
+/******************************************************************************/
+void MainMenuLayoutComponent::RepositionTextBoxes()
+{
+  auto overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
+  auto overlayHeight = env.GetGraphicsOptions().mOverlayHeight;
+
+  auto totalTextBoxHeight = (mTextboxHeight + mVerticalPadding) * mTextBoxes.size();
+  auto distanceFromTop = overlayHeight - ((overlayHeight - totalTextBoxHeight) / 2.0);
+
+  for(auto& textBox : mTextBoxes)
+  {
+    auto textBoxParent = textBox->GetParent();
+    if(textBoxParent != nullptr)
+    {
+      auto textBoxPos = textBoxParent->GetPosition();
+      textBoxPos.x = (overlayWidth / 2.0);
+      textBoxPos.y = distanceFromTop;
+      textBoxParent->SetPosition(textBoxPos);
+
+      distanceFromTop -= (mTextboxHeight + mVerticalPadding);
+    }
+  }
+}
+
+/******************************************************************************/
+void MainMenuLayoutComponent::RepositionCursor()
 {
   auto action = GetCurrentlyHoveredAction();
   if(action != nullptr)
@@ -175,35 +198,6 @@ void MainMenuLayoutComponent::HandleActionHovered()
         cursorPos.x = (leftEdge + mCursorHorizontalPadding);
         mCursor->SetPosition(cursorPos);
       }
-    }
-  }
-}
-
-/******************************************************************************/
-void MainMenuLayoutComponent::HandleActionEnabledChanged(MenuAction& aAction)
-{
-  // Find the text box that corresponds to the action.
-  auto actionName = aAction.GetName();
-
-  auto findTextBox = [&actionName](const TextBoxComponent* aTextBox)
-  {
-    return actionName == aTextBox->GetText();
-  };
-
-  auto foundTextBox = std::find_if(mTextBoxes.begin(),
-                                   mTextBoxes.end(),
-                                   findTextBox);
-  if(foundTextBox != mTextBoxes.end())
-  {
-    // Change the text color based on whether the action was enabled
-    // or disabled.
-    if(aAction.IsEnabled())
-    {
-      (*foundTextBox)->GetTextShader()->SetVec4("textColor", glm::vec4(BACKGROUND_COLOR, 1.0));
-    }
-    else
-    {
-      (*foundTextBox)->GetTextShader()->SetVec4("textColor", glm::vec4(DARK_COLOR, 1.0));
     }
   }
 }

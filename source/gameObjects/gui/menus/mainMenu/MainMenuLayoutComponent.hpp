@@ -52,6 +52,18 @@ namespace Barebones
       void HandleActionEnabledChanged(MenuAction& aAction) override;
 
     private:
+
+      /**
+       * Repositions each text box to be centered horizontally and vertically.
+       */
+      void RepositionTextBoxes();
+
+      /**
+       * Repositions the cursor to be to the left of the currently
+       * hovered action.
+       */
+      void RepositionCursor();
+
       UrsineEngine::GameObject* mCursor;
 
       std::vector<TextBoxComponent*> mTextBoxes;
