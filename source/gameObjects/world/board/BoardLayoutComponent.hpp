@@ -216,6 +216,14 @@ namespace Barebones
        */
       void HandleCharacterDied(CharacterBehaviorComponent& aCharacter);
 
+      /**
+       * A handler function that gets called whenever a GameObject is about
+       * to be deleted.
+       *
+       * @param aObject The GameObject that's about to be deleted.
+       */
+      void HandleObjectPendingDeletion(UrsineEngine::GameObject* aObject);
+
       std::vector<std::vector<UrsineEngine::GameObject*>> mTiles;
       std::vector<std::vector<UrsineEngine::GameObject*>> mCharacters;
 

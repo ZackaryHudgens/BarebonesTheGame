@@ -61,16 +61,8 @@ std::unique_ptr<UrsineEngine::Scene> SceneFactory::CreateScene(const SceneType& 
       boardTurnManagerComponent->AddPlayer(PlayerFactory::CreatePlayer(PlayerType::eARTIFICIAL, "Enemy"));
 
       // Add characters to the board.
-      auto skeleton = CharacterFactory::CreateCharacter(CharacterType::eBASIC_SKELETON, "skeleton");
-      auto skeleton2 = CharacterFactory::CreateCharacter(CharacterType::eBONE_THROWER, "skeleton2");
       auto human = CharacterFactory::CreateCharacter(CharacterType::eCORRUPTED_FARMER, "human");
-      auto human2 = CharacterFactory::CreateCharacter(CharacterType::eCORRUPTED_FARMER, "human2");
-      auto human3 = CharacterFactory::CreateCharacter(CharacterType::eCORRUPTED_FARMER, "human3");
-      boardLayoutComponent->AddCharacterAtLocation(std::move(skeleton), TileLocation(0, 0));
-      boardLayoutComponent->AddCharacterAtLocation(std::move(skeleton2), TileLocation(2, 3));
       boardLayoutComponent->AddCharacterAtLocation(std::move(human), TileLocation(5, 0));
-      boardLayoutComponent->AddCharacterAtLocation(std::move(human2), TileLocation(4, 3));
-      boardLayoutComponent->AddCharacterAtLocation(std::move(human3), TileLocation(2, 2));
 
       // Create a background.
       auto backgroundObject = std::make_unique<UrsineEngine::GameObject>("background");

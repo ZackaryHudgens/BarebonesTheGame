@@ -1,24 +1,27 @@
-#include "TurnDisplayComponent.hpp"
-
-#include <sstream>
+#include "ScrollingMessageBehaviorComponent.hpp"
 
 #include <Environment.hpp>
+#include <GameObject.hpp>
+
+#include "TextBoxComponent.hpp"
 
 #include "Colors.hpp"
 #include "Fonts.hpp"
-#include "Signals.hpp"
 
-#include "PlayerBehaviorComponent.hpp"
+#include <iostream>
 
-using Barebones::TurnDisplayComponent;
+using Barebones::ScrollingMessageBehaviorComponent;
 
 /******************************************************************************/
-TurnDisplayComponent::TurnDisplayComponent()
+ScrollingMessageBehaviorComponent::ScrollingMessageBehaviorComponent(const std::string& aText,
+                                                                     int aFontSize,
+                                                                     double aSpeed)
   : Component()
-  , mTextBox(nullptr)
-  , mTextBoxVerticalPadding(30.0)
-  , mSpeed(200.0)
-  , mMoving(false)
+  , mText(aText)
+  , mFontSize(aFontSize)
+  , mSpeed(aSpeed)
+  , mTextBoxVerticalPadding(27)
+  , mMoving(true)
   , mTimeBecamePaused(0.0)
   , mTimeToSpendPaused(1.0)
   , mCurrentlyPaused(false)
@@ -27,50 +30,49 @@ TurnDisplayComponent::TurnDisplayComponent()
 }
 
 /******************************************************************************/
-void TurnDisplayComponent::Initialize()
+void ScrollingMessageBehaviorComponent::Initialize()
 {
   auto parent = GetParent();
   if(parent != nullptr)
   {
     // Create a text box and add it to the parent.
     parent->AddComponent(std::make_unique<TextBoxComponent>());
-    mTextBox = parent->GetComponentsOfType<TextBoxComponent>().back();
+    auto textBox = parent->GetComponentsOfType<TextBoxComponent>().back();
+
+    // Set the dimensions of the text box to stretch across the screen.
+    double overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
+    double overlayHeight = env.GetGraphicsOptions().mOverlayHeight;
+
+    textBox->SetWidth(overlayWidth);
+    textBox->SetFixedWidth(true);
 
     UrsineEngine::Texture backgroundTexture;
     backgroundTexture.CreateTextureFromFile("resources/sprites/gui/menuBox.png");
-    mTextBox->SetTexture(backgroundTexture);
+    textBox->SetTexture(backgroundTexture);
 
-    mTextBox->SetFont(DEFAULT_FONT_FAMILY, DEFAULT_FONT_STYLE);
-    mTextBox->SetTextSize(BIGGEST_FONT_SIZE);
-    mTextBox->SetTextAlignment(TextAlignment::eCENTER);
-    mTextBox->SetVerticalPadding(mTextBoxVerticalPadding);
+    textBox->SetFont(DEFAULT_FONT_FAMILY, DEFAULT_FONT_STYLE);
+    textBox->SetTextSize(mFontSize);
+    textBox->SetTextAlignment(TextAlignment::eCENTER);
+    textBox->SetVerticalPadding(mTextBoxVerticalPadding);
+    textBox->SetText(mText);
 
-    auto textShader = mTextBox->GetTextShader();
+    auto textShader = textBox->GetTextShader();
     if(textShader != nullptr)
     {
       textShader->Activate();
       textShader->SetVec4("textColor", glm::vec4(BACKGROUND_COLOR, 1.0));
     }
 
-    // Set the dimensions of the text box to stretch across the screen.
-    double overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
-    double overlayHeight = env.GetGraphicsOptions().mOverlayHeight;
-
-    mTextBox->SetWidth(overlayWidth);
-    mTextBox->SetFixedWidth(true);
-
     // Move the parent object to be just to the right of the overlay,
     // centered vertically.
     auto xPos = overlayWidth * 1.5;
     auto yPos = overlayHeight / 2.0;
-    parent->SetPosition(glm::vec3(xPos,
-                                  yPos,
-                                  0.1));
+    parent->SetPosition(glm::vec3(xPos, yPos, 0.1));
   }
 }
 
 /******************************************************************************/
-void TurnDisplayComponent::Update(double aTime)
+void ScrollingMessageBehaviorComponent::Update(double aTime)
 {
   if(mMoving)
   {
@@ -101,7 +103,6 @@ void TurnDisplayComponent::Update(double aTime)
         auto overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
         if(pos.x <= -(overlayWidth / 2.0))
         {
-          TurnDisplayFinished.Notify(*this);
           parent->ScheduleForDeletion();
         }
       }
@@ -115,18 +116,5 @@ void TurnDisplayComponent::Update(double aTime)
       mMoving = true;
       mCurrentlyPaused = false;
     }
-  }
-}
-
-/******************************************************************************/
-void TurnDisplayComponent::DisplayMessageForPlayer(UrsineEngine::GameObject& aPlayer)
-{
-  if(mTextBox != nullptr)
-  {
-    std::stringstream ss;
-    ss << aPlayer.GetName() << "'s Turn";
-    mTextBox->SetText(ss.str());
-
-    mMoving = true;
   }
 }

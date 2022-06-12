@@ -4,6 +4,8 @@
 #include <GameObject.hpp>
 #include <Signal.hpp>
 
+#include "Side.hpp"
+
 namespace Barebones
 {
   class CharacterBehaviorComponent;
@@ -71,6 +73,15 @@ namespace Barebones
   extern TileReadyForUseSignal TileReadyForUse;
 
   /**
+   * Board signals
+   */
+  typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> BoardReadyForUseSignal;
+  typedef UrsineEngine::SignalT<UrsineEngine::GameObject&, Side&> AllCharactersOfSideDefeatedSignal;
+
+  extern BoardReadyForUseSignal BoardReadyForUse;
+  extern AllCharactersOfSideDefeatedSignal AllCharactersOfSideDefeated;
+
+  /**
    * Input signals
    */
   typedef UrsineEngine::SignalT<InputComponent&> InputComponentInitializedSignal;
@@ -80,11 +91,9 @@ namespace Barebones
   /**
    * GUI Signals
    */
-  typedef UrsineEngine::SignalT<TurnDisplayComponent&> TurnDisplayFinishedSignal;
   typedef UrsineEngine::SignalT<MenuLayoutComponent&> MenuLayoutComponentInitializedSignal;
   typedef UrsineEngine::SignalT<MenuAction&> MenuActionEnabledChangedSignal;
 
-  extern TurnDisplayFinishedSignal TurnDisplayFinished;
   extern MenuLayoutComponentInitializedSignal MenuLayoutComponentInitialized;
   extern MenuActionEnabledChangedSignal MenuActionEnabledChanged;
 

@@ -2,9 +2,9 @@
 #define BOARDTURNMANAGERCOMPONENT_HPP
 
 #include <Component.hpp>
+#include <GameObject.hpp>
 
 #include "PlayerBehaviorComponent.hpp"
-#include "TurnDisplayComponent.hpp"
 
 namespace Barebones
 {
@@ -20,19 +20,6 @@ namespace Barebones
        * Constructor.
        */
       BoardTurnManagerComponent();
-
-      /**
-       * Updates the turn manager.
-       *
-       * @param aTime The start time of the current Scene's Update().
-       */
-      void Update(double aTime) override;
-
-      /**
-       * "Starts" the turn manager by making the first player take
-       * a turn. As turns are ended, the turn tracker will update.
-       */
-      void Start();
 
       /**
        * Adds a player to the turn manager by taking ownership of it,
@@ -68,18 +55,23 @@ namespace Barebones
       void HandlePlayerTurnEnded(PlayerBehaviorComponent& aPlayer);
 
       /**
-       * A handler function that gets called whenever the turn
-       * display finishes its animation.
+       * A handler function that gets called whenever a board object
+       * is ready to start playing on.
        *
-       * @param aDisplay The display in question.
+       * @param aBoard The board that is ready for use.
        */
-      void HandleTurnDisplayFinished(TurnDisplayComponent& aDisplay);
+      void HandleBoardReadyForUse(UrsineEngine::GameObject& aBoard);
 
+      /**
+       * A handler function that gets called whenever a GameObject
+       * is about to be deleted.
+       *
+       * @param aObject The GameObject that's about to be deleted.
+       */
+      void HandleObjectPendingDeletion(UrsineEngine::GameObject* aObject);
+
+      UrsineEngine::GameObject* mTurnDisplay;
       std::vector<UrsineEngine::GameObject*> mTurnTracker;
-      TurnDisplayComponent* mTurnDisplay;
-
-      bool mWaitingForDisplay;
-      bool mWaitingToTakeTurn;
   };
 }
 

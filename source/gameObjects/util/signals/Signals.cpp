@@ -34,6 +34,12 @@ Barebones::HumanPlayerMovedSignal Barebones::HumanPlayerMoved;
 Barebones::TileReadyForUseSignal Barebones::TileReadyForUse;
 
 /**
+ * Board signals
+ */
+Barebones::BoardReadyForUseSignal Barebones::BoardReadyForUse;
+Barebones::AllCharactersOfSideDefeatedSignal Barebones::AllCharactersOfSideDefeated;
+
+/**
  * Input signals
  */
 Barebones::InputComponentInitializedSignal Barebones::InputComponentInitialized;
@@ -41,7 +47,6 @@ Barebones::InputComponentInitializedSignal Barebones::InputComponentInitialized;
 /**
  * GUI Signals
  */
-Barebones::TurnDisplayFinishedSignal Barebones::TurnDisplayFinished;
 Barebones::MenuLayoutComponentInitializedSignal Barebones::MenuLayoutComponentInitialized;
 Barebones::MenuActionEnabledChangedSignal Barebones::MenuActionEnabledChanged;
 

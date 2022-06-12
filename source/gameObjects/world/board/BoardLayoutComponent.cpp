@@ -3,13 +3,12 @@
 #include <algorithm>
 #include <sstream>
 
+#include <CoreSignals.hpp>
 #include <GameObject.hpp>
 #include <MeshComponent.hpp>
 
 #include "Colors.hpp"
 #include "Signals.hpp"
-
-#include "BoardTurnManagerComponent.hpp"
 
 #include "CharacterBehaviorComponent.hpp"
 
@@ -73,6 +72,11 @@ BoardLayoutComponent::BoardLayoutComponent()
   CharacterDied.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
   {
     this->HandleCharacterDied(aCharacter);
+  });
+
+  UrsineEngine::ObjectPendingDeletion.Connect(*this, [this](UrsineEngine::GameObject* aObject)
+  {
+    this->HandleObjectPendingDeletion(aObject);
   });
 }
 
@@ -452,12 +456,7 @@ void BoardLayoutComponent::HandleTileReadyForUse(UrsineEngine::GameObject& aTile
     auto parent = GetParent();
     if(parent != nullptr)
     {
-      // The board is ready, so begin taking turns.
-      auto turnManagerComponent = parent->GetFirstComponentOfType<BoardTurnManagerComponent>();
-      if(turnManagerComponent != nullptr)
-      {
-        turnManagerComponent->Start();
-      }
+      BoardReadyForUse.Notify(*parent);
     }
   }
 }
@@ -465,50 +464,37 @@ void BoardLayoutComponent::HandleTileReadyForUse(UrsineEngine::GameObject& aTile
 /******************************************************************************/
 void BoardLayoutComponent::HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& aPlayer)
 {
-  // Only change the currently hovered tile if the player that moved is the
-  // current player in the turn manager.
-  auto parent = GetParent();
-  if(parent != nullptr)
+  auto location = aPlayer.GetLocation();
+
+  // Un-hover the tile at the previous location.
+  auto hoveredTile = GetTileAtLocation(mHoveredTileLocation);
+  if(hoveredTile != nullptr)
   {
-    auto turnManager = parent->GetFirstComponentOfType<BoardTurnManagerComponent>();
-    if(turnManager != nullptr)
+    auto prevTileBehaviorComp = hoveredTile->GetFirstComponentOfType<TileBehaviorComponent>();
+    if(prevTileBehaviorComp != nullptr)
     {
-      if(aPlayer.GetParent() == turnManager->GetCurrentPlayer())
-      {
-        auto location = aPlayer.GetLocation();
-
-        // Un-hover the tile at the previous location.
-        auto hoveredTile = GetTileAtLocation(mHoveredTileLocation);
-        if(hoveredTile != nullptr)
-        {
-          auto prevTileBehaviorComp = hoveredTile->GetFirstComponentOfType<TileBehaviorComponent>();
-          if(prevTileBehaviorComp != nullptr)
-          {
-            prevTileBehaviorComp->SetHighlightIntensity(0.0);
-          }
-        }
-
-        // Hover over the tile at the new location.
-        auto newTile = GetTileAtLocation(location);
-        if(newTile != nullptr)
-        {
-          auto newTileBehaviorComp = newTile->GetFirstComponentOfType<TileBehaviorComponent>();
-          if(newTileBehaviorComp != nullptr)
-          {
-            newTileBehaviorComp->SetHighlightColor(BACKGROUND_COLOR);
-            newTileBehaviorComp->SetHighlightIntensity(mHighlightIntensity);
-          }
-
-          mHoveredTileLocation = location;
-        }
-
-        // Update the highlighted tiles, if necessary.
-        if(mSkillUsedForHighlighting != nullptr)
-        {
-          HandleSkillSelected(*mSkillUsedForHighlighting);
-        }
-      }
+      prevTileBehaviorComp->SetHighlightIntensity(0.0);
     }
+  }
+
+  // Hover over the tile at the new location.
+  auto newTile = GetTileAtLocation(location);
+  if(newTile != nullptr)
+  {
+    auto newTileBehaviorComp = newTile->GetFirstComponentOfType<TileBehaviorComponent>();
+    if(newTileBehaviorComp != nullptr)
+    {
+      newTileBehaviorComp->SetHighlightColor(BACKGROUND_COLOR);
+      newTileBehaviorComp->SetHighlightIntensity(mHighlightIntensity);
+    }
+
+    mHoveredTileLocation = location;
+  }
+
+  // Update the highlighted tiles, if necessary.
+  if(mSkillUsedForHighlighting != nullptr)
+  {
+    HandleSkillSelected(*mSkillUsedForHighlighting);
   }
 }
 
@@ -688,6 +674,29 @@ void BoardLayoutComponent::HandleCharacterDied(CharacterBehaviorComponent& aChar
          location.second < mCharacters.at(location.first).size())
       {
         mCharacters.at(location.first).at(location.second) = nullptr;
+      }
+    }
+  }
+}
+
+/******************************************************************************/
+void BoardLayoutComponent::HandleObjectPendingDeletion(UrsineEngine::GameObject* aObject)
+{
+  // When an object is about to be deleted, check if it had a
+  // CharacterBehaviorComponent. If it did, check if there are any
+  // characters left that are on the same side. If not, notify the
+  // AllCharactersOfSideDefeated signal.
+  auto characterBehaviorComponent = aObject->GetFirstComponentOfType<CharacterBehaviorComponent>();
+  if(characterBehaviorComponent != nullptr)
+  {
+    auto characterSide = characterBehaviorComponent->GetSide();
+    auto charactersOnSide = GetCharactersOnSide(characterSide);
+    if(charactersOnSide.empty())
+    {
+      auto parent = GetParent();
+      if(parent != nullptr)
+      {
+        AllCharactersOfSideDefeated.Notify(*parent, characterSide);
       }
     }
   }

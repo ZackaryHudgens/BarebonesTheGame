@@ -1,6 +1,12 @@
 #include "HumanPlayerBehaviorComponent.hpp"
 
+#include <sstream>
+
 #include "HumanPlayerInputComponent.hpp"
+
+#include "BoardLayoutComponent.hpp"
+
+#include "CharacterFactory.hpp"
 
 #include "Signals.hpp"
 
@@ -14,6 +20,13 @@ HumanPlayerBehaviorComponent::HumanPlayerBehaviorComponent()
 {
   SetSide(Side::ePLAYER);
 
+  mCharacterInventory.emplace_back(CharacterType::eBASIC_SKELETON);
+  mCharacterInventory.emplace_back(CharacterType::eBASIC_SKELETON);
+  mCharacterInventory.emplace_back(CharacterType::eBASIC_SKELETON);
+  mCharacterInventory.emplace_back(CharacterType::eBONE_THROWER);
+  mCharacterInventory.emplace_back(CharacterType::eBONE_THROWER);
+  mCharacterInventory.emplace_back(CharacterType::eBONE_THROWER);
+
   CharacterStartedMovingAlongPath.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
   {
     this->HandleCharacterStartedMovingAlongPath(aCharacter);
@@ -22,6 +35,11 @@ HumanPlayerBehaviorComponent::HumanPlayerBehaviorComponent()
   CharacterFinishedMovingAlongPath.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
   {
     this->HandleCharacterFinishedMovingAlongPath(aCharacter);
+  });
+
+  BoardReadyForUse.Connect(*this, [this](UrsineEngine::GameObject& aBoard)
+  {
+    this->HandleBoardReadyForUse(aBoard);
   });
 }
 
@@ -61,6 +79,25 @@ void HumanPlayerBehaviorComponent::ProtectedEndTurn()
     {
       mTakingTurn = false;
       inputComponent->SetEnabled(false);
+    }
+  }
+}
+
+/******************************************************************************/
+void HumanPlayerBehaviorComponent::HandleBoardReadyForUse(UrsineEngine::GameObject& aBoard)
+{
+  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
+  if(boardLayoutComponent != nullptr)
+  {
+    std::stringstream nameStream;
+    int row = 0;
+    for(const auto& characterType : mCharacterInventory)
+    {
+      nameStream << "skeleton" << row;
+      boardLayoutComponent->AddCharacterAtLocation(CharacterFactory::CreateCharacter(characterType, nameStream.str()),
+                                                   TileLocation(0, row));
+      nameStream.str("");
+      ++row;
     }
   }
 }

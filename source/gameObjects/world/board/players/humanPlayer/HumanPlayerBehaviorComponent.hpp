@@ -6,6 +6,7 @@
 #include "TileUtil.hpp"
 
 #include "CharacterBehaviorComponent.hpp"
+#include "CharacterFactory.hpp"
 
 namespace Barebones
 {
@@ -48,6 +49,14 @@ namespace Barebones
       void ProtectedEndTurn() override;
 
       /**
+       * A handler function that gets called whenever a board object
+       * is ready to start playing on.
+       *
+       * @param aBoard The board that is ready for use.
+       */
+      void HandleBoardReadyForUse(UrsineEngine::GameObject& aBoard);
+
+      /**
        * A handler function that gets called whenever a character starts
        * moving along a designated path.
        *
@@ -65,6 +74,8 @@ namespace Barebones
 
     private:
       TileLocation mLocation;
+
+      std::vector<CharacterType> mCharacterInventory;
 
       bool mTakingTurn;
   };
