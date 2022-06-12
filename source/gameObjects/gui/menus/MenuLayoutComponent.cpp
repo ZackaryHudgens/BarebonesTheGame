@@ -10,6 +10,8 @@ using Barebones::MenuLayoutComponent;
 /******************************************************************************/
 MenuLayoutComponent::MenuLayoutComponent()
   : mCurrentlyHoveredAction(nullptr)
+  , mHidden(false)
+  , mWraparound(true)
 {
   MenuActionEnabledChanged.Connect(*this, [this](MenuAction& aAction)
   {
@@ -52,7 +54,10 @@ void MenuLayoutComponent::HoverOverNextAction()
     auto nextAction = std::next(currentAction);
     if(nextAction == actions.end())
     {
-      mCurrentlyHoveredAction = actions.front();
+      if(mWraparound)
+      {
+        mCurrentlyHoveredAction = actions.front();
+      }
     }
     else
     {
@@ -76,7 +81,10 @@ void MenuLayoutComponent::HoverOverPreviousAction()
     // over the last action. Otherwise, hover over the previous action.
     if(currentAction == actions.begin())
     {
-      mCurrentlyHoveredAction = actions.back();
+      if(mWraparound)
+      {
+        mCurrentlyHoveredAction = actions.back();
+      }
     }
     else
     {

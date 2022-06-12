@@ -9,6 +9,7 @@
 #include "CharacterBehaviorComponent.hpp"
 
 #include "Colors.hpp"
+#include "Fonts.hpp"
 #include "Signals.hpp"
 
 using Barebones::InfoPanelBehaviorComponent;
@@ -19,9 +20,8 @@ InfoPanelBehaviorComponent::InfoPanelBehaviorComponent()
   , mBoard(nullptr)
   , mTextBox(nullptr)
   , mFocusedLocation(0, 0)
-  , mTextBoxHeight(100.0)
-  , mTextBoxHorizontalPadding(130.0)
-  , mTextBoxVerticalPadding(30.0)
+  , mTextBoxHeight(70.0)
+  , mTextBoxVerticalPadding(23.0)
 {
   PlayerTurnBegan.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
   {
@@ -68,8 +68,8 @@ void InfoPanelBehaviorComponent::Initialize()
     backgroundTexture.CreateTextureFromFile("resources/sprites/gui/menuBox.png");
     mTextBox->SetTexture(backgroundTexture);
 
-    mTextBox->SetFont("Alagard", "Medium");
-    mTextBox->SetTextSize(72);
+    mTextBox->SetFont(DEFAULT_FONT_FAMILY, DEFAULT_FONT_STYLE);
+    mTextBox->SetTextSize(BIG_FONT_SIZE);
     mTextBox->SetTextAlignment(TextAlignment::eCENTER);
 
     auto textShader = mTextBox->GetTextShader();
@@ -79,7 +79,6 @@ void InfoPanelBehaviorComponent::Initialize()
       textShader->SetVec4("textColor", (glm::vec4(BACKGROUND_COLOR, 1.0)));
     }
 
-    mTextBox->SetHorizontalPadding(mTextBoxHorizontalPadding);
     mTextBox->SetVerticalPadding(mTextBoxVerticalPadding);
 
     // Set the dimensions of the text box so that it stretches

@@ -2,6 +2,9 @@
 
 #include <GameObject.hpp>
 
+#include "Colors.hpp"
+#include "Fonts.hpp"
+
 using Barebones::StatusMessageBehaviorComponent;
 
 /******************************************************************************/
@@ -27,14 +30,14 @@ void StatusMessageBehaviorComponent::Initialize()
     std::string fragmentFile = "resources/shaders/OutlinedTextShader.frag";
     UrsineEngine::Shader outlineTextShader(vertexFile, fragmentFile);
     outlineTextShader.Activate();
-    outlineTextShader.SetVec4("textColor", glm::vec4(0.89, 0.93, 0.75, 1.0));
-    outlineTextShader.SetVec4("outlineColor", glm::vec4(0.125, 0.125, 0.125, 1.0));
+    outlineTextShader.SetVec4("textColor", glm::vec4(LIGHT_COLOR, 1.0));
+    outlineTextShader.SetVec4("outlineColor", glm::vec4(BACKGROUND_COLOR, 1.0));
     outlineTextShader.SetFloat("outlineWidth", 2.0);
     mTextComponent->AddShader("outlineTextShader", outlineTextShader);
     mTextComponent->SetCurrentShader("outlineTextShader");
 
-    mTextComponent->SetFont("Alagard", "Medium");
-    mTextComponent->SetSize(42);
+    mTextComponent->SetFont(DEFAULT_FONT_FAMILY, DEFAULT_FONT_STYLE);
+    mTextComponent->SetSize(BIG_FONT_SIZE);
     mTextComponent->SetText(mText);
   }
 }

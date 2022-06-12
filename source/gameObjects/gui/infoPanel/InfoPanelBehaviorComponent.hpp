@@ -89,7 +89,6 @@ namespace Barebones
       TileLocation mFocusedLocation;
 
       double mTextBoxHeight;
-      double mTextBoxHorizontalPadding;
       double mTextBoxVerticalPadding;
   };
 }

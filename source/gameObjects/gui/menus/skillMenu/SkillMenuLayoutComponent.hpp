@@ -25,12 +25,6 @@ namespace Barebones
       void ProtectedInitialize() override;
 
       /**
-       * A handler function that gets called whenever an action is added
-       * to this menu.
-       */
-      void HandleActionAdded() override;
-
-      /**
        * A handler function that gets called whenever the currently hovered
        * action changes.
        */
@@ -43,8 +37,18 @@ namespace Barebones
       void HandleActionExecuted() override;
 
     private:
+
+      /**
+       * Updates the cursor positions based on the text in mSkillNameTextBox.
+       * Also changes their color if the user can't move in that direction.
+       */
+      void UpdateCursors();
+
       TextBoxComponent* mSkillNameTextBox;
       TextBoxComponent* mSkillDescriptionTextBox;
+
+      UrsineEngine::GameObject* mLeftCursor;
+      UrsineEngine::GameObject* mRightCursor;
 
       int mSkillNameHeight;
       int mSkillNameVerticalPadding;

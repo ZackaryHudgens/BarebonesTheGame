@@ -7,6 +7,7 @@
 #include <SpriteComponent.hpp>
 
 #include "Colors.hpp"
+#include "Fonts.hpp"
 
 using Barebones::MainMenuLayoutComponent;
 
@@ -35,6 +36,8 @@ void MainMenuLayoutComponent::ProtectedInitialize()
     cursorSprite->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
 
     UrsineEngine::Texture spriteTexture;
+    spriteTexture.SetTextureParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    spriteTexture.SetTextureParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     spriteTexture.CreateTextureFromFile("resources/sprites/gui/menuArrow.png");
     cursorSprite->SetTexture(spriteTexture);
 
@@ -91,8 +94,8 @@ void MainMenuLayoutComponent::HandleActionAdded()
     newActionTextBox->SetTexture(backgroundTexture);
 
     // Set the font parameters for this text box.
-    newActionTextBox->SetFont("Alagard", "Medium");
-    newActionTextBox->SetTextSize(48);
+    newActionTextBox->SetFont(DEFAULT_FONT_FAMILY, DEFAULT_FONT_STYLE);
+    newActionTextBox->SetTextSize(BIG_FONT_SIZE);
     newActionTextBox->SetTextAlignment(TextAlignment::eCENTER);
     newActionTextBox->SetText(newAction->GetName());
 

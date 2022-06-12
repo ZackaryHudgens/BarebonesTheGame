@@ -65,6 +65,22 @@ namespace Barebones
        */
       bool IsHidden() const { return mHidden; }
 
+      /**
+       * Sets whether to wrap around to the first/last action when using
+       * HoverOverNextAction() or HoverOverPreviousAction().
+       *
+       * @param aWraparound Whether to wrap around at the end of the
+       *                    action list.
+       */
+      void SetWraparoundEnabled(bool aWraparound) { mWraparound = aWraparound; }
+
+      /**
+       * Returns whether wraparound is enabled for this menu.
+       *
+       * @return Whether wraparound is enabled for this menu.
+       */
+      bool IsWraparoundEnabled() const { return mWraparound; }
+
     protected:
 
       /**
@@ -127,6 +143,7 @@ namespace Barebones
       MenuAction* mCurrentlyHoveredAction;
 
       bool mHidden;
+      bool mWraparound;
   };
 }
 

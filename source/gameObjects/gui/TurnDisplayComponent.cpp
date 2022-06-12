@@ -5,6 +5,7 @@
 #include <Environment.hpp>
 
 #include "Colors.hpp"
+#include "Fonts.hpp"
 #include "Signals.hpp"
 
 #include "PlayerBehaviorComponent.hpp"
@@ -39,8 +40,8 @@ void TurnDisplayComponent::Initialize()
     backgroundTexture.CreateTextureFromFile("resources/sprites/gui/menuBox.png");
     mTextBox->SetTexture(backgroundTexture);
 
-    mTextBox->SetFont("Alagard", "Medium");
-    mTextBox->SetTextSize(96);
+    mTextBox->SetFont(DEFAULT_FONT_FAMILY, DEFAULT_FONT_STYLE);
+    mTextBox->SetTextSize(BIGGEST_FONT_SIZE);
     mTextBox->SetTextAlignment(TextAlignment::eCENTER);
     mTextBox->SetVerticalPadding(mTextBoxVerticalPadding);
 
