@@ -27,7 +27,7 @@ BoardLayoutComponent::BoardLayoutComponent()
   , mTileSpacing(0.2)
   , mColumns(7)
   , mRows(7)
-  , mFinishedTiles(0)
+  , mWaitingForCamera(true)
 {
   TileReadyForUse.Connect(*this, [this](UrsineEngine::GameObject& aTile)
   {
@@ -72,6 +72,11 @@ BoardLayoutComponent::BoardLayoutComponent()
   CharacterDied.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
   {
     this->HandleCharacterDied(aCharacter);
+  });
+
+  CameraFinishedMovingToBoard.Connect(*this, [this](UrsineEngine::GameObject& aBoard)
+  {
+    this->HandleCameraFinishedMovingToBoard(aBoard);
   });
 
   UrsineEngine::ObjectPendingDeletion.Connect(*this, [this](UrsineEngine::GameObject* aObject)
@@ -201,6 +206,7 @@ bool BoardLayoutComponent::AddTileAtLocation(const TileType& aTileType,
 
         parent->AddChild(std::move(newTile));
         mTiles.at(aLocation.first).at(aLocation.second) = parent->GetChildren().back();
+        mUnfinishedTiles.emplace_back(parent->GetChildren().back());
       }
     }
   }
@@ -449,14 +455,24 @@ void BoardLayoutComponent::MoveCharacter(const TileLocation& aCharacterLocation,
 /******************************************************************************/
 void BoardLayoutComponent::HandleTileReadyForUse(UrsineEngine::GameObject& aTile)
 {
-  ++mFinishedTiles;
-
-  if(mFinishedTiles == (mRows * mColumns))
+  auto foundTile = std::find(mUnfinishedTiles.begin(),
+                             mUnfinishedTiles.end(),
+                             &aTile);
+  if(foundTile != mUnfinishedTiles.end())
   {
-    auto parent = GetParent();
-    if(parent != nullptr)
+    mUnfinishedTiles.erase(foundTile);
+
+    // If no unfinished tiles remain, and we aren't waiting for the camera
+    // to finish panning to the center of the board, then this board is now
+    // ready for use.
+    if(mUnfinishedTiles.empty() &&
+       !mWaitingForCamera)
     {
-      BoardReadyForUse.Notify(*parent);
+      auto parent = GetParent();
+      if(parent != nullptr)
+      {
+        BoardReadyForUse.Notify(*parent);
+      }
     }
   }
 }
@@ -675,6 +691,26 @@ void BoardLayoutComponent::HandleCharacterDied(CharacterBehaviorComponent& aChar
       {
         mCharacters.at(location.first).at(location.second) = nullptr;
       }
+    }
+  }
+}
+
+/******************************************************************************/
+void BoardLayoutComponent::HandleCameraFinishedMovingToBoard(UrsineEngine::GameObject& aBoard)
+{
+  if(&aBoard == GetParent() &&
+     mWaitingForCamera)
+  {
+    // If there are no unfinished tiles, the board is now ready for use.
+    if(mUnfinishedTiles.empty())
+    {
+      auto parent = GetParent();
+      if(parent != nullptr)
+      {
+        BoardReadyForUse.Notify(*parent);
+      }
+
+      mWaitingForCamera = false;
     }
   }
 }

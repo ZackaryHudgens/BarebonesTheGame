@@ -13,8 +13,9 @@
 
 #include "CameraBehaviorComponent.hpp"
 
+#include "ActDisplayBehaviorComponent.hpp"
+#include "ActDisplayInputComponent.hpp"
 #include "InfoPanelBehaviorComponent.hpp"
-#include "ScrollingMessageBehaviorComponent.hpp"
 
 #include "BackgroundMeshComponent.hpp"
 
@@ -86,12 +87,11 @@ std::unique_ptr<UrsineEngine::Scene> SceneFactory::CreateScene(const SceneType& 
       infoPanelObject->AddComponent(std::move(infoPanelBehaviorComponent));
       newScene->AddObject(std::move(infoPanelObject));
 
-      // Create a scrolling message that displays the act name.
-      auto actNameObject = std::make_unique<UrsineEngine::GameObject>("actNameObject");
-      actNameObject->AddComponent(std::make_unique<ScrollingMessageBehaviorComponent>("Act One",
-                                                                                      BIGGEST_FONT_SIZE,
-                                                                                      205.0));
-      newScene->AddObject(std::move(actNameObject));
+      // Create the act display.
+      auto actDisplayObject = std::make_unique<UrsineEngine::GameObject>("actDisplay");
+      actDisplayObject->AddComponent(std::make_unique<ActDisplayBehaviorComponent>());
+      actDisplayObject->AddComponent(std::make_unique<ActDisplayInputComponent>());
+      newScene->AddObject(std::move(actDisplayObject));
 
       break;
     }

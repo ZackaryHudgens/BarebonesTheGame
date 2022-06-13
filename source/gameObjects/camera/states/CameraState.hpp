@@ -37,15 +37,6 @@ namespace Barebones
       virtual std::unique_ptr<CameraState> HandleObjectMoved(UrsineEngine::GameObject* aObject);
 
       /**
-       * A virtual function that gets called whenever the parent camera
-       * starts following a new board object.
-       *
-       * @param aBoard The newly-followed board object.
-       * @return A unique_ptr to a new state, if necessary.
-       */
-      virtual std::unique_ptr<CameraState> HandleBoardFollowed(UrsineEngine::GameObject& aBoard);
-
-      /**
        * A virtual function that gets called whenever a human player
        * changes location on the board.
        *

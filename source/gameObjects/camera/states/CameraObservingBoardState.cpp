@@ -6,12 +6,15 @@
 #include "CameraFollowingCharacterState.hpp"
 #include "CameraFollowingPlayerState.hpp"
 
+#include "Signals.hpp"
+
 using Barebones::CameraObservingBoardState;
 
 /******************************************************************************/
 CameraObservingBoardState::CameraObservingBoardState(UrsineEngine::GameObject& aCamera,
                                                      UrsineEngine::GameObject& aBoard)
   : CameraState(aCamera)
+  , mBoard(&aBoard)
   , mTargetPosition(0.0, 0.0, 0.0)
   , mYDistance(8.0)
   , mZDistance(9.0)
@@ -38,6 +41,8 @@ CameraObservingBoardState::CameraObservingBoardState(UrsineEngine::GameObject& a
       mMoving = true;
     }
   }
+
+  mBoard = &aBoard;
 }
 
 /******************************************************************************/
@@ -63,6 +68,8 @@ std::unique_ptr<Barebones::CameraState> CameraObservingBoardState::Update(double
         camera->SetPosition(mTargetPosition);
         mMoving = false;
 
+        CameraFinishedMovingToBoard.Notify(*mBoard);
+
         // Revert to the default state.
         newState = std::make_unique<CameraDefaultState>(*camera);
       }
@@ -74,33 +81,6 @@ std::unique_ptr<Barebones::CameraState> CameraObservingBoardState::Update(double
   }
 
   return newState;
-}
-
-/******************************************************************************/
-std::unique_ptr<Barebones::CameraState> CameraObservingBoardState::HandleBoardFollowed(UrsineEngine::GameObject& aBoard)
-{
-  // Update the target position of the camera for the new board.
-  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
-  if(boardLayoutComponent != nullptr)
-  {
-    TileLocation centerTile;
-    centerTile.first = boardLayoutComponent->GetColumns() / 2;
-    centerTile.second = boardLayoutComponent->GetRows() / 2;
-
-    auto tile = boardLayoutComponent->GetTileAtLocation(centerTile);
-    if(tile != nullptr)
-    {
-      // Calculate the new position for the camera.
-      auto newPos = tile->GetPosition();
-      newPos.y += mYDistance;
-      newPos.z += mZDistance;
-
-      mTargetPosition = newPos;
-      mMoving = true;
-    }
-  }
-
-  return nullptr;
 }
 
 /******************************************************************************/

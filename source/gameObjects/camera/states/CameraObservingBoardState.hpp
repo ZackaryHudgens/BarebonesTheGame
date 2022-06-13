@@ -3,6 +3,8 @@
 
 #include "CameraState.hpp"
 
+#include <GameObject.hpp>
+
 namespace Barebones
 {
   class CameraObservingBoardState : public CameraState
@@ -27,15 +29,6 @@ namespace Barebones
       std::unique_ptr<CameraState> Update(double aTime) override;
 
       /**
-       * A handler function that gets called whenever the parent camera
-       * starts following a new board object.
-       *
-       * @param aBoard The newly-followed board object.
-       * @return A unique_ptr to a new state, if necessary.
-       */
-      std::unique_ptr<CameraState> HandleBoardFollowed(UrsineEngine::GameObject& aBoard) override;
-
-      /**
        * A handler function that gets called whenever a player's turn begins.
        *
        * @param aPlayer The player whose turn began.
@@ -52,6 +45,8 @@ namespace Barebones
       std::unique_ptr<CameraState> HandleCharacterTurnBegan(CharacterBehaviorComponent& aCharacter) override;
 
     private:
+      UrsineEngine::GameObject* mBoard;
+
       glm::vec3 mTargetPosition;
 
       double mYDistance;

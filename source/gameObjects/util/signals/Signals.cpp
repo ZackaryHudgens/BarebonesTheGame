@@ -49,9 +49,13 @@ Barebones::InputComponentInitializedSignal Barebones::InputComponentInitialized;
  */
 Barebones::MenuLayoutComponentInitializedSignal Barebones::MenuLayoutComponentInitialized;
 Barebones::MenuActionEnabledChangedSignal Barebones::MenuActionEnabledChanged;
+Barebones::ActDisplayReadyForInputSignal Barebones::ActDisplayReadyForInput;
+Barebones::ActDisplayAdvancedSignal Barebones::ActDisplayAdvanced;
+Barebones::ActDisplayFinishedSignal Barebones::ActDisplayFinished;
 
 /**
  * Camera signals
  */
 Barebones::CameraZoomChangeRequestedSignal Barebones::CameraZoomChangeRequested;
 Barebones::CameraFinishedMovingSignal Barebones::CameraFinishedMoving;
+Barebones::CameraFinishedMovingToBoardSignal Barebones::CameraFinishedMovingToBoard;

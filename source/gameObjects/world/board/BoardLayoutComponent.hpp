@@ -217,6 +217,14 @@ namespace Barebones
       void HandleCharacterDied(CharacterBehaviorComponent& aCharacter);
 
       /**
+       * A handler function that gets called whenever the camera finishes
+       * moving to a board.
+       *
+       * @param aBoard The board the camera is now observing.
+       */
+      void HandleCameraFinishedMovingToBoard(UrsineEngine::GameObject& aBoard);
+
+      /**
        * A handler function that gets called whenever a GameObject is about
        * to be deleted.
        *
@@ -225,6 +233,7 @@ namespace Barebones
       void HandleObjectPendingDeletion(UrsineEngine::GameObject* aObject);
 
       std::vector<std::vector<UrsineEngine::GameObject*>> mTiles;
+      std::vector<UrsineEngine::GameObject*> mUnfinishedTiles;
       std::vector<std::vector<UrsineEngine::GameObject*>> mCharacters;
 
       UrsineEngine::GameObject* mMovingCharacter;
@@ -242,7 +251,7 @@ namespace Barebones
       int mColumns;
       int mRows;
 
-      int mFinishedTiles;
+      bool mWaitingForCamera;
   };
 }
 

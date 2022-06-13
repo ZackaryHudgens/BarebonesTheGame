@@ -4,13 +4,9 @@
 #include <Component.hpp>
 #include <GameObject.hpp>
 
-#include "BoardLayoutComponent.hpp"
-
 #include "HumanPlayerBehaviorComponent.hpp"
 
 #include "CameraState.hpp"
-
-#include "Skill.hpp"
 
 namespace Barebones
 {
@@ -110,12 +106,19 @@ namespace Barebones
        */
       void HandleCameraZoomChangeRequested(double aZoom);
 
+      /**
+       * A handler function that gets called whenever the act display finishes
+       * its intro animation.
+       *
+       * @param aDisplay The act display that finished.
+       */
+      void HandleActDisplayFinished(UrsineEngine::GameObject& aDisplay);
+
       UrsineEngine::GameObject* mFollowedBoard;
 
       std::unique_ptr<CameraState> mState;
 
       double mRotation;
-
       double mZoomDistance;
   };
 }

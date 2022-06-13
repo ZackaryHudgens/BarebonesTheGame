@@ -21,12 +21,6 @@ std::unique_ptr<CameraState> CameraState::HandleObjectMoved(UrsineEngine::GameOb
 }
 
 /******************************************************************************/
-std::unique_ptr<CameraState> CameraState::HandleBoardFollowed(UrsineEngine::GameObject& aBoard)
-{
-  return nullptr;
-}
-
-/******************************************************************************/
 std::unique_ptr<CameraState> CameraState::HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& aPlayer)
 {
   return nullptr;

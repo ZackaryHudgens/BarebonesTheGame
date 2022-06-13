@@ -17,15 +17,6 @@ namespace Barebones
       CameraDefaultState(UrsineEngine::GameObject& aCamera);
 
       /**
-       * A handler function that gets called whenever the parent camera
-       * starts following a new board object.
-       *
-       * @param aBoard The newly-followed board object.
-       * @return A unique_ptr to a new state, if necessary.
-       */
-      std::unique_ptr<CameraState> HandleBoardFollowed(UrsineEngine::GameObject& aBoard) override;
-
-      /**
        * A handler function that gets called whenever a player's turn begins.
        *
        * @param aPlayer The player whose turn began.
