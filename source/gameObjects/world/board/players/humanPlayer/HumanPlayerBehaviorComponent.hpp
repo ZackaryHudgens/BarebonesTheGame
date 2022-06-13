@@ -74,7 +74,6 @@ namespace Barebones
 
     private:
       TileLocation mLocation;
-
       std::vector<CharacterType> mCharacterInventory;
 
       bool mTakingTurn;

@@ -30,7 +30,7 @@ void StatusMessageBehaviorComponent::Initialize()
     std::string fragmentFile = "resources/shaders/OutlinedTextShader.frag";
     UrsineEngine::Shader outlineTextShader(vertexFile, fragmentFile);
     outlineTextShader.Activate();
-    outlineTextShader.SetVec4("textColor", glm::vec4(LIGHT_COLOR, 1.0));
+    outlineTextShader.SetVec4("textColor", glm::vec4(FOREGROUND_COLOR, 1.0));
     outlineTextShader.SetVec4("outlineColor", glm::vec4(BACKGROUND_COLOR, 1.0));
     outlineTextShader.SetFloat("outlineWidth", 2.0);
     mTextComponent->AddShader("outlineTextShader", outlineTextShader);

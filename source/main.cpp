@@ -1,3 +1,5 @@
+#include <time.h>
+
 #include <Environment.hpp>
 #include <TextComponent.hpp>
 
@@ -5,6 +7,8 @@
 
 int main()
 {
+  std::srand(time(0));
+
   UrsineEngine::GraphicsOptions options;
   options.mCursorMode = UrsineEngine::CursorMode::eNORMAL;
   options.mTitle = "Barebones";

@@ -85,10 +85,11 @@ void BoardTurnManagerComponent::CreateTurnDisplay()
         turnDisplay->AddComponent(std::make_unique<ScrollingMessageBehaviorComponent>(message.str(),
                                                                                       BIGGEST_FONT_SIZE,
                                                                                       200.0));
-        foreground->AddChild(std::move(turnDisplay));
-
-        // Keep a reference to the current turn display.
-        mTurnDisplay = foreground->GetChildren().back();
+        if(foreground->AddChild(std::move(turnDisplay)))
+        {
+          // Keep a reference to the current turn display.
+          mTurnDisplay = foreground->GetChildren().back();
+        }
       }
     }
   }

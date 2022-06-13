@@ -9,8 +9,6 @@
 #include "Colors.hpp"
 #include "Fonts.hpp"
 
-#include <iostream>
-
 using Barebones::SkillMenuLayoutComponent;
 
 /******************************************************************************/
@@ -23,7 +21,7 @@ SkillMenuLayoutComponent::SkillMenuLayoutComponent()
   , mSkillNameHeight(100)
   , mSkillNameVerticalPadding(25)
   , mSkillDescriptionHeight(45)
-  , mSkillDescriptionVerticalPadding(20)
+  , mSkillDescriptionVerticalPadding(15)
 {
   SetWraparoundEnabled(false);
 }
@@ -135,6 +133,12 @@ void SkillMenuLayoutComponent::ProtectedInitialize()
     parent->AddChild(std::move(rightCursorObject));
     mRightCursor = parent->GetChildren().back();
   }
+}
+
+/******************************************************************************/
+void SkillMenuLayoutComponent::HandleActionAdded()
+{
+  UpdateCursors();
 }
 
 /******************************************************************************/
@@ -273,6 +277,37 @@ void SkillMenuLayoutComponent::UpdateCursors()
         }
 
         mRightCursor->SetPosition(cursorPos);
+      }
+
+      // Change the cursor color, if necessary.
+      auto cursorMesh = mRightCursor->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
+      if(cursorMesh != nullptr)
+      {
+        auto cursorShader = cursorMesh->GetCurrentShader();
+        if(cursorShader != nullptr)
+        {
+          cursorShader->Activate();
+
+          auto actionName = action->GetName();
+          auto actions = GetActions();
+          auto findAction = [actionName](const MenuAction* aAction)
+          {
+            return aAction->GetName() == actionName;
+          };
+
+          auto foundAction = std::find_if(actions.begin(),
+                                          actions.end(),
+                                          findAction);
+          if(foundAction == std::prev(actions.end()))
+          {
+            cursorShader->SetVec4("fadeColor", glm::vec4(DARK_COLOR, 1.0));
+            cursorShader->SetFloat("fadeValue", 1.0);
+          }
+          else
+          {
+            cursorShader->SetFloat("fadeValue", 0.0);
+          }
+        }
       }
     }
   }

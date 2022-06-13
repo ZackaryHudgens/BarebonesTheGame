@@ -25,6 +25,12 @@ namespace Barebones
       void ProtectedInitialize() override;
 
       /**
+       * A handler function that gets called whenever an action is added
+       * to this menu.
+       */
+      void HandleActionAdded() override;
+
+      /**
        * A handler function that gets called whenever the currently hovered
        * action changes.
        */

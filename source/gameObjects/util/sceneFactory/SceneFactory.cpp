@@ -56,13 +56,12 @@ std::unique_ptr<UrsineEngine::Scene> SceneFactory::CreateScene(const SceneType& 
       auto boardLayoutComponent = board->GetFirstComponentOfType<BoardLayoutComponent>();
       auto boardTurnManagerComponent = board->GetFirstComponentOfType<BoardTurnManagerComponent>();
 
+      boardLayoutComponent->AddCharacterAtLocation(CharacterFactory::CreateCharacter(CharacterType::eCORRUPTED_FARMER, "human"),
+                                                   TileLocation(5, 0));
+
       // Add a human player and an artificial player to the turn manager.
       boardTurnManagerComponent->AddPlayer(PlayerFactory::CreatePlayer(PlayerType::eHUMAN, "Player"));
       boardTurnManagerComponent->AddPlayer(PlayerFactory::CreatePlayer(PlayerType::eARTIFICIAL, "Enemy"));
-
-      // Add characters to the board.
-      auto human = CharacterFactory::CreateCharacter(CharacterType::eCORRUPTED_FARMER, "human");
-      boardLayoutComponent->AddCharacterAtLocation(std::move(human), TileLocation(5, 0));
 
       // Create a background.
       auto backgroundObject = std::make_unique<UrsineEngine::GameObject>("background");
