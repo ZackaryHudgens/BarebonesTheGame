@@ -66,6 +66,9 @@ void CameraBehaviorComponent::Initialize()
     // Initialize the camera rotation.
     parent->SetRotation(mRotation,
                         glm::vec3(1.0, 0.0, 0.0));
+
+    // Initialize the camera position.
+    parent->SetPosition(glm::vec3(0.0, 15.0, 0.0));
   }
 }
 
@@ -86,6 +89,22 @@ void CameraBehaviorComponent::Update(double aTime)
 void CameraBehaviorComponent::SetFollowedBoard(UrsineEngine::GameObject& aBoard)
 {
   mFollowedBoard = &aBoard;
+
+  // Position the camera horizontally high above the board.
+  auto parent = GetParent();
+  auto boardLayoutComponent = mFollowedBoard->GetFirstComponentOfType<BoardLayoutComponent>();
+  if(parent != nullptr &&
+     boardLayoutComponent != nullptr)
+  {
+    auto centerColumn = boardLayoutComponent->GetColumns() / 2;
+    auto tile = boardLayoutComponent->GetTileAtLocation(TileLocation(centerColumn, 0));
+    if(tile != nullptr)
+    {
+      auto parentPos = parent->GetPosition();
+      parentPos.x = tile->GetPosition().x;
+      parent->SetPosition(parentPos);
+    }
+  }
 
   if(mState != nullptr)
   {

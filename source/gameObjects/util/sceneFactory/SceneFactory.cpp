@@ -14,8 +14,11 @@
 #include "CameraBehaviorComponent.hpp"
 
 #include "InfoPanelBehaviorComponent.hpp"
+#include "ScrollingMessageBehaviorComponent.hpp"
 
 #include "BackgroundMeshComponent.hpp"
+
+#include "Fonts.hpp"
 
 using Barebones::SceneFactory;
 
@@ -29,7 +32,7 @@ std::unique_ptr<UrsineEngine::Scene> SceneFactory::CreateScene(const SceneType& 
   inputManagerObject->AddComponent(std::make_unique<InputManagerComponent>());
   newScene->AddObject(std::move(inputManagerObject));
 
-  // Create a MenuManager;
+  // Create a MenuManager.
   auto menuManagerObject = std::make_unique<UrsineEngine::GameObject>("menuManager");
   menuManagerObject->AddComponent(std::make_unique<MenuManagerComponent>());
   newScene->AddObject(std::move(menuManagerObject));
@@ -82,6 +85,14 @@ std::unique_ptr<UrsineEngine::Scene> SceneFactory::CreateScene(const SceneType& 
       infoPanelBehaviorComponent->SetFollowedBoard(*newScene->GetObjects().back());
       infoPanelObject->AddComponent(std::move(infoPanelBehaviorComponent));
       newScene->AddObject(std::move(infoPanelObject));
+
+      // Create a scrolling message that displays the act name.
+      auto actNameObject = std::make_unique<UrsineEngine::GameObject>("actNameObject");
+      actNameObject->AddComponent(std::make_unique<ScrollingMessageBehaviorComponent>("Act One",
+                                                                                      BIGGEST_FONT_SIZE,
+                                                                                      205.0));
+      newScene->AddObject(std::move(actNameObject));
+
       break;
     }
     default:

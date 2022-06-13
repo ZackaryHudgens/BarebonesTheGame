@@ -4,6 +4,8 @@
 #include <Component.hpp>
 #include <GameObject.hpp>
 
+#include "CharacterFactory.hpp"
+
 #include "Side.hpp"
 
 namespace Barebones
@@ -35,8 +37,11 @@ namespace Barebones
        */
       void HandleAllCharactersOfSideDefeated(UrsineEngine::GameObject& aBoard,
                                              const Side& aSide);
-
       int mWaveNumber;
+
+      static std::vector<CharacterType> mActOneEncounters;
+      static std::vector<CharacterType> mActTwoEncounters;
+      static std::vector<CharacterType> mActThreeEncounters;
   };
 }
 

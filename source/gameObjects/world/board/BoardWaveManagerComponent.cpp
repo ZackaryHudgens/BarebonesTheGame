@@ -11,6 +11,23 @@
 
 using Barebones::BoardWaveManagerComponent;
 
+// Initialize the enocunter lists for each act.
+std::vector<Barebones::CharacterType> BoardWaveManagerComponent::mActOneEncounters =
+  std::vector<Barebones::CharacterType>(
+  {
+    CharacterType::eCORRUPTED_FARMER
+  });
+std::vector<Barebones::CharacterType> BoardWaveManagerComponent::mActTwoEncounters =
+  std::vector<Barebones::CharacterType>(
+  {
+    CharacterType::eCORRUPTED_FARMER
+  });
+std::vector<Barebones::CharacterType> BoardWaveManagerComponent::mActThreeEncounters =
+  std::vector<Barebones::CharacterType>(
+  {
+    CharacterType::eCORRUPTED_FARMER
+  });
+
 /******************************************************************************/
 BoardWaveManagerComponent::BoardWaveManagerComponent()
   : Component()
