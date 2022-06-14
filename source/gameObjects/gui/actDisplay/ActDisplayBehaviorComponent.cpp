@@ -14,7 +14,7 @@ ActDisplayBehaviorComponent::ActDisplayBehaviorComponent()
   : Component()
   , mActNameTextbox(nullptr)
   , mActDescriptionTextbox(nullptr)
-  , mFadeSpeed(0.01)
+  , mFadeSpeed(0.1)
   , mFadeValue(0.0)
   , mFadingIn(true)
   , mFadingOut(false)
@@ -43,7 +43,7 @@ void ActDisplayBehaviorComponent::Initialize()
     mActDescriptionTextbox = parent->GetChildren().back()->GetFirstComponentOfType<TextBoxComponent>();
 
     mActNameTextbox->SetFont(DEFAULT_FONT_FAMILY, DEFAULT_FONT_STYLE);
-    mActNameTextbox->SetTextSize(BIGGEST_FONT_SIZE);
+    mActNameTextbox->SetTextSize(108);
     mActNameTextbox->SetTextAlignment(TextAlignment::eCENTER);
     mActNameTextbox->SetText("Act 1");
 

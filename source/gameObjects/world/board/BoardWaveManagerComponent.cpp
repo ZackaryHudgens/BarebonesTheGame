@@ -2,9 +2,14 @@
 
 #include <sstream>
 
+#include <Environment.hpp>
+#include <Scene.hpp>
+
 #include "BoardLayoutComponent.hpp"
+#include "MenuLayoutComponent.hpp"
 
 #include "CharacterFactory.hpp"
+#include "MenuFactory.hpp"
 
 #include "Signals.hpp"
 #include "TileUtil.hpp"
@@ -100,7 +105,24 @@ void BoardWaveManagerComponent::HandleAllCharactersOfSideDefeated(UrsineEngine::
     {
       case Side::eENEMY:
       {
-        GenerateEncounter(aBoard);
+        ++mWaveNumber;
+        if(mWaveNumber > 0)
+        {
+          auto scene = env.GetCurrentScene();
+          if(scene != nullptr)
+          {
+            auto rewardsMenu = MenuFactory::CreateMenu(MenuType::eREWARDS, "rewardsMenu");
+            auto menuLayoutComponent = rewardsMenu->GetFirstComponentOfType<MenuLayoutComponent>();
+            menuLayoutComponent->AddAction(std::make_unique<MenuAction>("woo"));
+            menuLayoutComponent->AddAction(std::make_unique<MenuAction>("woo2"));
+            menuLayoutComponent->AddAction(std::make_unique<MenuAction>("woo3"));
+            scene->AddObject(std::move(rewardsMenu));
+          }
+        }
+        else
+        {
+          GenerateEncounter(aBoard);
+        }
         break;
       }
       default:

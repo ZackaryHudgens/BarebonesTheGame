@@ -14,6 +14,7 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/gui/infoPanel/*.?pp
                        gameObjects/gui/menus/*.?pp
                        gameObjects/gui/menus/mainMenu/*.?pp
+                       gameObjects/gui/menus/rewardsMenu/*.?pp
                        gameObjects/gui/menus/skillMenu/*.?pp
                        gameObjects/skills/*.?pp
                        gameObjects/skills/moveSkill/*.?pp
@@ -53,6 +54,7 @@ target_include_directories(barebones PUBLIC
                            gameObjects/gui/infoPanel
                            gameObjects/gui/menus
                            gameObjects/gui/menus/mainMenu
+                           gameObjects/gui/menus/rewardsMenu
                            gameObjects/gui/menus/skillMenu
                            gameObjects/skills
                            gameObjects/skills/moveSkill

@@ -3,7 +3,6 @@
 #include <algorithm>
 
 #include "Signals.hpp"
-#include <iostream>
 
 using Barebones::MenuLayoutComponent;
 
