@@ -60,6 +60,14 @@ std::unique_ptr<UrsineEngine::Scene> SceneFactory::CreateScene(const SceneType& 
       auto boardLayoutComponent = board->GetFirstComponentOfType<BoardLayoutComponent>();
       auto boardTurnManagerComponent = board->GetFirstComponentOfType<BoardTurnManagerComponent>();
 
+      auto startingCharacters = CharacterFactory::CreateStarterSet();
+      int row = 0;
+      for(auto& character : startingCharacters)
+      {
+        boardLayoutComponent->AddCharacterAtLocation(std::move(character), TileLocation(0, row));
+        ++row;
+      }
+
       boardLayoutComponent->AddCharacterAtLocation(CharacterFactory::CreateCharacter(CharacterType::eCORRUPTED_FARMER, "human"),
                                                    TileLocation(5, 0));
 

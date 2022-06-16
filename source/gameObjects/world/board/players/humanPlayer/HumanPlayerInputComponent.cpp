@@ -23,10 +23,10 @@ HumanPlayerInputComponent::HumanPlayerInputComponent()
     this->HandleSkillSelected(aSkill);
   });
 
-  /*CharacterSelectedFromRewardsMenu.Connect(*this, [this](const CharacterType& aType)
+  CharacterSelectedFromRewardsMenu.Connect(*this, [this](const CharacterType& aType)
   {
     this->HandleCharacterSelectedFromRewardsMenu(aType);
-  });*/
+  });
 }
 
 /******************************************************************************/
@@ -101,7 +101,7 @@ void HumanPlayerInputComponent::HandleSkillSelected(Skill& aSkill)
 }
 
 /******************************************************************************/
-/*void HumanPlayerInputComponent::HandleCharacterSelectedFromRewardsMenu(const CharacterType& aType)
+void HumanPlayerInputComponent::HandleCharacterSelectedFromRewardsMenu(const CharacterType& aType)
 {
   auto parent = GetParent();
   if(parent != nullptr &&
@@ -114,7 +114,7 @@ void HumanPlayerInputComponent::HandleSkillSelected(Skill& aSkill)
       // swap to the Removing Character state. Otherwise, swap to the Placing
       // Character state.
       auto charactersOnSide = boardLayoutComponent->GetCharactersOnSide(Side::ePLAYER);
-      if(charactersOnSide.size() >= mMaximumCharacters)
+      if(charactersOnSide.size() <= 7)
       {
         mState = std::make_unique<HumanPlayerRemovingCharacterInputState>(*parent);
       }
@@ -126,4 +126,4 @@ void HumanPlayerInputComponent::HandleSkillSelected(Skill& aSkill)
       mState->SetBoard(*mBoard);
     }
   }
-}*/
+}

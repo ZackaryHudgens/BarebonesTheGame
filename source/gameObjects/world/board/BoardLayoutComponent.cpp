@@ -284,8 +284,9 @@ void BoardLayoutComponent::RemoveCharacterAtLocation(const TileLocation& aLocati
       auto obj = mCharacters[aLocation.first][aLocation.second];
       if(obj != nullptr)
       {
-        // The character will be deleted on the next update.
+        // The character will be deleted at the end of the current update.
         obj->ScheduleForDeletion();
+        mCharacters[aLocation.first][aLocation.second] = nullptr;
       }
     }
   }

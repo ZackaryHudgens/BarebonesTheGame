@@ -73,6 +73,14 @@ namespace Barebones
        */
       void HandleSkillSelected(Skill& aSkill);
 
+      /**
+       * A handle function that gets called whenever a character is
+       * selected from the rewards menu.
+       *
+       * @param aType The type of character selected.
+       */
+      void HandleCharacterSelectedFromRewardsMenu(const CharacterType& aType);
+
     private:
       UrsineEngine::GameObject* mBoard;
 
