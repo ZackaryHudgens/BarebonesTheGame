@@ -10,12 +10,11 @@
 
 #include "TextBoxComponent.hpp"
 
+#include "CharacterBehaviorComponent.hpp"
 #include "CharacterFactory.hpp"
 
 #include "Colors.hpp"
 #include "Fonts.hpp"
-
-#include <iostream>
 
 using Barebones::RewardsMenuLayoutComponent;
 
@@ -23,13 +22,18 @@ using Barebones::RewardsMenuLayoutComponent;
 RewardsMenuLayoutComponent::RewardsMenuLayoutComponent()
   : MenuLayoutComponent()
   , mCursor(nullptr)
-  , mCharacterScalar(15.0)
+  , mNameText(nullptr)
+  , mStatsText(nullptr)
+  , mFocusedCharacter(nullptr)
+  , mCharacterScalar(10.0)
   , mTitleHeight(100)
   , mTitleVerticalPadding(25)
   , mDescriptionHeight(50)
   , mDescriptionVerticalPadding(15)
-  , mCharacterBackgroundHeight(500)
-  , mCharacterHorizontalSpacing(300)
+  , mCharacterBackgroundHeight(300)
+  , mCharacterVerticalPadding(85)
+  , mCharacterHorizontalPadding(300)
+  , mCharacterNameVerticalPadding(50)
 {
 }
 
@@ -40,60 +44,39 @@ void RewardsMenuLayoutComponent::ProtectedInitialize()
   if(parent != nullptr)
   {
     // Create a title text box.
-    auto titleObject = std::make_unique<UrsineEngine::GameObject>("title");
-    titleObject->AddComponent(std::make_unique<TextBoxComponent>());
-    auto textBox = titleObject->GetFirstComponentOfType<TextBoxComponent>();
+    auto titleObject = CreateTextBoxObject("title");
+    auto titleTextBox = titleObject->GetFirstComponentOfType<TextBoxComponent>();
 
     UrsineEngine::Texture backgroundTexture;
     backgroundTexture.CreateTextureFromFile("resources/sprites/gui/menuBox.png");
-    textBox->SetTexture(backgroundTexture);
-    
-    textBox->SetFont(DEFAULT_FONT_FAMILY, DEFAULT_FONT_STYLE);
-    textBox->SetTextSize(BIGGEST_FONT_SIZE);
-    textBox->SetTextAlignment(TextAlignment::eCENTER);
+    titleTextBox->SetTexture(backgroundTexture);
 
-    auto textShader = textBox->GetTextShader();
-    if(textShader != nullptr)
-    {
-      textShader->Activate();
-      textShader->SetVec4("textColor", glm::vec4(BACKGROUND_COLOR, 1.0));
-    }
+    titleTextBox->SetTextSize(BIGGEST_FONT_SIZE);
 
     double overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
     double overlayHeight = env.GetGraphicsOptions().mOverlayHeight;
 
-    textBox->SetWidth(overlayWidth);
-    textBox->SetHeight(mTitleHeight);
-    textBox->SetFixedWidth(true);
-    textBox->SetFixedHeight(true);
+    titleTextBox->SetWidth(overlayWidth);
+    titleTextBox->SetHeight(mTitleHeight);
+    titleTextBox->SetFixedWidth(true);
+    titleTextBox->SetFixedHeight(true);
 
-    textBox->SetVerticalPadding(mTitleVerticalPadding);
-    textBox->SetText("Bones to Pick");
+    titleTextBox->SetVerticalPadding(mTitleVerticalPadding);
+    titleTextBox->SetText("Bones to Pick!");
 
     double horizontalCenter = overlayWidth / 2.0;
-    double textBoxHeight = textBox->GetHeight();
+    double textBoxHeight = titleTextBox->GetHeight();
     titleObject->SetPosition(glm::vec3(horizontalCenter,
                                        overlayHeight - (textBoxHeight / 2.0),
                                        0.0));
     parent->AddChild(std::move(titleObject));
 
     // Create a description text box.
-    auto descriptionObject = std::make_unique<UrsineEngine::GameObject>("description");
-    descriptionObject->AddComponent(std::make_unique<TextBoxComponent>());
+    auto descriptionObject = CreateTextBoxObject("description");
     auto descriptionTextBox = descriptionObject->GetFirstComponentOfType<TextBoxComponent>();
 
     descriptionTextBox->SetTexture(backgroundTexture);
-    
-    descriptionTextBox->SetFont(DEFAULT_FONT_FAMILY, DEFAULT_FONT_STYLE);
     descriptionTextBox->SetTextSize(MEDIUM_FONT_SIZE);
-    descriptionTextBox->SetTextAlignment(TextAlignment::eCENTER);
-
-    textShader = descriptionTextBox->GetTextShader();
-    if(textShader != nullptr)
-    {
-      textShader->Activate();
-      textShader->SetVec4("textColor", glm::vec4(BACKGROUND_COLOR, 1.0));
-    }
 
     descriptionTextBox->SetWidth(overlayWidth);
     descriptionTextBox->SetHeight(mDescriptionHeight);
@@ -101,7 +84,11 @@ void RewardsMenuLayoutComponent::ProtectedInitialize()
     descriptionTextBox->SetFixedHeight(true);
 
     descriptionTextBox->SetVerticalPadding(mDescriptionVerticalPadding);
-    descriptionTextBox->SetText("To the victor go the spoils! Choose a skeleton to add to your entourage.");
+
+    std::stringstream descStream;
+    descStream << "You'll make better use of them than they ever did.";
+    descStream << " Choose a skeleton to add to your entourage.";
+    descriptionTextBox->SetText(descStream.str());
 
     textBoxHeight = descriptionTextBox->GetHeight();
     descriptionObject->SetPosition(glm::vec3(horizontalCenter,
@@ -148,6 +135,16 @@ void RewardsMenuLayoutComponent::ProtectedInitialize()
     backgroundObject->SetPosition(glm::vec3(0.0, backgroundYPos, -0.1));
     parent->AddChild(std::move(backgroundObject));
 
+    // Create a character name text box.
+    parent->AddChild(CreateTextBoxObject("characterName"));
+    mNameText = parent->GetChildren().back()->GetFirstComponentOfType<TextBoxComponent>();
+    mNameText->SetTextSize(BIG_FONT_SIZE);
+
+    // Create a character stats text box.
+    parent->AddChild(CreateTextBoxObject("characterStats"));
+    mStatsText = parent->GetChildren().back()->GetFirstComponentOfType<TextBoxComponent>();
+    mStatsText->SetTextSize(MEDIUM_FONT_SIZE);
+
     // Create a cursor.
     auto cursorObject = std::make_unique<UrsineEngine::GameObject>("cursor");
     auto cursorSprite = std::make_unique<UrsineEngine::SpriteComponent>();
@@ -165,6 +162,7 @@ void RewardsMenuLayoutComponent::ProtectedInitialize()
 
     cursorObject->AddComponent(std::move(cursorSprite));
     cursorObject->SetScale(glm::vec3(5.0, 5.0, 1.0));
+    cursorObject->SetRotation(-90.0, glm::vec3(0.0, 0.0, 1.0));
     parent->AddChild(std::move(cursorObject));
     mCursor = parent->GetChildren().back();
   }
@@ -181,10 +179,11 @@ void RewardsMenuLayoutComponent::HandleActionAdded()
 
     auto character = CharacterFactory::CreateCharacter(CharacterType::eBASIC_SKELETON,
                                                        nameStream.str());
-    auto characterMesh = character->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
-    if(characterMesh != nullptr)
+    auto characterSprite = character->GetFirstComponentOfType<UrsineEngine::SpriteComponent>();
+    if(characterSprite != nullptr)
     {
-      characterMesh->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
+      characterSprite->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
+      characterSprite->SetFrameOfAnimation(0);
     }
 
     auto overlayHeight = env.GetGraphicsOptions().mOverlayHeight;
@@ -192,8 +191,12 @@ void RewardsMenuLayoutComponent::HandleActionAdded()
     auto centerHeight = overlayHeight / 2.0;
     auto centerWidth = overlayWidth / 2.0;
 
-    character->SetPosition(glm::vec3(mCharacters.size() * mCharacterHorizontalSpacing, centerHeight, 0.1));
-    character->SetScale(glm::vec3(mCharacterScalar, mCharacterScalar, 1.0));
+    character->SetPosition(glm::vec3(mCharacters.size() * mCharacterHorizontalPadding,
+                                     centerHeight + mCharacterVerticalPadding,
+                                     0.1));
+    character->SetScale(glm::vec3(mCharacterScalar,
+                                  mCharacterScalar,
+                                  1.0));
 
     auto parent = GetParent();
     if(parent != nullptr)
@@ -203,6 +206,8 @@ void RewardsMenuLayoutComponent::HandleActionAdded()
     }
 
     RepositionCharacters();
+    RepositionCursor();
+    RepositionCharacterInfo();
   }
 }
 
@@ -222,9 +227,47 @@ void RewardsMenuLayoutComponent::HandleActionHovered()
                                        findCharacter);
     if(foundCharacter != mCharacters.end())
     {
-      auto characterPos = foundCharacter->second->GetPosition();
-      characterPos.x -= 10;
-      mCursor->SetPosition(characterPos);
+      mFocusedCharacter = foundCharacter->second;
+
+      // Update the name and stats text.
+      if(mNameText != nullptr)
+      {
+        auto characterBehaviorComponent = foundCharacter->second->GetFirstComponentOfType<CharacterBehaviorComponent>();
+        if(characterBehaviorComponent != nullptr)
+        {
+          mNameText->SetText(characterBehaviorComponent->GetName());
+        }
+      }
+
+      if(mStatsText != nullptr)
+      {
+        auto characterBehaviorComponent = foundCharacter->second->GetFirstComponentOfType<CharacterBehaviorComponent>();
+        if(characterBehaviorComponent != nullptr)
+        {
+          std::stringstream statStream;
+          statStream << "HP: " << characterBehaviorComponent->GetMaximumHealth();
+          statStream << " Speed: " << characterBehaviorComponent->GetSpeed();
+          mStatsText->SetText(statStream.str());
+        }
+      }
+
+      // Reposition the cursor and character info text.
+      RepositionCursor();
+      RepositionCharacterInfo();
+
+      // Remove all skill text boxes, then create new ones for the
+      // focused character.
+      for(auto& skillTextBox : mSkillTextBoxes)
+      {
+        auto skillTextBoxObject = skillTextBox->GetParent();
+        if(skillTextBoxObject != nullptr)
+        {
+          skillTextBoxObject->ScheduleForDeletion();
+        }
+      }
+      mSkillTextBoxes.clear();
+
+      CreateSkillTextBoxes();
     }
   }
 }
@@ -233,13 +276,155 @@ void RewardsMenuLayoutComponent::HandleActionHovered()
 void RewardsMenuLayoutComponent::RepositionCharacters()
 {
   auto overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
-  auto totalCharacterWidth = mCharacterHorizontalSpacing * (mCharacters.size() - 1);
+  auto totalCharacterWidth = mCharacterHorizontalPadding * (mCharacters.size() - 1);
   auto distanceFromLeft = (overlayWidth - totalCharacterWidth) / 2.0;
   for(auto& characterPair : mCharacters)
   {
     auto characterPos = characterPair.second->GetPosition();
     characterPos.x = distanceFromLeft;
     characterPair.second->SetPosition(characterPos);
-    distanceFromLeft += mCharacterHorizontalSpacing;
+    distanceFromLeft += mCharacterHorizontalPadding;
   }
+}
+
+/******************************************************************************/
+void RewardsMenuLayoutComponent::RepositionCursor()
+{
+  if(mFocusedCharacter != nullptr)
+  {
+    // Move the cursor above the selected character.
+    if(mCursor != nullptr)
+    {
+      auto characterPos = mFocusedCharacter->GetPosition();
+      auto characterMesh = mFocusedCharacter->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
+      if(characterMesh != nullptr)
+      {
+        characterPos.y += ((characterMesh->GetHeight() * mCharacterScalar) / 2.0);
+      }
+
+      characterPos.z += 0.1;
+      mCursor->SetPosition(characterPos);
+    }
+  }
+}
+
+/******************************************************************************/
+void RewardsMenuLayoutComponent::RepositionCharacterInfo()
+{
+  if(mFocusedCharacter != nullptr)
+  {
+    // Move the character name and stats text boxes to below the focused character.
+    if(mNameText != nullptr)
+    {
+      auto nameTextParent = mNameText->GetParent();
+      if(nameTextParent != nullptr)
+      {
+        auto characterPos = mFocusedCharacter->GetPosition();
+        characterPos.y -= mCharacterNameVerticalPadding;
+
+        auto characterMesh = mFocusedCharacter->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
+        if(characterMesh != nullptr)
+        {
+          characterPos.y -= ((characterMesh->GetHeight() * mCharacterScalar) / 2.0);
+        }
+
+        nameTextParent->SetPosition(characterPos);
+      }
+    }
+
+    if(mStatsText != nullptr)
+    {
+      auto statsTextParent = mStatsText->GetParent();
+      if(statsTextParent != nullptr)
+      {
+        if(mNameText != nullptr)
+        {
+          auto nameTextParent = mNameText->GetParent();
+          if(nameTextParent != nullptr)
+          {
+            auto nameTextPos = nameTextParent->GetPosition();
+            nameTextPos.y -= mCharacterNameVerticalPadding;
+            statsTextParent->SetPosition(nameTextPos);
+          }
+        }
+      }
+    }
+  }
+}
+
+/******************************************************************************/
+void RewardsMenuLayoutComponent::CreateSkillTextBoxes()
+{
+  if(mFocusedCharacter != nullptr)
+  {
+    auto characterBehaviorComponent = mFocusedCharacter->GetFirstComponentOfType<CharacterBehaviorComponent>();
+    if(characterBehaviorComponent != nullptr)
+    {
+      auto overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
+      auto overlayHeight = env.GetGraphicsOptions().mOverlayHeight;
+      auto centerWidth = overlayWidth / 2.0;
+      auto centerHeight = overlayHeight / 2.0;
+
+      int skillTextBoxYCoordinate = centerHeight - (mCharacterBackgroundHeight / 2.0);
+
+      UrsineEngine::Texture backgroundTexture;
+      backgroundTexture.CreateTextureFromFile("resources/sprites/gui/menuBox.png");
+
+      for(const auto& skill : characterBehaviorComponent->GetSkills())
+      {
+        //if(skill->GetName() != "Move")
+        //{
+          std::stringstream nameStream;
+          nameStream << mFocusedCharacter->GetName() << "_" << skill->GetName();
+          auto skillTextBoxObject = CreateTextBoxObject(nameStream.str());
+          auto skillTextBox = skillTextBoxObject->GetFirstComponentOfType<TextBoxComponent>();
+          skillTextBox->SetTextSize(MEDIUM_FONT_SIZE);
+          skillTextBox->SetTexture(backgroundTexture);
+
+          skillTextBox->SetWidth(overlayWidth);
+          skillTextBox->SetHeight(mDescriptionHeight);
+          skillTextBox->SetFixedWidth(true);
+          skillTextBox->SetFixedHeight(true);
+
+          skillTextBox->SetVerticalPadding(mDescriptionVerticalPadding);
+
+          std::stringstream skillTextStream;
+          skillTextStream << skill->GetName() << ": " << skill->GetDescription();
+          skillTextBox->SetText(skillTextStream.str());
+
+          skillTextBoxObject->SetPosition(glm::vec3(overlayWidth / 2.0,
+                                                    skillTextBoxYCoordinate,
+                                                    0.1));
+          skillTextBoxYCoordinate -= skillTextBox->GetHeight();
+
+          auto parent = GetParent();
+          if(parent != nullptr)
+          {
+            parent->AddChild(std::move(skillTextBoxObject));
+            mSkillTextBoxes.emplace_back(parent->GetChildren().back()->GetFirstComponentOfType<TextBoxComponent>());
+          }
+        //}
+      }
+    }
+  }
+}
+
+/******************************************************************************/
+std::unique_ptr<UrsineEngine::GameObject> RewardsMenuLayoutComponent::CreateTextBoxObject(const std::string& aName)
+{
+  auto textObject = std::make_unique<UrsineEngine::GameObject>(aName);
+  textObject->AddComponent(std::make_unique<TextBoxComponent>());
+  auto textBox = textObject->GetFirstComponentOfType<TextBoxComponent>();
+  
+  textBox->SetFont(DEFAULT_FONT_FAMILY, DEFAULT_FONT_STYLE);
+  textBox->SetTextAlignment(TextAlignment::eCENTER);
+
+  auto textShader = textBox->GetTextShader();
+  if(textShader != nullptr)
+  {
+    textShader->Activate();
+    textShader->SetVec4("textColor", glm::vec4(BACKGROUND_COLOR, 1.0));
+  }
+
+  return std::move(textObject);
 }

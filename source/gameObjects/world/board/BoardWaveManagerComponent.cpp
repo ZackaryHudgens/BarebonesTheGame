@@ -116,6 +116,7 @@ void BoardWaveManagerComponent::HandleAllCharactersOfSideDefeated(UrsineEngine::
             menuLayoutComponent->AddAction(std::make_unique<MenuAction>("woo"));
             menuLayoutComponent->AddAction(std::make_unique<MenuAction>("woo2"));
             menuLayoutComponent->AddAction(std::make_unique<MenuAction>("woo3"));
+            menuLayoutComponent->AddAction(std::make_unique<MenuAction>("woo4"));
             scene->AddObject(std::move(rewardsMenu));
           }
         }
