@@ -4,6 +4,8 @@
 #include <GameObject.hpp>
 #include <Signal.hpp>
 
+#include "CharacterFactory.hpp"
+
 #include "Side.hpp"
 
 namespace Barebones
@@ -96,12 +98,14 @@ namespace Barebones
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> ActDisplayReadyForInputSignal;
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> ActDisplayAdvancedSignal;
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> ActDisplayFinishedSignal;
+  typedef UrsineEngine::SignalT<const CharacterType&> CharacterSelectedFromRewardsMenuSignal;
 
   extern MenuLayoutComponentInitializedSignal MenuLayoutComponentInitialized;
   extern MenuActionEnabledChangedSignal MenuActionEnabledChanged;
   extern ActDisplayReadyForInputSignal ActDisplayReadyForInput;
   extern ActDisplayAdvancedSignal ActDisplayAdvanced;
   extern ActDisplayFinishedSignal ActDisplayFinished;
+  extern CharacterSelectedFromRewardsMenuSignal CharacterSelectedFromRewardsMenu;
 
   /**
    * Camera signals

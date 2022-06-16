@@ -15,6 +15,7 @@
 
 #include "Colors.hpp"
 #include "Fonts.hpp"
+#include "Signals.hpp"
 
 using Barebones::RewardsMenuLayoutComponent;
 
@@ -35,6 +36,56 @@ RewardsMenuLayoutComponent::RewardsMenuLayoutComponent()
   , mCharacterHorizontalPadding(300)
   , mCharacterNameVerticalPadding(50)
 {
+}
+
+/******************************************************************************/
+void RewardsMenuLayoutComponent::CreateActionForCharacterType(const CharacterType& aType)
+{
+  // Add an action for the new character type.
+  std::stringstream nameStream;
+  nameStream << "characterAction_" << mCharacters.size();
+
+  auto newAction = std::make_unique<MenuAction>(nameStream.str());
+  auto characterType = aType;
+  auto actionFunction = [characterType]()
+  {
+    CharacterSelectedFromRewardsMenu.Notify(characterType);
+  };
+  newAction->SetFunction(actionFunction);
+  AddAction(std::move(newAction));
+
+  // Create a character of the given type, then add it to the parent
+  // as a child object.
+  auto character = CharacterFactory::CreateCharacter(aType, nameStream.str());
+  auto characterSprite = character->GetFirstComponentOfType<UrsineEngine::SpriteComponent>();
+  if(characterSprite != nullptr)
+  {
+    characterSprite->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
+    characterSprite->SetFrameOfAnimation(0);
+  }
+
+  character->SetScale(glm::vec3(mCharacterScalar,
+                                mCharacterScalar,
+                                1.0));
+
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    parent->AddChild(std::move(character));
+    mCharacters.emplace_back(GetActions().back(), parent->GetChildren().back());
+
+    if(mFocusedCharacter == nullptr)
+    {
+      mFocusedCharacter = mCharacters.back().second;
+      UpdateCharacterInfo();
+      CreateSkillTextBoxes();
+    }
+  }
+
+  // Reposition elements.
+  RepositionCharacters();
+  RepositionCursor();
+  RepositionCharacterInfo();
 }
 
 /******************************************************************************/
@@ -169,49 +220,6 @@ void RewardsMenuLayoutComponent::ProtectedInitialize()
 }
 
 /******************************************************************************/
-void RewardsMenuLayoutComponent::HandleActionAdded()
-{
-  auto actions = GetActions();
-  if(!actions.empty())
-  {
-    std::stringstream nameStream;
-    nameStream << "characterAction_" << mCharacters.size();
-
-    auto character = CharacterFactory::CreateCharacter(CharacterType::eBASIC_SKELETON,
-                                                       nameStream.str());
-    auto characterSprite = character->GetFirstComponentOfType<UrsineEngine::SpriteComponent>();
-    if(characterSprite != nullptr)
-    {
-      characterSprite->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
-      characterSprite->SetFrameOfAnimation(0);
-    }
-
-    auto overlayHeight = env.GetGraphicsOptions().mOverlayHeight;
-    auto overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
-    auto centerHeight = overlayHeight / 2.0;
-    auto centerWidth = overlayWidth / 2.0;
-
-    character->SetPosition(glm::vec3(mCharacters.size() * mCharacterHorizontalPadding,
-                                     centerHeight + mCharacterVerticalPadding,
-                                     0.1));
-    character->SetScale(glm::vec3(mCharacterScalar,
-                                  mCharacterScalar,
-                                  1.0));
-
-    auto parent = GetParent();
-    if(parent != nullptr)
-    {
-      parent->AddChild(std::move(character));
-      mCharacters.emplace_back(actions.back(), parent->GetChildren().back());
-    }
-
-    RepositionCharacters();
-    RepositionCursor();
-    RepositionCharacterInfo();
-  }
-}
-
-/******************************************************************************/
 void RewardsMenuLayoutComponent::HandleActionHovered()
 {
   auto action = GetCurrentlyHoveredAction();
@@ -230,28 +238,10 @@ void RewardsMenuLayoutComponent::HandleActionHovered()
       mFocusedCharacter = foundCharacter->second;
 
       // Update the name and stats text.
-      if(mNameText != nullptr)
-      {
-        auto characterBehaviorComponent = foundCharacter->second->GetFirstComponentOfType<CharacterBehaviorComponent>();
-        if(characterBehaviorComponent != nullptr)
-        {
-          mNameText->SetText(characterBehaviorComponent->GetName());
-        }
-      }
+      UpdateCharacterInfo();
 
-      if(mStatsText != nullptr)
-      {
-        auto characterBehaviorComponent = foundCharacter->second->GetFirstComponentOfType<CharacterBehaviorComponent>();
-        if(characterBehaviorComponent != nullptr)
-        {
-          std::stringstream statStream;
-          statStream << "HP: " << characterBehaviorComponent->GetMaximumHealth();
-          statStream << " Speed: " << characterBehaviorComponent->GetSpeed();
-          mStatsText->SetText(statStream.str());
-        }
-      }
-
-      // Reposition the cursor and character info text.
+      // Reposition elements.
+      RepositionCharacters();
       RepositionCursor();
       RepositionCharacterInfo();
 
@@ -273,17 +263,41 @@ void RewardsMenuLayoutComponent::HandleActionHovered()
 }
 
 /******************************************************************************/
+void RewardsMenuLayoutComponent::HandleActionExecuted()
+{
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    parent->ScheduleForDeletion();
+  }
+}
+
+/******************************************************************************/
 void RewardsMenuLayoutComponent::RepositionCharacters()
 {
+  auto overlayHeight = env.GetGraphicsOptions().mOverlayHeight;
   auto overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
+  auto centerHeight = overlayHeight / 2.0;
+
   auto totalCharacterWidth = mCharacterHorizontalPadding * (mCharacters.size() - 1);
   auto distanceFromLeft = (overlayWidth - totalCharacterWidth) / 2.0;
   for(auto& characterPair : mCharacters)
   {
+    characterPair.second->SetPosition(glm::vec3(mCharacters.size() * mCharacterHorizontalPadding,
+                                                centerHeight,
+                                                0.1));
     auto characterPos = characterPair.second->GetPosition();
     characterPos.x = distanceFromLeft;
     characterPair.second->SetPosition(characterPos);
     distanceFromLeft += mCharacterHorizontalPadding;
+  }
+
+  // Move the focused character up slightly.
+  if(mFocusedCharacter != nullptr)
+  {
+    auto focusedPos = mFocusedCharacter->GetPosition();
+    focusedPos.y += mCharacterVerticalPadding;
+    mFocusedCharacter->SetPosition(focusedPos);
   }
 }
 
@@ -304,6 +318,34 @@ void RewardsMenuLayoutComponent::RepositionCursor()
 
       characterPos.z += 0.1;
       mCursor->SetPosition(characterPos);
+    }
+  }
+}
+
+/******************************************************************************/
+void RewardsMenuLayoutComponent::UpdateCharacterInfo()
+{
+  if(mFocusedCharacter != nullptr)
+  {
+    if(mNameText != nullptr)
+    {
+      auto characterBehaviorComponent = mFocusedCharacter->GetFirstComponentOfType<CharacterBehaviorComponent>();
+      if(characterBehaviorComponent != nullptr)
+      {
+        mNameText->SetText(characterBehaviorComponent->GetName());
+      }
+    }
+
+    if(mStatsText != nullptr)
+    {
+      auto characterBehaviorComponent = mFocusedCharacter->GetFirstComponentOfType<CharacterBehaviorComponent>();
+      if(characterBehaviorComponent != nullptr)
+      {
+        std::stringstream statStream;
+        statStream << "Max HP: " << characterBehaviorComponent->GetMaximumHealth();
+        statStream << " Speed: " << characterBehaviorComponent->GetSpeed();
+        mStatsText->SetText(statStream.str());
+      }
     }
   }
 }
@@ -372,8 +414,8 @@ void RewardsMenuLayoutComponent::CreateSkillTextBoxes()
 
       for(const auto& skill : characterBehaviorComponent->GetSkills())
       {
-        //if(skill->GetName() != "Move")
-        //{
+        if(skill->GetName() != "Move")
+        {
           std::stringstream nameStream;
           nameStream << mFocusedCharacter->GetName() << "_" << skill->GetName();
           auto skillTextBoxObject = CreateTextBoxObject(nameStream.str());
@@ -403,7 +445,7 @@ void RewardsMenuLayoutComponent::CreateSkillTextBoxes()
             parent->AddChild(std::move(skillTextBoxObject));
             mSkillTextBoxes.emplace_back(parent->GetChildren().back()->GetFirstComponentOfType<TextBoxComponent>());
           }
-        //}
+        }
       }
     }
   }

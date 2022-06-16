@@ -6,7 +6,7 @@
 #include <Scene.hpp>
 
 #include "BoardLayoutComponent.hpp"
-#include "MenuLayoutComponent.hpp"
+#include "RewardsMenuLayoutComponent.hpp"
 
 #include "CharacterFactory.hpp"
 #include "MenuFactory.hpp"
@@ -112,11 +112,10 @@ void BoardWaveManagerComponent::HandleAllCharactersOfSideDefeated(UrsineEngine::
           if(scene != nullptr)
           {
             auto rewardsMenu = MenuFactory::CreateMenu(MenuType::eREWARDS, "rewardsMenu");
-            auto menuLayoutComponent = rewardsMenu->GetFirstComponentOfType<MenuLayoutComponent>();
-            menuLayoutComponent->AddAction(std::make_unique<MenuAction>("woo"));
-            menuLayoutComponent->AddAction(std::make_unique<MenuAction>("woo2"));
-            menuLayoutComponent->AddAction(std::make_unique<MenuAction>("woo3"));
-            menuLayoutComponent->AddAction(std::make_unique<MenuAction>("woo4"));
+            auto menuLayoutComponent = rewardsMenu->GetFirstComponentOfType<RewardsMenuLayoutComponent>();
+            menuLayoutComponent->CreateActionForCharacterType(CharacterType::eBASIC_SKELETON);
+            menuLayoutComponent->CreateActionForCharacterType(CharacterType::eBONE_THROWER);
+            menuLayoutComponent->CreateActionForCharacterType(CharacterType::eCORRUPTED_FARMER);
             scene->AddObject(std::move(rewardsMenu));
           }
         }

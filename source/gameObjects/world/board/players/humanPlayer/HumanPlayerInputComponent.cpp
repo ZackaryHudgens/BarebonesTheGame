@@ -2,8 +2,12 @@
 
 #include "Signals.hpp"
 
+#include "BoardLayoutComponent.hpp"
+
 #include "HumanPlayerDefaultInputState.hpp"
 #include "HumanPlayerUsingSkillInputState.hpp"
+#include "HumanPlayerRemovingCharacterInputState.hpp"
+#include "HumanPlayerPlacingCharacterInputState.hpp"
 
 using Barebones::HumanPlayerInputComponent;
 
@@ -18,6 +22,11 @@ HumanPlayerInputComponent::HumanPlayerInputComponent()
   {
     this->HandleSkillSelected(aSkill);
   });
+
+  /*CharacterSelectedFromRewardsMenu.Connect(*this, [this](const CharacterType& aType)
+  {
+    this->HandleCharacterSelectedFromRewardsMenu(aType);
+  });*/
 }
 
 /******************************************************************************/
@@ -90,3 +99,31 @@ void HumanPlayerInputComponent::HandleSkillSelected(Skill& aSkill)
     mState->SetBoard(*mBoard);
   }
 }
+
+/******************************************************************************/
+/*void HumanPlayerInputComponent::HandleCharacterSelectedFromRewardsMenu(const CharacterType& aType)
+{
+  auto parent = GetParent();
+  if(parent != nullptr &&
+     mBoard != nullptr)
+  {
+    auto boardLayoutComponent = mBoard->GetFirstComponentOfType<BoardLayoutComponent>();
+    if(boardLayoutComponent != nullptr)
+    {
+      // If there are too many characters on the board under the player's control,
+      // swap to the Removing Character state. Otherwise, swap to the Placing
+      // Character state.
+      auto charactersOnSide = boardLayoutComponent->GetCharactersOnSide(Side::ePLAYER);
+      if(charactersOnSide.size() >= mMaximumCharacters)
+      {
+        mState = std::make_unique<HumanPlayerRemovingCharacterInputState>(*parent);
+      }
+      else
+      {
+        mState = std::make_unique<HumanPlayerPlacingCharacterInputState>(*parent, aType);
+      }
+
+      mState->SetBoard(*mBoard);
+    }
+  }
+}*/

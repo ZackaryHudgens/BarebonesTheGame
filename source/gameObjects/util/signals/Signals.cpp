@@ -52,6 +52,7 @@ Barebones::MenuActionEnabledChangedSignal Barebones::MenuActionEnabledChanged;
 Barebones::ActDisplayReadyForInputSignal Barebones::ActDisplayReadyForInput;
 Barebones::ActDisplayAdvancedSignal Barebones::ActDisplayAdvanced;
 Barebones::ActDisplayFinishedSignal Barebones::ActDisplayFinished;
+Barebones::CharacterSelectedFromRewardsMenuSignal Barebones::CharacterSelectedFromRewardsMenu;
 
 /**
  * Camera signals

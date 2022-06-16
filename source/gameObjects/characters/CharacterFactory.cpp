@@ -59,8 +59,6 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
 
       // Set up the spritesheet and animations.
       UrsineEngine::Texture spritesheet;
-      spritesheet.SetTextureParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      spritesheet.SetTextureParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
       spritesheet.CreateTextureFromFile("resources/sprites/skeletons/basicSkeletonSpritesheet.png");
       newCharacterSpriteComponent->SetTexture(spritesheet);
 
@@ -94,8 +92,6 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
 
       // Set up the spritesheet and animations.
       UrsineEngine::Texture spritesheet;
-      spritesheet.SetTextureParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      spritesheet.SetTextureParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
       spritesheet.CreateTextureFromFile("resources/sprites/skeletons/basicSkeletonSpritesheet.png");
       newCharacterSpriteComponent->SetTexture(spritesheet);
 
@@ -130,8 +126,6 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
 
       // Set up the spritesheet and animations.
       UrsineEngine::Texture spritesheet;
-      spritesheet.SetTextureParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      spritesheet.SetTextureParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
       spritesheet.CreateTextureFromFile("resources/sprites/enemies/basicHuman.png");
       newCharacterSpriteComponent->SetTexture(spritesheet);
 

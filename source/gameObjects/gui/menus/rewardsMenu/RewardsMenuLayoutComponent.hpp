@@ -5,6 +5,8 @@
 
 #include <GameObject.hpp>
 
+#include "CharacterFactory.hpp"
+
 #include "TextBoxComponent.hpp"
 
 namespace Barebones
@@ -18,6 +20,13 @@ namespace Barebones
        */
       RewardsMenuLayoutComponent();
 
+      /**
+       * Creates an action for the given character type.
+       *
+       * @param aType The type of character.
+       */
+      void CreateActionForCharacterType(const CharacterType& aType);
+
     protected:
 
       /**
@@ -26,16 +35,16 @@ namespace Barebones
       void ProtectedInitialize() override;
 
       /**
-       * A handler function that gets called whenever an action is added
-       * to this menu.
-       */
-      void HandleActionAdded() override;
-
-      /**
        * A handler function that gets called whenever the currently hovered
        * action changes.
        */
       void HandleActionHovered() override;
+
+      /**
+       * A handler function that gets called whenever an action is executed
+       * from this menu.
+       */
+      void HandleActionExecuted() override;
 
     private:
 
@@ -54,6 +63,12 @@ namespace Barebones
        * under the focused character.
        */
       void RepositionCharacterInfo();
+
+      /**
+       * Updates the character name and stats text to reflect the
+       * currently focused character.
+       */
+      void UpdateCharacterInfo();
 
       /**
        * Creates a text box for each skill on the focused character

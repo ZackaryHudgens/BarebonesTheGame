@@ -7,6 +7,8 @@
 
 #include "HumanPlayerInputState.hpp"
 
+#include "CharacterFactory.hpp"
+
 #include "Skill.hpp"
 
 namespace Barebones
@@ -72,7 +74,6 @@ namespace Barebones
       void HandleSkillSelected(Skill& aSkill);
 
     private:
-
       UrsineEngine::GameObject* mBoard;
 
       std::unique_ptr<HumanPlayerInputState> mState;
