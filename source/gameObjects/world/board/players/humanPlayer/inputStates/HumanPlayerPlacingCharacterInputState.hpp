@@ -16,9 +16,12 @@ namespace Barebones
        *
        * @param aPlayer The player GameObject to handle input for.
        * @param aType The type of character to place.
+       * @param aRemove Whether a removal of a character is required first
+       *                before adding a new one.
        */
       HumanPlayerPlacingCharacterInputState(UrsineEngine::GameObject& aPlayer,
-                                            const CharacterType& aType);
+                                            const CharacterType& aType,
+                                            bool aRemove);
 
       /**
        * A handler function that gets called whenever the user presses
@@ -46,6 +49,8 @@ namespace Barebones
 
     private:
       CharacterType mType;
+
+      bool mRemovalRequired;
   };
 }
 

@@ -2,11 +2,11 @@
 
 #include "Signals.hpp"
 
+#include "PlayerBehaviorComponent.hpp"
 #include "BoardLayoutComponent.hpp"
 
 #include "HumanPlayerDefaultInputState.hpp"
 #include "HumanPlayerUsingSkillInputState.hpp"
-#include "HumanPlayerRemovingCharacterInputState.hpp"
 #include "HumanPlayerPlacingCharacterInputState.hpp"
 
 using Barebones::HumanPlayerInputComponent;
@@ -107,22 +107,24 @@ void HumanPlayerInputComponent::HandleCharacterSelectedFromRewardsMenu(const Cha
   if(parent != nullptr &&
      mBoard != nullptr)
   {
+    auto playerBehaviorComponent = parent->GetFirstComponentOfType<PlayerBehaviorComponent>();
     auto boardLayoutComponent = mBoard->GetFirstComponentOfType<BoardLayoutComponent>();
-    if(boardLayoutComponent != nullptr)
+    if(playerBehaviorComponent != nullptr &&
+       boardLayoutComponent != nullptr)
     {
       // If there are too many characters on the board under the player's control,
-      // swap to the Removing Character state. Otherwise, swap to the Placing
-      // Character state.
-      auto charactersOnSide = boardLayoutComponent->GetCharactersOnSide(Side::ePLAYER);
-      if(charactersOnSide.size() <= 7)
+      // then a removal of one of them is required before a new one can be added.
+      bool removalRequired = false;
+      auto controlledSide = playerBehaviorComponent->GetSide();
+      auto charactersOnSide = boardLayoutComponent->GetCharactersOnSide(controlledSide);
+      if(charactersOnSide.size() >= 5)
       {
-        mState = std::make_unique<HumanPlayerRemovingCharacterInputState>(*parent);
-      }
-      else
-      {
-        mState = std::make_unique<HumanPlayerPlacingCharacterInputState>(*parent, aType);
+        removalRequired = true;
       }
 
+      mState = std::make_unique<HumanPlayerPlacingCharacterInputState>(*parent,
+                                                                       aType,
+                                                                       removalRequired);
       mState->SetBoard(*mBoard);
     }
   }

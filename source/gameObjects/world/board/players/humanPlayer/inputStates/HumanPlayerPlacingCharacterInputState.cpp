@@ -6,6 +6,7 @@
 
 #include "PlayerBehaviorComponent.hpp"
 #include "BoardLayoutComponent.hpp"
+#include "CharacterBehaviorComponent.hpp"
 
 #include "HumanPlayerDefaultInputState.hpp"
 
@@ -17,9 +18,11 @@ using Barebones::HumanPlayerPlacingCharacterInputState;
 
 /******************************************************************************/
 HumanPlayerPlacingCharacterInputState::HumanPlayerPlacingCharacterInputState(UrsineEngine::GameObject& aPlayer,
-                                                                             const CharacterType& aType)
+                                                                             const CharacterType& aType,
+                                                                             bool aRemove)
   : HumanPlayerInputState(aPlayer)
   , mType(aType)
+  , mRemovalRequired(aRemove)
 {
 }
 
@@ -123,9 +126,13 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerPlacingCharacterInp
         }
         case UrsineEngine::KeyCode::eKEY_ENTER:
         {
-          // If there isn't a character at this location, create a new
-          // character of the given type and place it here.
-          if(boardLayoutComponent->GetCharacterAtLocation(currentLocation) == nullptr)
+          auto character = boardLayoutComponent->GetCharacterAtLocation(currentLocation);
+
+          // If there isn't a character at this location, and we aren't
+          // requiring a removal first, create a new character of the given type
+          // and place it here.
+          if(character == nullptr &&
+             !mRemovalRequired)
           {
             std::stringstream nameStream;
             nameStream << "character_" << currentLocation.first << "_" << currentLocation.second;
@@ -135,6 +142,23 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerPlacingCharacterInp
             // Then, return to the default state.
             newState = std::make_unique<HumanPlayerDefaultInputState>(*player);
             newState->SetBoard(*board);
+          }
+
+          // If there is a character at this location, and a removal is
+          // required, first check if the character is controlled by the
+          // player. If it is, remove it and set mRemovalRequired to false.
+          if(character != nullptr &&
+             mRemovalRequired)
+          {
+            auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
+            if(characterBehaviorComponent != nullptr)
+            {
+              if(characterBehaviorComponent->GetSide() == playerBehaviorComponent->GetSide())
+              {
+                boardLayoutComponent->RemoveCharacterAtLocation(currentLocation);
+                mRemovalRequired = false;
+              }
+            }
           }
           break;
         }
