@@ -17,11 +17,14 @@ int main()
   options.mOverlayHeight = 1080;
   options.mOverlayWidth = 1920;
 
+  UrsineEngine::TextComponent::InitializeFontLibrary();
   UrsineEngine::TextComponent::LoadFont("resources/alagard.ttf");
 
   env.Initialize(options);
   env.LoadScene(Barebones::SceneFactory::CreateScene(Barebones::SceneType::eMAIN_MENU));
   env.Run();
+
+  UrsineEngine::TextComponent::UninitializeFontLibrary();
 
   return 0;
 }
