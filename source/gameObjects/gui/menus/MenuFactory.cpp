@@ -5,6 +5,7 @@
 
 #include "MainMenuInputComponent.hpp"
 #include "MainMenuLayoutComponent.hpp"
+#include "MainMenuAudioComponent.hpp"
 #include "SkillMenuInputComponent.hpp"
 #include "SkillMenuLayoutComponent.hpp"
 #include "RewardsMenuInputComponent.hpp"
@@ -27,6 +28,7 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
     {
       newMenu->AddComponent(std::make_unique<MainMenuInputComponent>());
       newMenu->AddComponent(std::make_unique<MainMenuLayoutComponent>());
+      newMenu->AddComponent(std::make_unique<MainMenuAudioComponent>());
 
       auto menuLayoutComponent = newMenu->GetFirstComponentOfType<MenuLayoutComponent>();
 
@@ -71,6 +73,7 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
     {
       newMenu->AddComponent(std::make_unique<MainMenuInputComponent>());
       newMenu->AddComponent(std::make_unique<MainMenuLayoutComponent>());
+      newMenu->AddComponent(std::make_unique<MainMenuAudioComponent>());
 
       auto menuLayoutComponent = newMenu->GetFirstComponentOfType<MenuLayoutComponent>();
 
@@ -110,6 +113,7 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
     {
       newMenu->AddComponent(std::make_unique<MainMenuInputComponent>());
       newMenu->AddComponent(std::make_unique<MainMenuLayoutComponent>());
+      newMenu->AddComponent(std::make_unique<MainMenuAudioComponent>());
 
       auto menuLayoutComponent = newMenu->GetFirstComponentOfType<MenuLayoutComponent>();
 
@@ -194,6 +198,7 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
     {
       newMenu->AddComponent(std::make_unique<MainMenuInputComponent>());
       newMenu->AddComponent(std::make_unique<MainMenuLayoutComponent>());
+      newMenu->AddComponent(std::make_unique<MainMenuAudioComponent>());
 
       auto menuLayoutComponent = newMenu->GetFirstComponentOfType<MenuLayoutComponent>();
 
@@ -238,6 +243,7 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
     {
       newMenu->AddComponent(std::make_unique<MainMenuInputComponent>());
       newMenu->AddComponent(std::make_unique<MainMenuLayoutComponent>());
+      newMenu->AddComponent(std::make_unique<MainMenuAudioComponent>());
 
       auto menuLayoutComponent = newMenu->GetFirstComponentOfType<MenuLayoutComponent>();
 
@@ -284,6 +290,7 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
     {
       newMenu->AddComponent(std::make_unique<SkillMenuInputComponent>());
       newMenu->AddComponent(std::make_unique<SkillMenuLayoutComponent>());
+      newMenu->AddComponent(std::make_unique<MainMenuAudioComponent>());
 
       break;
     }
@@ -291,6 +298,8 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
     {
       newMenu->AddComponent(std::make_unique<RewardsMenuLayoutComponent>());
       newMenu->AddComponent(std::make_unique<RewardsMenuInputComponent>());
+      newMenu->AddComponent(std::make_unique<MainMenuAudioComponent>());
+
       break;
     }
     default:

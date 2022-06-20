@@ -2,6 +2,7 @@
 
 #include <Environment.hpp>
 #include <TextComponent.hpp>
+#include <AudioComponent.hpp>
 
 #include "SceneFactory.hpp"
 
@@ -20,11 +21,15 @@ int main()
   UrsineEngine::TextComponent::InitializeFontLibrary();
   UrsineEngine::TextComponent::LoadFont("resources/alagard.ttf");
 
+  UrsineEngine::AudioComponent::InitializeAudioLibrary();
+  UrsineEngine::AudioComponent::LoadAudioFile("resources/audio/arrowMoved.wav");
+
   env.Initialize(options);
   env.LoadScene(Barebones::SceneFactory::CreateScene(Barebones::SceneType::eMAIN_MENU));
   env.Run();
 
   UrsineEngine::TextComponent::UninitializeFontLibrary();
+  UrsineEngine::AudioComponent::UninitializeAudioLibrary();
 
   return 0;
 }

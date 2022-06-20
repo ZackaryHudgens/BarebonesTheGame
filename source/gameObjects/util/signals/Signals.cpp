@@ -49,6 +49,8 @@ Barebones::InputComponentInitializedSignal Barebones::InputComponentInitialized;
  */
 Barebones::MenuLayoutComponentInitializedSignal Barebones::MenuLayoutComponentInitialized;
 Barebones::MenuActionEnabledChangedSignal Barebones::MenuActionEnabledChanged;
+Barebones::MenuActionHoveredSignal Barebones::MenuActionHovered;
+Barebones::MenuActionExecutedSignal Barebones::MenuActionExecuted;
 Barebones::ActDisplayReadyForInputSignal Barebones::ActDisplayReadyForInput;
 Barebones::ActDisplayAdvancedSignal Barebones::ActDisplayAdvanced;
 Barebones::ActDisplayFinishedSignal Barebones::ActDisplayFinished;

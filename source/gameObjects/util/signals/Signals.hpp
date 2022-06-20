@@ -95,6 +95,8 @@ namespace Barebones
    */
   typedef UrsineEngine::SignalT<MenuLayoutComponent&> MenuLayoutComponentInitializedSignal;
   typedef UrsineEngine::SignalT<MenuAction&> MenuActionEnabledChangedSignal;
+  typedef UrsineEngine::SignalT<UrsineEngine::GameObject&, MenuAction&> MenuActionHoveredSignal;
+  typedef UrsineEngine::SignalT<UrsineEngine::GameObject&, MenuAction&> MenuActionExecutedSignal;
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> ActDisplayReadyForInputSignal;
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> ActDisplayAdvancedSignal;
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> ActDisplayFinishedSignal;
@@ -102,6 +104,8 @@ namespace Barebones
 
   extern MenuLayoutComponentInitializedSignal MenuLayoutComponentInitialized;
   extern MenuActionEnabledChangedSignal MenuActionEnabledChanged;
+  extern MenuActionHoveredSignal MenuActionHovered;
+  extern MenuActionExecutedSignal MenuActionExecuted;
   extern ActDisplayReadyForInputSignal ActDisplayReadyForInput;
   extern ActDisplayAdvancedSignal ActDisplayAdvanced;
   extern ActDisplayFinishedSignal ActDisplayFinished;

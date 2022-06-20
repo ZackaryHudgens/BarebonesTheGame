@@ -1,0 +1,5 @@
+Barebones uses audio from some independent creators. Here are their names,
+what pieces they provided, and where I got them from:
+
+From GroovyMaster on itch.io:
+Click3.wav (URL: https://groovymaster.itch.io/groovys-50-retro-sound-effects-package)

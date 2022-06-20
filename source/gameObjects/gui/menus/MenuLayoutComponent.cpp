@@ -64,6 +64,12 @@ void MenuLayoutComponent::HoverOverNextAction()
     }
 
     HandleActionHovered();
+
+    auto parent = GetParent();
+    if(parent != nullptr)
+    {
+      MenuActionHovered.Notify(*parent, *mCurrentlyHoveredAction);
+    }
   }
 }
 
@@ -91,6 +97,12 @@ void MenuLayoutComponent::HoverOverPreviousAction()
     }
 
     HandleActionHovered();
+
+    auto parent = GetParent();
+    if(parent != nullptr)
+    {
+      MenuActionHovered.Notify(*parent, *mCurrentlyHoveredAction);
+    }
   }
 }
 
@@ -103,6 +115,12 @@ void MenuLayoutComponent::ExecuteCurrentAction()
     {
       mCurrentlyHoveredAction->Execute();
       HandleActionExecuted();
+
+      auto parent = GetParent();
+      if(parent != nullptr)
+      {
+        MenuActionExecuted.Notify(*parent, *mCurrentlyHoveredAction);
+      }
     }
   }
 }
