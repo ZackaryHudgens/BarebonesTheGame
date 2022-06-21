@@ -23,6 +23,7 @@ int main()
 
   UrsineEngine::AudioComponent::InitializeAudioLibrary();
   UrsineEngine::AudioComponent::LoadAudioFile("resources/audio/arrowMoved.wav");
+  UrsineEngine::AudioComponent::SetSoundVolume("resources/audio/arrowMoved.wav", 0.1);
 
   env.Initialize(options);
   env.LoadScene(Barebones::SceneFactory::CreateScene(Barebones::SceneType::eMAIN_MENU));
