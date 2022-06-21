@@ -16,6 +16,7 @@
 #include "ActDisplayBehaviorComponent.hpp"
 #include "ActDisplayInputComponent.hpp"
 #include "InfoPanelBehaviorComponent.hpp"
+#include "HintDisplayBehaviorComponent.hpp"
 
 #include "BackgroundMeshComponent.hpp"
 
@@ -100,6 +101,11 @@ std::unique_ptr<UrsineEngine::Scene> SceneFactory::CreateScene(const SceneType& 
       actDisplayObject->AddComponent(std::make_unique<ActDisplayBehaviorComponent>());
       actDisplayObject->AddComponent(std::make_unique<ActDisplayInputComponent>());
       newScene->AddObject(std::move(actDisplayObject));
+
+      // Create the hint display.
+      auto hintDisplayObject = std::make_unique<UrsineEngine::GameObject>("hintDisplay");
+      hintDisplayObject->AddComponent(std::make_unique<HintDisplayBehaviorComponent>());
+      newScene->AddObject(std::move(hintDisplayObject));
 
       break;
     }

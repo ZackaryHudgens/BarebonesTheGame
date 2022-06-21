@@ -11,6 +11,8 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/effects/*.?pp
                        gameObjects/gui/*.?pp
                        gameObjects/gui/actDisplay/*.?pp
+                       gameObjects/gui/hintDisplay/*.?pp
+                       gameObjects/gui/hintDisplay/states/*.?pp
                        gameObjects/gui/infoPanel/*.?pp
                        gameObjects/gui/menus/*.?pp
                        gameObjects/gui/menus/mainMenu/*.?pp
@@ -51,6 +53,8 @@ target_include_directories(barebones PUBLIC
                            gameObjects/effects
                            gameObjects/gui
                            gameObjects/gui/actDisplay
+                           gameObjects/gui/hintDisplay
+                           gameObjects/gui/hintDisplay/states
                            gameObjects/gui/infoPanel
                            gameObjects/gui/menus
                            gameObjects/gui/menus/mainMenu
