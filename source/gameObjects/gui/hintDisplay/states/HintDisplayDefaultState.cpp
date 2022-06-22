@@ -13,7 +13,8 @@ using Barebones::HintDisplayDefaultState;
 HintDisplayDefaultState::HintDisplayDefaultState(UrsineEngine::GameObject& aParent)
   : HintDisplayState(aParent)
   , mCameraIcon(nullptr)
-  , mVerticalPadding(25)
+  , mElementPadding(15)
+  , mIconScale(5.0)
 {
 }
 
@@ -45,7 +46,7 @@ void HintDisplayDefaultState::CreatePauseIconAndText()
   pauseIcon->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
 
   UrsineEngine::Texture pauseTexture;
-  pauseTexture.CreateTextureFromFile("resources/sprites/gui/keycapEsc.png");
+  pauseTexture.CreateTextureFromFile("resources/sprites/gui/keycapEnter.png");
   pauseIcon->SetTexture(pauseTexture);
 
   std::string vertexFile = "resources/shaders/TexturedMeshShader.vert";
@@ -61,7 +62,7 @@ void HintDisplayDefaultState::CreatePauseIconAndText()
 
   pauseText->SetFont(DEFAULT_FONT_FAMILY, DEFAULT_FONT_STYLE);
   pauseText->SetTextSize(MEDIUM_FONT_SIZE);
-  pauseText->SetTextAlignment(TextAlignment::eLEFT);
+  pauseText->SetTextAlignment(TextAlignment::eCENTER);
   pauseText->SetText("PAUSE");
 
   vertexFile = "resources/shaders/OutlinedTextShader.vert";
@@ -74,11 +75,14 @@ void HintDisplayDefaultState::CreatePauseIconAndText()
   pauseText->SetTextShader(outlineShader);
 
   // Place the icon and text on the foreground and add them to the scene.
-  int xPos = mVerticalPadding;
-  pauseIconObject->SetPosition(glm::vec3(xPos, mVerticalPadding, 0.9));
+  int halfIconHeight = pauseIcon->GetHeight() / 2.0;
+  int halfIconWidth = pauseIcon->GetWidth() / 2.0;
+  int yPos = mElementPadding + (halfIconHeight * mIconScale);
+  int xPos = mElementPadding + (halfIconWidth * mIconScale);
+  pauseIconObject->SetPosition(glm::vec3(xPos, yPos, 0.9));
 
-  xPos += pauseIcon->GetWidth();
-  pauseTextObject->SetPosition(glm::vec3(xPos, mVerticalPadding, 0.9));
+  yPos += (halfIconHeight * mIconScale);
+  pauseTextObject->SetPosition(glm::vec3(xPos, yPos, 0.9));
 
   pauseIconObject->AddComponent(std::move(pauseIcon));
 

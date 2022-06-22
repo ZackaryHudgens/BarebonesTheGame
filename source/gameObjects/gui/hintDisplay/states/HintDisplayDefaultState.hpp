@@ -54,7 +54,8 @@ namespace Barebones
 
       UrsineEngine::GameObject* mCameraIcon;
 
-      int mVerticalPadding;
+      int mElementPadding;
+      double mIconScale;
   };
 }
 

@@ -109,7 +109,7 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
           CameraZoomChangeRequested.Notify(0.0);
           break;
         }
-        case UrsineEngine::KeyCode::eKEY_Q:
+        case UrsineEngine::KeyCode::eKEY_ESCAPE:
         {
           // Create a pause menu and add it to the scene.
           auto pauseMenu = MenuFactory::CreateMenu(MenuType::ePAUSE, "pauseMenu");
@@ -154,7 +154,7 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
 
           break;
         }
-        case UrsineEngine::KeyCode::eKEY_ESCAPE:
+        case UrsineEngine::KeyCode::eKEY_Q:
         {
           // End the player's turn.
           auto player = GetPlayer();
