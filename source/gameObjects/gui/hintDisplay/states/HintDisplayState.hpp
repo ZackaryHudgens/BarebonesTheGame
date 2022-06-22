@@ -20,13 +20,13 @@ namespace Barebones
        * A virtual function that gets called by the hint display when
        * it enters this state.
        */
-      virtual void OnEnter() = 0;
+      virtual void OnEnter() {};
 
       /**
        * A virtual function that gets called by the hint display when
        * it exits this state.
        */
-      virtual void OnExit() = 0;
+      virtual void OnExit() {};
       
     protected:
 

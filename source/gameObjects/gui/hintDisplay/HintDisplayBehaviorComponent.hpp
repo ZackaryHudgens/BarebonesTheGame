@@ -34,14 +34,6 @@ namespace Barebones
        */
       void HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlayer);
 
-      /**
-       * A handler function that gets called whenever a player's turn
-       * ends.
-       *
-       * @param aPlayer The player whose turn ended.
-       */
-      void HandlePlayerTurnEnded(PlayerBehaviorComponent& aPlayer);
-
       std::unique_ptr<HintDisplayState> mState;
   };
 }
