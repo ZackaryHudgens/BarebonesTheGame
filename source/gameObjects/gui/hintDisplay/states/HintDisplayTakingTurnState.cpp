@@ -32,6 +32,11 @@ HintDisplayTakingTurnState::HintDisplayTakingTurnState(UrsineEngine::GameObject&
   {
     this->HandleSkillCancelled(aSkill);
   });
+
+  DisplayHintRequested.Connect(mObserver, [this](const std::string& aHint)
+  {
+    this->HandleDisplayHintRequested(aHint);
+  });
 }
 
 /******************************************************************************/
@@ -40,6 +45,7 @@ void HintDisplayTakingTurnState::OnEnter()
   CreatePauseIconAndText();
   CreateSelectIconAndText();
   CreateEndTurnIconAndText();
+  CreateHintText();
   CreateZoomIconAndText();
 }
 
@@ -156,6 +162,28 @@ void HintDisplayTakingTurnState::CreateEndTurnIconAndText()
 }
 
 /******************************************************************************/
+void HintDisplayTakingTurnState::CreateHintText()
+{
+  auto hintTextObject = CreateTextObject("hintText", "");
+  auto hintText = hintTextObject->GetFirstComponentOfType<TextBoxComponent>();
+  hintText->SetTextAlignment(TextAlignment::eLEFT);
+  hintText->SetTextSize(BIG_FONT_SIZE);
+
+  int xPos = mElementPadding;
+  int yPos = mElementPadding + 150;
+  hintTextObject->SetPosition(glm::vec3(xPos, yPos, 0.9));
+
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    parent->AddChild(std::move(hintTextObject));
+    mElements.emplace_back(parent->GetChildren().back());
+
+    mHintText = mElements.back()->GetFirstComponentOfType<TextBoxComponent>();
+  }
+}
+
+/******************************************************************************/
 void HintDisplayTakingTurnState::CreateZoomIconAndText()
 {
   // Create the zoom icon.
@@ -264,4 +292,13 @@ void HintDisplayTakingTurnState::HandleSkillExecuted(Skill& aSkill)
 void HintDisplayTakingTurnState::HandleSkillCancelled(Skill& aSkill)
 {
   HandleSkillExecuted(aSkill);
+}
+
+/******************************************************************************/
+void HintDisplayTakingTurnState::HandleDisplayHintRequested(const std::string& aHint)
+{
+  if(mHintText != nullptr)
+  {
+    mHintText->SetText(aHint);
+  }
 }

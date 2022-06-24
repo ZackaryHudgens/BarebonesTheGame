@@ -51,6 +51,11 @@ namespace Barebones
       void CreateEndTurnIconAndText();
 
       /**
+       * Creates the hint text.
+       */
+      void CreateHintText();
+
+      /**
        * Creates and places the zoom keyboard icon and text.
        */
       void CreateZoomIconAndText();
@@ -99,9 +104,18 @@ namespace Barebones
        */
       void HandleSkillCancelled(Skill& aSkill);
 
+      /**
+       * A handler function that gets called whenever a hint is requested
+       * to be displayed.
+       *
+       * @param aHint The hint to be displayed.
+       */
+      void HandleDisplayHintRequested(const std::string& aHint);
+
       std::vector<UrsineEngine::GameObject*> mElements;
 
       TextBoxComponent* mEndTurnText;
+      TextBoxComponent* mHintText;
 
       int mElementPadding;
       double mIconScale;

@@ -149,6 +149,10 @@ void HumanPlayerBehaviorComponent::HandleCharacterSelectedFromRewardsMenu(const 
         mRemoveSkill.Select(*mBoard);
         mWaitingForCharacterRemoval = true;
       }
+      else
+      {
+        mCreateSkill.Select(*mBoard);
+      }
     }
   }
 }

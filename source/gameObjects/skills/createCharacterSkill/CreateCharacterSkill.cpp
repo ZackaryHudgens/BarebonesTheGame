@@ -4,6 +4,8 @@
 
 #include "BoardLayoutComponent.hpp"
 
+#include "Signals.hpp"
+
 using Barebones::CreateCharacterSkill;
 
 /******************************************************************************/
@@ -43,6 +45,12 @@ Barebones::TileList CreateCharacterSkill::GetValidTiles(UrsineEngine::GameObject
 }
 
 /******************************************************************************/
+void CreateCharacterSkill::ProtectedSelect(UrsineEngine::GameObject& aBoard)
+{
+  DisplayHintRequested.Notify("Choose a tile to raise your skeleton.");
+}
+
+/******************************************************************************/
 void CreateCharacterSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
                                             const TileLocation& aLocation)
 {
@@ -62,4 +70,12 @@ void CreateCharacterSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
     auto character = CharacterFactory::CreateCharacter(mTypeToCreate, nameStream.str());
     boardLayoutComponent->AddCharacterAtLocation(std::move(character), aLocation);
   }
+
+  DisplayHintRequested.Notify("");
+}
+
+/******************************************************************************/
+void CreateCharacterSkill::ProtectedCancel()
+{
+  DisplayHintRequested.Notify("");
 }

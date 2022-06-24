@@ -101,6 +101,7 @@ namespace Barebones
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> ActDisplayAdvancedSignal;
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> ActDisplayFinishedSignal;
   typedef UrsineEngine::SignalT<const CharacterType&> CharacterSelectedFromRewardsMenuSignal;
+  typedef UrsineEngine::SignalT<const std::string&> DisplayHintRequestedSignal;
 
   extern MenuLayoutComponentInitializedSignal MenuLayoutComponentInitialized;
   extern MenuActionEnabledChangedSignal MenuActionEnabledChanged;
@@ -110,6 +111,7 @@ namespace Barebones
   extern ActDisplayAdvancedSignal ActDisplayAdvanced;
   extern ActDisplayFinishedSignal ActDisplayFinished;
   extern CharacterSelectedFromRewardsMenuSignal CharacterSelectedFromRewardsMenu;
+  extern DisplayHintRequestedSignal DisplayHintRequested;
 
   /**
    * Camera signals

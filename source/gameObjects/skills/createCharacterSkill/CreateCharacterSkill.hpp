@@ -35,6 +35,13 @@ namespace Barebones
     protected:
 
       /**
+       * Selects this skill for use.
+       *
+       * @param aBoard The board to execute this skill on in the future.
+       */
+      void ProtectedSelect(UrsineEngine::GameObject& aBoard) override;
+
+      /**
        * Executes this skill.
        *
        * @param aBoard The board to execute this skill on.
@@ -42,6 +49,11 @@ namespace Barebones
        */
       void ProtectedExecute(UrsineEngine::GameObject& aBoard,
                             const TileLocation& aLocation) override;
+
+      /**
+       * Cancels the use of this skill.
+       */
+      void ProtectedCancel() override;
 
       CharacterType mTypeToCreate;
   };

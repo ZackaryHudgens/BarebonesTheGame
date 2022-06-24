@@ -2,6 +2,8 @@
 
 #include "BoardLayoutComponent.hpp"
 
+#include "Signals.hpp"
+
 using Barebones::RemoveCharacterSkill;
 
 /******************************************************************************/
@@ -48,6 +50,12 @@ Barebones::TileList RemoveCharacterSkill::GetValidTiles(UrsineEngine::GameObject
 }
 
 /******************************************************************************/
+void RemoveCharacterSkill::ProtectedSelect(UrsineEngine::GameObject& aBoard)
+{
+  DisplayHintRequested.Notify("Choose a skeleton to remove.");
+}
+
+/******************************************************************************/
 void RemoveCharacterSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
                                             const TileLocation& aLocation)
 {
@@ -64,4 +72,12 @@ void RemoveCharacterSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
       }
     }
   }
+
+  DisplayHintRequested.Notify("");
+}
+
+/******************************************************************************/
+void RemoveCharacterSkill::ProtectedCancel()
+{
+  DisplayHintRequested.Notify("");
 }
