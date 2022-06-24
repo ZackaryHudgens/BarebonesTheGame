@@ -396,6 +396,32 @@ std::vector<UrsineEngine::GameObject*> BoardLayoutComponent::GetCharactersOnSide
 }
 
 /******************************************************************************/
+std::vector<UrsineEngine::GameObject*> BoardLayoutComponent::GetCharactersOfType(const Type& aType)
+{
+  std::vector<UrsineEngine::GameObject*> characters;
+
+  for(auto& column : mCharacters)
+  {
+    for(auto& character : column)
+    {
+      if(character != nullptr)
+      {
+        auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
+        if(characterBehaviorComponent != nullptr)
+        {
+          if(characterBehaviorComponent->GetType() == aType)
+          {
+            characters.emplace_back(character);
+          }
+        }
+      }
+    }
+  }
+
+  return characters;
+}
+
+/******************************************************************************/
 void BoardLayoutComponent::MoveCharacterAlongPath(const TileLocation& aCharacterLocation,
                                                   const TileList& aPath)
 {

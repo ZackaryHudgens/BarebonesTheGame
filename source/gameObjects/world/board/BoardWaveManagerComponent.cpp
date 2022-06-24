@@ -116,6 +116,7 @@ void BoardWaveManagerComponent::HandleAllCharactersOfSideDefeated(UrsineEngine::
             menuLayoutComponent->CreateActionForCharacterType(CharacterType::eBASIC_SKELETON);
             menuLayoutComponent->CreateActionForCharacterType(CharacterType::eBONE_THROWER);
             menuLayoutComponent->CreateActionForCharacterType(CharacterType::eCORRUPTED_FARMER);
+            menuLayoutComponent->SetShowMaxSizeWarning(true);
             scene->AddObject(std::move(rewardsMenu));
           }
         }

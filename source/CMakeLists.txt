@@ -20,6 +20,8 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/gui/menus/skillMenu/*.?pp
                        gameObjects/skills/*.?pp
                        gameObjects/skills/moveSkill/*.?pp
+                       gameObjects/skills/removeCharacterSkill/*.?pp
+                       gameObjects/skills/createCharacterSkill/*.?pp
                        gameObjects/skills/skillActions/*.?pp
                        gameObjects/skills/visualEffects/*.?pp
                        gameObjects/util/*.?pp
@@ -62,6 +64,8 @@ target_include_directories(barebones PUBLIC
                            gameObjects/gui/menus/skillMenu
                            gameObjects/skills
                            gameObjects/skills/moveSkill
+                           gameObjects/skills/createCharacterSkill
+                           gameObjects/skills/removeCharacterSkill
                            gameObjects/skills/skillActions
                            gameObjects/skills/visualEffects
                            gameObjects/util

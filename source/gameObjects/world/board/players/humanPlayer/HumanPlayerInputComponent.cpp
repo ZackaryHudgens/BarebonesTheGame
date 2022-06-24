@@ -7,7 +7,6 @@
 
 #include "HumanPlayerDefaultInputState.hpp"
 #include "HumanPlayerUsingSkillInputState.hpp"
-#include "HumanPlayerPlacingCharacterInputState.hpp"
 
 using Barebones::HumanPlayerInputComponent;
 
@@ -21,11 +20,6 @@ HumanPlayerInputComponent::HumanPlayerInputComponent()
   SkillSelected.Connect(*this, [this](Skill& aSkill)
   {
     this->HandleSkillSelected(aSkill);
-  });
-
-  CharacterSelectedFromRewardsMenu.Connect(*this, [this](const CharacterType& aType)
-  {
-    this->HandleCharacterSelectedFromRewardsMenu(aType);
   });
 }
 
@@ -97,35 +91,5 @@ void HumanPlayerInputComponent::HandleSkillSelected(Skill& aSkill)
   {
     mState = std::make_unique<HumanPlayerUsingSkillInputState>(*parent, aSkill);
     mState->SetBoard(*mBoard);
-  }
-}
-
-/******************************************************************************/
-void HumanPlayerInputComponent::HandleCharacterSelectedFromRewardsMenu(const CharacterType& aType)
-{
-  auto parent = GetParent();
-  if(parent != nullptr &&
-     mBoard != nullptr)
-  {
-    auto playerBehaviorComponent = parent->GetFirstComponentOfType<PlayerBehaviorComponent>();
-    auto boardLayoutComponent = mBoard->GetFirstComponentOfType<BoardLayoutComponent>();
-    if(playerBehaviorComponent != nullptr &&
-       boardLayoutComponent != nullptr)
-    {
-      // If there are too many characters on the board under the player's control,
-      // then a removal of one of them is required before a new one can be added.
-      bool removalRequired = false;
-      auto controlledSide = playerBehaviorComponent->GetSide();
-      auto charactersOnSide = boardLayoutComponent->GetCharactersOnSide(controlledSide);
-      if(charactersOnSide.size() >= 5)
-      {
-        removalRequired = true;
-      }
-
-      mState = std::make_unique<HumanPlayerPlacingCharacterInputState>(*parent,
-                                                                       aType,
-                                                                       removalRequired);
-      mState->SetBoard(*mBoard);
-    }
   }
 }

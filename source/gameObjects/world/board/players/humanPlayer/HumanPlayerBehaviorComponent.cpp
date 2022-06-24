@@ -13,10 +13,14 @@ using Barebones::HumanPlayerBehaviorComponent;
 /******************************************************************************/
 HumanPlayerBehaviorComponent::HumanPlayerBehaviorComponent()
   : PlayerBehaviorComponent()
+  , mBoard(nullptr)
   , mLocation(0, 0)
-  , mTakingTurn(false)
+  , mMaxSkeletons(7)
+  , mWaitingForCharacterRemoval(false)
+  , mWaitingToSelectCreateSkill(false)
 {
   SetSide(Side::ePLAYER);
+  mRemoveSkill.SetCharacterType(Type::eSKELETON);
 
   CharacterStartedMovingAlongPath.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
   {
@@ -27,6 +31,30 @@ HumanPlayerBehaviorComponent::HumanPlayerBehaviorComponent()
   {
     this->HandleCharacterFinishedMovingAlongPath(aCharacter);
   });
+
+  CharacterSelectedFromRewardsMenu.Connect(*this, [this](const CharacterType& aType)
+  {
+    this->HandleCharacterSelectedFromRewardsMenu(aType);
+  });
+
+  SkillExecuted.Connect(*this, [this](Skill& aSkill)
+  {
+    this->HandleSkillExecuted(aSkill);
+  });
+}
+
+/******************************************************************************/
+void HumanPlayerBehaviorComponent::Update(double aTime)
+{
+  if(mWaitingToSelectCreateSkill)
+  {
+    if(mBoard != nullptr)
+    {
+      mCreateSkill.Select(*mBoard);
+    }
+
+    mWaitingToSelectCreateSkill = false;
+  }
 }
 
 /******************************************************************************/
@@ -46,9 +74,10 @@ void HumanPlayerBehaviorComponent::ProtectedTakeTurn(UrsineEngine::GameObject& a
     auto inputComponent = parent->GetFirstComponentOfType<HumanPlayerInputComponent>();
     if(inputComponent != nullptr)
     {
-      mTakingTurn = true;
       inputComponent->SetEnabled(true);
       inputComponent->SetBoard(aBoard);
+
+      mBoard = &aBoard;
     }
   }
 }
@@ -63,8 +92,8 @@ void HumanPlayerBehaviorComponent::ProtectedEndTurn()
     auto inputComponent = parent->GetFirstComponentOfType<HumanPlayerInputComponent>();
     if(inputComponent != nullptr)
     {
-      mTakingTurn = false;
       inputComponent->SetEnabled(false);
+      mBoard = nullptr;
     }
   }
 }
@@ -72,7 +101,7 @@ void HumanPlayerBehaviorComponent::ProtectedEndTurn()
 /******************************************************************************/
 void HumanPlayerBehaviorComponent::HandleCharacterStartedMovingAlongPath(CharacterBehaviorComponent& aCharacter)
 {
-  if(mTakingTurn)
+  if(mBoard != nullptr)
   {
     // Disable the input component while a character is moving.
     auto parent = GetParent();
@@ -90,7 +119,7 @@ void HumanPlayerBehaviorComponent::HandleCharacterStartedMovingAlongPath(Charact
 /******************************************************************************/
 void HumanPlayerBehaviorComponent::HandleCharacterFinishedMovingAlongPath(CharacterBehaviorComponent& aCharacter)
 {
-  if(mTakingTurn)
+  if(mBoard != nullptr)
   {
     auto parent = GetParent();
     if(parent != nullptr)
@@ -100,6 +129,39 @@ void HumanPlayerBehaviorComponent::HandleCharacterFinishedMovingAlongPath(Charac
       {
         inputComponent->SetEnabled(true);
       }
+    }
+  }
+}
+
+/******************************************************************************/
+void HumanPlayerBehaviorComponent::HandleCharacterSelectedFromRewardsMenu(const CharacterType& aType)
+{
+  mCreateSkill.SetCharacterType(aType);
+
+  if(mBoard != nullptr)
+  {
+    auto boardLayoutComponent = mBoard->GetFirstComponentOfType<BoardLayoutComponent>();
+    if(boardLayoutComponent != nullptr)
+    {
+      auto characters = boardLayoutComponent->GetCharactersOfType(Type::eSKELETON);
+      if(characters.size() >= mMaxSkeletons)
+      {
+        mRemoveSkill.Select(*mBoard);
+        mWaitingForCharacterRemoval = true;
+      }
+    }
+  }
+}
+
+/******************************************************************************/
+void HumanPlayerBehaviorComponent::HandleSkillExecuted(Skill& aSkill)
+{
+  if(mWaitingForCharacterRemoval)
+  {
+    if(mBoard != nullptr)
+    {
+      mWaitingForCharacterRemoval = false;
+      mWaitingToSelectCreateSkill = true;
     }
   }
 }

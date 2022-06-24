@@ -26,6 +26,7 @@ RewardsMenuLayoutComponent::RewardsMenuLayoutComponent()
   , mNameText(nullptr)
   , mStatsText(nullptr)
   , mFocusedCharacter(nullptr)
+  , mShowWarning(false)
   , mCharacterScalar(10.0)
   , mTitleHeight(100)
   , mTitleVerticalPadding(25)
@@ -86,6 +87,47 @@ void RewardsMenuLayoutComponent::CreateActionForCharacterType(const CharacterTyp
   RepositionCharacters();
   RepositionCursor();
   RepositionCharacterInfo();
+}
+
+/******************************************************************************/
+void RewardsMenuLayoutComponent::SetShowMaxSizeWarning(bool aShowWarning)
+{
+  mShowWarning = aShowWarning;
+
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    // Create the warning text box.
+    auto warningObject = CreateTextBoxObject("warning");
+    auto warningTextBox = warningObject->GetFirstComponentOfType<TextBoxComponent>();
+
+    auto overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
+    auto overlayHeight = env.GetGraphicsOptions().mOverlayHeight;
+    auto horizontalCenter = overlayWidth / 2.0;
+
+    UrsineEngine::Texture backgroundTexture;
+    backgroundTexture.CreateTextureFromFile("resources/sprites/gui/menuBox.png");
+
+    warningTextBox->SetTexture(backgroundTexture);
+    warningTextBox->SetTextSize(MEDIUM_FONT_SIZE);
+
+    warningTextBox->SetWidth(overlayWidth);
+    warningTextBox->SetHeight(mDescriptionHeight);
+    warningTextBox->SetFixedWidth(true);
+    warningTextBox->SetFixedHeight(true);
+
+    warningTextBox->SetVerticalPadding(mDescriptionVerticalPadding);
+
+    std::stringstream descStream;
+    descStream << "Your magic can only sustain 7 skeletons at a time.";
+    descStream << " You'll have to get rid of one if you make another.";
+    warningTextBox->SetText(descStream.str());
+
+    warningObject->SetPosition(glm::vec3(horizontalCenter,
+                                         overlayHeight - (mDescriptionHeight * 1.5) - mTitleHeight,
+                                         0.0));
+    parent->AddChild(std::move(warningObject));
+  }
 }
 
 /******************************************************************************/

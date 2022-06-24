@@ -129,6 +129,13 @@ namespace Barebones
       std::vector<UrsineEngine::GameObject*> GetCharactersOnSide(const Side& aSide);
 
       /**
+       * Returns a vector of characters that are of the given type.
+       *
+       * @param aType The type of character.
+       */
+      std::vector<UrsineEngine::GameObject*> GetCharactersOfType(const Type& aType);
+
+      /**
        * Moves a character at the given location along the given path.
        *
        * @param aCharacterLocation The location of the character.

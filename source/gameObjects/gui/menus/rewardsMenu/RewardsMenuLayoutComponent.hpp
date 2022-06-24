@@ -27,6 +27,15 @@ namespace Barebones
        */
       void CreateActionForCharacterType(const CharacterType& aType);
 
+      /**
+       * Sets whether this menu should warn the user that selecting
+       * a character means they will need to get rid of a character
+       * on the board.
+       *
+       * @param aShowWarning Whether to display the warning.
+       */
+      void SetShowMaxSizeWarning(bool aShowWarning);
+
     protected:
 
       /**
@@ -94,6 +103,8 @@ namespace Barebones
       typedef std::pair<MenuAction*, UrsineEngine::GameObject*> CharacterActionPair;
       std::vector<CharacterActionPair> mCharacters;
       UrsineEngine::GameObject* mFocusedCharacter;
+
+      bool mShowWarning;
 
       double mCharacterScalar;
 

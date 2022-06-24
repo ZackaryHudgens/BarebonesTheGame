@@ -8,6 +8,9 @@
 #include "CharacterBehaviorComponent.hpp"
 #include "CharacterFactory.hpp"
 
+#include "CreateCharacterSkill.hpp"
+#include "RemoveCharacterSkill.hpp"
+
 namespace Barebones
 {
   class HumanPlayerBehaviorComponent : public PlayerBehaviorComponent
@@ -18,6 +21,13 @@ namespace Barebones
        * Constructor.
        */
       HumanPlayerBehaviorComponent();
+
+      /**
+       * Updates the component.
+       *
+       * @param aTime The start time of the current scene's Update().
+       */
+      void Update(double aTime) override;
 
       /**
        * Sets the location of the player on the board.
@@ -64,10 +74,32 @@ namespace Barebones
        */
       void HandleCharacterFinishedMovingAlongPath(CharacterBehaviorComponent& aCharacter);
 
+      /**
+       * A handler function that gets called whenever a character is
+       * selected from the rewards menu.
+       *
+       * @param aType The type of character selected.
+       */
+      void HandleCharacterSelectedFromRewardsMenu(const CharacterType& aType);
+
+      /**
+       * A handler function that gets called whenever a skill is executed.
+       *
+       * @param aSkill The skill that was executed.
+       */
+      void HandleSkillExecuted(Skill& aSkill);
+
     private:
+      UrsineEngine::GameObject* mBoard;
       TileLocation mLocation;
 
-      bool mTakingTurn;
+      CreateCharacterSkill mCreateSkill;
+      RemoveCharacterSkill mRemoveSkill;
+
+      int mMaxSkeletons;
+
+      bool mWaitingForCharacterRemoval;
+      bool mWaitingToSelectCreateSkill;
   };
 }
 
