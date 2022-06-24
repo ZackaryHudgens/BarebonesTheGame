@@ -16,6 +16,7 @@ namespace Barebones
        * @param aCharacter The character to control.
        */
       CharacterController(UrsineEngine::GameObject& aCharacter);
+      virtual ~CharacterController() {}
 
       /**
        * Updates the controller.

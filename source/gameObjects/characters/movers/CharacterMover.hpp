@@ -18,6 +18,8 @@ namespace Barebones
   {
     public:
 
+      virtual ~CharacterMover() {}
+
       /**
        * A virtual function that returns a list of possible movements
        * given a location on a board.

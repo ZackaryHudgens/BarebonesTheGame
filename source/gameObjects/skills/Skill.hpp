@@ -20,6 +20,7 @@ namespace Barebones
        * Constructor.
        */
       Skill();
+      virtual ~Skill() {};
 
       /**
        * Sets the character that owns this skill.

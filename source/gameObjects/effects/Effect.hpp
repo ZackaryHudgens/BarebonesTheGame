@@ -17,6 +17,7 @@ namespace Barebones
        * Constructor.
        */
       Effect();
+      virtual ~Effect() {}
 
       /**
        * Returns the name of this effect.

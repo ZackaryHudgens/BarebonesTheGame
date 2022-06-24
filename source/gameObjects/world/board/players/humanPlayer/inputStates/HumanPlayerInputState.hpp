@@ -16,6 +16,7 @@ namespace Barebones
        * @param aPlayer The player GameObject to handle input for.
        */
       HumanPlayerInputState(UrsineEngine::GameObject& aPlayer);
+      virtual ~HumanPlayerInputState() {};
 
       /**
        * Sets the board GameObject to operate on.

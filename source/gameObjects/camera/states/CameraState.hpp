@@ -18,6 +18,7 @@ namespace Barebones
        * @param aCamera The parent GameObject with a CameraBehaviorComponent.
        */
       CameraState(UrsineEngine::GameObject& aCamera);
+      virtual ~CameraState() {}
 
       /**
        * A virtual function that updates the state.

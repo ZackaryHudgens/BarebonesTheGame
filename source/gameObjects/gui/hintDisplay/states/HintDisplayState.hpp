@@ -15,6 +15,7 @@ namespace Barebones
        * @param aParent The parent GameObject that owns this state.
        */
       HintDisplayState(UrsineEngine::GameObject& aParent);
+      virtual ~HintDisplayState() {};
 
       /**
        * A virtual function that gets called by the hint display when

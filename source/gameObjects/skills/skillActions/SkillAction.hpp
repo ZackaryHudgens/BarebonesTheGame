@@ -15,6 +15,7 @@ namespace Barebones
        * Constructor.
        */
       SkillAction();
+      virtual ~SkillAction() {};
 
       /**
        * A virtual function that performs this action at the given location

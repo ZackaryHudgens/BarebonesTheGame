@@ -15,6 +15,7 @@ namespace Barebones
        * @param aCharacter The character GameObject that owns this state.
        */
       CharacterState(UrsineEngine::GameObject& aCharacter);
+      virtual ~CharacterState() {}
 
       /**
        * A virtual function that gets called during the parent character's
