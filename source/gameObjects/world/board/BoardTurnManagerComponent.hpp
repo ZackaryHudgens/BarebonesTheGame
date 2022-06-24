@@ -22,6 +22,13 @@ namespace Barebones
       BoardTurnManagerComponent();
 
       /**
+       * Updates the component.
+       *
+       * @param aTime The start time of the current Scene's Update().
+       */
+      void Update(double aTime) override;
+
+      /**
        * Adds a player to the turn manager by taking ownership of it,
        * adding it as a child object, and keeping a pointer to the
        * PlayerBehaviorComponent in the turn tracker.
@@ -72,6 +79,8 @@ namespace Barebones
 
       UrsineEngine::GameObject* mTurnDisplay;
       std::vector<UrsineEngine::GameObject*> mTurnTracker;
+
+      bool mWaitingToTakeTurn;
   };
 }
 

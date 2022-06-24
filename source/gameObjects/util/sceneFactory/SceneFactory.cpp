@@ -69,9 +69,6 @@ std::unique_ptr<UrsineEngine::Scene> SceneFactory::CreateScene(const SceneType& 
         ++row;
       }
 
-      boardLayoutComponent->AddCharacterAtLocation(CharacterFactory::CreateCharacter(CharacterType::eCORRUPTED_FARMER, "human"),
-                                                   TileLocation(5, 0));
-
       // Add a human player and an artificial player to the turn manager.
       boardTurnManagerComponent->AddPlayer(PlayerFactory::CreatePlayer(PlayerType::eHUMAN, "Player"));
       boardTurnManagerComponent->AddPlayer(PlayerFactory::CreatePlayer(PlayerType::eARTIFICIAL, "Enemy"));

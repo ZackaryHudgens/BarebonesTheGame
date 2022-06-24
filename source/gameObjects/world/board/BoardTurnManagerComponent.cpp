@@ -37,6 +37,38 @@ BoardTurnManagerComponent::BoardTurnManagerComponent()
 }
 
 /******************************************************************************/
+void BoardTurnManagerComponent::Update(double aTime)
+{
+  // "mWaitingToTakeTurn" is used as a one-frame buffer between the turn display
+  // finishing its animation and the front player taking a turn. This way,
+  // if the player ends their turn in the same frame they started it, the turn
+  // display has already been deleted and nothing breaks.
+  if(mWaitingToTakeTurn &&
+     !mTurnTracker.empty())
+  {
+    auto parent = GetParent();
+    if(parent != nullptr)
+    {
+      mWaitingToTakeTurn = false;
+
+      auto player = GetCurrentPlayer();
+      if(player != nullptr)
+      {
+        auto playerBehaviorComponent = player->GetFirstComponentOfType<PlayerBehaviorComponent>();
+        if(playerBehaviorComponent != nullptr)
+        {
+          auto parent = GetParent();
+          if(parent != nullptr)
+          {
+            playerBehaviorComponent->TakeTurn(*parent);
+          }
+        }
+      }
+    }
+  }
+}
+
+/******************************************************************************/
 void BoardTurnManagerComponent::AddPlayer(std::unique_ptr<UrsineEngine::GameObject> aPlayer)
 {
   auto parent = GetParent();
@@ -127,19 +159,7 @@ void BoardTurnManagerComponent::HandleObjectPendingDeletion(UrsineEngine::GameOb
     mTurnDisplay = nullptr;
 
     // The turn display has finished its animation, so the player in front
-    // of the turn tracker should take a turn now.
-    auto player = GetCurrentPlayer();
-    if(player != nullptr)
-    {
-      auto playerBehaviorComponent = player->GetFirstComponentOfType<PlayerBehaviorComponent>();
-      if(playerBehaviorComponent != nullptr)
-      {
-        auto parent = GetParent();
-        if(parent != nullptr)
-        {
-          playerBehaviorComponent->TakeTurn(*parent);
-        }
-      }
-    }
+    // of the turn tracker should take a turn on the next Update().
+    mWaitingToTakeTurn = true;
   }
 }
