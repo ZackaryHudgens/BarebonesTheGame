@@ -61,14 +61,6 @@ std::unique_ptr<UrsineEngine::Scene> SceneFactory::CreateScene(const SceneType& 
       auto boardLayoutComponent = board->GetFirstComponentOfType<BoardLayoutComponent>();
       auto boardTurnManagerComponent = board->GetFirstComponentOfType<BoardTurnManagerComponent>();
 
-      auto startingCharacters = CharacterFactory::CreateStarterSet();
-      int row = 0;
-      for(auto& character : startingCharacters)
-      {
-        boardLayoutComponent->AddCharacterAtLocation(std::move(character), TileLocation(0, row));
-        ++row;
-      }
-
       // Add a human player and an artificial player to the turn manager.
       boardTurnManagerComponent->AddPlayer(PlayerFactory::CreatePlayer(PlayerType::eHUMAN, "Player"));
       boardTurnManagerComponent->AddPlayer(PlayerFactory::CreatePlayer(PlayerType::eARTIFICIAL, "Enemy"));

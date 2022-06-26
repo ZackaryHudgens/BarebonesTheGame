@@ -30,6 +30,7 @@ namespace Barebones
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&>          CharacterTurnEndedSignal;
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&>          CharacterHealthChangedSignal;
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&>          CharacterDiedSignal;
+  typedef UrsineEngine::SignalT<CharacterBehaviorComponent&>          CharacterFinishedSpawningSignal;
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&, Effect&> EffectAddedToCharacterSignal;
   typedef UrsineEngine::SignalT<CharacterBehaviorComponent&, Effect&> EffectRemovedFromCharacterSignal;
 
@@ -40,6 +41,7 @@ namespace Barebones
   extern CharacterTurnEndedSignal               CharacterTurnEnded;
   extern CharacterHealthChangedSignal           CharacterHealthChanged;
   extern CharacterDiedSignal                    CharacterDied;
+  extern CharacterFinishedSpawningSignal        CharacterFinishedSpawning;
   extern EffectAddedToCharacterSignal           EffectAddedToCharacter;
   extern EffectRemovedFromCharacterSignal       EffectRemovedFromCharacter;
 
@@ -77,9 +79,11 @@ namespace Barebones
   /**
    * Board signals
    */
+  typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> BoardFinishedInitialSequenceSignal;
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> BoardReadyForUseSignal;
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&, Side&> AllCharactersOfSideDefeatedSignal;
 
+  extern BoardFinishedInitialSequenceSignal BoardFinishedInitialSequence;
   extern BoardReadyForUseSignal BoardReadyForUse;
   extern AllCharactersOfSideDefeatedSignal AllCharactersOfSideDefeated;
 

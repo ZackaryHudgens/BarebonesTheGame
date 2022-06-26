@@ -2,9 +2,14 @@
 
 #include <sstream>
 
+#include <Environment.hpp>
+
 #include "HumanPlayerInputComponent.hpp"
 
 #include "BoardLayoutComponent.hpp"
+
+#include "MenuFactory.hpp"
+#include "RewardsMenuLayoutComponent.hpp"
 
 #include "Signals.hpp"
 
@@ -21,6 +26,19 @@ HumanPlayerBehaviorComponent::HumanPlayerBehaviorComponent()
 {
   SetSide(Side::ePLAYER);
   mRemoveSkill.SetCharacterType(Type::eSKELETON);
+
+  mSkeletonInventory.emplace_back(CharacterType::eBASIC_SKELETON);
+  mSkeletonInventory.emplace_back(CharacterType::eBASIC_SKELETON);
+  mSkeletonInventory.emplace_back(CharacterType::eBASIC_SKELETON);
+  mSkeletonInventory.emplace_back(CharacterType::eBASIC_SKELETON);
+  mSkeletonInventory.emplace_back(CharacterType::eBASIC_SKELETON);
+  mSkeletonInventory.emplace_back(CharacterType::eBASIC_SKELETON);
+  mSkeletonInventory.emplace_back(CharacterType::eBASIC_SKELETON);
+
+  BoardFinishedInitialSequence.Connect(*this, [this](UrsineEngine::GameObject& aBoard)
+  {
+    this->HandleBoardFinishedInitialSequence(aBoard);
+  });
 
   CharacterStartedMovingAlongPath.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
   {
@@ -40,6 +58,12 @@ HumanPlayerBehaviorComponent::HumanPlayerBehaviorComponent()
   SkillExecuted.Connect(*this, [this](Skill& aSkill)
   {
     this->HandleSkillExecuted(aSkill);
+  });
+
+  AllCharactersOfSideDefeated.Connect(*this, [this](UrsineEngine::GameObject& aBoard,
+                                                    const Side& aSide)
+  {
+    this->HandleAllCharactersOfSideDefeated(aBoard, aSide);
   });
 }
 
@@ -94,6 +118,34 @@ void HumanPlayerBehaviorComponent::ProtectedEndTurn()
     {
       inputComponent->SetEnabled(false);
       mBoard = nullptr;
+    }
+  }
+}
+
+/******************************************************************************/
+void HumanPlayerBehaviorComponent::HandleBoardFinishedInitialSequence(UrsineEngine::GameObject& aBoard)
+{
+  std::stringstream nameStream;
+
+  // Create a character for each type in our inventory and add them
+  // to the board.
+  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
+  if(boardLayoutComponent != nullptr)
+  {
+    int row = 0;
+    int index = 0;
+    for(const auto& characterType : mSkeletonInventory)
+    {
+      TileLocation location(0, row);
+
+      nameStream << "skeleton_" << index;
+      auto character = CharacterFactory::CreateCharacter(characterType, nameStream.str());
+      
+      boardLayoutComponent->AddCharacterAtLocation(std::move(character), location);
+
+      nameStream.str("");
+      ++index;
+      ++row;
     }
   }
 }
@@ -166,6 +218,51 @@ void HumanPlayerBehaviorComponent::HandleSkillExecuted(Skill& aSkill)
     {
       mWaitingForCharacterRemoval = false;
       mWaitingToSelectCreateSkill = true;
+    }
+  }
+}
+
+/******************************************************************************/
+void HumanPlayerBehaviorComponent::HandleAllCharactersOfSideDefeated(UrsineEngine::GameObject& aBoard,
+                                                                     const Side& aSide)
+{
+  if(&aBoard == mBoard)
+  {
+    switch(aSide)
+    {
+      case Side::eENEMY:
+      {
+        // If all enemies were defeated, create a rewards menu.
+        auto scene = env.GetCurrentScene();
+        if(scene != nullptr)
+        {
+          auto rewardsMenu = MenuFactory::CreateMenu(MenuType::eREWARDS, "rewardsMenu");
+          auto menuLayoutComponent = rewardsMenu->GetFirstComponentOfType<RewardsMenuLayoutComponent>();
+          menuLayoutComponent->CreateActionForCharacterType(CharacterType::eBASIC_SKELETON);
+          menuLayoutComponent->CreateActionForCharacterType(CharacterType::eBONE_THROWER);
+          menuLayoutComponent->CreateActionForCharacterType(CharacterType::eCORRUPTED_FARMER);
+
+          // If there are too many skeletons on the board, display a warning that
+          // the player will have to get rid of a skeleton before adding another.
+          auto boardLayoutComponent = mBoard->GetFirstComponentOfType<BoardLayoutComponent>();
+          if(boardLayoutComponent != nullptr)
+          {
+            auto skeletons = boardLayoutComponent->GetCharactersOfType(Type::eSKELETON);
+            if(skeletons.size() >= mMaxSkeletons)
+            {
+              menuLayoutComponent->SetShowMaxSizeWarning(true);
+            }
+          }
+
+          scene->AddObject(std::move(rewardsMenu));
+        }
+
+        break;
+      }
+      default:
+      {
+        break;
+      }
     }
   }
 }

@@ -10,6 +10,7 @@ Barebones::CharacterTurnBeganSignal               Barebones::CharacterTurnBegan;
 Barebones::CharacterTurnEndedSignal               Barebones::CharacterTurnEnded;
 Barebones::CharacterHealthChangedSignal           Barebones::CharacterHealthChanged;
 Barebones::CharacterDiedSignal                    Barebones::CharacterDied;
+Barebones::CharacterFinishedSpawningSignal        Barebones::CharacterFinishedSpawning;
 Barebones::EffectAddedToCharacterSignal           Barebones::EffectAddedToCharacter;
 Barebones::EffectRemovedFromCharacterSignal       Barebones::EffectRemovedFromCharacter;
 
@@ -36,6 +37,7 @@ Barebones::TileReadyForUseSignal Barebones::TileReadyForUse;
 /**
  * Board signals
  */
+Barebones::BoardFinishedInitialSequenceSignal Barebones::BoardFinishedInitialSequence;
 Barebones::BoardReadyForUseSignal Barebones::BoardReadyForUse;
 Barebones::AllCharactersOfSideDefeatedSignal Barebones::AllCharactersOfSideDefeated;
 

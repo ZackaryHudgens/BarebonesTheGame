@@ -7,6 +7,8 @@
 #include <GameObject.hpp>
 #include <MeshComponent.hpp>
 
+#include "BoardWaitingForCameraState.hpp"
+
 #include "Colors.hpp"
 #include "Signals.hpp"
 
@@ -27,13 +29,7 @@ BoardLayoutComponent::BoardLayoutComponent()
   , mTileSpacing(0.2)
   , mColumns(7)
   , mRows(7)
-  , mWaitingForCamera(true)
 {
-  TileReadyForUse.Connect(*this, [this](UrsineEngine::GameObject& aTile)
-  {
-    this->HandleTileReadyForUse(aTile);
-  });
-
   HumanPlayerMoved.Connect(*this, [this](HumanPlayerBehaviorComponent& aPlayer)
   {
     this->HandleHumanPlayerMoved(aPlayer);
@@ -72,11 +68,6 @@ BoardLayoutComponent::BoardLayoutComponent()
   CharacterDied.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
   {
     this->HandleCharacterDied(aCharacter);
-  });
-
-  CameraFinishedMovingToBoard.Connect(*this, [this](UrsineEngine::GameObject& aBoard)
-  {
-    this->HandleCameraFinishedMovingToBoard(aBoard);
   });
 
   UrsineEngine::ObjectPendingDeletion.Connect(*this, [this](UrsineEngine::GameObject* aObject)
@@ -122,6 +113,9 @@ void BoardLayoutComponent::Initialize()
       mTiles.emplace_back(row);
       mCharacters.emplace_back(characters);
     }
+
+    // Begin in the WaitingForCamera state.
+    mState = std::make_unique<BoardWaitingForCameraState>(*parent);
   }
 }
 
@@ -139,6 +133,15 @@ void BoardLayoutComponent::Update(double aTime)
     MoveCharacter(characterLocation, tileLocation);
 
     mWaitingForMovingCharacter = true;
+  }
+
+  if(mState != nullptr)
+  {
+    auto newState = mState->Update(aTime);
+    if(newState != nullptr)
+    {
+      mState.swap(newState);
+    }
   }
 }
 
@@ -206,7 +209,6 @@ bool BoardLayoutComponent::AddTileAtLocation(const TileType& aTileType,
 
         parent->AddChild(std::move(newTile));
         mTiles.at(aLocation.first).at(aLocation.second) = parent->GetChildren().back();
-        mUnfinishedTiles.emplace_back(parent->GetChildren().back());
       }
     }
   }
@@ -480,31 +482,6 @@ void BoardLayoutComponent::MoveCharacter(const TileLocation& aCharacterLocation,
 }
 
 /******************************************************************************/
-void BoardLayoutComponent::HandleTileReadyForUse(UrsineEngine::GameObject& aTile)
-{
-  auto foundTile = std::find(mUnfinishedTiles.begin(),
-                             mUnfinishedTiles.end(),
-                             &aTile);
-  if(foundTile != mUnfinishedTiles.end())
-  {
-    mUnfinishedTiles.erase(foundTile);
-
-    // If no unfinished tiles remain, and we aren't waiting for the camera
-    // to finish panning to the center of the board, then this board is now
-    // ready for use.
-    if(mUnfinishedTiles.empty() &&
-       !mWaitingForCamera)
-    {
-      auto parent = GetParent();
-      if(parent != nullptr)
-      {
-        BoardReadyForUse.Notify(*parent);
-      }
-    }
-  }
-}
-
-/******************************************************************************/
 void BoardLayoutComponent::HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& aPlayer)
 {
   auto location = aPlayer.GetLocation();
@@ -718,26 +695,6 @@ void BoardLayoutComponent::HandleCharacterDied(CharacterBehaviorComponent& aChar
       {
         mCharacters.at(location.first).at(location.second) = nullptr;
       }
-    }
-  }
-}
-
-/******************************************************************************/
-void BoardLayoutComponent::HandleCameraFinishedMovingToBoard(UrsineEngine::GameObject& aBoard)
-{
-  if(&aBoard == GetParent() &&
-     mWaitingForCamera)
-  {
-    // If there are no unfinished tiles, the board is now ready for use.
-    if(mUnfinishedTiles.empty())
-    {
-      auto parent = GetParent();
-      if(parent != nullptr)
-      {
-        BoardReadyForUse.Notify(*parent);
-      }
-
-      mWaitingForCamera = false;
     }
   }
 }

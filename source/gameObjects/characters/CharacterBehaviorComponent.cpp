@@ -14,6 +14,7 @@
 #include "CharacterDyingState.hpp"
 #include "CharacterMovingState.hpp"
 #include "CharacterShakingState.hpp"
+#include "CharacterSpawningState.hpp"
 
 #include "MoveSkill.hpp"
 
@@ -44,9 +45,10 @@ void CharacterBehaviorComponent::Initialize()
   auto parent = GetParent();
   if(parent != nullptr)
   {
-    // Begin in the default state.
+    // Begin in the default state for movement, and the spawning state
+    // for status.
     mMovementState = std::make_unique<CharacterDefaultState>(*parent);
-    mStatusState = std::make_unique<CharacterDefaultState>(*parent);
+    mStatusState = std::make_unique<CharacterSpawningState>(*parent);
 
     // All characters start with the Move skill.
     AddSkill(std::make_unique<MoveSkill>());

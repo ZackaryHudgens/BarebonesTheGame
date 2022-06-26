@@ -29,14 +29,16 @@ namespace Barebones
       void GenerateEncounter(UrsineEngine::GameObject& aBoard);
 
       /**
-       * A handler function that gets called whenever all characters of
-       * a side on a board have been defeated.
+       * A handler function that gets called whenever a GameObject
+       * is about to be deleted.
        *
-       * @param aBoard The board the characters were on.
-       * @param aSide The side the characters were on.
+       * @param aObject The GameObject that's about to be deleted.
        */
-      void HandleAllCharactersOfSideDefeated(UrsineEngine::GameObject& aBoard,
-                                             const Side& aSide);
+      void HandleObjectPendingDeletion(UrsineEngine::GameObject* aObject);
+
+      UrsineEngine::GameObject* mBoard;
+      UrsineEngine::GameObject* mWaveDisplay;
+
       int mWaveNumber;
 
       static std::vector<CharacterType> mActOneEncounters;

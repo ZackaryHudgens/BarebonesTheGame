@@ -29,13 +29,6 @@ namespace Barebones
       static std::unique_ptr<UrsineEngine::GameObject> CreateCharacter(const CharacterType& aType,
                                                                        const std::string& aName);
 
-      /**
-       * Returns the starting characters as a vector of GameObjects.
-       *
-       * @return The starter set of characters.
-       */
-      static std::vector<std::unique_ptr<UrsineEngine::GameObject>> CreateStarterSet();
-
     private:
       static double mVerticalPadding;
   };

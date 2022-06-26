@@ -30,6 +30,7 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/util/signals/*.?pp
                        gameObjects/world/background/*.?pp
                        gameObjects/world/board/*.?pp
+                       gameObjects/world/board/states/*.?pp
                        gameObjects/world/board/players/*.?pp
                        gameObjects/world/board/players/aiPlayer/*.?pp
                        gameObjects/world/board/players/humanPlayer/*.?pp
@@ -74,6 +75,7 @@ target_include_directories(barebones PUBLIC
                            gameObjects/util/signals
                            gameObjects/world/background
                            gameObjects/world/board
+                           gameObjects/world/board/states
                            gameObjects/world/board/players
                            gameObjects/world/board/players/aiPlayer
                            gameObjects/world/board/players/humanPlayer

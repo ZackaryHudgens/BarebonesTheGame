@@ -197,22 +197,3 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
 
   return std::move(newCharacter);
 }
-
-/******************************************************************************/
-std::vector<std::unique_ptr<UrsineEngine::GameObject>> CharacterFactory::CreateStarterSet()
-{
-  std::vector<std::unique_ptr<UrsineEngine::GameObject>> characters;
-
-  std::stringstream nameStream;
-  for(int i = 0; i < 7; ++i)
-  {
-    nameStream << "skeleton_" << i;
-
-    auto character = CreateCharacter(CharacterType::eBASIC_SKELETON, nameStream.str());
-    characters.emplace_back(std::move(character));
-
-    nameStream.str("");
-  }
-
-  return std::move(characters);
-}

@@ -11,8 +11,11 @@
 #include "CharacterFactory.hpp"
 #include "MenuFactory.hpp"
 
+#include "ScrollingMessageBehaviorComponent.hpp"
+
 #include "Signals.hpp"
 #include "TileUtil.hpp"
+#include "Fonts.hpp"
 
 using Barebones::BoardWaveManagerComponent;
 
@@ -36,12 +39,13 @@ std::vector<Barebones::CharacterType> BoardWaveManagerComponent::mActThreeEncoun
 /******************************************************************************/
 BoardWaveManagerComponent::BoardWaveManagerComponent()
   : Component()
+  , mBoard(nullptr)
+  , mWaveDisplay(nullptr)
   , mWaveNumber(0)
 {
-  AllCharactersOfSideDefeated.Connect(*this, [this](UrsineEngine::GameObject& aBoard,
-                                                    const Side& aSide)
+  UrsineEngine::ObjectPendingDeletion.Connect(*this, [this](UrsineEngine::GameObject* aObject)
   {
-    this->HandleAllCharactersOfSideDefeated(aBoard, aSide);
+    this->HandleObjectPendingDeletion(aObject);
   });
 }
 
@@ -96,39 +100,17 @@ void BoardWaveManagerComponent::GenerateEncounter(UrsineEngine::GameObject& aBoa
 }
 
 /******************************************************************************/
-void BoardWaveManagerComponent::HandleAllCharactersOfSideDefeated(UrsineEngine::GameObject& aBoard,
-                                                                  const Side& aSide)
+void BoardWaveManagerComponent::HandleObjectPendingDeletion(UrsineEngine::GameObject* aObject)
 {
-  if(&aBoard == GetParent())
+  if(mWaveDisplay != nullptr)
   {
-    switch(aSide)
+    if(aObject == mWaveDisplay)
     {
-      case Side::eENEMY:
+      mWaveDisplay = nullptr;
+
+      if(mBoard != nullptr)
       {
-        ++mWaveNumber;
-        if(mWaveNumber > 0)
-        {
-          auto scene = env.GetCurrentScene();
-          if(scene != nullptr)
-          {
-            auto rewardsMenu = MenuFactory::CreateMenu(MenuType::eREWARDS, "rewardsMenu");
-            auto menuLayoutComponent = rewardsMenu->GetFirstComponentOfType<RewardsMenuLayoutComponent>();
-            menuLayoutComponent->CreateActionForCharacterType(CharacterType::eBASIC_SKELETON);
-            menuLayoutComponent->CreateActionForCharacterType(CharacterType::eBONE_THROWER);
-            menuLayoutComponent->CreateActionForCharacterType(CharacterType::eCORRUPTED_FARMER);
-            menuLayoutComponent->SetShowMaxSizeWarning(true);
-            scene->AddObject(std::move(rewardsMenu));
-          }
-        }
-        else
-        {
-          GenerateEncounter(aBoard);
-        }
-        break;
-      }
-      default:
-      {
-        break;
+        GenerateEncounter(*mBoard);
       }
     }
   }

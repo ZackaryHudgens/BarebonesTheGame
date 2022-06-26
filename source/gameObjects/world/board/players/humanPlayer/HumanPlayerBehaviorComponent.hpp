@@ -59,6 +59,14 @@ namespace Barebones
       void ProtectedEndTurn() override;
 
       /**
+       * A handler function that gets called whenever the board has finished
+       * placing and loading tiles, and is ready to add characters to.
+       *
+       * @param aBoard The board that finished.
+       */
+      void HandleBoardFinishedInitialSequence(UrsineEngine::GameObject& aBoard);
+
+      /**
        * A handler function that gets called whenever a character starts
        * moving along a designated path.
        *
@@ -89,14 +97,25 @@ namespace Barebones
        */
       void HandleSkillExecuted(Skill& aSkill);
 
+      /**
+       * A handler function that gets called whenever all characters of
+       * a side on a board have been defeated.
+       *
+       * @param aBoard The board the characters were on.
+       * @param aSide The side the characters were on.
+       */
+      void HandleAllCharactersOfSideDefeated(UrsineEngine::GameObject& aBoard,
+                                             const Side& aSide);
+
     private:
+      std::vector<CharacterType> mSkeletonInventory;
+      int mMaxSkeletons;
+
       UrsineEngine::GameObject* mBoard;
       TileLocation mLocation;
 
       CreateCharacterSkill mCreateSkill;
       RemoveCharacterSkill mRemoveSkill;
-
-      int mMaxSkeletons;
 
       bool mWaitingForCharacterRemoval;
       bool mWaitingToSelectCreateSkill;

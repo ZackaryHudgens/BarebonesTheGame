@@ -27,7 +27,7 @@ BoardTurnManagerComponent::BoardTurnManagerComponent()
 
   BoardReadyForUse.Connect(*this, [this](UrsineEngine::GameObject& aBoard)
   {
-    this->HandleBoardReadyForUse(aBoard);
+    //this->HandleBoardReadyForUse(aBoard);
   });
 
   UrsineEngine::ObjectPendingDeletion.Connect(*this, [this](UrsineEngine::GameObject* aObject)

@@ -5,6 +5,8 @@
 #include <CoreSignals.hpp>
 #include <GameObject.hpp>
 
+#include "BoardState.hpp"
+
 #include "TileFactory.hpp"
 #include "TileUtil.hpp"
 
@@ -156,14 +158,6 @@ namespace Barebones
                          const TileLocation& aTileLocation);
 
       /**
-       * A handler function that gets called whenever a tile finishes
-       * its intro animation and is ready for use.
-       *
-       * @param aTile The tile in question.
-       */
-      void HandleTileReadyForUse(UrsineEngine::GameObject& aTile);
-
-      /**
        * A handler function that gets called whenever a player's location
        * changes.
        *
@@ -224,14 +218,6 @@ namespace Barebones
       void HandleCharacterDied(CharacterBehaviorComponent& aCharacter);
 
       /**
-       * A handler function that gets called whenever the camera finishes
-       * moving to a board.
-       *
-       * @param aBoard The board the camera is now observing.
-       */
-      void HandleCameraFinishedMovingToBoard(UrsineEngine::GameObject& aBoard);
-
-      /**
        * A handler function that gets called whenever a GameObject is about
        * to be deleted.
        *
@@ -239,8 +225,9 @@ namespace Barebones
        */
       void HandleObjectPendingDeletion(UrsineEngine::GameObject* aObject);
 
+      std::unique_ptr<BoardState> mState;
+
       std::vector<std::vector<UrsineEngine::GameObject*>> mTiles;
-      std::vector<UrsineEngine::GameObject*> mUnfinishedTiles;
       std::vector<std::vector<UrsineEngine::GameObject*>> mCharacters;
 
       UrsineEngine::GameObject* mMovingCharacter;
@@ -257,8 +244,6 @@ namespace Barebones
       double mTileSpacing;
       int mColumns;
       int mRows;
-
-      bool mWaitingForCamera;
   };
 }
 
