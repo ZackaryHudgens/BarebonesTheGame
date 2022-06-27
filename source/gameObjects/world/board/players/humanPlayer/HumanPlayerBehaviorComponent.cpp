@@ -19,7 +19,6 @@ using Barebones::HumanPlayerBehaviorComponent;
 HumanPlayerBehaviorComponent::HumanPlayerBehaviorComponent()
   : PlayerBehaviorComponent()
   , mBoard(nullptr)
-  , mLocation(0, 0)
   , mMaxSkeletons(7)
   , mWaitingForCharacterRemoval(false)
   , mWaitingToSelectCreateSkill(false)
@@ -79,13 +78,6 @@ void HumanPlayerBehaviorComponent::Update(double aTime)
 
     mWaitingToSelectCreateSkill = false;
   }
-}
-
-/******************************************************************************/
-void HumanPlayerBehaviorComponent::SetLocation(const TileLocation& aLocation)
-{
-  mLocation = aLocation;
-  HumanPlayerMoved.Notify(*this);
 }
 
 /******************************************************************************/

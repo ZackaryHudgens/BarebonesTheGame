@@ -19,14 +19,14 @@ MoveSkillEffectBehaviorComponent::MoveSkillEffectBehaviorComponent(Barebones::Mo
   , mMoveSkill(&aSkill)
   , mStartingLocation(-1, -1)
 {
-  HumanPlayerMoved.Connect(*this, [this](HumanPlayerBehaviorComponent& aPlayer)
+  BoardFocusedTileChanged.Connect(*this, [this](UrsineEngine::GameObject& aBoard)
   {
-    this->HandleHumanPlayerMoved(aPlayer);
+    this->HandleBoardFocusedTileChanged(aBoard);
   });
 }
 
 /******************************************************************************/
-void MoveSkillEffectBehaviorComponent::HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& aPlayer)
+void MoveSkillEffectBehaviorComponent::HandleBoardFocusedTileChanged(UrsineEngine::GameObject& aBoard)
 {
   // Find the path in the shortest path list that ends in the player's
   // current location, then highlight each tile in that path.
@@ -36,16 +36,16 @@ void MoveSkillEffectBehaviorComponent::HandleHumanPlayerMoved(HumanPlayerBehavio
     auto boardLayoutComponent = mBoard->GetFirstComponentOfType<BoardLayoutComponent>();
     if(boardLayoutComponent != nullptr)
     {
-      auto playerLocation = aPlayer.GetLocation();
+      auto tileLocation = boardLayoutComponent->GetFocusedTileLocation();
 
       // Returns true if playerLocation is the last TileLocation in the TileList.
-      auto isPath = [&playerLocation](const TilePath& aPath)
+      auto isPath = [&tileLocation](const TilePath& aPath)
       {
         bool success = false;
 
         if(!aPath.first.empty())
         {
-          success = (aPath.first.back() == playerLocation);
+          success = (aPath.first.back() == tileLocation);
         }
 
         return success;
@@ -69,7 +69,7 @@ void MoveSkillEffectBehaviorComponent::HandleHumanPlayerMoved(HumanPlayerBehavio
 
       // If the tile is a valid movement, highlight each tile
       // along the path taken to get there.
-      if(mMoveSkill->IsTileValid(*mBoard, mStartingLocation, playerLocation))
+      if(mMoveSkill->IsTileValid(*mBoard, mStartingLocation, tileLocation))
       {
         auto path = std::find_if(mShortestPaths.begin(),
                                  mShortestPaths.end(),

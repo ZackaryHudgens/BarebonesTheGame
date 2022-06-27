@@ -4,7 +4,7 @@
 #include <GameObject.hpp>
 
 #include "CharacterBehaviorComponent.hpp"
-#include "HumanPlayerBehaviorComponent.hpp"
+#include "PlayerBehaviorComponent.hpp"
 
 namespace Barebones
 {
@@ -38,13 +38,13 @@ namespace Barebones
       virtual std::unique_ptr<CameraState> HandleObjectMoved(UrsineEngine::GameObject* aObject);
 
       /**
-       * A virtual function that gets called whenever a human player
-       * changes location on the board.
+       * A virtual function that gets called whenever the board's focused
+       * tile changes.
        *
-       * @param aPlayer The player that moved.
+       * @param aBoard The board that updated.
        * @return A unique_ptr to a new state, if necessary.
        */
-      virtual std::unique_ptr<CameraState> HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& aPlayer);
+      virtual std::unique_ptr<CameraState> HandleBoardFocusedTileChanged(UrsineEngine::GameObject& aBoard);
 
       /**
        * A virtual function that gets called whenever a player's turn begins.

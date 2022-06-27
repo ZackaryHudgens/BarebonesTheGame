@@ -38,7 +38,7 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
     if(playerBehaviorComponent != nullptr &&
        boardLayoutComponent != nullptr)
     {
-      auto currentLocation = playerBehaviorComponent->GetLocation();
+      auto currentLocation = boardLayoutComponent->GetFocusedTileLocation();
       switch(aCode)
       {
         // For player movement, first check if a tile exists at the new location
@@ -52,7 +52,7 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
           auto tile = boardLayoutComponent->GetTileAtLocation(newLocation);
           if(tile != nullptr)
           {
-            playerBehaviorComponent->SetLocation(newLocation);
+            boardLayoutComponent->SetFocusedTileLocation(newLocation);
           }
 
           break;
@@ -66,7 +66,7 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
           auto tile = boardLayoutComponent->GetTileAtLocation(newLocation);
           if(tile != nullptr)
           {
-            playerBehaviorComponent->SetLocation(newLocation);
+            boardLayoutComponent->SetFocusedTileLocation(newLocation);
           }
 
           break;
@@ -80,7 +80,7 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
           auto tile = boardLayoutComponent->GetTileAtLocation(newLocation);
           if(tile != nullptr)
           {
-            playerBehaviorComponent->SetLocation(newLocation);
+            boardLayoutComponent->SetFocusedTileLocation(newLocation);
           }
 
           break;
@@ -94,7 +94,7 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
           auto tile = boardLayoutComponent->GetTileAtLocation(newLocation);
           if(tile != nullptr)
           {
-            playerBehaviorComponent->SetLocation(newLocation);
+            boardLayoutComponent->SetFocusedTileLocation(newLocation);
           }
 
           break;
@@ -210,16 +210,14 @@ void HumanPlayerDefaultInputState::PopulateSkillMenu(UrsineEngine::GameObject& a
                                                      const std::vector<Skill*>& aSkills)
 {
   auto boardObject = GetBoard();
-  auto playerObject = GetPlayer();
   auto menuLayoutComponent = aMenu.GetFirstComponentOfType<MenuLayoutComponent>();
   if(boardObject != nullptr &&
-     playerObject != nullptr &&
      menuLayoutComponent != nullptr)
   {
-    auto humanPlayerBehaviorComponent = playerObject->GetFirstComponentOfType<HumanPlayerBehaviorComponent>();
-    if(humanPlayerBehaviorComponent != nullptr)
+    auto boardLayoutComponent = boardObject->GetFirstComponentOfType<BoardLayoutComponent>();
+    if(boardLayoutComponent != nullptr)
     {
-      auto currentLocation = humanPlayerBehaviorComponent->GetLocation();
+      auto currentLocation = boardLayoutComponent->GetFocusedTileLocation();
 
       // For each skill, create an action that selects it on execution.
       for(const auto& skill : aSkills)

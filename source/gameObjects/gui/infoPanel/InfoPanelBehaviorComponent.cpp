@@ -23,14 +23,9 @@ InfoPanelBehaviorComponent::InfoPanelBehaviorComponent()
   , mTextBoxHeight(70.0)
   , mTextBoxVerticalPadding(23.0)
 {
-  PlayerTurnBegan.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
+  BoardFocusedTileChanged.Connect(*this, [this](UrsineEngine::GameObject& aBoard)
   {
-    this->HandlePlayerTurnBegan(aPlayer);
-  });
-
-  HumanPlayerMoved.Connect(*this, [this](HumanPlayerBehaviorComponent& aPlayer)
-  {
-    this->HandleHumanPlayerMoved(aPlayer);
+    this->HandleBoardFocusedTileChanged(aBoard);
   });
 
   CharacterTurnBegan.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
@@ -102,20 +97,17 @@ void InfoPanelBehaviorComponent::Initialize()
 }
 
 /******************************************************************************/
-void InfoPanelBehaviorComponent::HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlayer)
+void InfoPanelBehaviorComponent::HandleBoardFocusedTileChanged(UrsineEngine::GameObject& aBoard)
 {
-  auto humanPlayerBehaviorComponent = dynamic_cast<HumanPlayerBehaviorComponent*>(&aPlayer);
-  if(humanPlayerBehaviorComponent != nullptr)
+  if(mBoard == &aBoard)
   {
-    HandleHumanPlayerMoved(*humanPlayerBehaviorComponent);
+    auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
+    if(boardLayoutComponent != nullptr)
+    {
+      mFocusedLocation = boardLayoutComponent->GetFocusedTileLocation();
+      UpdateText();
+    }
   }
-}
-
-/******************************************************************************/
-void InfoPanelBehaviorComponent::HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& aPlayer)
-{
-  mFocusedLocation = aPlayer.GetLocation();
-  UpdateText();
 }
 
 /******************************************************************************/

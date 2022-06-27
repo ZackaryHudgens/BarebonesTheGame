@@ -19,17 +19,14 @@ std::unique_ptr<Barebones::CameraState> CameraDefaultState::HandlePlayerTurnBega
 {
   std::unique_ptr<CameraState> newState = nullptr;
 
-  // If the player is human, swap to the Following Player state.
-  if(dynamic_cast<HumanPlayerBehaviorComponent*>(&aPlayer) != nullptr)
+  // Swap to the Following Player state.
+  auto camera = GetCamera();
+  auto playerParent = aPlayer.GetParent();
+  if(camera != nullptr &&
+     playerParent != nullptr)
   {
-    auto camera = GetCamera();
-    auto playerParent = aPlayer.GetParent();
-    if(camera != nullptr &&
-       playerParent != nullptr)
-    {
-      newState = std::make_unique<CameraFollowingPlayerState>(*camera,
-                                                              *playerParent);
-    }
+    newState = std::make_unique<CameraFollowingPlayerState>(*camera,
+                                                            *playerParent);
   }
 
   return newState;

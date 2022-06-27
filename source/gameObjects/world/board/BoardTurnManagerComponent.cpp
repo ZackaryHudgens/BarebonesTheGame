@@ -19,6 +19,7 @@ using Barebones::BoardTurnManagerComponent;
 BoardTurnManagerComponent::BoardTurnManagerComponent()
   : Component()
   , mTurnDisplay(nullptr)
+  , mWaitingToTakeTurn(false)
 {
   PlayerTurnEnded.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
   {

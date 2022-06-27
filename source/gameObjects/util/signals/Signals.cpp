@@ -27,7 +27,6 @@ Barebones::SkillVisualEffectFinishedSignal Barebones::SkillVisualEffectFinished;
  */
 Barebones::PlayerTurnBeganSignal  Barebones::PlayerTurnBegan;
 Barebones::PlayerTurnEndedSignal  Barebones::PlayerTurnEnded;
-Barebones::HumanPlayerMovedSignal Barebones::HumanPlayerMoved;
 
 /**
  * Tile signals
@@ -39,6 +38,7 @@ Barebones::TileReadyForUseSignal Barebones::TileReadyForUse;
  */
 Barebones::BoardFinishedInitialSequenceSignal Barebones::BoardFinishedInitialSequence;
 Barebones::BoardReadyForUseSignal Barebones::BoardReadyForUse;
+Barebones::BoardFocusedTileChangedSignal Barebones::BoardFocusedTileChanged;
 Barebones::AllCharactersOfSideDefeatedSignal Barebones::AllCharactersOfSideDefeated;
 
 /**

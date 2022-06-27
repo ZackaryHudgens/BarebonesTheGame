@@ -4,8 +4,6 @@
 #include <Component.hpp>
 #include <GameObject.hpp>
 
-#include "HumanPlayerBehaviorComponent.hpp"
-
 #include "CameraState.hpp"
 
 namespace Barebones
@@ -63,12 +61,12 @@ namespace Barebones
       void HandleObjectMoved(UrsineEngine::GameObject* aObject);
 
       /**
-       * A handler function that gets called whenever a human player
-       * changes location on the board.
+       * A handler function that gets called whenever a board's focused
+       * tile changes.
        *
-       * @param aPlayer The player that moved.
+       * @param aBoard The board that updated.
        */
-      void HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& aPlayer);
+      void HandleBoardFocusedTileChanged(UrsineEngine::GameObject& aBoard);
 
       /**
        * A handler function that gets called whenever a player's turn begins.

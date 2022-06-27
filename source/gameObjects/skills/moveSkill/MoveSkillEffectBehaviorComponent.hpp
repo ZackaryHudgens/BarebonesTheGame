@@ -6,8 +6,6 @@
 
 #include "TileUtil.hpp"
 
-#include "HumanPlayerBehaviorComponent.hpp"
-
 namespace Barebones
 {
   class MoveSkill;
@@ -48,12 +46,12 @@ namespace Barebones
     protected:
 
       /**
-       * A handler function that gets called whenever a player's location
-       * changes.
+       * A handler function that gets called whenever a board's focused
+       * tile changes.
        *
-       * @param aPlayer The player that moved.
+       * @param aBoard The board that updated.
        */
-      void HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& aPlayer);
+      void HandleBoardFocusedTileChanged(UrsineEngine::GameObject& aBoard);
 
     private:
       UrsineEngine::GameObject* mBoard;

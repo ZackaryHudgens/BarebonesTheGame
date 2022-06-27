@@ -29,20 +29,6 @@ namespace Barebones
        */
       void Update(double aTime) override;
 
-      /**
-       * Sets the location of the player on the board.
-       *
-       * @param aLocation The new location of the player.
-       */
-      void SetLocation(const TileLocation& aLocation);
-
-      /**
-       * Returns the location of the player on the board.
-       *
-       * @return The location of the player.
-       */
-      TileLocation GetLocation() const { return mLocation; }
-
     protected:
 
       /**
@@ -112,7 +98,6 @@ namespace Barebones
       int mMaxSkeletons;
 
       UrsineEngine::GameObject* mBoard;
-      TileLocation mLocation;
 
       CreateCharacterSkill mCreateSkill;
       RemoveCharacterSkill mRemoveSkill;

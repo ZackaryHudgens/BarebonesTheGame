@@ -21,7 +21,7 @@ std::unique_ptr<CameraState> CameraState::HandleObjectMoved(UrsineEngine::GameOb
 }
 
 /******************************************************************************/
-std::unique_ptr<CameraState> CameraState::HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& aPlayer)
+std::unique_ptr<CameraState> CameraState::HandleBoardFocusedTileChanged(UrsineEngine::GameObject& aBoard)
 {
   return nullptr;
 }

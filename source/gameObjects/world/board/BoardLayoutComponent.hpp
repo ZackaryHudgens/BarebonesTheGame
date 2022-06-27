@@ -10,8 +10,6 @@
 #include "TileFactory.hpp"
 #include "TileUtil.hpp"
 
-#include "HumanPlayerBehaviorComponent.hpp"
-
 #include "CharacterBehaviorComponent.hpp"
 #include "Skill.hpp"
 
@@ -96,6 +94,20 @@ namespace Barebones
       void RemoveCharacterAtLocation(const TileLocation& aLocation);
 
       /**
+       * Focuses the board on the tile at the given location.
+       *
+       * @param aLocation The location of the newly focused tile.
+       */
+      void SetFocusedTileLocation(const TileLocation& aLocation);
+
+      /**
+       * Returns the location of the currently focused tile.
+       *
+       * @return The location of the currently focused tile.
+       */
+      TileLocation GetFocusedTileLocation() const { return mFocusedTileLocation; }
+
+      /**
        * Returns a pointer to the tile on the board at a given location.
        *
        * @param aLocation The location to access.
@@ -156,14 +168,6 @@ namespace Barebones
        */
       void MoveCharacter(const TileLocation& aCharacterLocation,
                          const TileLocation& aTileLocation);
-
-      /**
-       * A handler function that gets called whenever a player's location
-       * changes.
-       *
-       * @param aPlayer The player that moved.
-       */
-      void HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& aPlayer);
 
       /**
        * A handler function that gets called whenever a player's turn begins.
@@ -234,7 +238,7 @@ namespace Barebones
       TileList mFollowedPath;
       bool mWaitingForMovingCharacter;
 
-      TileLocation mHoveredTileLocation;
+      TileLocation mFocusedTileLocation;
 
       Skill* mSkillUsedForHighlighting;
       std::vector<TileLocation> mHighlightedTileLocations;

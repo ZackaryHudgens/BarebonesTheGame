@@ -63,11 +63,9 @@ namespace Barebones
    */
   typedef UrsineEngine::SignalT<PlayerBehaviorComponent&> PlayerTurnBeganSignal;
   typedef UrsineEngine::SignalT<PlayerBehaviorComponent&> PlayerTurnEndedSignal;
-  typedef UrsineEngine::SignalT<HumanPlayerBehaviorComponent&> HumanPlayerMovedSignal;
 
   extern PlayerTurnBeganSignal  PlayerTurnBegan;
   extern PlayerTurnEndedSignal  PlayerTurnEnded;
-  extern HumanPlayerMovedSignal HumanPlayerMoved;
 
   /**
    * Tile signals
@@ -81,10 +79,12 @@ namespace Barebones
    */
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> BoardFinishedInitialSequenceSignal;
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> BoardReadyForUseSignal;
+  typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> BoardFocusedTileChangedSignal;
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&, Side&> AllCharactersOfSideDefeatedSignal;
 
   extern BoardFinishedInitialSequenceSignal BoardFinishedInitialSequence;
   extern BoardReadyForUseSignal BoardReadyForUse;
+  extern BoardFocusedTileChangedSignal BoardFocusedTileChanged;
   extern AllCharactersOfSideDefeatedSignal AllCharactersOfSideDefeated;
 
   /**

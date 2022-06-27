@@ -27,13 +27,13 @@ namespace Barebones
       std::unique_ptr<CameraState> Update(double aTime) override;
 
       /**
-       * A handler function that gets called whenever a human player
-       * changes location on the board.
+       * A handler function that gets called whenever the board's focused
+       * tile changes.
        *
-       * @param aPlayer The player that moved.
+       * @param aBoard The board that updated.
        * @return A unique_ptr to a new state, if necessary.
        */
-      std::unique_ptr<CameraState> HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& aPlayer) override;
+      std::unique_ptr<CameraState> HandleBoardFocusedTileChanged(UrsineEngine::GameObject& aBoard) override;
 
       /**
        * A handler function that gets called whenever a player's turn ends.
@@ -43,15 +43,6 @@ namespace Barebones
        */
       std::unique_ptr<CameraState> HandlePlayerTurnEnded(PlayerBehaviorComponent& aPlayer) override;
 
-      /**
-       * A handler function that gets called whenever the camera's zoom
-       * level changes.
-       *
-       * @param aZoom The new zoom level.
-       * @return A unique_ptr to a new state, if necessary.
-       */
-      std::unique_ptr<CameraState> HandleCameraZoomChanged(double aZoom) override;
-
     private:
       UrsineEngine::GameObject* mPlayer;
 
@@ -59,7 +50,6 @@ namespace Barebones
 
       double mYDistance;
       double mZDistance;
-      double mRotation;
 
       double mSpeed;
 

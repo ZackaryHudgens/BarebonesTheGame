@@ -5,8 +5,6 @@
 
 #include "CharacterBehaviorComponent.hpp"
 
-#include "HumanPlayerBehaviorComponent.hpp"
-
 #include "TextBoxComponent.hpp"
 
 namespace Barebones
@@ -35,19 +33,12 @@ namespace Barebones
     private:
 
       /**
-       * A handler function that gets called whenever a player's turn begins.
+       * A handler function that gets called whenever a board's focused
+       * tile changes.
        *
-       * @param aPlayer The player whose turn began.
+       * @param aBoard The board that updated.
        */
-      void HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlayer);
-
-      /**
-       * A handler function that gets called whenever a human player changes
-       * location.
-       *
-       * @param aPlayer The player whose location changed.
-       */
-      void HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& aPlayer);
+      void HandleBoardFocusedTileChanged(UrsineEngine::GameObject& aBoard);
 
       /**
        * A handler function that gets called whenever a character's turn begins.

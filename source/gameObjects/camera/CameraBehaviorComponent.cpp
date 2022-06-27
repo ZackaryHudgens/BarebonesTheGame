@@ -25,9 +25,9 @@ CameraBehaviorComponent::CameraBehaviorComponent()
     this->HandleObjectMoved(aObject);
   });
 
-  HumanPlayerMoved.Connect(*this, [this](HumanPlayerBehaviorComponent& aPlayer)
+  BoardFocusedTileChanged.Connect(*this, [this](UrsineEngine::GameObject& aBoard)
   {
-    this->HandleHumanPlayerMoved(aPlayer);
+    this->HandleBoardFocusedTileChanged(aBoard);
   });
 
   PlayerTurnBegan.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
@@ -128,11 +128,11 @@ void CameraBehaviorComponent::HandleObjectMoved(UrsineEngine::GameObject* aObjec
 }
 
 /******************************************************************************/
-void CameraBehaviorComponent::HandleHumanPlayerMoved(HumanPlayerBehaviorComponent& aPlayer)
+void CameraBehaviorComponent::HandleBoardFocusedTileChanged(UrsineEngine::GameObject& aBoard)
 {
   if(mState != nullptr)
   {
-    auto newState = mState->HandleHumanPlayerMoved(aPlayer);
+    auto newState = mState->HandleBoardFocusedTileChanged(aBoard);
     if(newState != nullptr)
     {
       mState.swap(newState);

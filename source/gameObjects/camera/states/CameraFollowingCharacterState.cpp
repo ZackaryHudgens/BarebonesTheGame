@@ -14,7 +14,6 @@ CameraFollowingCharacterState::CameraFollowingCharacterState(UrsineEngine::GameO
   , mCharacter(&aCharacter)
   , mYDistance(5.0)
   , mZDistance(5.0)
-  , mRotation(-40.0)
   , mSpeed(0.3)
   , mMoving(true)
 {
