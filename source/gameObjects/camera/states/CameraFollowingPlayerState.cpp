@@ -1,119 +1,45 @@
 #include "CameraFollowingPlayerState.hpp"
 
-#include "CameraBehaviorComponent.hpp"
-#include "CameraDefaultState.hpp"
-#include "CameraObservingBoardState.hpp"
-
 #include "BoardLayoutComponent.hpp"
+#include "CameraBehaviorComponent.hpp"
+
+#include "CameraDefaultState.hpp"
+
+#include "Signals.hpp"
 
 using Barebones::CameraFollowingPlayerState;
 
 /******************************************************************************/
 CameraFollowingPlayerState::CameraFollowingPlayerState(UrsineEngine::GameObject& aCamera,
-                                                       UrsineEngine::GameObject& aPlayer)
-  : CameraState(aCamera)
+                                                       PlayerBehaviorComponent& aPlayer)
+  : CameraMovingState(aCamera)
   , mPlayer(&aPlayer)
-  , mTargetPosition(0.0, 0.0, 0.0)
-  , mYDistance(5.0)
-  , mZDistance(5.0)
-  , mSpeed(0.3)
-  , mMoving(false)
 {
-  // Upon entering this state, calculate the target position
-  // using the focused tile on the board.
-  auto cameraBehaviorComponent = aCamera.GetFirstComponentOfType<CameraBehaviorComponent>();
-  if(cameraBehaviorComponent != nullptr)
+  BoardFocusedTileChanged.Connect(mObserver, [this](UrsineEngine::GameObject& aBoard)
   {
-    auto board = cameraBehaviorComponent->GetFollowedBoard();
-    if(board != nullptr)
-    {
-      auto boardLayoutComponent = board->GetFirstComponentOfType<BoardLayoutComponent>();
-      if(boardLayoutComponent != nullptr)
-      {
-        auto tileLocation = boardLayoutComponent->GetFocusedTileLocation();
-        auto tile = boardLayoutComponent->GetTileAtLocation(tileLocation);
-        if(tile != nullptr)
-        {
-          mTargetPosition = tile->GetPosition();
-          mTargetPosition.y += (mYDistance + cameraBehaviorComponent->GetZoomDistance());
-          mTargetPosition.z += (mZDistance + cameraBehaviorComponent->GetZoomDistance());
-
-          mMoving = true;
-        }
-      }
-    }
-  }
+    this->HandleBoardFocusedTileChanged(aBoard);
+  });
 }
 
 /******************************************************************************/
-std::unique_ptr<Barebones::CameraState> CameraFollowingPlayerState::Update(double aTime)
+void CameraFollowingPlayerState::OnEnter()
 {
-  if(mMoving)
+  // Set the movement speed, then set the target position.
+  SetSpeed(0.3);
+
+  auto camera = GetCamera();
+  if(camera != nullptr)
   {
-    auto camera = GetCamera();
-    if(camera != nullptr)
-    {
-      auto position = glm::mix(camera->GetPosition(),
-                               mTargetPosition,
-                               mSpeed);
-
-      // If the position is close enough to the target position,
-      // move directly to the target position and stop moving.
-      if(std::abs(mTargetPosition.x - position.x) <= 0.005 &&
-         std::abs(mTargetPosition.y - position.y) <= 0.005 &&
-         std::abs(mTargetPosition.z - position.z) <= 0.005)
-      {
-        camera->SetPosition(mTargetPosition);
-        mMoving = false;
-      }
-      else
-      {
-        camera->SetPosition(position);
-      }
-    }
-  }
-
-  return nullptr;
-}
-
-/******************************************************************************/
-std::unique_ptr<Barebones::CameraState> CameraFollowingPlayerState::HandleBoardFocusedTileChanged(UrsineEngine::GameObject& aBoard)
-{
-  std::unique_ptr<CameraState> newState = nullptr;
-
-  // Get the board that this camera is following, then get the focused
-  // tile on the board and use it to calculate the new target position
-  // for the camera.
-  auto cameraObject = GetCamera();
-  if(cameraObject != nullptr)
-  {
-    auto cameraBehaviorComponent = cameraObject->GetFirstComponentOfType<CameraBehaviorComponent>();
+    auto cameraBehaviorComponent = camera->GetFirstComponentOfType<CameraBehaviorComponent>();
     if(cameraBehaviorComponent != nullptr)
     {
-      auto boardObject = cameraBehaviorComponent->GetFollowedBoard();
-      if(boardObject != nullptr)
+      auto board = cameraBehaviorComponent->GetFollowedBoard();
+      if(board != nullptr)
       {
-        auto boardLayoutComponent = boardObject->GetFirstComponentOfType<BoardLayoutComponent>();
-        if(boardLayoutComponent != nullptr)
-        {
-          auto tileLocation = boardLayoutComponent->GetFocusedTileLocation();
-          auto tile = boardLayoutComponent->GetTileAtLocation(tileLocation);
-          if(tile != nullptr)
-          {
-            // Calculate the new position for the camera.
-            auto newPos = tile->GetPosition();
-            newPos.y += (mYDistance + cameraBehaviorComponent->GetZoomDistance());
-            newPos.z += (mZDistance + cameraBehaviorComponent->GetZoomDistance());
-
-            mTargetPosition = newPos;
-            mMoving = true;
-          }
-        }
+        HandleBoardFocusedTileChanged(*board);
       }
     }
   }
-
-  return newState;
 }
 
 /******************************************************************************/
@@ -121,9 +47,9 @@ std::unique_ptr<Barebones::CameraState> CameraFollowingPlayerState::HandlePlayer
 {
   std::unique_ptr<CameraState> newState = nullptr;
 
-  // If the player whose turn ended was the player being followed,
-  // revert to the default state.
-  if(aPlayer.GetParent() == mPlayer)
+  // If the player whose turn ended is the player being followed, revert
+  // to the default state.
+  if(&aPlayer == mPlayer)
   {
     auto camera = GetCamera();
     if(camera != nullptr)
@@ -132,5 +58,39 @@ std::unique_ptr<Barebones::CameraState> CameraFollowingPlayerState::HandlePlayer
     }
   }
 
-  return newState;
+  return std::move(newState);
+}
+
+/******************************************************************************/
+void CameraFollowingPlayerState::HandleBoardFocusedTileChanged(UrsineEngine::GameObject& aBoard)
+{
+  // If the given board is the board the camera is following, update the
+  // target position to view the currently focused tile.
+  auto camera = GetCamera();
+  if(camera != nullptr)
+  {
+    auto cameraBehaviorComponent = camera->GetFirstComponentOfType<CameraBehaviorComponent>();
+    if(cameraBehaviorComponent != nullptr)
+    {
+      auto board = cameraBehaviorComponent->GetFollowedBoard();
+      if(&aBoard == board)
+      {
+        auto boardLayoutComponent = board->GetFirstComponentOfType<BoardLayoutComponent>();
+        if(boardLayoutComponent != nullptr)
+        {
+          auto focusedLocation = boardLayoutComponent->GetFocusedTileLocation();
+          auto focusedTile = boardLayoutComponent->GetTileAtLocation(focusedLocation);
+
+          if(focusedTile != nullptr)
+          {
+            auto pos = focusedTile->GetPosition();
+            pos.y += 5.0;
+            pos.z += 5.0;
+
+            SetTargetPosition(pos);
+          }
+        }
+      }
+    }
+  }
 }

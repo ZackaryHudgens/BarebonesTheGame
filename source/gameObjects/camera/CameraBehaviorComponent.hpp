@@ -54,21 +54,6 @@ namespace Barebones
     private:
 
       /**
-       * A handler function that gets called whenever a GameObject moves.
-       *
-       * @param aObject The GameObject that moved.
-       */
-      void HandleObjectMoved(UrsineEngine::GameObject* aObject);
-
-      /**
-       * A handler function that gets called whenever a board's focused
-       * tile changes.
-       *
-       * @param aBoard The board that updated.
-       */
-      void HandleBoardFocusedTileChanged(UrsineEngine::GameObject& aBoard);
-
-      /**
        * A handler function that gets called whenever a player's turn begins.
        *
        * @param aPlayer The player whose turn began.

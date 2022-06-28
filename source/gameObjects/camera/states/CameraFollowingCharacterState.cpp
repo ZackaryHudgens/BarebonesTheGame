@@ -1,5 +1,7 @@
 #include "CameraFollowingCharacterState.hpp"
 
+#include <CoreSignals.hpp>
+
 #include "CameraBehaviorComponent.hpp"
 #include "CameraDefaultState.hpp"
 
@@ -10,64 +12,33 @@ using Barebones::CameraFollowingCharacterState;
 /******************************************************************************/
 CameraFollowingCharacterState::CameraFollowingCharacterState(UrsineEngine::GameObject& aCamera,
                                                              UrsineEngine::GameObject& aCharacter)
-  : CameraState(aCamera)
+  : CameraMovingState(aCamera)
   , mCharacter(&aCharacter)
-  , mYDistance(5.0)
-  , mZDistance(5.0)
-  , mSpeed(0.3)
-  , mMoving(true)
 {
-  mTargetPosition = aCharacter.GetPosition();
-  mTargetPosition.y += mYDistance;
-  mTargetPosition.z += mZDistance;
-}
-
-/******************************************************************************/
-std::unique_ptr<Barebones::CameraState> CameraFollowingCharacterState::Update(double aTime)
-{
-  if(mMoving)
+  UrsineEngine::ObjectMoved.Connect(mObserver, [this](UrsineEngine::GameObject* aObject)
   {
-    auto camera = GetCamera();
-    if(camera != nullptr)
-    {
-      auto position = glm::mix(camera->GetPosition(),
-                               mTargetPosition,
-                               mSpeed);
-
-      // If the position is close enough to the target position,
-      // move directly to the target position and stop moving.
-      if(std::abs(mTargetPosition.x - position.x) <= 0.005 &&
-         std::abs(mTargetPosition.y - position.y) <= 0.005 &&
-         std::abs(mTargetPosition.z - position.z) <= 0.005)
-      {
-        camera->SetPosition(mTargetPosition);
-        mMoving = false;
-
-        CameraFinishedMoving.Notify();
-      }
-      else
-      {
-        camera->SetPosition(position);
-      }
-    }
-  }
-
-  return nullptr;
+    this->HandleObjectMoved(aObject);
+  });
 }
 
 /******************************************************************************/
-std::unique_ptr<Barebones::CameraState> CameraFollowingCharacterState::HandleObjectMoved(UrsineEngine::GameObject* aObject)
+void CameraFollowingCharacterState::OnEnter()
+{
+  SetSpeed(0.3);
+  HandleObjectMoved(mCharacter);
+};
+
+/******************************************************************************/
+void CameraFollowingCharacterState::HandleObjectMoved(UrsineEngine::GameObject* aObject)
 {
   if(mCharacter == aObject)
   {
-    mTargetPosition = aObject->GetPosition();
-    mTargetPosition.y += mYDistance;
-    mTargetPosition.z += mZDistance;
+    auto targetPos = aObject->GetPosition();
+    targetPos.y += 5.0;
+    targetPos.z += 5.0;
 
-    mMoving = true;
+    SetTargetPosition(targetPos);
   }
-
-  return nullptr;
 }
 
 /******************************************************************************/
@@ -86,5 +57,5 @@ std::unique_ptr<Barebones::CameraState> CameraFollowingCharacterState::HandleCha
     }
   }
 
-  return newState;
+  return std::move(newState);
 }

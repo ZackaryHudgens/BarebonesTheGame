@@ -14,7 +14,6 @@ namespace Barebones
   class Effect;
   class InputComponent;
   class PlayerBehaviorComponent;
-  class HumanPlayerBehaviorComponent;
   class Skill;
   class TurnDisplayComponent;
   class MenuLayoutComponent;

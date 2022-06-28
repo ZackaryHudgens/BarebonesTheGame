@@ -8,7 +8,6 @@
 #include "BoardTurnManagerComponent.hpp"
 
 #include "CameraDefaultState.hpp"
-#include "CameraObservingBoardState.hpp"
 
 using Barebones::CameraBehaviorComponent;
 
@@ -20,16 +19,6 @@ CameraBehaviorComponent::CameraBehaviorComponent()
   , mRotation(-40.0)
   , mZoomDistance(0.0)
 {
-  UrsineEngine::ObjectMoved.Connect(*this, [this](UrsineEngine::GameObject* aObject)
-  {
-    this->HandleObjectMoved(aObject);
-  });
-
-  BoardFocusedTileChanged.Connect(*this, [this](UrsineEngine::GameObject& aBoard)
-  {
-    this->HandleBoardFocusedTileChanged(aBoard);
-  });
-
   PlayerTurnBegan.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
   {
     this->HandlePlayerTurnBegan(aPlayer);
@@ -96,48 +85,6 @@ void CameraBehaviorComponent::Update(double aTime)
 void CameraBehaviorComponent::SetFollowedBoard(UrsineEngine::GameObject& aBoard)
 {
   mFollowedBoard = &aBoard;
-
-  // Position the camera to be centered horizontally high above the board.
-  auto parent = GetParent();
-  auto boardLayoutComponent = mFollowedBoard->GetFirstComponentOfType<BoardLayoutComponent>();
-  if(parent != nullptr &&
-     boardLayoutComponent != nullptr)
-  {
-    auto centerColumn = boardLayoutComponent->GetColumns() / 2;
-    auto tile = boardLayoutComponent->GetTileAtLocation(TileLocation(centerColumn, 0));
-    if(tile != nullptr)
-    {
-      auto parentPos = parent->GetPosition();
-      parentPos.x = tile->GetPosition().x;
-      parent->SetPosition(parentPos);
-    }
-  }
-}
-
-/******************************************************************************/
-void CameraBehaviorComponent::HandleObjectMoved(UrsineEngine::GameObject* aObject)
-{
-  if(mState != nullptr)
-  {
-    auto newState = mState->HandleObjectMoved(aObject);
-    if(newState != nullptr)
-    {
-      mState.swap(newState);
-    }
-  }
-}
-
-/******************************************************************************/
-void CameraBehaviorComponent::HandleBoardFocusedTileChanged(UrsineEngine::GameObject& aBoard)
-{
-  if(mState != nullptr)
-  {
-    auto newState = mState->HandleBoardFocusedTileChanged(aBoard);
-    if(newState != nullptr)
-    {
-      mState.swap(newState);
-    }
-  }
 }
 
 /******************************************************************************/
@@ -196,25 +143,17 @@ void CameraBehaviorComponent::HandleCharacterTurnEnded(CharacterBehaviorComponen
 void CameraBehaviorComponent::HandleCameraZoomChangeRequested(double aZoom)
 {
   mZoomDistance = aZoom;
-
-  if(mState != nullptr)
-  {
-    auto newState = mState->HandleCameraZoomChanged(mZoomDistance);
-    if(newState != nullptr)
-    {
-      mState.swap(newState);
-    }
-  }
 }
 
 /******************************************************************************/
 void CameraBehaviorComponent::HandleActDisplayFinished(UrsineEngine::GameObject& aDisplay)
 {
-  auto parent = GetParent();
-  if(mFollowedBoard != nullptr &&
-     parent != nullptr)
+  if(mState != nullptr)
   {
-    // Swap to the observing board state.
-    mState = std::make_unique<CameraObservingBoardState>(*parent, *mFollowedBoard);
+    auto newState = mState->HandleActDisplayFinished(aDisplay);
+    if(newState != nullptr)
+    {
+      mState.swap(newState);
+    }
   }
 }

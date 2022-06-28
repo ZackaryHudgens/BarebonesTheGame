@@ -1,11 +1,13 @@
 #ifndef CAMERAFOLLOWINGCHARACTERSTATE_HPP
 #define CAMERAFOLLOWINGCHARACTERSTATE_HPP
 
-#include "CameraState.hpp"
+#include "CameraMovingState.hpp"
+
+#include <Observer.hpp>
 
 namespace Barebones
 {
-  class CameraFollowingCharacterState : public CameraState
+  class CameraFollowingCharacterState : public CameraMovingState
   {
     public:
 
@@ -19,21 +21,9 @@ namespace Barebones
                                     UrsineEngine::GameObject& aCharacter);
 
       /**
-       * Updates the state.
-       *
-       * @param aTime The start time of the current Scene's Update().
-       * @return A unique_ptr to a new state, if necessary.
+       * Gets called whenever the camera enters this state.
        */
-      std::unique_ptr<CameraState> Update(double aTime) override;
-
-      /**
-       * A handler function that gets called whenever a GameObject moves in the
-       * current Scene.
-       *
-       * @param aObject The GameObject that moved.
-       * @return A unique_ptr to a new state, if necessary.
-       */
-      std::unique_ptr<CameraState> HandleObjectMoved(UrsineEngine::GameObject* aObject) override;
+      void OnEnter() override;
 
       /**
        * A handler function that gets called whenever a character's turn ends.
@@ -44,16 +34,18 @@ namespace Barebones
       std::unique_ptr<CameraState> HandleCharacterTurnEnded(CharacterBehaviorComponent& aCharacter) override;
 
     private:
+
+      /**
+       * A handler function that gets called whenever a GameObject moves in the
+       * current Scene.
+       *
+       * @param aObject The GameObject that moved.
+       */
+      void HandleObjectMoved(UrsineEngine::GameObject* aObject);
+
       UrsineEngine::GameObject* mCharacter;
 
-      glm::vec3 mTargetPosition;
-
-      double mYDistance;
-      double mZDistance;
-
-      double mSpeed;
-
-      bool mMoving;
+      UrsineEngine::Observer mObserver;
   };
 }
 

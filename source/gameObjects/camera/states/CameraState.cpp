@@ -15,18 +15,6 @@ std::unique_ptr<CameraState> CameraState::Update(double aTime)
 }
 
 /******************************************************************************/
-std::unique_ptr<CameraState> CameraState::HandleObjectMoved(UrsineEngine::GameObject* aObject)
-{
-  return nullptr;
-}
-
-/******************************************************************************/
-std::unique_ptr<CameraState> CameraState::HandleBoardFocusedTileChanged(UrsineEngine::GameObject& aBoard)
-{
-  return nullptr;
-}
-
-/******************************************************************************/
 std::unique_ptr<CameraState> CameraState::HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlayer)
 {
   return nullptr;
@@ -51,7 +39,7 @@ std::unique_ptr<CameraState> CameraState::HandleCharacterTurnEnded(CharacterBeha
 }
 
 /******************************************************************************/
-std::unique_ptr<CameraState> CameraState::HandleCameraZoomChanged(double aZoom)
+std::unique_ptr<CameraState> CameraState::HandleActDisplayFinished(UrsineEngine::GameObject& aDisplay)
 {
   return nullptr;
 }

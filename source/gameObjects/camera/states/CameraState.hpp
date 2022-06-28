@@ -21,30 +21,24 @@ namespace Barebones
       virtual ~CameraState() {}
 
       /**
+       * A virtual function that gets called whenever the camera enters
+       * this state.
+       */
+      virtual void OnEnter() {}
+
+      /**
+       * A virtual function that gets called whenever the camera exits
+       * this state.
+       */
+      virtual void OnExit() {}
+
+      /**
        * A virtual function that updates the state.
        *
        * @param aTime The start time of the current Scene's Update().
        * @return A unique_ptr to a new state, if necessary.
        */
       virtual std::unique_ptr<CameraState> Update(double aTime);
-
-      /**
-       * A virtual function that gets called whenever a GameObject moves in the
-       * current Scene.
-       *
-       * @param aObject The GameObject that moved.
-       * @return A unique_ptr to a new state, if necessary.
-       */
-      virtual std::unique_ptr<CameraState> HandleObjectMoved(UrsineEngine::GameObject* aObject);
-
-      /**
-       * A virtual function that gets called whenever the board's focused
-       * tile changes.
-       *
-       * @param aBoard The board that updated.
-       * @return A unique_ptr to a new state, if necessary.
-       */
-      virtual std::unique_ptr<CameraState> HandleBoardFocusedTileChanged(UrsineEngine::GameObject& aBoard);
 
       /**
        * A virtual function that gets called whenever a player's turn begins.
@@ -79,13 +73,13 @@ namespace Barebones
       virtual std::unique_ptr<CameraState> HandleCharacterTurnEnded(CharacterBehaviorComponent& aCharacter);
 
       /**
-       * A virtual function that gets called whenever the camera's zoom
-       * level changes.
+       * A virtual function that gets called whenever the act display finishes
+       * its intro animation.
        *
-       * @param aZoom The new zoom level.
+       * @param aDisplay The act display that finished.
        * @return A unique_ptr to a new state, if necessary.
        */
-      virtual std::unique_ptr<CameraState> HandleCameraZoomChanged(double aZoom);
+      virtual std::unique_ptr<CameraState> HandleActDisplayFinished(UrsineEngine::GameObject& aDisplay);
 
     protected:
 

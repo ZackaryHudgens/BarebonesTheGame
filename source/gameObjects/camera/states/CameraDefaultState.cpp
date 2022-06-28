@@ -1,10 +1,13 @@
 #include "CameraDefaultState.hpp"
 
+#include "BoardLayoutComponent.hpp"
 #include "CameraBehaviorComponent.hpp"
 
 #include "CameraFollowingCharacterState.hpp"
 #include "CameraFollowingPlayerState.hpp"
-#include "CameraObservingBoardState.hpp"
+#include "CameraPanningToBoardState.hpp"
+
+#include "Signals.hpp"
 
 using Barebones::CameraDefaultState;
 
@@ -19,17 +22,15 @@ std::unique_ptr<Barebones::CameraState> CameraDefaultState::HandlePlayerTurnBega
 {
   std::unique_ptr<CameraState> newState = nullptr;
 
-  // Swap to the Following Player state.
+  // Swap to the Following Player state, if possible.
   auto camera = GetCamera();
-  auto playerParent = aPlayer.GetParent();
-  if(camera != nullptr &&
-     playerParent != nullptr)
+  if(camera != nullptr)
   {
     newState = std::make_unique<CameraFollowingPlayerState>(*camera,
-                                                            *playerParent);
+                                                            aPlayer);
   }
 
-  return newState;
+  return std::move(newState);
 }
 
 /******************************************************************************/
@@ -47,5 +48,20 @@ std::unique_ptr<Barebones::CameraState> CameraDefaultState::HandleCharacterTurnB
                                                                *characterParent);
   }
 
-  return newState;
+  return std::move(newState);
+}
+
+/******************************************************************************/
+std::unique_ptr<Barebones::CameraState> CameraDefaultState::HandleActDisplayFinished(UrsineEngine::GameObject& aDisplay)
+{
+  std::unique_ptr<CameraState> newState = nullptr;
+
+  // Swap to the Following Character state, if possible.
+  auto camera = GetCamera();
+  if(camera != nullptr)
+  {
+    newState = std::make_unique<CameraPanningToBoardState>(*camera);
+  }
+
+  return std::move(newState);
 }
