@@ -21,6 +21,11 @@ namespace Barebones
        */
       void OnEnter() override;
 
+      /**
+       * Gets called whenever the camera exits this state.
+       */
+      void OnExit() override;
+
     protected:
 
       /**

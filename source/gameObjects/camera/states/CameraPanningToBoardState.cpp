@@ -5,6 +5,8 @@
 
 #include "CameraDefaultState.hpp"
 
+#include "Signals.hpp"
+
 using Barebones::CameraPanningToBoardState;
 
 /******************************************************************************/
@@ -16,38 +18,25 @@ CameraPanningToBoardState::CameraPanningToBoardState(UrsineEngine::GameObject& a
 /******************************************************************************/
 void CameraPanningToBoardState::OnEnter()
 {
-  SetSpeed(0.01);
+  SetSpeed(0.1);
 
   auto camera = GetCamera();
   if(camera != nullptr)
   {
-    auto cameraBehaviorComponent = camera->GetFirstComponentOfType<CameraBehaviorComponent>();
-    if(cameraBehaviorComponent != nullptr)
-    {
-      auto board = cameraBehaviorComponent->GetFollowedBoard();
-      if(board != nullptr)
-      {
-        auto boardLayoutComponent = board->GetFirstComponentOfType<BoardLayoutComponent>();
-        if(boardLayoutComponent != nullptr)
-        {
-          // Get the tile in the center of the board and set the target position
-          // using that tile.
-          int centerColumn = boardLayoutComponent->GetColumns() / 2;
-          int centerRow = boardLayoutComponent->GetRows() / 2;
+    auto targetPos = camera->GetPosition();
+    targetPos.y -= 8.0;
 
-          TileLocation centerLocation(centerColumn, centerRow);
-          auto tile = boardLayoutComponent->GetTileAtLocation(centerLocation);
-          if(tile != nullptr)
-          {
-            auto tilePos = tile->GetPosition();
-            tilePos.y += 7.0;
-            tilePos.z += 7.0;
+    SetTargetPosition(targetPos);
+  }
+}
 
-            SetTargetPosition(tilePos);
-          }
-        }
-      }
-    }
+/******************************************************************************/
+void CameraPanningToBoardState::OnExit()
+{
+  auto camera = GetCamera();
+  if(camera != nullptr)
+  {
+    CameraFinishedMovingToBoard.Notify(*camera);
   }
 }
 

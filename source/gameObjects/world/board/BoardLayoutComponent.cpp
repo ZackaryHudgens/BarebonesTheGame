@@ -7,7 +7,7 @@
 #include <GameObject.hpp>
 #include <MeshComponent.hpp>
 
-#include "BoardWaitingForCameraState.hpp"
+#include "BoardInitialState.hpp"
 
 #include "Colors.hpp"
 #include "Signals.hpp"
@@ -110,7 +110,7 @@ void BoardLayoutComponent::Initialize()
     }
 
     // Begin in the WaitingForCamera state.
-    mState = std::make_unique<BoardWaitingForCameraState>(*parent);
+    mState = std::make_unique<BoardInitialState>(*parent);
   }
 }
 
@@ -128,15 +128,6 @@ void BoardLayoutComponent::Update(double aTime)
     MoveCharacter(characterLocation, tileLocation);
 
     mWaitingForMovingCharacter = true;
-  }
-
-  if(mState != nullptr)
-  {
-    auto newState = mState->Update(aTime);
-    if(newState != nullptr)
-    {
-      mState.swap(newState);
-    }
   }
 }
 

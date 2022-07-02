@@ -62,9 +62,6 @@ void CameraBehaviorComponent::Initialize()
     // Initialize the camera rotation.
     parent->SetRotation(mRotation,
                         glm::vec3(1.0, 0.0, 0.0));
-
-    // Initialize the camera position.
-    parent->SetPosition(glm::vec3(0.0, 15.0, 0.0));
   }
 }
 
@@ -76,7 +73,9 @@ void CameraBehaviorComponent::Update(double aTime)
     auto newState = mState->Update(aTime);
     if(newState != nullptr)
     {
+      mState->OnExit();
       mState.swap(newState);
+      mState->OnEnter();
     }
   }
 }
@@ -85,6 +84,30 @@ void CameraBehaviorComponent::Update(double aTime)
 void CameraBehaviorComponent::SetFollowedBoard(UrsineEngine::GameObject& aBoard)
 {
   mFollowedBoard = &aBoard;
+
+  auto boardLayoutComponent = mFollowedBoard->GetFirstComponentOfType<BoardLayoutComponent>();
+  if(boardLayoutComponent != nullptr)
+  {
+    // Get the tile in the center of the board and set the camera position using
+    // that tile.
+    int centerColumn = boardLayoutComponent->GetColumns() / 2;
+    int centerRow = boardLayoutComponent->GetRows() / 2;
+
+    TileLocation centerLocation(centerColumn, centerRow);
+    auto tile = boardLayoutComponent->GetTileAtLocation(centerLocation);
+    if(tile != nullptr)
+    {
+      auto tilePos = tile->GetPosition();
+      tilePos.y += 15.0;
+      tilePos.z += 5.0;
+
+      auto parent = GetParent();
+      if(parent != nullptr)
+      {
+        parent->SetPosition(tilePos);
+      }
+    }
+  }
 }
 
 /******************************************************************************/
@@ -95,7 +118,9 @@ void CameraBehaviorComponent::HandlePlayerTurnBegan(PlayerBehaviorComponent& aPl
     auto newState = mState->HandlePlayerTurnBegan(aPlayer);
     if(newState != nullptr)
     {
+      mState->OnExit();
       mState.swap(newState);
+      mState->OnEnter();
     }
   }
 }
@@ -108,7 +133,9 @@ void CameraBehaviorComponent::HandlePlayerTurnEnded(PlayerBehaviorComponent& aPl
     auto newState = mState->HandlePlayerTurnEnded(aPlayer);
     if(newState != nullptr)
     {
+      mState->OnExit();
       mState.swap(newState);
+      mState->OnEnter();
     }
   }
 }
@@ -121,7 +148,9 @@ void CameraBehaviorComponent::HandleCharacterTurnBegan(CharacterBehaviorComponen
     auto newState = mState->HandleCharacterTurnBegan(aCharacter);
     if(newState != nullptr)
     {
+      mState->OnExit();
       mState.swap(newState);
+      mState->OnEnter();
     }
   }
 }
@@ -134,7 +163,9 @@ void CameraBehaviorComponent::HandleCharacterTurnEnded(CharacterBehaviorComponen
     auto newState = mState->HandleCharacterTurnEnded(aCharacter);
     if(newState != nullptr)
     {
+      mState->OnExit();
       mState.swap(newState);
+      mState->OnEnter();
     }
   }
 }
@@ -153,7 +184,9 @@ void CameraBehaviorComponent::HandleActDisplayFinished(UrsineEngine::GameObject&
     auto newState = mState->HandleActDisplayFinished(aDisplay);
     if(newState != nullptr)
     {
+      mState->OnExit();
       mState.swap(newState);
+      mState->OnEnter();
     }
   }
 }

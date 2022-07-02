@@ -17,6 +17,11 @@ namespace Barebones
       BoardInitialState(UrsineEngine::GameObject& aBoard);
 
       /**
+       * Gets called whenever the board exits this state.
+       */
+      void OnExit() override;
+
+      /**
        * A handler function that gets called whenever the camera finishes
        * moving to the board.
        *

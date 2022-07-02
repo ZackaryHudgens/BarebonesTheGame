@@ -42,15 +42,6 @@ namespace Barebones
       virtual std::unique_ptr<BoardState> HandleCameraFinishedMovingToBoard() { return nullptr; }
 
       /**
-       * A virtual function that gets called whenever a character is
-       * added to the board.
-       *
-       * @param aCharacter The character that was added to the board.
-       * @return A pointer to a new state, if necessary.
-       */
-      virtual std::unique_ptr<BoardState> HandleCharacterAdded(UrsineEngine::GameObject& aCharacter) { return nullptr; }
-
-      /**
        * A virtual function that gets called whenever a skill is selected
        * for use on the board.
        *
