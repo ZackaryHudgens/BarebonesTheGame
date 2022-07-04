@@ -33,6 +33,16 @@ namespace Barebones
        */
       std::unique_ptr<CameraState> HandleCharacterTurnEnded(CharacterBehaviorComponent& aCharacter) override;
 
+    protected:
+
+      /**
+       * Gets called whenever the state finishes moving to the target position.
+       * Can be overridden to switch to a different state.
+       *
+       * @return A unique_ptr to a new state, if necessary.
+       */
+      std::unique_ptr<CameraState> HandleTargetPositionReached() override;
+
     private:
 
       /**

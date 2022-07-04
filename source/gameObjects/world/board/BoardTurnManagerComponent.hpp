@@ -47,6 +47,12 @@ namespace Barebones
     private:
 
       /**
+       * Clears out the turn tracker and repopulates it with the initial
+       * turn order (the order in which players were added).
+       */
+      void ResetTurnTracker();
+
+      /**
        * Creates a turn display and adds it to the current scene's
        * foreground. When the turn display finishes, the player in
        * the front of the turn list will take their turn.

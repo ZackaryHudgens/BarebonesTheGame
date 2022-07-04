@@ -317,6 +317,12 @@ void BoardLayoutComponent::SetFocusedTileLocation(const TileLocation& aLocation)
     {
       HandleSkillSelected(*mSkillUsedForHighlighting);
     }
+
+    auto parent = GetParent();
+    if(parent != nullptr)
+    {
+      BoardFocusedTileChanged.Notify(*parent);
+    }
   }
 }
 

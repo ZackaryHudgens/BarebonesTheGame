@@ -33,6 +33,14 @@ namespace Barebones
        */
       std::unique_ptr<CameraState> HandlePlayerTurnEnded(PlayerBehaviorComponent& aPlayer) override;
 
+      /**
+       * A handler function that gets called whenever a character's turn begins.
+       *
+       * @param aCharacter The character whose turn began.
+       * @return A unique_ptr to a new state, if necessary.
+       */
+      std::unique_ptr<CameraState> HandleCharacterTurnBegan(CharacterBehaviorComponent& aCharacter) override;
+
     private:
       
       /**

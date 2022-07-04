@@ -64,9 +64,9 @@ namespace Barebones
 
       /**
        * A handler function that gets called when the scene's camera
-       * finishes moving.
+       * finishes moving to a character.
        */
-      void HandleCameraFinishedMoving();
+      void HandleCameraFinishedMovingToCharacter();
 
       UrsineEngine::Observer mObserver;
 

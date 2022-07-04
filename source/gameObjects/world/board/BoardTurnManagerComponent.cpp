@@ -80,8 +80,9 @@ void BoardTurnManagerComponent::AddPlayer(std::unique_ptr<UrsineEngine::GameObje
     // Add the player as a child GameObject.
     parent->AddChild(std::move(aPlayer));
 
-    // Add a turn for the new player to the end of the turn tracker.
-    mTurnTracker.emplace_back(parent->GetChildren().back());
+    // Keep track of the order in which players were added.
+    mInitialTurnOrder.emplace_back(parent->GetChildren().back());
+    ResetTurnTracker();
   }
 }
 
@@ -96,6 +97,17 @@ UrsineEngine::GameObject* BoardTurnManagerComponent::GetCurrentPlayer()
   }
 
   return player;
+}
+
+/******************************************************************************/
+void BoardTurnManagerComponent::ResetTurnTracker()
+{
+  mTurnTracker.clear();
+
+  for(auto& player : mInitialTurnOrder)
+  {
+    mTurnTracker.emplace_back(player);
+  }
 }
 
 /******************************************************************************/

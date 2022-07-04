@@ -17,9 +17,9 @@ CharacterController::CharacterController(UrsineEngine::GameObject& aCharacter)
   , mTimeEndedTurn(0.0)
   , mWaitingForCamera(false)
 {
-  CameraFinishedMoving.Connect(mObserver, [this]()
+  CameraFinishedMovingToCharacter.Connect(mObserver, [this](UrsineEngine::GameObject& aCamera)
   {
-    this->HandleCameraFinishedMoving();
+    this->HandleCameraFinishedMovingToCharacter();
   });
 }
 
@@ -68,7 +68,7 @@ void CharacterController::EndTurn()
 }
 
 /******************************************************************************/
-void CharacterController::HandleCameraFinishedMoving()
+void CharacterController::HandleCameraFinishedMovingToCharacter()
 {
   if(mWaitingForCamera &&
      mBoard != nullptr)

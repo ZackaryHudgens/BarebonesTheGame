@@ -9,6 +9,8 @@
 
 #include "CameraInitialState.hpp"
 
+#include <iostream>
+
 using Barebones::CameraBehaviorComponent;
 
 /******************************************************************************/

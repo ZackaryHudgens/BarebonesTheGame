@@ -4,6 +4,7 @@
 #include "CameraBehaviorComponent.hpp"
 
 #include "CameraDefaultState.hpp"
+#include "CameraFollowingCharacterState.hpp"
 
 #include "Signals.hpp"
 
@@ -56,6 +57,24 @@ std::unique_ptr<Barebones::CameraState> CameraFollowingPlayerState::HandlePlayer
     {
       newState = std::make_unique<CameraDefaultState>(*camera);
     }
+  }
+
+  return std::move(newState);
+}
+
+/******************************************************************************/
+std::unique_ptr<Barebones::CameraState> CameraFollowingPlayerState::HandleCharacterTurnBegan(CharacterBehaviorComponent& aCharacter)
+{
+  std::unique_ptr<CameraState> newState = nullptr;
+
+  // Swap to the Following Character state, if possible.
+  auto camera = GetCamera();
+  auto characterParent = aCharacter.GetParent();
+  if(camera != nullptr &&
+     characterParent != nullptr)
+  {
+    newState = std::make_unique<CameraFollowingCharacterState>(*camera,
+                                                               *characterParent);
   }
 
   return std::move(newState);

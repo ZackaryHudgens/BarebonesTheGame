@@ -29,6 +29,18 @@ void CameraFollowingCharacterState::OnEnter()
 };
 
 /******************************************************************************/
+std::unique_ptr<Barebones::CameraState> CameraFollowingCharacterState::HandleTargetPositionReached()
+{
+  auto camera = GetCamera();
+  if(camera != nullptr)
+  {
+    CameraFinishedMovingToCharacter.Notify(*camera);
+  }
+
+  return nullptr;
+}
+
+/******************************************************************************/
 void CameraFollowingCharacterState::HandleObjectMoved(UrsineEngine::GameObject* aObject)
 {
   if(mCharacter == aObject)
