@@ -24,8 +24,6 @@ BoardLayoutComponent::BoardLayoutComponent()
   , mMovingCharacter(nullptr)
   , mWaitingForMovingCharacter(false)
   , mFocusedTileLocation(0, 0)
-  , mSkillUsedForHighlighting(nullptr)
-  , mHighlightIntensity(0.7)
   , mTileSpacing(0.2)
   , mColumns(7)
   , mRows(7)
@@ -175,18 +173,6 @@ bool BoardLayoutComponent::AddTileAtLocation(const TileType& aTileType,
                                         0.0,
                                         -1 * (double)aLocation.second - (mTileSpacing * aLocation.second)));
 
-        // If the new tile is at the hovered location, change the highlight
-        // color and intensity of the tile.
-        if(mFocusedTileLocation == aLocation)
-        {
-          auto tileBehaviorComponent = newTile->GetFirstComponentOfType<TileBehaviorComponent>();
-          if(tileBehaviorComponent != nullptr)
-          {
-            tileBehaviorComponent->SetHighlightColor(BACKGROUND_COLOR);
-            tileBehaviorComponent->SetHighlightIntensity(mHighlightIntensity);
-          }
-        }
-
         // If there is a character at the tile's location, let the tile know.
         auto character = GetCharacterAtLocation(aLocation);
         if(character != nullptr)
@@ -291,32 +277,7 @@ void BoardLayoutComponent::SetFocusedTileLocation(const TileLocation& aLocation)
   auto newTile = GetTileAtLocation(aLocation);
   if(newTile != nullptr)
   {
-    // Un-highlight the tile at the previous location.
-    auto prevTile = GetTileAtLocation(mFocusedTileLocation);
-    if(prevTile != nullptr)
-    {
-      auto prevTileBehaviorComp = prevTile->GetFirstComponentOfType<TileBehaviorComponent>();
-      if(prevTileBehaviorComp != nullptr)
-      {
-        prevTileBehaviorComp->SetHighlightIntensity(0.0);
-      }
-    }
-
-    // Highlight the tile at the new location.
-    auto newTileBehaviorComp = newTile->GetFirstComponentOfType<TileBehaviorComponent>();
-    if(newTileBehaviorComp != nullptr)
-    {
-      newTileBehaviorComp->SetHighlightColor(BACKGROUND_COLOR);
-      newTileBehaviorComp->SetHighlightIntensity(mHighlightIntensity);
-    }
-
     mFocusedTileLocation = aLocation;
-
-    // Update the highlighted tiles, if necessary.
-    if(mSkillUsedForHighlighting != nullptr)
-    {
-      HandleSkillSelected(*mSkillUsedForHighlighting);
-    }
 
     auto parent = GetParent();
     if(parent != nullptr)
