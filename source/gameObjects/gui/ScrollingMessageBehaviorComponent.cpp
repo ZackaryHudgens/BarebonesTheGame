@@ -15,12 +15,13 @@ using Barebones::ScrollingMessageBehaviorComponent;
 /******************************************************************************/
 ScrollingMessageBehaviorComponent::ScrollingMessageBehaviorComponent(const std::string& aText,
                                                                      int aFontSize,
-                                                                     double aSpeed)
+                                                                     double aSpeed,
+                                                                     int aVerticalPadding)
   : Component()
   , mText(aText)
   , mFontSize(aFontSize)
   , mSpeed(aSpeed)
-  , mTextBoxVerticalPadding(27)
+  , mTextBoxVerticalPadding(aVerticalPadding)
   , mMoving(true)
   , mTimeBecamePaused(0.0)
   , mTimeToSpendPaused(1.0)

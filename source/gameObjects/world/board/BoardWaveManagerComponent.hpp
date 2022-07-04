@@ -4,6 +4,7 @@
 #include <Component.hpp>
 #include <GameObject.hpp>
 
+#include "CharacterBehaviorComponent.hpp"
 #include "CharacterFactory.hpp"
 
 #include "Side.hpp"
@@ -29,6 +30,22 @@ namespace Barebones
       void GenerateEncounter(UrsineEngine::GameObject& aBoard);
 
       /**
+       * A handler function that gets called whenever something requests
+       * a new wave of enemies on a board.
+       *
+       * @param aBoard The board to generate an encounter on.
+       */
+      void HandleNewEnemyWaveRequested(UrsineEngine::GameObject& aBoard);
+
+      /**
+       * A handler function that gets called whenever a character finishes
+       * its spawning animation.
+       *
+       * @param aCharacter The character that finished the animation.
+       */
+      void HandleCharacterFinishedSpawning(CharacterBehaviorComponent& aCharacter);
+
+      /**
        * A handler function that gets called whenever a GameObject
        * is about to be deleted.
        *
@@ -38,6 +55,8 @@ namespace Barebones
 
       UrsineEngine::GameObject* mBoard;
       UrsineEngine::GameObject* mWaveDisplay;
+
+      std::vector<UrsineEngine::GameObject*> mSpawningCharacters;
 
       int mWaveNumber;
 

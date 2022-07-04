@@ -62,12 +62,12 @@ namespace Barebones
       void HandlePlayerTurnEnded(PlayerBehaviorComponent& aPlayer);
 
       /**
-       * A handler function that gets called whenever a board object
-       * is ready to start playing on.
+       * A handler function that gets called whenever a wave finishes spawning
+       * on a given board.
        *
-       * @param aBoard The board that is ready for use.
+       * @param aBoard The board that the wave finished spawning on.
        */
-      void HandleBoardReadyForUse(UrsineEngine::GameObject& aBoard);
+      void HandleWaveFinishedSpawning(UrsineEngine::GameObject& aBoard);
 
       /**
        * A handler function that gets called whenever a GameObject
@@ -79,6 +79,7 @@ namespace Barebones
 
       UrsineEngine::GameObject* mTurnDisplay;
       std::vector<UrsineEngine::GameObject*> mTurnTracker;
+      std::vector<UrsineEngine::GameObject*> mInitialTurnOrder;
 
       bool mWaitingToTakeTurn;
   };

@@ -105,6 +105,8 @@ namespace Barebones
       std::vector<CharacterType> mSkeletonInventory;
       int mMaxSkeletons;
 
+      std::vector<UrsineEngine::GameObject*> mSpawningCharacters;
+
       UrsineEngine::GameObject* mBoard;
 
       CreateCharacterSkill mCreateSkill;

@@ -55,7 +55,7 @@ std::unique_ptr<Barebones::CharacterState> CharacterDyingState::Update(double aT
         shader->Activate();
         shader->SetFloat("fadeValue", mFadeValue);
 
-        if(mFadeValue >= 1.0)
+        if(mFadeValue >= 0.995)
         {
           shader->SetFloat("fadeValue", 1.0);
 

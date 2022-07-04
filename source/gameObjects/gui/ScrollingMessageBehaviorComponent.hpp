@@ -17,10 +17,12 @@ namespace Barebones
        * @param aText The message to display.
        * @param aFontSize The size of the font to use.
        * @param aSpeed The speed at which to scroll.
+       * @param aVerticalPadding (optional) The vertical padding of the text box.
        */
       ScrollingMessageBehaviorComponent(const std::string& aText,
                                         int aFontSize,
-                                        double aSpeed);
+                                        double aSpeed,
+                                        int aVerticalPadding = 27);
 
       /**
        * Initializes the component.

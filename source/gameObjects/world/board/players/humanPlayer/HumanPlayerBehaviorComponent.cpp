@@ -1,5 +1,6 @@
 #include "HumanPlayerBehaviorComponent.hpp"
 
+#include <algorithm>
 #include <sstream>
 
 #include <Environment.hpp>
@@ -37,6 +38,11 @@ HumanPlayerBehaviorComponent::HumanPlayerBehaviorComponent()
   BoardFinishedInitialSequence.Connect(*this, [this](UrsineEngine::GameObject& aBoard)
   {
     this->HandleBoardFinishedInitialSequence(aBoard);
+  });
+
+  CharacterFinishedSpawning.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
+  {
+    this->HandleCharacterFinishedSpawning(aCharacter);
   });
 
   CharacterStartedMovingAlongPath.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
@@ -117,6 +123,8 @@ void HumanPlayerBehaviorComponent::ProtectedEndTurn()
 /******************************************************************************/
 void HumanPlayerBehaviorComponent::HandleBoardFinishedInitialSequence(UrsineEngine::GameObject& aBoard)
 {
+  mBoard = &aBoard;
+
   std::stringstream nameStream;
 
   // Create a character for each type in our inventory and add them
@@ -134,10 +142,33 @@ void HumanPlayerBehaviorComponent::HandleBoardFinishedInitialSequence(UrsineEngi
       auto character = CharacterFactory::CreateCharacter(characterType, nameStream.str());
       
       boardLayoutComponent->AddCharacterAtLocation(std::move(character), location);
+      mSpawningCharacters.emplace_back(boardLayoutComponent->GetCharacterAtLocation(location));
 
       nameStream.str("");
       ++index;
       ++row;
+    }
+  }
+}
+
+/******************************************************************************/
+void HumanPlayerBehaviorComponent::HandleCharacterFinishedSpawning(CharacterBehaviorComponent& aCharacter)
+{
+  auto characterObject = aCharacter.GetParent();
+  if(characterObject != nullptr)
+  {
+    auto foundCharacter = std::find(mSpawningCharacters.begin(),
+                                    mSpawningCharacters.end(),
+                                    characterObject);
+    if(foundCharacter != mSpawningCharacters.end())
+    {
+      mSpawningCharacters.erase(foundCharacter);
+
+      if(mSpawningCharacters.empty() &&
+         mBoard != nullptr)
+      {
+        NewEnemyWaveRequested.Notify(*mBoard);
+      }
     }
   }
 }

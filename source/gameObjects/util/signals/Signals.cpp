@@ -37,9 +37,10 @@ Barebones::TileReadyForUseSignal Barebones::TileReadyForUse;
  * Board signals
  */
 Barebones::BoardFinishedInitialSequenceSignal Barebones::BoardFinishedInitialSequence;
-Barebones::BoardReadyForUseSignal Barebones::BoardReadyForUse;
 Barebones::BoardFocusedTileChangedSignal Barebones::BoardFocusedTileChanged;
 Barebones::AllCharactersOfSideDefeatedSignal Barebones::AllCharactersOfSideDefeated;
+Barebones::NewEnemyWaveRequestedSignal Barebones::NewEnemyWaveRequested;
+Barebones::WaveFinishedSpawningSignal Barebones::WaveFinishedSpawning;
 
 /**
  * Input signals

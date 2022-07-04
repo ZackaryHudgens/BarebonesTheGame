@@ -77,14 +77,16 @@ namespace Barebones
    * Board signals
    */
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> BoardFinishedInitialSequenceSignal;
-  typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> BoardReadyForUseSignal;
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> BoardFocusedTileChangedSignal;
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&, Side&> AllCharactersOfSideDefeatedSignal;
+  typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> NewEnemyWaveRequestedSignal;
+  typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> WaveFinishedSpawningSignal;
 
   extern BoardFinishedInitialSequenceSignal BoardFinishedInitialSequence;
-  extern BoardReadyForUseSignal BoardReadyForUse;
   extern BoardFocusedTileChangedSignal BoardFocusedTileChanged;
   extern AllCharactersOfSideDefeatedSignal AllCharactersOfSideDefeated;
+  extern NewEnemyWaveRequestedSignal NewEnemyWaveRequested;
+  extern WaveFinishedSpawningSignal WaveFinishedSpawning;
 
   /**
    * Input signals

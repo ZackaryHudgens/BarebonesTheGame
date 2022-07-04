@@ -74,7 +74,7 @@ std::unique_ptr<Barebones::CharacterState> CharacterSpawningState::Update(double
         shader->Activate();
         shader->SetFloat("fadeValue", mFadeValue);
 
-        if(mFadeValue <= 0.0)
+        if(mFadeValue <= 0.005)
         {
           shader->SetFloat("fadeValue", 0.0);
 

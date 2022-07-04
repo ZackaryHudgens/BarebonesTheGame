@@ -26,9 +26,9 @@ BoardTurnManagerComponent::BoardTurnManagerComponent()
     this->HandlePlayerTurnEnded(aPlayer);
   });
 
-  BoardReadyForUse.Connect(*this, [this](UrsineEngine::GameObject& aBoard)
+  WaveFinishedSpawning.Connect(*this, [this](UrsineEngine::GameObject& aBoard)
   {
-    //this->HandleBoardReadyForUse(aBoard);
+    this->HandleWaveFinishedSpawning(aBoard);
   });
 
   UrsineEngine::ObjectPendingDeletion.Connect(*this, [this](UrsineEngine::GameObject* aObject)
@@ -142,14 +142,9 @@ void BoardTurnManagerComponent::HandlePlayerTurnEnded(PlayerBehaviorComponent& a
 }
 
 /******************************************************************************/
-void BoardTurnManagerComponent::HandleBoardReadyForUse(UrsineEngine::GameObject& aBoard)
+void BoardTurnManagerComponent::HandleWaveFinishedSpawning(UrsineEngine::GameObject& aBoard)
 {
-  if(&aBoard == GetParent())
-  {
-    // When the board is ready, create a turn display. When the turn display
-    // finishes, the player in the front of the turn tracker will take a turn.
-    CreateTurnDisplay();
-  }
+  CreateTurnDisplay();
 }
 
 /******************************************************************************/
