@@ -23,9 +23,9 @@ void BoardInitialState::OnExit()
 }
 
 /******************************************************************************/
-std::unique_ptr<Barebones::BoardState> BoardInitialState::HandleCameraFinishedMovingToBoard()
+std::unique_ptr<Barebones::BoardState> BoardInitialState::HandleCameraFinishedInitialSequence()
 {
-  // Returns to the default state.
+  // Swap to the default state.
   std::unique_ptr<BoardState> newState = nullptr;
 
   auto board = GetBoard();

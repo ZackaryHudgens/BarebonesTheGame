@@ -21,6 +21,11 @@ namespace Barebones
                            double aSpeed);
 
       /**
+       * Gets called whenever the character exits this state.
+       */
+      void OnExit() override;
+
+      /**
        * A function that gets called during the parent character's Update().
        *
        * @param aTime The start time of the current Scene's Update().

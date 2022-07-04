@@ -222,6 +222,14 @@ namespace Barebones
       void HandleCharacterDied(CharacterBehaviorComponent& aCharacter);
 
       /**
+       * A handler function that gets called whenever the camera finishes
+       * the initial panning sequence.
+       *
+       * @param aCamera The camera that finished panning.
+       */
+      void HandleCameraFinishedInitialSequence(UrsineEngine::GameObject& aCamera);
+
+      /**
        * A handler function that gets called whenever a GameObject is about
        * to be deleted.
        *

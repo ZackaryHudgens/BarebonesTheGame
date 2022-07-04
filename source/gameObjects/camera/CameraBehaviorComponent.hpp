@@ -101,7 +101,6 @@ namespace Barebones
 
       std::unique_ptr<CameraState> mState;
 
-      double mRotation;
       double mZoomDistance;
   };
 }

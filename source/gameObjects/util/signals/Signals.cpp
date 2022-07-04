@@ -64,4 +64,4 @@ Barebones::DisplayHintRequestedSignal Barebones::DisplayHintRequested;
  */
 Barebones::CameraZoomChangeRequestedSignal Barebones::CameraZoomChangeRequested;
 Barebones::CameraFinishedMovingSignal Barebones::CameraFinishedMoving;
-Barebones::CameraFinishedMovingToBoardSignal Barebones::CameraFinishedMovingToBoard;
+Barebones::CameraFinishedInitialSequenceSignal Barebones::CameraFinishedInitialSequence;

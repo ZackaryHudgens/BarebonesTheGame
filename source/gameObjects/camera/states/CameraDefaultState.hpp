@@ -33,15 +33,6 @@ namespace Barebones
        * @return A unique_ptr to a new state, if necessary.
        */
       std::unique_ptr<CameraState> HandleCharacterTurnBegan(CharacterBehaviorComponent& aCharacter) override;
-
-      /**
-       * A handler function that gets called whenever the act display finishes
-       * its intro animation.
-       *
-       * @param aDisplay The act display that finished.
-       * @return A unique_ptr to a new state, if necessary.
-       */
-      std::unique_ptr<CameraState> HandleActDisplayFinished(UrsineEngine::GameObject& aDisplay) override;
   };
 }
 

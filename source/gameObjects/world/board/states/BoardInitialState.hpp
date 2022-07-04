@@ -23,11 +23,11 @@ namespace Barebones
 
       /**
        * A handler function that gets called whenever the camera finishes
-       * moving to the board.
+       * the initial panning sequence.
        *
        * @return A pointer to a new state, if necessary.
        */
-      std::unique_ptr<BoardState> HandleCameraFinishedMovingToBoard() override;
+      std::unique_ptr<BoardState> HandleCameraFinishedInitialSequence() override;
   };
 }
 

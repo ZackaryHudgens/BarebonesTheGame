@@ -11,9 +11,6 @@
 #include "BoardLayoutComponent.hpp"
 
 #include "CharacterDefaultState.hpp"
-#include "CharacterDyingState.hpp"
-#include "CharacterMovingState.hpp"
-#include "CharacterShakingState.hpp"
 #include "CharacterSpawningState.hpp"
 
 #include "MoveSkill.hpp"
@@ -48,7 +45,9 @@ void CharacterBehaviorComponent::Initialize()
     // Begin in the default state for movement, and the spawning state
     // for status.
     mMovementState = std::make_unique<CharacterDefaultState>(*parent);
+    mMovementState->OnEnter();
     mStatusState = std::make_unique<CharacterSpawningState>(*parent);
+    mStatusState->OnEnter();
 
     // All characters start with the Move skill.
     AddSkill(std::make_unique<MoveSkill>());
@@ -64,7 +63,9 @@ void CharacterBehaviorComponent::Update(double aTime)
     auto newMovementState = mMovementState->Update(aTime);
     if(newMovementState != nullptr)
     {
+      mMovementState->OnExit();
       mMovementState.swap(newMovementState);
+      mMovementState->OnEnter();
     }
   }
 
@@ -74,7 +75,9 @@ void CharacterBehaviorComponent::Update(double aTime)
     auto newStatusState = mStatusState->Update(aTime);
     if(newStatusState != nullptr)
     {
+      mStatusState->OnExit();
       mStatusState.swap(newStatusState);
+      mStatusState->OnExit();
     }
   }
 
@@ -121,11 +124,15 @@ void CharacterBehaviorComponent::SetCurrentHealth(int aHealth)
   {
     CharacterDied.Notify(*this);
 
-    auto parent = GetParent();
-    if(parent != nullptr)
+    if(mStatusState != nullptr)
     {
-      // Switch to the dying state.
-      mStatusState = std::make_unique<CharacterDyingState>(*parent);
+      auto newState = mStatusState->HandleCharacterDied();
+      if(newState != nullptr)
+      {
+        mStatusState->OnExit();
+        mStatusState.swap(newState);
+        mStatusState->OnEnter();
+      }
     }
   }
 }
@@ -254,13 +261,15 @@ std::vector<Barebones::Effect*> CharacterBehaviorComponent::GetEffects()
 void CharacterBehaviorComponent::MoveToPosition(const glm::vec3& aPosition,
                                                 double aSpeed)
 {
-  auto parent = GetParent();
-  if(parent != nullptr)
+  if(mMovementState != nullptr)
   {
-    // Switch to the moving state.
-    mMovementState = std::make_unique<CharacterMovingState>(*parent,
-                                                            aPosition,
-                                                            aSpeed);
+    auto newState = mMovementState->HandleMovementRequested(aPosition, aSpeed);
+    if(newState != nullptr)
+    {
+      mMovementState->OnExit();
+      mMovementState.swap(newState);
+      mMovementState->OnEnter();
+    }
   }
 }
 
@@ -279,15 +288,21 @@ void CharacterBehaviorComponent::DealDamage(int aValue)
   // Apply the damage.
   SetCurrentHealth(GetCurrentHealth() - aValue);
 
+  if(mMovementState != nullptr)
+  {
+    auto newState = mMovementState->HandleDamageReceived();
+    if(newState != nullptr)
+    {
+      mMovementState->OnExit();
+      mMovementState.swap(newState);
+      mMovementState->OnEnter();
+    }
+  }
+
   // Switch to the shaking state, if we aren't already there.
   auto parent = GetParent();
   if(parent != nullptr)
   {
-    if(dynamic_cast<CharacterShakingState*>(mMovementState.get()) == nullptr)
-    {
-      mMovementState = std::make_unique<CharacterShakingState>(*parent);
-    }
-
     // Add a status message to the queue.
     std::stringstream damageText;
     damageText << aValue;

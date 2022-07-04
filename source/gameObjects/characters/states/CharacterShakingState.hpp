@@ -11,6 +11,8 @@ namespace Barebones
 
       /**
        * Constructor.
+       *
+       * @param aCharacter The character GameObject that owns this state.
        */
       CharacterShakingState(UrsineEngine::GameObject& aCharacter);
 

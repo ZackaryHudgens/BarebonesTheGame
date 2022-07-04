@@ -4,6 +4,8 @@
 
 #include "CharacterDefaultState.hpp"
 
+#include "Colors.hpp"
+
 using Barebones::CharacterDyingState;
 
 /******************************************************************************/
@@ -15,10 +17,30 @@ CharacterDyingState::CharacterDyingState(UrsineEngine::GameObject& aCharacter)
 }
 
 /******************************************************************************/
+void CharacterDyingState::OnEnter()
+{
+  // Upon entering this state, set the fade color and initialize the fade value
+  // so the character begins fading out during Update().
+  auto character = GetCharacter();
+  if(character != nullptr)
+  {
+    auto mesh = character->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
+    if(mesh != nullptr)
+    {
+      auto shader = mesh->GetCurrentShader();
+      if(shader != nullptr)
+      {
+        shader->Activate();
+        shader->SetFloat("fadeValue", mFadeValue);
+        shader->SetVec4("fadeColor", glm::vec4(BACKGROUND_COLOR, 1.0));
+      }
+    }
+  }
+}
+
+/******************************************************************************/
 std::unique_ptr<Barebones::CharacterState> CharacterDyingState::Update(double aTime)
 {
-  std::unique_ptr<CharacterState> newState = nullptr;
-
   auto character = GetCharacter();
   if(character != nullptr)
   {
@@ -33,18 +55,17 @@ std::unique_ptr<Barebones::CharacterState> CharacterDyingState::Update(double aT
         shader->Activate();
         shader->SetFloat("fadeValue", mFadeValue);
 
-        if(mFadeValue >= 0.95)
+        if(mFadeValue >= 1.0)
         {
-          // This character has finished fading to black, so
-          // schedule it for deletion.
-          character->ScheduleForDeletion();
+          shader->SetFloat("fadeValue", 1.0);
 
-          // Revert to the default state.
-          newState = std::make_unique<CharacterDefaultState>(*character);
+          // Delete the parent character now that it has finished
+          // fading out.
+          character->ScheduleForDeletion();
         }
       }
     }
   }
 
-  return newState;
+  return nullptr;
 }

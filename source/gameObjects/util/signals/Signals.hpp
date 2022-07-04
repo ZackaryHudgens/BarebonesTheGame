@@ -121,11 +121,11 @@ namespace Barebones
    */
   typedef UrsineEngine::SignalT<double> CameraZoomChangeRequestedSignal;
   typedef UrsineEngine::SignalT<> CameraFinishedMovingSignal;
-  typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> CameraFinishedMovingToBoardSignal;
+  typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> CameraFinishedInitialSequenceSignal;
 
   extern CameraZoomChangeRequestedSignal CameraZoomChangeRequested;
   extern CameraFinishedMovingSignal CameraFinishedMoving;
-  extern CameraFinishedMovingToBoardSignal CameraFinishedMovingToBoard;
+  extern CameraFinishedInitialSequenceSignal CameraFinishedInitialSequence;
 }
 
 #endif

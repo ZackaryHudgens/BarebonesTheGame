@@ -18,15 +18,42 @@ CameraPanningToBoardState::CameraPanningToBoardState(UrsineEngine::GameObject& a
 /******************************************************************************/
 void CameraPanningToBoardState::OnEnter()
 {
+  // Upon entering this state, place the camera high above and back far enough
+  // to view the entire board, then start moving downward towards it.
   SetSpeed(0.1);
 
   auto camera = GetCamera();
   if(camera != nullptr)
   {
-    auto targetPos = camera->GetPosition();
-    targetPos.y -= 8.0;
+    auto cameraBehaviorComponent = camera->GetFirstComponentOfType<CameraBehaviorComponent>();
+    if(cameraBehaviorComponent != nullptr)
+    {
+      auto board = cameraBehaviorComponent->GetFollowedBoard();
+      if(board != nullptr)
+      {
+        auto boardLayoutComponent = board->GetFirstComponentOfType<BoardLayoutComponent>();
+        if(boardLayoutComponent != nullptr)
+        {
+          int centerColumn = boardLayoutComponent->GetColumns() / 2;
+          int centerRow = boardLayoutComponent->GetRows() / 2;
 
-    SetTargetPosition(targetPos);
+          TileLocation centerLocation(centerColumn, centerRow);
+          auto tile = boardLayoutComponent->GetTileAtLocation(centerLocation);
+          if(tile != nullptr)
+          {
+            auto startPos = tile->GetPosition();
+            startPos.y += 25.0;
+            startPos.z += 9.0;
+
+            camera->SetPosition(startPos);
+
+            auto targetPos = startPos;
+            targetPos.y -= 17.0;
+            SetTargetPosition(targetPos);
+          }
+        }
+      }
+    }
   }
 }
 
@@ -36,7 +63,7 @@ void CameraPanningToBoardState::OnExit()
   auto camera = GetCamera();
   if(camera != nullptr)
   {
-    CameraFinishedMovingToBoard.Notify(*camera);
+    CameraFinishedInitialSequence.Notify(*camera);
   }
 }
 

@@ -20,6 +20,20 @@ CharacterMovingState::CharacterMovingState(UrsineEngine::GameObject& aCharacter,
 }
 
 /******************************************************************************/
+void CharacterMovingState::OnExit()
+{
+  auto character = GetCharacter();
+  if(character != nullptr)
+  {
+    auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
+    if(characterBehaviorComponent != nullptr)
+    {
+      CharacterFinishedMoving.Notify(*characterBehaviorComponent);
+    }
+  }
+}
+
+/******************************************************************************/
 std::unique_ptr<Barebones::CharacterState> CharacterMovingState::Update(double aTime)
 {
   std::unique_ptr<CharacterState> newState = nullptr;
@@ -39,12 +53,6 @@ std::unique_ptr<Barebones::CharacterState> CharacterMovingState::Update(double a
     {
       character->SetPosition(mTargetPosition);
       mSpeed = 0.0;
-
-      auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
-      if(characterBehaviorComponent != nullptr)
-      {
-        CharacterFinishedMoving.Notify(*characterBehaviorComponent);
-      }
 
       // Revert to the default state.
       newState = std::make_unique<CharacterDefaultState>(*character);

@@ -11,8 +11,15 @@ namespace Barebones
 
       /**
        * Constructor.
+       *
+       * @param aCharacter The character GameObject that owns this state.
        */
       CharacterDyingState(UrsineEngine::GameObject& aCharacter);
+
+      /**
+       * Gets called whenever the character enters this state.
+       */
+      void OnEnter() override;
 
       /**
        * A function that gets called during the parent character's Update().

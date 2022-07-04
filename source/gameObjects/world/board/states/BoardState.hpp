@@ -35,11 +35,11 @@ namespace Barebones
 
       /**
        * A virtual function that gets called whenever the camera finishes
-       * moving to the board.
+       * the initial panning sequence.
        *
        * @return A pointer to a new state, if necessary.
        */
-      virtual std::unique_ptr<BoardState> HandleCameraFinishedMovingToBoard() { return nullptr; }
+      virtual std::unique_ptr<BoardState> HandleCameraFinishedInitialSequence() { return nullptr; }
 
       /**
        * A virtual function that gets called whenever a skill is selected

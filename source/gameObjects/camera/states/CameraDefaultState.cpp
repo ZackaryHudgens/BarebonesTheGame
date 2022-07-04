@@ -1,13 +1,7 @@
 #include "CameraDefaultState.hpp"
 
-#include "BoardLayoutComponent.hpp"
-#include "CameraBehaviorComponent.hpp"
-
 #include "CameraFollowingCharacterState.hpp"
 #include "CameraFollowingPlayerState.hpp"
-#include "CameraPanningToBoardState.hpp"
-
-#include "Signals.hpp"
 
 using Barebones::CameraDefaultState;
 
@@ -46,21 +40,6 @@ std::unique_ptr<Barebones::CameraState> CameraDefaultState::HandleCharacterTurnB
   {
     newState = std::make_unique<CameraFollowingCharacterState>(*camera,
                                                                *characterParent);
-  }
-
-  return std::move(newState);
-}
-
-/******************************************************************************/
-std::unique_ptr<Barebones::CameraState> CameraDefaultState::HandleActDisplayFinished(UrsineEngine::GameObject& aDisplay)
-{
-  std::unique_ptr<CameraState> newState = nullptr;
-
-  // Swap to the Following Character state, if possible.
-  auto camera = GetCamera();
-  if(camera != nullptr)
-  {
-    newState = std::make_unique<CameraPanningToBoardState>(*camera);
   }
 
   return std::move(newState);

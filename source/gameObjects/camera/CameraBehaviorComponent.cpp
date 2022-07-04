@@ -7,7 +7,7 @@
 #include "BoardLayoutComponent.hpp"
 #include "BoardTurnManagerComponent.hpp"
 
-#include "CameraDefaultState.hpp"
+#include "CameraInitialState.hpp"
 
 using Barebones::CameraBehaviorComponent;
 
@@ -16,7 +16,6 @@ CameraBehaviorComponent::CameraBehaviorComponent()
   : Component()
   , mFollowedBoard(nullptr)
   , mState(nullptr)
-  , mRotation(-40.0)
   , mZoomDistance(0.0)
 {
   PlayerTurnBegan.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
@@ -53,15 +52,12 @@ CameraBehaviorComponent::CameraBehaviorComponent()
 /******************************************************************************/
 void CameraBehaviorComponent::Initialize()
 {
-  // Begin in the default camera state.
+  // Begin in the initial camera state.
   auto parent = GetParent();
   if(parent != nullptr)
   {
-    mState = std::make_unique<CameraDefaultState>(*parent);
-
-    // Initialize the camera rotation.
-    parent->SetRotation(mRotation,
-                        glm::vec3(1.0, 0.0, 0.0));
+    mState = std::make_unique<CameraInitialState>(*parent);
+    mState->OnEnter();
   }
 }
 
@@ -84,30 +80,6 @@ void CameraBehaviorComponent::Update(double aTime)
 void CameraBehaviorComponent::SetFollowedBoard(UrsineEngine::GameObject& aBoard)
 {
   mFollowedBoard = &aBoard;
-
-  auto boardLayoutComponent = mFollowedBoard->GetFirstComponentOfType<BoardLayoutComponent>();
-  if(boardLayoutComponent != nullptr)
-  {
-    // Get the tile in the center of the board and set the camera position using
-    // that tile.
-    int centerColumn = boardLayoutComponent->GetColumns() / 2;
-    int centerRow = boardLayoutComponent->GetRows() / 2;
-
-    TileLocation centerLocation(centerColumn, centerRow);
-    auto tile = boardLayoutComponent->GetTileAtLocation(centerLocation);
-    if(tile != nullptr)
-    {
-      auto tilePos = tile->GetPosition();
-      tilePos.y += 15.0;
-      tilePos.z += 5.0;
-
-      auto parent = GetParent();
-      if(parent != nullptr)
-      {
-        parent->SetPosition(tilePos);
-      }
-    }
-  }
 }
 
 /******************************************************************************/

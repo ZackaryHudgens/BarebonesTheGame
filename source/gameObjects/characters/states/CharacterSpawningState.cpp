@@ -6,6 +6,7 @@
 
 #include "CharacterDefaultState.hpp"
 
+#include "Colors.hpp"
 #include "Signals.hpp"
 
 using Barebones::CharacterSpawningState;
@@ -16,6 +17,42 @@ CharacterSpawningState::CharacterSpawningState(UrsineEngine::GameObject& aCharac
   , mFadeValue(1.0)
   , mFadeSpeed(0.1)
 {
+}
+
+/******************************************************************************/
+void CharacterSpawningState::OnEnter()
+{
+  // Upon entering this state, set the fade color and initialize the fade value
+  // so the character begins fading in during Update().
+  auto character = GetCharacter();
+  if(character != nullptr)
+  {
+    auto mesh = character->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
+    if(mesh != nullptr)
+    {
+      auto shader = mesh->GetCurrentShader();
+      if(shader != nullptr)
+      {
+        shader->Activate();
+        shader->SetFloat("fadeValue", mFadeValue);
+        shader->SetVec4("fadeColor", glm::vec4(BACKGROUND_COLOR, 1.0));
+      }
+    }
+  }
+}
+
+/******************************************************************************/
+void CharacterSpawningState::OnExit()
+{
+  auto character = GetCharacter();
+  if(character != nullptr)
+  {
+    auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
+    if(characterBehaviorComponent != nullptr)
+    {
+      CharacterFinishedSpawning.Notify(*characterBehaviorComponent);
+    }
+  }
 }
 
 /******************************************************************************/
@@ -39,12 +76,7 @@ std::unique_ptr<Barebones::CharacterState> CharacterSpawningState::Update(double
 
         if(mFadeValue <= 0.0)
         {
-          // This character has finished fading in.
-          auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
-          if(characterBehaviorComponent != nullptr)
-          {
-            CharacterFinishedSpawning.Notify(*characterBehaviorComponent);
-          }
+          shader->SetFloat("fadeValue", 0.0);
 
           // Revert to the default state.
           newState = std::make_unique<CharacterDefaultState>(*character);

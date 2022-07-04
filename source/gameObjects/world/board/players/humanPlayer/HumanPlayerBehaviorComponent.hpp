@@ -53,6 +53,14 @@ namespace Barebones
       void HandleBoardFinishedInitialSequence(UrsineEngine::GameObject& aBoard);
 
       /**
+       * A handler function that gets called whenever a character finishes
+       * its spawning animation.
+       *
+       * @param aCharacter The character that finished the animation.
+       */
+      void HandleCharacterFinishedSpawning(CharacterBehaviorComponent& aCharacter);
+
+      /**
        * A handler function that gets called whenever a character starts
        * moving along a designated path.
        *

@@ -65,6 +65,11 @@ BoardLayoutComponent::BoardLayoutComponent()
     this->HandleCharacterDied(aCharacter);
   });
 
+  CameraFinishedInitialSequence.Connect(*this, [this](UrsineEngine::GameObject& aCamera)
+  {
+    this->HandleCameraFinishedInitialSequence(aCamera);
+  });
+
   UrsineEngine::ObjectPendingDeletion.Connect(*this, [this](UrsineEngine::GameObject* aObject)
   {
     this->HandleObjectPendingDeletion(aObject);
@@ -677,6 +682,21 @@ void BoardLayoutComponent::HandleCharacterDied(CharacterBehaviorComponent& aChar
       {
         mCharacters.at(location.first).at(location.second) = nullptr;
       }
+    }
+  }
+}
+
+/******************************************************************************/
+void BoardLayoutComponent::HandleCameraFinishedInitialSequence(UrsineEngine::GameObject& aCamera)
+{
+  if(mState != nullptr)
+  {
+    auto newState = mState->HandleCameraFinishedInitialSequence();
+    if(newState != nullptr)
+    {
+      mState->OnExit();
+      mState.swap(newState);
+      mState->OnEnter();
     }
   }
 }
