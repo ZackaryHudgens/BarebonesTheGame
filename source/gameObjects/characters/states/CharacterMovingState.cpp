@@ -65,3 +65,20 @@ std::unique_ptr<Barebones::CharacterState> CharacterMovingState::Update(double a
 
   return newState;
 }
+
+/******************************************************************************/
+std::unique_ptr<Barebones::CharacterState> CharacterMovingState::HandleMovementRequested(const glm::vec3& aPosition,
+                                                                                         double aSpeed)
+{
+  std::unique_ptr<CharacterState> newState = nullptr;
+
+  auto character = GetCharacter();
+  if(character != nullptr)
+  {
+    newState = std::make_unique<CharacterMovingState>(*character,
+                                                      aPosition,
+                                                      aSpeed);
+  }
+
+  return newState;
+};

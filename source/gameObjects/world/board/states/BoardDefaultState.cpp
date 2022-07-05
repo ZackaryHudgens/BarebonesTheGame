@@ -1,18 +1,25 @@
 #include "BoardDefaultState.hpp"
 
-#include "BoardLayoutComponent.hpp"
+#include "BoardUsingSkillState.hpp"
 
+#include "BoardLayoutComponent.hpp"
 #include "TileBehaviorComponent.hpp"
 
 #include "Colors.hpp"
+#include "Signals.hpp"
 
 using Barebones::BoardDefaultState;
 
 /******************************************************************************/
 BoardDefaultState::BoardDefaultState(UrsineEngine::GameObject& aBoard)
   : BoardState(aBoard)
+  , mFocusedTile(nullptr)
   , mHighlightIntensity(0.7)
 {
+  BoardFocusedTileChanged.Connect(mObserver, [this](UrsineEngine::GameObject& aBoard)
+  {
+    this->HandleBoardFocusedTileChanged(aBoard);
+  });
 }
 
 /******************************************************************************/
@@ -33,8 +40,9 @@ void BoardDefaultState::OnEnter()
         auto tileBehaviorComponent = focusedTile->GetFirstComponentOfType<TileBehaviorComponent>();
         if(tileBehaviorComponent != nullptr)
         {
-          tileBehaviorComponent->SetHighlightColor(glm::vec4(DARK_COLOR, 1.0));
+          tileBehaviorComponent->SetHighlightColor(glm::vec4(BACKGROUND_COLOR, 1.0));
           tileBehaviorComponent->SetHighlightIntensity(mHighlightIntensity);
+          mFocusedTile = focusedTile;
         }
       }
     }
@@ -53,6 +61,21 @@ void BoardDefaultState::OnExit()
       tileBehaviorComponent->SetHighlightIntensity(0.0);
     }
   }
+}
+
+/******************************************************************************/
+std::unique_ptr<Barebones::BoardState> BoardDefaultState::HandleSkillSelected(Skill& aSkill)
+{
+  std::unique_ptr<BoardState> newState = nullptr;
+
+  // Swap to the Using Skill state.
+  auto board = GetBoard();
+  if(board != nullptr)
+  {
+    newState = std::make_unique<BoardUsingSkillState>(*board, aSkill);
+  }
+
+  return newState;
 }
 
 /******************************************************************************/
@@ -81,6 +104,7 @@ void BoardDefaultState::HandleBoardFocusedTileChanged(UrsineEngine::GameObject& 
         auto tileBehaviorComponent = focusedTile->GetFirstComponentOfType<TileBehaviorComponent>();
         if(tileBehaviorComponent != nullptr)
         {
+          tileBehaviorComponent->SetHighlightColor(glm::vec4(BACKGROUND_COLOR, 1.0));
           tileBehaviorComponent->SetHighlightIntensity(mHighlightIntensity);
           mFocusedTile = focusedTile;
         }

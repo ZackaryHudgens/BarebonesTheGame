@@ -28,8 +28,17 @@ namespace Barebones
        */
       void OnExit() override;
 
+      /**
+       * A handler function that gets called whenever a skill is selected
+       * for use on the board.
+       *
+       * @param aSkill The skill that was selected.
+       * @return A pointer to a new state, if necessary.
+       */
+      std::unique_ptr<BoardState> HandleSkillSelected(Skill& aSkill) override;
+
     private:
-      
+
       /**
        * A handler function that gets called whenever a board changes
        * its currently focused tile.

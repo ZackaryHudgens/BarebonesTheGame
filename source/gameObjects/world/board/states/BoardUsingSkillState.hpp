@@ -3,6 +3,8 @@
 
 #include "BoardState.hpp"
 
+#include <Observer.hpp>
+
 namespace Barebones
 {
   class BoardUsingSkillState : public BoardState
@@ -46,8 +48,32 @@ namespace Barebones
       std::unique_ptr<BoardState> HandleSkillCancelled(Skill& aSkill) override;
 
     private:
+
+      /**
+       * A handler function that gets called whenever a board changes
+       * its currently focused tile.
+       *
+       * @param aBoard The board that changed.
+       */
+      void HandleBoardFocusedTileChanged(UrsineEngine::GameObject& aBoard);
+
+      /**
+       * Un-highlights all pertinent tiles.
+       */
+      void RemoveHighlights();
+
+      /**
+       * Highlights all pertinent tiles.
+       */
+      void HighlightTiles();
+
+      UrsineEngine::Observer mObserver;
+
       Skill* mSkill;
       std::vector<UrsineEngine::GameObject*> mHighlightedTiles;
+      UrsineEngine::GameObject* mFocusedTile;
+
+      double mHighlightIntensity;
   };
 }
 

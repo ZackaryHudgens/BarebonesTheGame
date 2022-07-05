@@ -112,7 +112,7 @@ void BoardLayoutComponent::Initialize()
       mCharacters.emplace_back(characters);
     }
 
-    // Begin in the WaitingForCamera state.
+    // Begin in the initial state.
     mState = std::make_unique<BoardInitialState>(*parent);
   }
 }
@@ -519,50 +519,14 @@ void BoardLayoutComponent::HandlePlayerTurnEnded(PlayerBehaviorComponent& aPlaye
 /******************************************************************************/
 void BoardLayoutComponent::HandleSkillSelected(Skill& aSkill)
 {
-  mSkillUsedForHighlighting = &aSkill;
-
-  // First, un-highlight all highlighted tiles.
-  for(auto tileLocation : mHighlightedTileLocations)
+  if(mState != nullptr)
   {
-    auto tile = GetTileAtLocation(tileLocation);
-    if(tile != nullptr)
+    auto newState = mState->HandleSkillSelected(aSkill);
+    if(newState != nullptr)
     {
-      auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
-      if(tileBehaviorComponent != nullptr)
-      {
-        if(tileLocation != mFocusedTileLocation)
-        {
-          tileBehaviorComponent->SetHighlightIntensity(0.0);
-        }
-      }
-    }
-  }
-  mHighlightedTileLocations.clear();
-
-  // Next, highlight all tiles affected by this skill.
-  auto parent = GetParent();
-  if(parent != nullptr)
-  {
-    auto tileLocations = aSkill.GetTilesToHighlight(*parent, mFocusedTileLocation);
-    for(const auto tileLocation : tileLocations)
-    {
-      auto tile = GetTileAtLocation(tileLocation);
-      if(tile != nullptr)
-      {
-        auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
-        if(tileBehaviorComponent != nullptr)
-        {
-          // Don't update the highlight color/intensity if this is the
-          // currently hovered tile.
-          if(tileLocation != mFocusedTileLocation)
-          {
-            tileBehaviorComponent->SetHighlightColor(LIGHT_COLOR);
-            tileBehaviorComponent->SetHighlightIntensity(mHighlightIntensity);
-          }
-        }
-      }
-
-      mHighlightedTileLocations.emplace_back(tileLocation);
+      mState->OnExit();
+      mState.swap(newState);
+      mState->OnEnter();
     }
   }
 }
@@ -570,31 +534,31 @@ void BoardLayoutComponent::HandleSkillSelected(Skill& aSkill)
 /******************************************************************************/
 void BoardLayoutComponent::HandleSkillExecuted(Skill& aSkill)
 {
-  if(&aSkill == mSkillUsedForHighlighting)
+  if(mState != nullptr)
   {
-    for(auto tileLocation : mHighlightedTileLocations)
+    auto newState = mState->HandleSkillExecuted(aSkill);
+    if(newState != nullptr)
     {
-      auto tile = GetTileAtLocation(tileLocation);
-      if(tile != nullptr)
-      {
-        auto tileBehaviorComponent = tile->GetFirstComponentOfType<TileBehaviorComponent>();
-        if(tileBehaviorComponent != nullptr &&
-           tileLocation != mFocusedTileLocation)
-        {
-          tileBehaviorComponent->SetHighlightIntensity(0.0);
-        }
-      }
+      mState->OnExit();
+      mState.swap(newState);
+      mState->OnEnter();
     }
-
-    mHighlightedTileLocations.clear();
-    mSkillUsedForHighlighting = nullptr;
   }
 }
 
 /******************************************************************************/
 void BoardLayoutComponent::HandleSkillCancelled(Skill& aSkill)
 {
-  HandleSkillExecuted(aSkill);
+  if(mState != nullptr)
+  {
+    auto newState = mState->HandleSkillCancelled(aSkill);
+    if(newState != nullptr)
+    {
+      mState->OnExit();
+      mState.swap(newState);
+      mState->OnEnter();
+    }
+  }
 }
 
 /******************************************************************************/
