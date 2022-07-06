@@ -121,7 +121,7 @@ namespace Barebones
   /**
    * Camera signals
    */
-  typedef UrsineEngine::SignalT<double> CameraZoomChangeRequestedSignal;
+  typedef UrsineEngine::SignalT<> CameraZoomChangeRequestedSignal;
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> CameraFinishedInitialSequenceSignal;
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> CameraFinishedMovingToCharacterSignal;
 

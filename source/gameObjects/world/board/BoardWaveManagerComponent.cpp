@@ -103,8 +103,8 @@ void BoardWaveManagerComponent::GenerateEncounter(UrsineEngine::GameObject& aBoa
         // Try to place enemies as far to the right of the board as possible.
         //
         // Check each tile in each column, starting from the right. If that
-        // tile doesn't have a character occupying it, then add it to the list
-        // of available tiles, and select one at random to place the new character.
+        // tile doesn't have a character occupying it, add it to a list of
+        // available tiles, then select one at random to place the new character.
         // If there are no available tiles, check the next column.
         auto columns = boardLayoutComponent->GetColumns();
         auto rows = boardLayoutComponent->GetRows();

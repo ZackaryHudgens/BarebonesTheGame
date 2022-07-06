@@ -18,7 +18,7 @@ CameraBehaviorComponent::CameraBehaviorComponent()
   : Component()
   , mFollowedBoard(nullptr)
   , mState(nullptr)
-  , mZoomDistance(0.0)
+  , mZoomedOut(false)
 {
   PlayerTurnBegan.Connect(*this, [this](PlayerBehaviorComponent& aPlayer)
   {
@@ -40,9 +40,9 @@ CameraBehaviorComponent::CameraBehaviorComponent()
     this->HandleCharacterTurnEnded(aCharacter);
   });
 
-  CameraZoomChangeRequested.Connect(*this, [this](double aZoom)
+  CameraZoomChangeRequested.Connect(*this, [this]()
   {
-    this->HandleCameraZoomChangeRequested(aZoom);
+    this->HandleCameraZoomChangeRequested();
   });
 
   ActDisplayFinished.Connect(*this, [this](UrsineEngine::GameObject& aDisplay)
@@ -145,9 +145,14 @@ void CameraBehaviorComponent::HandleCharacterTurnEnded(CharacterBehaviorComponen
 }
 
 /******************************************************************************/
-void CameraBehaviorComponent::HandleCameraZoomChangeRequested(double aZoom)
+void CameraBehaviorComponent::HandleCameraZoomChangeRequested()
 {
-  mZoomDistance = aZoom;
+  mZoomedOut = !mZoomedOut;
+
+  if(mState != nullptr)
+  {
+    mState->HandleCameraZoomChange(mZoomedOut);
+  }
 }
 
 /******************************************************************************/

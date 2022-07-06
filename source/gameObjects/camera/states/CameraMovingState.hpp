@@ -24,6 +24,14 @@ namespace Barebones
        */
       std::unique_ptr<CameraState> Update(double aTime) override;
 
+      /**
+       * A handler function that gets called whenever the camera is zoomed
+       * in or out.
+       *
+       * @param aZoom Whether the camera is zoomed in or out.
+       */
+      void HandleCameraZoomChange(bool aZoom) override;
+
     protected:
 
       /**

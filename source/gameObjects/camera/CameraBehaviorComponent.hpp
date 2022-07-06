@@ -45,11 +45,11 @@ namespace Barebones
       UrsineEngine::GameObject* GetFollowedBoard() { return mFollowedBoard; }
 
       /**
-       * Returns the current zoom distance set by the player.
+       * Returns whether the camera is zoomed out.
        *
-       * @return The current zoom distance set by the player.
+       * @return Whether the camera is zoomed out.
        */
-      double GetZoomDistance() const { return mZoomDistance; }
+      bool IsZoomedOut() const { return mZoomedOut; }
 
     private:
 
@@ -82,12 +82,10 @@ namespace Barebones
       void HandleCharacterTurnEnded(CharacterBehaviorComponent& aCharacter);
 
       /**
-       * A handler function that gets called whenever the player tries
+       * A handler function that gets called whenever the player asks
        * to zoom the camera in/out.
-       *
-       * @param aZoom The value to zoom by in world space.
        */
-      void HandleCameraZoomChangeRequested(double aZoom);
+      void HandleCameraZoomChangeRequested();
 
       /**
        * A handler function that gets called whenever the act display finishes
@@ -101,7 +99,7 @@ namespace Barebones
 
       std::unique_ptr<CameraState> mState;
 
-      double mZoomDistance;
+      bool mZoomedOut;
   };
 }
 

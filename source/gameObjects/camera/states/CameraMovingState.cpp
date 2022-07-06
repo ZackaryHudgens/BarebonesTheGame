@@ -1,5 +1,7 @@
 #include "CameraMovingState.hpp"
 
+#include "CameraBehaviorComponent.hpp"
+
 using Barebones::CameraMovingState;
 
 /******************************************************************************/
@@ -47,8 +49,57 @@ std::unique_ptr<Barebones::CameraState> CameraMovingState::Update(double aTime)
 }
 
 /******************************************************************************/
+void CameraMovingState::HandleCameraZoomChange(bool aZoom)
+{
+  auto camera = GetCamera();
+  if(camera != nullptr)
+  {
+    // If the camera was moving when the zoom change happened, apply the zoom
+    // to the current target position. Otherwise, apply it to the camera's
+    // current position.
+    auto targetPos = camera->GetPosition();
+    if(mMoving)
+    {
+      targetPos = mTargetPosition;
+    }
+
+    if(aZoom)
+    {
+      targetPos.y += 2.5;
+      targetPos.z += 2.5;
+    }
+    else
+    {
+      targetPos.y -= 2.5;
+      targetPos.z -= 2.5;
+    }
+
+    mTargetPosition = targetPos;
+    mMoving = true;
+  }
+}
+
+/******************************************************************************/
 void CameraMovingState::SetTargetPosition(const glm::vec3& aTarget)
 {
   mTargetPosition = aTarget;
+
+  // Take the zoom value into account.
+  auto camera = GetCamera();
+  if(camera != nullptr)
+  {
+    auto cameraBehaviorComponent = camera->GetFirstComponentOfType<CameraBehaviorComponent>();
+    if(cameraBehaviorComponent != nullptr)
+    {
+      auto zoomedOut = cameraBehaviorComponent->IsZoomedOut();
+
+      if(zoomedOut)
+      {
+        mTargetPosition.y += 2.5;
+        mTargetPosition.z += 2.5;
+      }
+    }
+  }
+
   mMoving = true;
 }

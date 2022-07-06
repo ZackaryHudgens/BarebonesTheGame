@@ -81,6 +81,14 @@ namespace Barebones
        */
       virtual std::unique_ptr<CameraState> HandleActDisplayFinished(UrsineEngine::GameObject& aDisplay);
 
+      /**
+       * A virtual function that gets called whenever the camera is zoomed
+       * in or out.
+       *
+       * @param aZoom Whether the camera is zoomed in or out.
+       */
+      virtual void HandleCameraZoomChange(bool aZoom) {}
+
     protected:
 
       /**

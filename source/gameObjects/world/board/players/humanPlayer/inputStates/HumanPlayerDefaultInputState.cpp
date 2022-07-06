@@ -101,12 +101,7 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
         }
         case UrsineEngine::KeyCode::eKEY_Z:
         {
-          CameraZoomChangeRequested.Notify(2.5);
-          break;
-        }
-        case UrsineEngine::KeyCode::eKEY_X:
-        {
-          CameraZoomChangeRequested.Notify(0.0);
+          CameraZoomChangeRequested.Notify();
           break;
         }
         case UrsineEngine::KeyCode::eKEY_ESCAPE:
