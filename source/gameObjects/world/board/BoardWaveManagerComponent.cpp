@@ -18,8 +18,6 @@
 #include "TileUtil.hpp"
 #include "Fonts.hpp"
 
-#include <iostream>
-
 using Barebones::BoardWaveManagerComponent;
 
 // Initialize the enocunter lists for each act.
@@ -42,10 +40,12 @@ std::vector<Barebones::CharacterType> BoardWaveManagerComponent::mActThreeEncoun
 /******************************************************************************/
 BoardWaveManagerComponent::BoardWaveManagerComponent()
   : Component()
-  , mBoard(nullptr)
+  , mAct(Act::eACT_ONE)
   , mWaveDisplay(nullptr)
   , mWaveNumber(0)
   , mWavesBeforeBoss(3)
+  , mMinimumEnemies(2)
+  , mMaximumEnemies(4)
 {
   NewEnemyWaveRequested.Connect(*this, [this](UrsineEngine::GameObject& aBoard)
   {
@@ -66,52 +66,95 @@ BoardWaveManagerComponent::BoardWaveManagerComponent()
 /******************************************************************************/
 void BoardWaveManagerComponent::GenerateEncounter(UrsineEngine::GameObject& aBoard)
 {
-  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
-  if(boardLayoutComponent != nullptr)
+  // Determine the pool of enemies to choose from based on the current Act.
+  std::vector<CharacterType>* characterPool = nullptr;
+  switch(mAct)
   {
-    for(int i = 0; i < 3; ++i)
+    case Act::eACT_ONE:
     {
-      // Retrieve all the available spaces on the board, then select some at
-      // random to add new enemies to.
-      auto columns = boardLayoutComponent->GetColumns();
-      auto rows = boardLayoutComponent->GetRows();
+      characterPool = &mActOneEncounters;
+      break;
+    }
+    case Act::eACT_TWO:
+    {
+      characterPool = &mActTwoEncounters;
+      break;
+    }
+    case Act::eACT_THREE:
+    {
+      characterPool = &mActThreeEncounters;
+      break;
+    }
+    default:
+    {
+      break;
+    }
+  }
 
-      std::vector<TileLocation> availableTiles;
-      for(int c = 0; c < columns; ++c)
+  if(characterPool != nullptr)
+  {
+    // Determine the number of enemies to spawn.
+    int numEnemies = rand() % (mMaximumEnemies - mMinimumEnemies) + mMinimumEnemies;
+    for(int i = 0; i < numEnemies; ++i)
+    {
+      auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
+      if(boardLayoutComponent != nullptr)
       {
-        for(int r = 0; r < rows; ++r)
+        // Try to place enemies as far to the right of the board as possible.
+        //
+        // Check each tile in each column, starting from the right. If that
+        // tile doesn't have a character occupying it, then add it to the list
+        // of available tiles, and select one at random to place the new character.
+        // If there are no available tiles, check the next column.
+        auto columns = boardLayoutComponent->GetColumns();
+        auto rows = boardLayoutComponent->GetRows();
+
+        for(int c = columns - 1; c >= 0; --c)
         {
-          auto character = boardLayoutComponent->GetCharacterAtLocation(TileLocation(c, r));
-          if(character == nullptr)
+          std::vector<TileLocation> availableTiles;
+          for(int r = 0; r < rows; ++r)
           {
-            availableTiles.emplace_back(TileLocation(c, r));
+            TileLocation location(c, r);
+            auto character = boardLayoutComponent->GetCharacterAtLocation(location);
+            if(character == nullptr)
+            {
+              availableTiles.emplace_back(location);
+            }
+          }
+
+          if(!availableTiles.empty())
+          {
+            auto randomNumber = rand() % availableTiles.size();
+            auto location = availableTiles.at(randomNumber);
+
+            // Generate a name for the new enemy.
+            int nameIndex = 0;
+            std::stringstream nameStream;
+            nameStream << "human";
+
+            do
+            {
+              ++nameIndex;
+
+              nameStream.str("");
+              nameStream << "human_" << nameIndex;
+            }
+            while(aBoard.GetChild(nameStream.str()) != nullptr);
+
+            // Randomly determine the type of enemy to create.
+            randomNumber = rand() % characterPool->size();
+            auto newEnemyType = characterPool->at(randomNumber);
+
+            // Create the new enemy and add it to the board.
+            auto newCharacter = CharacterFactory::CreateCharacter(newEnemyType, nameStream.str());
+            boardLayoutComponent->AddCharacterAtLocation(std::move(newCharacter), location);
+            mSpawningCharacters.emplace_back(boardLayoutComponent->GetCharacterAtLocation(location));
+
+            // We have successfully placed a new enemy; break out of the loop
+            // early and start placing the next enemy.
+            break;
           }
         }
-      }
-
-      if(!availableTiles.empty())
-      {
-        auto randomNumber = rand() % availableTiles.size();
-        auto location = availableTiles.at(randomNumber);
-
-        // Generate a name for the new enemy.
-        int nameIndex = 0;
-        std::stringstream nameStream;
-        nameStream << "human";
-
-        do
-        {
-          ++nameIndex;
-
-          nameStream.str("");
-          nameStream << "human_" << nameIndex;
-        }
-        while(aBoard.GetChild(nameStream.str()) != nullptr);
-
-        // Add the new enemy to the board.
-        auto newCharacter = CharacterFactory::CreateCharacter(CharacterType::eCORRUPTED_FARMER, nameStream.str());
-        boardLayoutComponent->AddCharacterAtLocation(std::move(newCharacter), location);
-        mSpawningCharacters.emplace_back(boardLayoutComponent->GetCharacterAtLocation(location));
       }
     }
   }
@@ -120,38 +163,38 @@ void BoardWaveManagerComponent::GenerateEncounter(UrsineEngine::GameObject& aBoa
 /******************************************************************************/
 void BoardWaveManagerComponent::HandleNewEnemyWaveRequested(UrsineEngine::GameObject& aBoard)
 {
-  // Create a scrolling message the displays the wave number and keep
-  // track of it. When the message is finished, GenerateEncounter will be
-  // called.
-  ++mWaveNumber;
-
-  std::stringstream nameStream;
-  nameStream << "waveDisplay_" << mWaveNumber;
-
-  std::stringstream displayStream;
-  if(mWaveNumber < mWavesBeforeBoss)
+  auto parent = GetParent();
+  if(parent != nullptr &&
+     &aBoard == parent)
   {
-    displayStream << "Wave " << mWaveNumber;
-  }
-  else
-  {
-    displayStream << "Boss Approaching!";
-  }
-
-  auto waveDisplay = std::make_unique<UrsineEngine::GameObject>(nameStream.str());
-  auto waveMessage = std::make_unique<ScrollingMessageBehaviorComponent>(displayStream.str(),
-                                                                         BIGGEST_FONT_SIZE,
-                                                                         200.0,
-                                                                         15);
-  waveDisplay->AddComponent(std::move(waveMessage));
-
-  auto scene = env.GetCurrentScene();
-  if(scene != nullptr)
-  {
-    if(scene->AddObject(std::move(waveDisplay)))
+    // Create a scrolling message the displays the wave number and keep
+    // track of it. When the message is finished, GenerateEncounter()
+    // will be called.
+    std::stringstream displayStream;
+    if(mWaveNumber < mWavesBeforeBoss)
     {
-      mWaveDisplay = scene->GetObjects().back();
-      mBoard = &aBoard;
+      ++mWaveNumber;
+      displayStream << "Wave " << mWaveNumber;
+    }
+    else
+    {
+      displayStream << "Boss Approaching!";
+    }
+
+    auto waveDisplay = std::make_unique<UrsineEngine::GameObject>("waveDisplay");
+    auto waveMessage = std::make_unique<ScrollingMessageBehaviorComponent>(displayStream.str(),
+                                                                           BIGGEST_FONT_SIZE,
+                                                                           200.0,
+                                                                           15);
+    waveDisplay->AddComponent(std::move(waveMessage));
+
+    auto scene = env.GetCurrentScene();
+    if(scene != nullptr)
+    {
+      if(scene->AddObject(std::move(waveDisplay)))
+      {
+        mWaveDisplay = scene->GetObjects().back();
+      }
     }
   }
 }
@@ -169,11 +212,13 @@ void BoardWaveManagerComponent::HandleCharacterFinishedSpawning(CharacterBehavio
     {
       mSpawningCharacters.erase(foundCharacter);
 
-      if(mSpawningCharacters.empty() &&
-         mBoard != nullptr)
+      if(mSpawningCharacters.empty())
       {
-        WaveFinishedSpawning.Notify(*mBoard);
-        mBoard = nullptr;
+        auto parent = GetParent();
+        if(parent != nullptr)
+        {
+          WaveFinishedSpawning.Notify(*parent);
+        }
       }
     }
   }
@@ -188,9 +233,10 @@ void BoardWaveManagerComponent::HandleObjectPendingDeletion(UrsineEngine::GameOb
     {
       mWaveDisplay = nullptr;
 
-      if(mBoard != nullptr)
+      auto parent = GetParent();
+      if(parent != nullptr)
       {
-        GenerateEncounter(*mBoard);
+        GenerateEncounter(*parent);
       }
     }
   }

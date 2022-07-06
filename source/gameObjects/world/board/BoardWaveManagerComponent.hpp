@@ -7,6 +7,7 @@
 #include "CharacterBehaviorComponent.hpp"
 #include "CharacterFactory.hpp"
 
+#include "Acts.hpp"
 #include "Side.hpp"
 
 namespace Barebones
@@ -19,6 +20,14 @@ namespace Barebones
        * Constructor.
        */
       BoardWaveManagerComponent();
+
+      /**
+       * Sets the act to generate enemy waves for. The type of enemies
+       * generated will depend upon the current act.
+       *
+       * @param aAct The act to generate encounters for.
+       */
+      void SetAct(const Act& aAct) { mAct = aAct; }
 
     private:
 
@@ -53,13 +62,17 @@ namespace Barebones
        */
       void HandleObjectPendingDeletion(UrsineEngine::GameObject* aObject);
 
-      UrsineEngine::GameObject* mBoard;
       UrsineEngine::GameObject* mWaveDisplay;
 
       std::vector<UrsineEngine::GameObject*> mSpawningCharacters;
 
+      Act mAct;
+
       int mWaveNumber;
       int mWavesBeforeBoss;
+
+      int mMinimumEnemies;
+      int mMaximumEnemies;
 
       static std::vector<CharacterType> mActOneEncounters;
       static std::vector<CharacterType> mActTwoEncounters;

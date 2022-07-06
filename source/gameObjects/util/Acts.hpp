@@ -6,7 +6,7 @@ namespace Barebones
   enum class Act
   {
     eACT_ONE,
-    eACT_TOW,
+    eACT_TWO,
     eACT_THREE,
     eFINALE
   };

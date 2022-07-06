@@ -47,12 +47,12 @@ void Skill::Execute(UrsineEngine::GameObject& aBoard,
     if(scene != nullptr)
     {
       std::stringstream nameStream;
-      int nameIndex = 0;
       for(const auto& visualEffectType : mVisualEffects)
       {
         // Create a visual effect for each affected tile.
         for(const auto& affectedTile : GetAffectedTiles(aBoard, aLocation))
         {
+          int nameIndex = 0;
           do
           {
             // Generate a name for this visual effect.
