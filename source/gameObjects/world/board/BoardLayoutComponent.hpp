@@ -163,11 +163,11 @@ namespace Barebones
       /**
        * Moves the followed character to the tile at the given location.
        *
-       * @param aCharacterLocation The location of the character to move.
-       * @param aTileLocation The location of the tile to move to.
+       * @param aCurrentLocation The current location of the character.
+       * @param aTargetLocation The location of the tile to move to.
        */
-      void MoveCharacter(const TileLocation& aCharacterLocation,
-                         const TileLocation& aTileLocation);
+      void MoveCharacter(const TileLocation& aCurrentLocation,
+                         const TileLocation& aTargetLocation);
 
       /**
        * A handler function that gets called whenever a player's turn begins.

@@ -426,15 +426,10 @@ void BoardLayoutComponent::MoveCharacterAlongPath(const TileLocation& aCharacter
     auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
     if(characterBehaviorComponent != nullptr)
     {
-      mMovingCharacter = character;
-      mFollowedPath = aPath;
-
-      // Move the character to the first tile in the path.
-      if(!mFollowedPath.empty())
+      if(!aPath.empty())
       {
-        auto tileLocation = mFollowedPath.front();
-        mFollowedPath.erase(mFollowedPath.begin());
-        MoveCharacter(aCharacterLocation, tileLocation);
+        mMovingCharacter = character;
+        mFollowedPath = aPath;
 
         CharacterStartedMovingAlongPath.Notify(*characterBehaviorComponent);
       }
@@ -443,12 +438,12 @@ void BoardLayoutComponent::MoveCharacterAlongPath(const TileLocation& aCharacter
 }
 
 /******************************************************************************/
-void BoardLayoutComponent::MoveCharacter(const TileLocation& aCharacterLocation,
-                                         const TileLocation& aTileLocation)
+void BoardLayoutComponent::MoveCharacter(const TileLocation& aCurrentLocation,
+                                         const TileLocation& aTargetLocation)
 {
   if(mMovingCharacter != nullptr)
   {
-    auto tile = GetTileAtLocation(aTileLocation);
+    auto tile = GetTileAtLocation(aTargetLocation);
     if(tile != nullptr)
     {
       auto tileMeshComponent = tile->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
@@ -458,16 +453,17 @@ void BoardLayoutComponent::MoveCharacter(const TileLocation& aCharacterLocation,
          characterBehaviorComponent != nullptr &&
          characterMeshComponent != nullptr)
       {
+        // Move the character in world space.
         auto position = tile->GetPosition();
         position.y += tileMeshComponent->GetHeight() / 2.0;
         position.y += characterMeshComponent->GetHeight() / 2.0;
         characterBehaviorComponent->MoveToPosition(position, 0.3);
 
         // Update the character map.
-        if(aCharacterLocation != aTileLocation)
+        if(aCurrentLocation != aTargetLocation)
         {
-          mCharacters[aTileLocation.first][aTileLocation.second] = mMovingCharacter;
-          mCharacters[aCharacterLocation.first][aCharacterLocation.second] = nullptr;
+          mCharacters[aTargetLocation.first][aTargetLocation.second] = mMovingCharacter;
+          mCharacters[aCurrentLocation.first][aCurrentLocation.second] = nullptr;
         }
       }
     }
@@ -584,12 +580,11 @@ void BoardLayoutComponent::HandleCharacterFinishedMoving(CharacterBehaviorCompon
       // We are no longer waiting for this character to finish moving.
       mWaitingForMovingCharacter = false;
 
-      // If the followed path is empty, then there is no moving character
-      // at the moment.
+      // If the followed path is empty, then we have finished moving the
+      // character.
       if(mFollowedPath.empty())
       {
         mMovingCharacter = nullptr;
-
         CharacterFinishedMovingAlongPath.Notify(aCharacter);
       }
     }

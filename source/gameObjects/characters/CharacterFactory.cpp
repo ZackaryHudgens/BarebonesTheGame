@@ -50,7 +50,7 @@ std::unique_ptr<UrsineEngine::GameObject> CharacterFactory::CreateCharacter(cons
     case CharacterType::eBASIC_SKELETON:
     {
       newCharacterBehaviorComponent->SetName("Skelly");
-      newCharacterBehaviorComponent->SetMover(std::make_unique<DiagonalCharacterMover>());
+      newCharacterBehaviorComponent->SetMover(std::make_unique<DefaultCharacterMover>());
       newCharacterBehaviorComponent->SetMaximumHealth(10);
       newCharacterBehaviorComponent->SetCurrentHealth(10);
       newCharacterBehaviorComponent->SetSide(Side::ePLAYER);
