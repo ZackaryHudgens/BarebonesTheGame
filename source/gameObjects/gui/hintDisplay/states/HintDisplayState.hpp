@@ -3,6 +3,8 @@
 
 #include <GameObject.hpp>
 
+#include "PlayerBehaviorComponent.hpp"
+
 namespace Barebones
 {
   class HintDisplayState
@@ -28,6 +30,14 @@ namespace Barebones
        * it exits this state.
        */
       virtual void OnExit() {};
+
+      /**
+       * A virtual function that gets called whenever a player's turn begins.
+       *
+       * @param aPlayer The player whose turn began.
+       * @return A unique_ptr to a new state, if necessary.
+       */
+      virtual std::unique_ptr<HintDisplayState> HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlayer) { return nullptr; }
       
     protected:
 

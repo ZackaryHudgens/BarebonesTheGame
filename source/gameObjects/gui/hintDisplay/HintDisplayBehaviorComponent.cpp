@@ -1,6 +1,6 @@
 #include "HintDisplayBehaviorComponent.hpp"
 
-#include "HintDisplayTakingTurnState.hpp"
+#include "HintDisplayDefaultState.hpp"
 
 #include "HumanPlayerBehaviorComponent.hpp"
 
@@ -25,7 +25,7 @@ void HintDisplayBehaviorComponent::Initialize()
   auto parent = GetParent();
   if(parent != nullptr)
   {
-    mState = std::make_unique<HintDisplayState>(*parent);
+    mState = std::make_unique<HintDisplayDefaultState>(*parent);
     mState->OnEnter();
   }
 }
@@ -33,23 +33,14 @@ void HintDisplayBehaviorComponent::Initialize()
 /******************************************************************************/
 void HintDisplayBehaviorComponent::HandlePlayerTurnBegan(PlayerBehaviorComponent& aPlayer)
 {
-  auto parent = GetParent();
-  if(parent != nullptr)
+  if(mState != nullptr)
   {
-    if(mState != nullptr)
+    auto newState = mState->HandlePlayerTurnBegan(aPlayer);
+    if(newState != nullptr)
     {
       mState->OnExit();
+      mState.swap(newState);
+      mState->OnEnter();
     }
-
-    if(dynamic_cast<HumanPlayerBehaviorComponent*>(&aPlayer) != nullptr)
-    {
-      mState = std::make_unique<HintDisplayTakingTurnState>(*parent);
-    }
-    else
-    {
-      mState = std::make_unique<HintDisplayState>(*parent);
-    }
-
-    mState->OnEnter();
   }
 }

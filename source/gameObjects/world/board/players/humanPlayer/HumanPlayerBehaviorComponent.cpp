@@ -23,6 +23,7 @@ HumanPlayerBehaviorComponent::HumanPlayerBehaviorComponent()
   , mMaxSkeletons(7)
   , mWaitingForCharacterRemoval(false)
   , mWaitingToSelectCreateSkill(false)
+  , mWaitingForCharacterCreation(false)
 {
   SetSide(Side::ePLAYER);
   mRemoveSkill.SetCharacterType(Type::eSKELETON);
@@ -65,6 +66,11 @@ HumanPlayerBehaviorComponent::HumanPlayerBehaviorComponent()
     this->HandleSkillExecuted(aSkill);
   });
 
+  SkillCancelled.Connect(*this, [this](Skill& aSkill)
+  {
+    this->HandleSkillCancelled(aSkill);
+  });
+
   AllCharactersOfSideDefeated.Connect(*this, [this](UrsineEngine::GameObject& aBoard,
                                                     const Side& aSide)
   {
@@ -80,6 +86,7 @@ void HumanPlayerBehaviorComponent::Update(double aTime)
     if(mBoard != nullptr)
     {
       mCreateSkill.Select(*mBoard);
+      mWaitingForCharacterCreation = true;
     }
 
     mWaitingToSelectCreateSkill = false;
@@ -235,12 +242,47 @@ void HumanPlayerBehaviorComponent::HandleCharacterSelectedFromRewardsMenu(const 
 /******************************************************************************/
 void HumanPlayerBehaviorComponent::HandleSkillExecuted(Skill& aSkill)
 {
-  if(mWaitingForCharacterRemoval)
+  if(&aSkill == &mRemoveSkill &&
+     mWaitingForCharacterRemoval)
   {
+    mWaitingForCharacterRemoval = false;
+    mWaitingToSelectCreateSkill = true;
+  }
+
+  if(&aSkill == &mCreateSkill &&
+     mWaitingForCharacterCreation)
+  {
+    mWaitingForCharacterCreation = false;
+
     if(mBoard != nullptr)
     {
-      mWaitingForCharacterRemoval = false;
-      mWaitingToSelectCreateSkill = true;
+      NewEnemyWaveRequested.Notify(*mBoard);
+    }
+  }
+}
+
+/******************************************************************************/
+void HumanPlayerBehaviorComponent::HandleSkillCancelled(Skill& aSkill)
+{
+  if(&aSkill == &mRemoveSkill &&
+     mWaitingForCharacterRemoval)
+  {
+    mWaitingForCharacterRemoval = false;
+
+    if(mBoard != nullptr)
+    {
+      NewEnemyWaveRequested.Notify(*mBoard);
+    }
+  }
+
+  if(&aSkill == &mCreateSkill &&
+     mWaitingForCharacterCreation)
+  {
+    mWaitingForCharacterCreation = false;
+
+    if(mBoard != nullptr)
+    {
+      NewEnemyWaveRequested.Notify(*mBoard);
     }
   }
 }

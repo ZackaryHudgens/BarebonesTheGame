@@ -59,6 +59,7 @@ namespace Barebones
       std::vector<UrsineEngine::GameObject*> mSpawningCharacters;
 
       int mWaveNumber;
+      int mWavesBeforeBoss;
 
       static std::vector<CharacterType> mActOneEncounters;
       static std::vector<CharacterType> mActTwoEncounters;

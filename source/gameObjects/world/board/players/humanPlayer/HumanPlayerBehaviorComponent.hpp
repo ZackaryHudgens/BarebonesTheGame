@@ -92,6 +92,13 @@ namespace Barebones
       void HandleSkillExecuted(Skill& aSkill);
 
       /**
+       * A handler function that gets called whenever a skill is cancelled.
+       *
+       * @param aSkill The skill that was cancelled.
+       */
+      void HandleSkillCancelled(Skill& aSkill);
+
+      /**
        * A handler function that gets called whenever all characters of
        * a side on a board have been defeated.
        *
@@ -114,6 +121,7 @@ namespace Barebones
 
       bool mWaitingForCharacterRemoval;
       bool mWaitingToSelectCreateSkill;
+      bool mWaitingForCharacterCreation;
   };
 }
 
