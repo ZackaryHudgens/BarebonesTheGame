@@ -34,6 +34,7 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/world/board/players/*.?pp
                        gameObjects/world/board/players/aiPlayer/*.?pp
                        gameObjects/world/board/players/humanPlayer/*.?pp
+                       gameObjects/world/board/players/humanPlayer/behaviorStates/*.?pp
                        gameObjects/world/board/players/humanPlayer/inputStates/*.?pp
                        gameObjects/world/board/tiles/*.?pp
                        gameObjects/world/board/tiles/defaultTile/*.?pp
@@ -79,6 +80,7 @@ target_include_directories(barebones PUBLIC
                            gameObjects/world/board/players
                            gameObjects/world/board/players/aiPlayer
                            gameObjects/world/board/players/humanPlayer
+                           gameObjects/world/board/players/humanPlayer/behaviorStates
                            gameObjects/world/board/players/humanPlayer/inputStates
                            gameObjects/world/board/tiles
                            gameObjects/world/board/tiles/defaultTile
