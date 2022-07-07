@@ -5,6 +5,8 @@
 
 #include "TextBoxComponent.hpp"
 
+#include "Acts.hpp"
+
 namespace Barebones
 {
   class ActDisplayBehaviorComponent : public UrsineEngine::Component
@@ -28,6 +30,13 @@ namespace Barebones
        */
       void Update(double aTime) override;
 
+      /**
+       * Changes the text displayed based on the given act.
+       *
+       * @param aAct The act to display text for.
+       */
+      void DisplayTextForAct(const Act& aAct);
+
     private:
 
       /**
@@ -39,8 +48,16 @@ namespace Barebones
        */
       void HandleActDisplayAdvanced(UrsineEngine::GameObject& aDisplay);
 
+      /**
+       * Updates the text boxes to display the act name and description.
+       */
+      void UpdateText();
+
       TextBoxComponent* mActNameTextbox;
       TextBoxComponent* mActDescriptionTextbox;
+
+      std::string mActName;
+      std::string mActDescription;
 
       double mFadeSpeed;
       double mFadeValue;

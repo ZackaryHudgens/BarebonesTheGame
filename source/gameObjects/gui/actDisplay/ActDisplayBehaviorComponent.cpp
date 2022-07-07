@@ -45,7 +45,6 @@ void ActDisplayBehaviorComponent::Initialize()
     mActNameTextbox->SetFont(DEFAULT_FONT_FAMILY, DEFAULT_FONT_STYLE);
     mActNameTextbox->SetTextSize(108);
     mActNameTextbox->SetTextAlignment(TextAlignment::eCENTER);
-    mActNameTextbox->SetText("Act 1");
 
     auto textShader = mActNameTextbox->GetTextShader();
     if(textShader != nullptr)
@@ -57,7 +56,6 @@ void ActDisplayBehaviorComponent::Initialize()
     mActDescriptionTextbox->SetFont(DEFAULT_FONT_FAMILY, DEFAULT_FONT_STYLE);
     mActDescriptionTextbox->SetTextSize(BIG_FONT_SIZE);
     mActDescriptionTextbox->SetTextAlignment(TextAlignment::eCENTER);
-    mActDescriptionTextbox->SetText("Castle Outskirts");
 
     textShader = mActDescriptionTextbox->GetTextShader();
     if(textShader != nullptr)
@@ -76,6 +74,8 @@ void ActDisplayBehaviorComponent::Initialize()
     mActNameTextbox->GetParent()->SetPosition(glm::vec3(centerWidth, centerHeight, 0.0));
     mActDescriptionTextbox->GetParent()->SetPosition(glm::vec3(centerWidth, centerHeight - 50.0, 0.0));
   }
+
+  UpdateText();
 }
 
 /******************************************************************************/
@@ -129,10 +129,62 @@ void ActDisplayBehaviorComponent::Update(double aTime)
 }
 
 /******************************************************************************/
+void ActDisplayBehaviorComponent::DisplayTextForAct(const Act& aAct)
+{
+  switch(aAct)
+  {
+    case Act::eACT_ONE:
+    {
+      mActName = "Act One";
+      mActDescription = "Castle Outskirts";
+      break;
+    }
+    case Act::eACT_TWO:
+    {
+      mActName = "Act Two";
+      mActDescription = "Castle Town";
+      break;
+    }
+    case Act::eACT_THREE:
+    {
+      mActName = "Act Three";
+      mActDescription = "Throne Room";
+      break;
+    }
+    case Act::eFINALE:
+    {
+      mActName = "Finale";
+      mActDescription = "????????????????????????????????????????????????????";
+      break;
+    }
+    default:
+    {
+      break;
+    }
+  }
+
+  UpdateText();
+}
+
+/******************************************************************************/
 void ActDisplayBehaviorComponent::HandleActDisplayAdvanced(UrsineEngine::GameObject& aDisplay)
 {
   if(&aDisplay == GetParent())
   {
     mFadingOut = true;
+  }
+}
+
+/******************************************************************************/
+void ActDisplayBehaviorComponent::UpdateText()
+{
+  if(mActNameTextbox != nullptr)
+  {
+    mActNameTextbox->SetText(mActName);
+  }
+
+  if(mActDescriptionTextbox != nullptr)
+  {
+    mActDescriptionTextbox->SetText(mActDescription);
   }
 }
