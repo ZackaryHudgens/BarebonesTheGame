@@ -47,23 +47,15 @@ void BoardTurnManagerComponent::Update(double aTime)
   if(mWaitingToTakeTurn &&
      !mTurnTracker.empty())
   {
-    auto parent = GetParent();
-    if(parent != nullptr)
-    {
-      mWaitingToTakeTurn = false;
+    mWaitingToTakeTurn = false;
 
-      auto player = GetCurrentPlayer();
-      if(player != nullptr)
+    auto player = GetCurrentPlayer();
+    if(player != nullptr)
+    {
+      auto playerBehaviorComponent = player->GetFirstComponentOfType<PlayerBehaviorComponent>();
+      if(playerBehaviorComponent != nullptr)
       {
-        auto playerBehaviorComponent = player->GetFirstComponentOfType<PlayerBehaviorComponent>();
-        if(playerBehaviorComponent != nullptr)
-        {
-          auto parent = GetParent();
-          if(parent != nullptr)
-          {
-            playerBehaviorComponent->TakeTurn(*parent);
-          }
-        }
+        playerBehaviorComponent->TakeTurn();
       }
     }
   }
@@ -77,6 +69,9 @@ void BoardTurnManagerComponent::AddPlayer(std::unique_ptr<UrsineEngine::GameObje
   if(parent != nullptr &&
      playerBehaviorComponent != nullptr)
   {
+    // Set the board for the player.
+    playerBehaviorComponent->SetBoard(*parent);
+
     // Add the player as a child GameObject.
     parent->AddChild(std::move(aPlayer));
 

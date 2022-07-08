@@ -12,7 +12,6 @@ using Barebones::AIPlayerBehaviorComponent;
 AIPlayerBehaviorComponent::AIPlayerBehaviorComponent()
   : PlayerBehaviorComponent()
   , mCurrentCharacter(nullptr)
-  , mBoard(nullptr)
   , mWaitingToTakeTurn(false)
 {
   CharacterTurnEnded.Connect(*this, [this](CharacterBehaviorComponent& aCharacter)
@@ -32,42 +31,45 @@ void AIPlayerBehaviorComponent::Update(double aTime)
   {
     if(mCurrentCharacter != nullptr)
     {
+      auto board = GetBoard();
       auto characterBehaviorComponent = mCurrentCharacter->GetFirstComponentOfType<CharacterBehaviorComponent>();
       if(characterBehaviorComponent != nullptr &&
-         mBoard != nullptr)
+         board != nullptr)
       {
         mWaitingToTakeTurn = false;
-        characterBehaviorComponent->TakeTurn(*mBoard);
+        characterBehaviorComponent->TakeTurn(*board);
       }
     }
   }
 }
 
 /******************************************************************************/
-void AIPlayerBehaviorComponent::ProtectedTakeTurn(UrsineEngine::GameObject& aBoard)
+void AIPlayerBehaviorComponent::ProtectedTakeTurn()
 {
-  mBoard = &aBoard;
-
-  // Keep track of all characters on the enemy side.
-  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
-  if(boardLayoutComponent != nullptr)
+  auto board = GetBoard();
+  if(board != nullptr)
   {
-    mCharacters = boardLayoutComponent->GetCharactersOnSide(GetSide());
+    // Keep track of all characters on the enemy side.
+    auto boardLayoutComponent = board->GetFirstComponentOfType<BoardLayoutComponent>();
+    if(boardLayoutComponent != nullptr)
+    {
+      mCharacters = boardLayoutComponent->GetCharactersOnSide(GetSide());
 
-    // Make the first character take a turn.
-    if(!mCharacters.empty())
-    {
-      auto characterBehaviorComponent = mCharacters.front()->GetFirstComponentOfType<CharacterBehaviorComponent>();
-      if(characterBehaviorComponent != nullptr)
+      // Make the first character take a turn.
+      if(!mCharacters.empty())
       {
-        mCurrentCharacter = mCharacters.front();
-        characterBehaviorComponent->TakeTurn(aBoard);
+        auto characterBehaviorComponent = mCharacters.front()->GetFirstComponentOfType<CharacterBehaviorComponent>();
+        if(characterBehaviorComponent != nullptr)
+        {
+          mCurrentCharacter = mCharacters.front();
+          characterBehaviorComponent->TakeTurn(*board);
+        }
       }
-    }
-    else
-    {
-      // If there are no characters, end the turn.
-      EndTurn();
+      else
+      {
+        // If there are no characters, end the turn.
+        EndTurn();
+      }
     }
   }
 }

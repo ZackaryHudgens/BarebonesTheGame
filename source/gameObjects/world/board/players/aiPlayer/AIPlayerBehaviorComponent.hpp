@@ -27,10 +27,8 @@ namespace Barebones
 
       /**
        * A function that gets called whenever this player's turn begins.
-       *
-       * @param aBoard The board to take a turn on.
        */
-      void ProtectedTakeTurn(UrsineEngine::GameObject& aBoard) override;
+      void ProtectedTakeTurn() override;
 
       /**
        * A handler function that gets called whenever a character finishes
@@ -43,7 +41,6 @@ namespace Barebones
     private:
       std::vector<UrsineEngine::GameObject*> mCharacters;
       UrsineEngine::GameObject* mCurrentCharacter;
-      UrsineEngine::GameObject* mBoard;
 
       bool mWaitingToTakeTurn;
   };

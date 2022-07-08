@@ -3,13 +3,12 @@
 
 #include "PlayerBehaviorComponent.hpp"
 
-#include "TileUtil.hpp"
+#include "HumanPlayerBehaviorState.hpp"
 
 #include "CharacterBehaviorComponent.hpp"
 #include "CharacterFactory.hpp"
 
-#include "CreateCharacterSkill.hpp"
-#include "RemoveCharacterSkill.hpp"
+#include "TileUtil.hpp"
 
 namespace Barebones
 {
@@ -23,34 +22,29 @@ namespace Barebones
       HumanPlayerBehaviorComponent();
 
       /**
-       * Updates the component.
-       *
-       * @param aTime The start time of the current scene's Update().
+       * Initializes the component.
        */
-      void Update(double aTime) override;
+      void Initialize() override;
+
+      /**
+       * Returns the maximum number of skeletons allowed for this player.
+       *
+       * @return The maximum number of skeletons allowed.
+       */
+      int GetMaximumSkeletons() const { return mMaxSkeletons; }
 
     protected:
 
       /**
        * A function that gets called whenever this player's turn begins.
-       *
-       * @param aBoard The board to take a turn on.
        */
-      void ProtectedTakeTurn(UrsineEngine::GameObject& aBoard) override;
+      void ProtectedTakeTurn() override;
 
       /**
        * A function that gets called whenever this player's turn
        * ends.
        */
       void ProtectedEndTurn() override;
-
-      /**
-       * A handler function that gets called whenever the board has finished
-       * placing and loading tiles, and is ready to add characters to.
-       *
-       * @param aBoard The board that finished.
-       */
-      void HandleBoardFinishedInitialSequence(UrsineEngine::GameObject& aBoard);
 
       /**
        * A handler function that gets called whenever a character finishes
@@ -109,19 +103,9 @@ namespace Barebones
                                              const Side& aSide);
 
     private:
-      std::vector<CharacterType> mSkeletonInventory;
+      std::unique_ptr<HumanPlayerBehaviorState> mState;
+
       int mMaxSkeletons;
-
-      std::vector<UrsineEngine::GameObject*> mSpawningCharacters;
-
-      UrsineEngine::GameObject* mBoard;
-
-      CreateCharacterSkill mCreateSkill;
-      RemoveCharacterSkill mRemoveSkill;
-
-      bool mWaitingForCharacterRemoval;
-      bool mWaitingToSelectCreateSkill;
-      bool mWaitingForCharacterCreation;
   };
 }
 

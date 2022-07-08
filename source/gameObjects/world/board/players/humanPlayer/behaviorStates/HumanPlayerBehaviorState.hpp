@@ -3,10 +3,11 @@
 
 #include <GameObject.hpp>
 
+#include "CharacterFactory.hpp"
+
 namespace Barebones
 {
   class CharacterBehaviorComponent;
-  class CharacterType;
   class Skill;
 
   class HumanPlayerBehaviorState

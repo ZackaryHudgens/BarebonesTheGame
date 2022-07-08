@@ -3,6 +3,8 @@
 
 #include "HumanPlayerBehaviorState.hpp"
 
+#include <Observer.hpp>
+
 namespace Barebones
 {
   class HumanPlayerInitialBehaviorState : public HumanPlayerBehaviorState
@@ -17,9 +19,9 @@ namespace Barebones
       HumanPlayerInitialBehaviorState(UrsineEngine::GameObject& aPlayer);
 
       /**
-       * Gets called when the player enters this state.
+       * Gets called when the player exits this state.
        */
-      void OnEnter() override;
+      void OnExit() override;
 
       /**
        * A handler function that gets called whenever a character finishes
@@ -29,6 +31,21 @@ namespace Barebones
        * @return A unique_ptr to a new state, if necessary.
        */
       std::unique_ptr<HumanPlayerBehaviorState> HandleCharacterFinishedSpawning(CharacterBehaviorComponent& aCharacter) override;
+
+    private:
+
+      /**
+       * A handler function that gets called whenever the board has finished
+       * placing and loading tiles, and is ready to add characters to.
+       *
+       * @param aBoard The board that finished.
+       */
+      void HandleBoardFinishedInitialSequence(UrsineEngine::GameObject& aBoard);
+
+      std::vector<CharacterType> mSkeletonsToSpawn;
+      std::vector<UrsineEngine::GameObject*> mSpawningSkeletons;
+
+      UrsineEngine::Observer mObserver;
   };
 }
 

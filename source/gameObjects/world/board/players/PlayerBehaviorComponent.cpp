@@ -11,37 +11,47 @@ using Barebones::PlayerBehaviorComponent;
 /******************************************************************************/
 PlayerBehaviorComponent::PlayerBehaviorComponent()
   : Component()
+  , mBoard(nullptr)
   , mControlledSide(Side::eNONE)
 {
 }
 
 /******************************************************************************/
-void PlayerBehaviorComponent::TakeTurn(UrsineEngine::GameObject& aBoard)
+void PlayerBehaviorComponent::SetBoard(UrsineEngine::GameObject& aBoard)
 {
-  PlayerTurnBegan.Notify(*this);
+  mBoard = &aBoard;
+}
 
-  // Character skills refresh upon the start of the controlling player's
-  // turn. To do this, gather each character on the board controlled by
-  // this player, then enable their skills.
-  auto boardLayoutComponent = aBoard.GetFirstComponentOfType<BoardLayoutComponent>();
-  if(boardLayoutComponent != nullptr)
+/******************************************************************************/
+void PlayerBehaviorComponent::TakeTurn()
+{
+  if(mBoard != nullptr)
   {
-    auto controlledCharacters = boardLayoutComponent->GetCharactersOnSide(GetSide());
-    for(auto& character : controlledCharacters)
+    PlayerTurnBegan.Notify(*this);
+
+    // Character skills refresh upon the start of the controlling player's
+    // turn. To do this, gather each character on the board controlled by
+    // this player, then enable their skills.
+    auto boardLayoutComponent = mBoard->GetFirstComponentOfType<BoardLayoutComponent>();
+    if(boardLayoutComponent != nullptr)
     {
-      auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
-      if(characterBehaviorComponent != nullptr)
+      auto controlledCharacters = boardLayoutComponent->GetCharactersOnSide(GetSide());
+      for(auto& character : controlledCharacters)
       {
-        auto skills = characterBehaviorComponent->GetSkills();
-        for(auto& skill : skills)
+        auto characterBehaviorComponent = character->GetFirstComponentOfType<CharacterBehaviorComponent>();
+        if(characterBehaviorComponent != nullptr)
         {
-          skill->SetEnabled(true);
+          auto skills = characterBehaviorComponent->GetSkills();
+          for(auto& skill : skills)
+          {
+            skill->SetEnabled(true);
+          }
         }
       }
     }
-  }
 
-  ProtectedTakeTurn(aBoard);
+    ProtectedTakeTurn();
+  }
 }
 
 /******************************************************************************/

@@ -22,11 +22,23 @@ namespace Barebones
       PlayerBehaviorComponent();
 
       /**
-       * Tells the player to take a turn.
+       * Sets the board that the player operates on.
        *
-       * @param aBoard The board to take a turn on.
+       * @param aBoard The board the player should operate on.
        */
-      void TakeTurn(UrsineEngine::GameObject& aBoard);
+      void SetBoard(UrsineEngine::GameObject& aBoard);
+
+      /**
+       * Returns the board this player is currently assigned to.
+       *
+       * @return The board this player is currently assigned to.
+       */
+      UrsineEngine::GameObject* GetBoard() const { return mBoard; }
+
+      /**
+       * Tells the player to take a turn on the set board.
+       */
+      void TakeTurn();
 
       /**
        * Ends the player's turn.
@@ -52,10 +64,8 @@ namespace Barebones
       /**
        * A virtual function that gets called whenever this player's turn
        * begins. Should be overridden by inheriting classes.
-       *
-       * @param aBoard The board to take a turn on.
        */
-      virtual void ProtectedTakeTurn(UrsineEngine::GameObject& aBoard) {}
+      virtual void ProtectedTakeTurn() {}
 
       /**
        * A virtual function that gets called whenever this player's turn
@@ -64,6 +74,8 @@ namespace Barebones
       virtual void ProtectedEndTurn() {}
 
     private:
+      UrsineEngine::GameObject* mBoard;
+
       Side mControlledSide;
   };
 }
