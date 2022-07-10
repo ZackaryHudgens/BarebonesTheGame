@@ -18,7 +18,7 @@ using Barebones::HumanPlayerDefaultInputState;
 
 /******************************************************************************/
 HumanPlayerDefaultInputState::HumanPlayerDefaultInputState(UrsineEngine::GameObject& aPlayer)
-  : HumanPlayerInputState(aPlayer)
+  : HumanPlayerMovableInputState(aPlayer)
 {
 }
 
@@ -41,80 +41,6 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
       auto currentLocation = boardLayoutComponent->GetFocusedTileLocation();
       switch(aCode)
       {
-        // For player movement, first check if a tile exists at the new location
-        // on the board. If it does, update the player's location.
-        case UrsineEngine::KeyCode::eKEY_UP:
-        case UrsineEngine::KeyCode::eKEY_W:
-        {
-          TileLocation newLocation = currentLocation;
-          newLocation.second += 1;
-
-          auto tile = boardLayoutComponent->GetTileAtLocation(newLocation);
-          if(tile != nullptr)
-          {
-            boardLayoutComponent->SetFocusedTileLocation(newLocation);
-          }
-
-          break;
-        }
-        case UrsineEngine::KeyCode::eKEY_DOWN:
-        case UrsineEngine::KeyCode::eKEY_S:
-        {
-          TileLocation newLocation = currentLocation;
-          newLocation.second -= 1;
-
-          auto tile = boardLayoutComponent->GetTileAtLocation(newLocation);
-          if(tile != nullptr)
-          {
-            boardLayoutComponent->SetFocusedTileLocation(newLocation);
-          }
-
-          break;
-        }
-        case UrsineEngine::KeyCode::eKEY_LEFT:
-        case UrsineEngine::KeyCode::eKEY_A:
-        {
-          TileLocation newLocation = currentLocation;
-          newLocation.first -= 1;
-
-          auto tile = boardLayoutComponent->GetTileAtLocation(newLocation);
-          if(tile != nullptr)
-          {
-            boardLayoutComponent->SetFocusedTileLocation(newLocation);
-          }
-
-          break;
-        }
-        case UrsineEngine::KeyCode::eKEY_RIGHT:
-        case UrsineEngine::KeyCode::eKEY_D:
-        {
-          TileLocation newLocation = currentLocation;
-          newLocation.first += 1;
-
-          auto tile = boardLayoutComponent->GetTileAtLocation(newLocation);
-          if(tile != nullptr)
-          {
-            boardLayoutComponent->SetFocusedTileLocation(newLocation);
-          }
-
-          break;
-        }
-        case UrsineEngine::KeyCode::eKEY_Z:
-        {
-          CameraZoomChangeRequested.Notify();
-          break;
-        }
-        case UrsineEngine::KeyCode::eKEY_ESCAPE:
-        {
-          // Create a pause menu and add it to the scene.
-          auto pauseMenu = MenuFactory::CreateMenu(MenuType::ePAUSE, "pauseMenu");
-          auto scene = env.GetCurrentScene();
-          if(scene != nullptr)
-          {
-            scene->AddObject(std::move(pauseMenu));
-          }
-          break;
-        }
         case UrsineEngine::KeyCode::eKEY_ENTER:
         {
           // If there is a character at the player's current location,
@@ -166,6 +92,7 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
         }
         default:
         {
+          newState = HumanPlayerMovableInputState::HandleKeyPressed(aCode, aMods);
           break;
         }
       }
@@ -184,15 +111,14 @@ std::unique_ptr<Barebones::HumanPlayerInputState> HumanPlayerDefaultInputState::
 
   switch(aCode)
   {
-    case UrsineEngine::KeyCode::eKEY_ESCAPE:
     case UrsineEngine::KeyCode::eKEY_ENTER:
+    case UrsineEngine::KeyCode::eKEY_Q:
     {
       break;
     }
     default:
     {
-      newState = HandleKeyPressed(aCode,
-                                  aMods);
+      newState = HumanPlayerMovableInputState::HandleKeyRepeated(aCode, aMods);
       break;
     }
   }

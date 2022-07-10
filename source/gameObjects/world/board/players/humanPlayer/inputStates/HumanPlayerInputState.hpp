@@ -19,6 +19,18 @@ namespace Barebones
       virtual ~HumanPlayerInputState() {};
 
       /**
+       * A virtual function that gets called when the player
+       * enters this state.
+       */
+      virtual void OnEnter() {}
+
+      /**
+       * A virtual function that gets called when the player
+       * exits this state.
+       */
+      virtual void OnExit() {}
+
+      /**
        * Sets the board GameObject to operate on.
        *
        * @param aBoard The board to operate on.

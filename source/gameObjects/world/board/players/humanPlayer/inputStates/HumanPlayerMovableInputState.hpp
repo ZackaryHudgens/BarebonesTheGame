@@ -1,13 +1,11 @@
-#ifndef HUMANPLAYERUSINGSKILLINPUTSTATE_HPP
-#define HUMANPLAYERUSINGSKILLINPUTSTATE_HPP
+#ifndef HUMANPLAYERMOVABLEINPUTSTATE_HPP
+#define HUMANPLAYERMOVABLEINPUTSTATE_HPP
 
-#include "HumanPlayerMovableInputState.hpp"
-
-#include "Skill.hpp"
+#include "HumanPlayerInputState.hpp"
 
 namespace Barebones
 {
-  class HumanPlayerUsingSkillInputState : public HumanPlayerMovableInputState
+  class HumanPlayerMovableInputState : public HumanPlayerInputState
   {
     public:
 
@@ -15,10 +13,8 @@ namespace Barebones
        * Constructor.
        *
        * @param aPlayer The player GameObject to handle input for.
-       * @param aSkill The skill that is being used.
        */
-      HumanPlayerUsingSkillInputState(UrsineEngine::GameObject& aPlayer,
-                                      Skill& aSkill);
+      HumanPlayerMovableInputState(UrsineEngine::GameObject& aPlayer);
 
       /**
        * A handler function that gets called whenever the user presses
@@ -29,11 +25,11 @@ namespace Barebones
        * @return A pointer to a new state if this key caused the input
        *         to move to a new state, otherwise nullptr.
        */
-      std::unique_ptr<HumanPlayerInputState> HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
-                                                              int aMods) override;
+      virtual std::unique_ptr<HumanPlayerInputState> HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
+                                                                      int aMods) override;
 
       /**
-       * A virtual function that gets called whenever the user holds
+       * A handler function that gets called whenever the user holds
        * a key down long enough to repeat the input.
        *
        * @param aCode The KeyCode for the key that was pressed.
@@ -41,11 +37,8 @@ namespace Barebones
        * @return A pointer to a new state if this key caused the input
        *         to move to a new state, otherwise nullptr.
        */
-      std::unique_ptr<HumanPlayerInputState> HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
-                                                               int aMods) override;
-
-    private:
-      Skill* mSkill;
+      virtual std::unique_ptr<HumanPlayerInputState> HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
+                                                                       int aMods) override;
   };
 }
 

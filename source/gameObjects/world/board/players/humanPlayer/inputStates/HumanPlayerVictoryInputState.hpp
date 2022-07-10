@@ -1,13 +1,11 @@
-#ifndef HUMANPLAYERDEFAULTINPUTSTATE_HPP
-#define HUMANPLAYERDEFAULTINPUTSTATE_HPP
+#ifndef HUMANPLAYERVICTORYINPUTSTATE_HPP
+#define HUMANPLAYERVICTORYINPUTSTATE_HPP
 
 #include "HumanPlayerMovableInputState.hpp"
 
-#include "Skill.hpp"
-
 namespace Barebones
 {
-  class HumanPlayerDefaultInputState : public HumanPlayerMovableInputState
+  class HumanPlayerVictoryInputState : public HumanPlayerMovableInputState
   {
     public:
 
@@ -16,7 +14,7 @@ namespace Barebones
        *
        * @param aPlayer The player GameObject to handle input for.
        */
-      HumanPlayerDefaultInputState(UrsineEngine::GameObject& aPlayer);
+      HumanPlayerVictoryInputState(UrsineEngine::GameObject& aPlayer);
 
       /**
        * A handler function that gets called whenever the user presses
@@ -41,18 +39,6 @@ namespace Barebones
        */
       std::unique_ptr<HumanPlayerInputState> HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
                                                                int aMods) override;
-
-    private:
-
-      /**
-       * Populates a given menu GameObject with an action for each skill
-       * in the given list of skills.
-       *
-       * @param aMenu The menu to populate.
-       * @param aSkills A list of skills to create actions for.
-       */
-      void PopulateSkillMenu(UrsineEngine::GameObject& aMenu,
-                             const std::vector<Skill*>& aSkills);
   };
 }
 
