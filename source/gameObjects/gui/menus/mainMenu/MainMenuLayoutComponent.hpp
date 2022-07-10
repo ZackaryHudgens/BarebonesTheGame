@@ -21,7 +21,7 @@ namespace Barebones
       /**
        * Initializes the component.
        */
-      void ProtectedInitialize() override;
+      virtual void ProtectedInitialize() override;
 
       /**
        * A handler function that gets called whenever the hidden status of

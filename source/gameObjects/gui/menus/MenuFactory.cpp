@@ -10,6 +10,8 @@
 #include "SkillMenuLayoutComponent.hpp"
 #include "RewardsMenuInputComponent.hpp"
 #include "RewardsMenuLayoutComponent.hpp"
+#include "VictoryMenuLayoutComponent.hpp"
+#include "DefeatMenuLayoutComponent.hpp"
 
 #include "MenuAction.hpp"
 
@@ -300,6 +302,14 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
       newMenu->AddComponent(std::make_unique<RewardsMenuInputComponent>());
       newMenu->AddComponent(std::make_unique<MainMenuAudioComponent>());
 
+      break;
+    }
+    case MenuType::eVICTORY:
+    {
+      break;
+    }
+    case MenuType::eDEFEAT:
+    {
       break;
     }
     default:
