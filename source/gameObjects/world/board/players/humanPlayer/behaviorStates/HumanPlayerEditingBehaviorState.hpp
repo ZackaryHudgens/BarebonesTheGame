@@ -32,6 +32,14 @@ namespace Barebones
       void OnExit() override;
 
       /**
+       * Gets called whenever the player updates.
+       *
+       * @param aTime The start time of the current scene's Update().
+       * @return A unique_ptr to a new state, if necessary.
+       */
+      std::unique_ptr<HumanPlayerBehaviorState> Update(double aTime) override;
+
+      /**
        * A handler function that gets called whenever a skill is executed.
        *
        * @param aSkill The skill that was executed.
@@ -52,6 +60,8 @@ namespace Barebones
       RemoveCharacterSkill mRemoveSkill;
 
       Skill* mSelectedSkill;
+
+      bool mWaitingToSelectCreateSkill;
   };
 }
 

@@ -15,9 +15,35 @@ HumanPlayerEditingBehaviorState::HumanPlayerEditingBehaviorState(UrsineEngine::G
                                                                  const CharacterType& aType)
   : HumanPlayerBehaviorState(aPlayer)
   , mSelectedSkill(nullptr)
+  , mWaitingToSelectCreateSkill(false)
 {
   mCreateSkill.SetCharacterType(aType);
   mRemoveSkill.SetCharacterType(Type::eSKELETON);
+}
+
+/******************************************************************************/
+std::unique_ptr<Barebones::HumanPlayerBehaviorState> HumanPlayerEditingBehaviorState::Update(double aTime)
+{
+  if(mWaitingToSelectCreateSkill)
+  {
+    auto player = GetPlayer();
+    if(player != nullptr)
+    {
+      auto humanPlayerBehaviorComponent = player->GetFirstComponentOfType<HumanPlayerBehaviorComponent>();
+      if(humanPlayerBehaviorComponent != nullptr)
+      {
+        auto board = humanPlayerBehaviorComponent->GetBoard();
+        if(board != nullptr)
+        {
+          mCreateSkill.Select(*board);
+          mSelectedSkill = &mCreateSkill;
+          mWaitingToSelectCreateSkill = false;
+        }
+      }
+    }
+  }
+
+  return nullptr;
 }
 
 /******************************************************************************/
@@ -85,21 +111,9 @@ std::unique_ptr<Barebones::HumanPlayerBehaviorState> HumanPlayerEditingBehaviorS
   {
     if(mSelectedSkill == &mRemoveSkill)
     {
-      // Now select the create skill.
-      auto player = GetPlayer();
-      if(player != nullptr)
-      {
-        auto playerBehaviorComponent = player->GetFirstComponentOfType<PlayerBehaviorComponent>();
-        if(playerBehaviorComponent != nullptr)
-        {
-          auto board = playerBehaviorComponent->GetBoard();
-          if(board != nullptr)
-          {
-            mCreateSkill.Select(*board);
-            mSelectedSkill = &mCreateSkill;
-          }
-        }
-      }
+      // Select the create skill on the next Update().
+      mWaitingToSelectCreateSkill = true;
+      mSelectedSkill = nullptr;
     }
     else if(mSelectedSkill == &mCreateSkill)
     {

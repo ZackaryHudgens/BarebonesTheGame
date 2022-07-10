@@ -27,6 +27,13 @@ namespace Barebones
       void Initialize() override;
 
       /**
+       * Updates the component.
+       *
+       * @param aTime The start time of the current scene's Update().
+       */
+      void Update(double aTime) override;
+
+      /**
        * Returns the maximum number of skeletons allowed for this player.
        *
        * @return The maximum number of skeletons allowed.

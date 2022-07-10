@@ -76,6 +76,21 @@ void HumanPlayerBehaviorComponent::Initialize()
 }
 
 /******************************************************************************/
+void HumanPlayerBehaviorComponent::Update(double aTime)
+{
+  if(mState != nullptr)
+  {
+    auto newState = mState->Update(aTime);
+    if(newState != nullptr)
+    {
+      mState->OnExit();
+      mState.swap(newState);
+      mState->OnEnter();
+    }
+  }
+}
+
+/******************************************************************************/
 void HumanPlayerBehaviorComponent::ProtectedTakeTurn()
 {
   auto board = GetBoard();

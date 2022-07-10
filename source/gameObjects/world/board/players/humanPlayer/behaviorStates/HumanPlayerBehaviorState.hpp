@@ -35,6 +35,14 @@ namespace Barebones
       virtual void OnExit() {}
 
       /**
+       * A virtual function that gets called whenever the player updates.
+       *
+       * @param aTime The start time of the current scene's Update().
+       * @return A unique_ptr to a new state, if necessary.
+       */
+      virtual std::unique_ptr<HumanPlayerBehaviorState> Update(double aTime) { return nullptr; }
+
+      /**
        * A virtual function that gets called whenever a character finishes
        * its spawning animation.
        *

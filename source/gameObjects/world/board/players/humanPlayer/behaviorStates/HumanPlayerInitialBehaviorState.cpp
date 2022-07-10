@@ -23,6 +23,7 @@ HumanPlayerInitialBehaviorState::HumanPlayerInitialBehaviorState(UrsineEngine::G
   mSkeletonsToSpawn.emplace_back(CharacterType::eBONE_THROWER);
   mSkeletonsToSpawn.emplace_back(CharacterType::eBONE_THROWER);
   mSkeletonsToSpawn.emplace_back(CharacterType::eBONE_THROWER);
+  mSkeletonsToSpawn.emplace_back(CharacterType::eBONE_THROWER);
 
   BoardFinishedInitialSequence.Connect(mObserver, [this](UrsineEngine::GameObject& aBoard)
   {
