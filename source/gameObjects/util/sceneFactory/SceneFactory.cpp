@@ -17,6 +17,7 @@
 #include "ActDisplayInputComponent.hpp"
 #include "InfoPanelBehaviorComponent.hpp"
 #include "HintDisplayBehaviorComponent.hpp"
+#include "ScreenTransitionBehaviorComponent.hpp"
 
 #include "BackgroundMeshComponent.hpp"
 
@@ -38,6 +39,11 @@ std::unique_ptr<UrsineEngine::Scene> SceneFactory::CreateScene(const SceneType& 
   auto menuManagerObject = std::make_unique<UrsineEngine::GameObject>("menuManager");
   menuManagerObject->AddComponent(std::make_unique<MenuManagerComponent>());
   newScene->AddObject(std::move(menuManagerObject));
+
+  // Create a Screen Transition.
+  auto screenTransitionObject = std::make_unique<UrsineEngine::GameObject>("screenTransition");
+  screenTransitionObject->AddComponent(std::make_unique<ScreenTransitionBehaviorComponent>());
+  newScene->AddObject(std::move(screenTransitionObject));
 
   switch(aType)
   {

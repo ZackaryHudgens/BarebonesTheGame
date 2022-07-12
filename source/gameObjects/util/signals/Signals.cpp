@@ -59,6 +59,8 @@ Barebones::ActDisplayAdvancedSignal Barebones::ActDisplayAdvanced;
 Barebones::ActDisplayFinishedSignal Barebones::ActDisplayFinished;
 Barebones::CharacterSelectedFromRewardsMenuSignal Barebones::CharacterSelectedFromRewardsMenu;
 Barebones::DisplayHintRequestedSignal Barebones::DisplayHintRequested;
+Barebones::ScreenTransitionFinishedSignal Barebones::ScreenTransitionFinished;
+Barebones::ScreenTransitionRequestedSignal Barebones::ScreenTransitionRequested;
 
 /**
  * Camera signals

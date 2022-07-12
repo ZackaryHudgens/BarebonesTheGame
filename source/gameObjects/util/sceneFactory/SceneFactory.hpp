@@ -9,6 +9,7 @@ namespace Barebones
 {
   enum class SceneType
   {
+    eNONE,
     eMAIN_MENU,
     eBOARD_ACT_ONE,
     eBOARD_ACT_TWO,

@@ -17,6 +17,8 @@
 
 #include "SceneFactory.hpp"
 
+#include "Signals.hpp"
+
 using Barebones::MenuFactory;
 
 /******************************************************************************/
@@ -40,7 +42,7 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
 
       auto startFunction = []()
       {
-        env.LoadScene(SceneFactory::CreateScene(SceneType::eBOARD_ACT_ONE));
+        ScreenTransitionRequested.Notify(SceneType::eBOARD_ACT_ONE);
       };
       startAction->SetFunction(startFunction);
 

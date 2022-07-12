@@ -20,6 +20,8 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/gui/menus/skillMenu/*.?pp
                        gameObjects/gui/menus/defeatMenu/*.?pp
                        gameObjects/gui/menus/victoryMenu/*.?pp
+                       gameObjects/gui/screenTransition/*.?pp
+                       gameObjects/gui/screenTransition/states/*.?pp
                        gameObjects/skills/*.?pp
                        gameObjects/skills/moveSkill/*.?pp
                        gameObjects/skills/removeCharacterSkill/*.?pp
@@ -68,6 +70,8 @@ target_include_directories(barebones PUBLIC
                            gameObjects/gui/menus/skillMenu
                            gameObjects/gui/menus/defeatMenu
                            gameObjects/gui/menus/victoryMenu
+                           gameObjects/gui/screenTransition
+                           gameObjects/gui/screenTransition/states
                            gameObjects/skills
                            gameObjects/skills/moveSkill
                            gameObjects/skills/createCharacterSkill

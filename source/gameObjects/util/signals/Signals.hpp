@@ -5,6 +5,7 @@
 #include <Signal.hpp>
 
 #include "CharacterFactory.hpp"
+#include "SceneFactory.hpp"
 
 #include "Side.hpp"
 
@@ -107,6 +108,8 @@ namespace Barebones
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> ActDisplayFinishedSignal;
   typedef UrsineEngine::SignalT<const CharacterType&> CharacterSelectedFromRewardsMenuSignal;
   typedef UrsineEngine::SignalT<const std::string&> DisplayHintRequestedSignal;
+  typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> ScreenTransitionFinishedSignal;
+  typedef UrsineEngine::SignalT<const SceneType&> ScreenTransitionRequestedSignal;
 
   extern MenuLayoutComponentInitializedSignal MenuLayoutComponentInitialized;
   extern MenuActionEnabledChangedSignal MenuActionEnabledChanged;
@@ -117,6 +120,8 @@ namespace Barebones
   extern ActDisplayFinishedSignal ActDisplayFinished;
   extern CharacterSelectedFromRewardsMenuSignal CharacterSelectedFromRewardsMenu;
   extern DisplayHintRequestedSignal DisplayHintRequested;
+  extern ScreenTransitionFinishedSignal ScreenTransitionFinished;
+  extern ScreenTransitionRequestedSignal ScreenTransitionRequested;
 
   /**
    * Camera signals
