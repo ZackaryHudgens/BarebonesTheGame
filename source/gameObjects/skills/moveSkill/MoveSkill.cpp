@@ -17,7 +17,7 @@ MoveSkill::MoveSkill()
   , mDistanceRemaining(0)
 {
   SetName("Move");
-  SetDescription("Moves the character.");
+  SetFluffDescription("Moves the character.");
 }
 
 /******************************************************************************/
@@ -146,7 +146,7 @@ void MoveSkill::ProtectedExecute(UrsineEngine::GameObject& aBoard,
       std::stringstream description;
       description << "Moves the character.";
       description << " (" << mDistanceRemaining << " tiles remaining)";
-      SetDescription(description.str());
+      SetFluffDescription(description.str());
     }
   }
 
@@ -196,7 +196,7 @@ void MoveSkill::HandleEnabledChanged(bool aEnabled)
         std::stringstream description;
         description << "Moves the character.";
         description << " (" << mDistanceRemaining << " tiles remaining)";
-        SetDescription(description.str());
+        SetFluffDescription(description.str());
       }
     }
   }

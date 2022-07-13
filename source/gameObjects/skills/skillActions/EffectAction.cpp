@@ -43,3 +43,22 @@ void EffectAction::Execute(UrsineEngine::GameObject& aBoard,
     }
   }
 }
+
+/******************************************************************************/
+void EffectAction::SetEffectType(const EffectType& aType)
+{
+  mType = aType;
+
+  switch(mType)
+  {
+    case EffectType::eSLOW:
+    {
+      SetDescription("Applies slow.");
+      break;
+    }
+    default:
+    {
+      break;
+    }
+  }
+}

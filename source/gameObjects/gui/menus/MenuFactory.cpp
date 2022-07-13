@@ -284,7 +284,7 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
       menuLayoutComponent->AddAction(std::make_unique<MenuAction>("Exit to Title"));
       auto exitFunction = []()
       {
-        env.LoadScene(SceneFactory::CreateScene(SceneType::eMAIN_MENU));
+        ScreenTransitionRequested.Notify(SceneType::eMAIN_MENU);
       };
       menuLayoutComponent->GetActions().back()->SetFunction(exitFunction);
 

@@ -28,7 +28,7 @@ namespace Barebones
        *
        * @param aDamage The base damage for this action.
        */
-      void SetDamage(int aDamage) { mDamage = aDamage; }
+      void SetDamage(int aDamage);
 
       /**
        * Returns the base damage for this action.

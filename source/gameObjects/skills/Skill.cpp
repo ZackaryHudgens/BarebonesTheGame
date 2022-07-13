@@ -27,6 +27,21 @@ Skill::Skill()
 }
 
 /******************************************************************************/
+std::string Skill::GetDescription() const
+{
+  std::stringstream description;
+  description << mFluffDescription;
+
+  for(const auto& action : mActions)
+  {
+    description << " ";
+    description << action->GetDescription();
+  }
+
+  return description.str();
+}
+
+/******************************************************************************/
 void Skill::Select(UrsineEngine::GameObject& aBoard)
 {
   ProtectedSelect(aBoard);

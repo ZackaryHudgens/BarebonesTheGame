@@ -1,5 +1,7 @@
 #include "DamageAction.hpp"
 
+#include <sstream>
+
 #include "BoardLayoutComponent.hpp"
 #include "CharacterBehaviorComponent.hpp"
 
@@ -10,6 +12,9 @@ DamageAction::DamageAction()
   : SkillAction()
   , mDamage(0)
 {
+  std::stringstream description;
+  description << "Deals " << mDamage << " damage.";
+  SetDescription(description.str());
 }
 
 /******************************************************************************/
@@ -29,4 +34,14 @@ void DamageAction::Execute(UrsineEngine::GameObject& aBoard,
       }
     }
   }
+}
+
+/******************************************************************************/
+void DamageAction::SetDamage(int aDamage)
+{
+  mDamage = aDamage;
+
+  std::stringstream description;
+  description << "Deals " << mDamage << " damage.";
+  SetDescription(description.str());
 }

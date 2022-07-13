@@ -34,7 +34,7 @@ namespace Barebones
        *
        * @param aType The type of effect to apply.
        */
-      void SetEffectType(const EffectType& aType) { mType = aType; }
+      void SetEffectType(const EffectType& aType);
 
       /**
        * Returns the type of effect this action applies.

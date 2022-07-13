@@ -26,6 +26,26 @@ namespace Barebones
        */
       virtual void Execute(UrsineEngine::GameObject& aBoard,
                            const TileLocation& aLocation) = 0;
+
+      /**
+       * Returns the description of this action. This is used to inform the
+       * player of what the action does, i.e. "Deals x damage".
+       *
+       * @return The description of this action.
+       */
+      std::string GetDescription() const { return mDescription; }
+
+    protected:
+
+      /**
+       * Sets the description of this action.
+       *
+       * @param aDescription The description of this action.
+       */
+      void SetDescription(const std::string& aDescription) { mDescription = aDescription; }
+
+    private:
+      std::string mDescription;
   };
 }
 

@@ -20,10 +20,9 @@ std::unique_ptr<Barebones::Skill> SkillFactory::CreateSkill(const SkillType& aTy
     case SkillType::eCLAW:
     {
       auto skill = std::make_unique<SingleTargetSkill>();
-      skill->SetRange(1);
-
       skill->SetName("Claw");
-      skill->SetDescription("Rakes the foe with bony claws.");
+      skill->SetFluffDescription("Rakes the target with bony claws.");
+      skill->SetRange(1);
 
       auto damageAction = std::make_unique<DamageAction>();
       damageAction->SetDamage(3);
@@ -37,10 +36,9 @@ std::unique_ptr<Barebones::Skill> SkillFactory::CreateSkill(const SkillType& aTy
     case SkillType::eBONE_THROW:
     {
       auto skill = std::make_unique<SingleTargetSkill>();
-      skill->SetRange(2);
-
       skill->SetName("Bone Throw");
-      skill->SetDescription("Throws a bone at the foe.");
+      skill->SetFluffDescription("Hurls a bone at the target.");
+      skill->SetRange(2);
 
       auto damageAction = std::make_unique<DamageAction>();
       damageAction->SetDamage(2);
@@ -54,10 +52,9 @@ std::unique_ptr<Barebones::Skill> SkillFactory::CreateSkill(const SkillType& aTy
     case SkillType::eTENTACLE_SLAP:
     {
       auto skill = std::make_unique<SingleTargetSkill>();
-      skill->SetRange(1);
-
       skill->SetName("Tentacle Slap");
-      skill->SetDescription("Slaps the foe with a slimy tentacle.");
+      skill->SetFluffDescription("Slaps the target with a slimy tentacle.");
+      skill->SetRange(1);
 
       auto damageAction = std::make_unique<DamageAction>();
       damageAction->SetDamage(2);

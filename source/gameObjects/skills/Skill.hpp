@@ -44,18 +44,23 @@ namespace Barebones
       std::string GetName() const { return mName; }
 
       /**
-       * Sets the description of the skill.
+       * Sets the fluff description of the skill. The fluff description
+       * is basically flavor text; it doesn't tell the player any
+       * practical information. An example could be "Hurls a bone at the
+       * target."
        *
-       * @param aDescription The description of the skill.
+       * @param aDescription The fluff description of the skill.
        */
-      void SetDescription(const std::string& aDescription) { mDescription = aDescription; }
+      void SetFluffDescription(const std::string& aDescription) { mFluffDescription = aDescription; }
 
       /**
-       * Returns the description of the skill.
+       * Returns the description of the skill, which is a combination of the
+       * fluff description and all the descriptions of the actions this skill
+       * possesses.
        *
        * @return The description of the skill.
        */
-      std::string GetDescription() const { return mDescription; }
+      std::string GetDescription() const;
 
       /**
        * Selects this skill for use, but doesn't execute it.
@@ -314,7 +319,7 @@ namespace Barebones
       UrsineEngine::Observer mObserver;
 
       std::string mName;
-      std::string mDescription;
+      std::string mFluffDescription;
 
       bool mEnabled;
   };
