@@ -34,7 +34,7 @@ void ScreenTransitionFadingOutState::OnEnter()
       {
         shader->Activate();
         shader->SetFloat("fadeValue", 0.0);
-        shader->SetVec4("fadeColor", glm::vec4(BACKGROUND_COLOR, 1.0));
+        shader->SetVec4("fadeColor", glm::vec4(LIGHT_COLOR, 1.0));
 
         mFadeValue = 0.0;
       }

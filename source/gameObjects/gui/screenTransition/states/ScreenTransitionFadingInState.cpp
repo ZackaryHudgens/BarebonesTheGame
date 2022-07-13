@@ -31,7 +31,7 @@ void ScreenTransitionFadingInState::OnEnter()
       {
         shader->Activate();
         shader->SetFloat("fadeValue", 1.0);
-        shader->SetVec4("fadeColor", glm::vec4(BACKGROUND_COLOR, 1.0));
+        shader->SetVec4("fadeColor", glm::vec4(LIGHT_COLOR, 1.0));
 
         mFadeValue = 1.0;
       }

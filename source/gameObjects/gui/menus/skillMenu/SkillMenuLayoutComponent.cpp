@@ -105,11 +105,13 @@ void SkillMenuLayoutComponent::ProtectedInitialize()
     leftCursorObject->SetScale(glm::vec3(5.0, 5.0, 1.0));
     leftCursorObject->SetRotation(180, glm::vec3(0.0, 1.0, 0.0));
     leftCursorSprite->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
+    leftCursorSprite->SetRenderOption(GL_DEPTH_TEST, false);
 
     auto rightCursorObject = std::make_unique<UrsineEngine::GameObject>("rightCursor");
     auto rightCursorSprite = std::make_unique<UrsineEngine::SpriteComponent>();
     rightCursorObject->SetScale(glm::vec3(5.0, 5.0, 1.0));
     rightCursorSprite->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
+    rightCursorSprite->SetRenderOption(GL_DEPTH_TEST, false);
 
     UrsineEngine::Texture cursorTexture;
     cursorTexture.SetTextureParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);

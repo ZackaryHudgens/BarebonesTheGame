@@ -62,6 +62,8 @@ void ScreenTransitionBehaviorComponent::Initialize()
     mesh->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
     mesh->SetHasTransparency(true);
 
+    parent->SetPosition(glm::vec3(0.0, 0.0, 0.9));
+
     // Finally, begin in the FadingIn state.
     mState = std::make_unique<ScreenTransitionFadingInState>(*parent);
     mState->OnEnter();
