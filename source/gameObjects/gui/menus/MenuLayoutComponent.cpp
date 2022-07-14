@@ -9,7 +9,6 @@ using Barebones::MenuLayoutComponent;
 /******************************************************************************/
 MenuLayoutComponent::MenuLayoutComponent()
   : mCurrentlyHoveredAction(nullptr)
-  , mHidden(false)
   , mWraparound(true)
 {
   MenuActionEnabledChanged.Connect(*this, [this](MenuAction& aAction)
@@ -19,51 +18,46 @@ MenuLayoutComponent::MenuLayoutComponent()
 }
 
 /******************************************************************************/
-void MenuLayoutComponent::Initialize()
-{
-  ProtectedInitialize();
-  MenuLayoutComponentInitialized.Notify(*this);
-}
-
-/******************************************************************************/
 void MenuLayoutComponent::AddAction(std::unique_ptr<MenuAction> aAction)
 {
-  mActions.emplace_back(std::move(aAction));
-  HandleActionAdded();
-
-  // If no action is currently hovered over, hover over this one.
-  if(mCurrentlyHoveredAction == nullptr)
+  if(aAction != nullptr)
   {
-    mCurrentlyHoveredAction = mActions.back().get();
-    HandleActionHovered();
+    mActions.emplace_back(std::move(aAction));
+    HandleActionAdded(*mActions.back());
+
+    // If no action is currently hovered over, hover over this one.
+    if(mCurrentlyHoveredAction == nullptr)
+    {
+      mCurrentlyHoveredAction = mActions.back().get();
+      HandleActionHovered(*mCurrentlyHoveredAction);
+    }
   }
 }
 
 /******************************************************************************/
 void MenuLayoutComponent::HoverOverNextAction()
 {
-  auto actions = GetActions();
-  auto currentAction = std::find(actions.begin(),
-                                 actions.end(),
+  auto currentAction = std::find(mActions.begin(),
+                                 mActions.end(),
                                  mCurrentlyHoveredAction);
-  if(currentAction != actions.end())
+  if(currentAction != mActions.end())
   {
     // If the current action is the last action, then loop around and hover
     // over the first action. Otherwise, hover over the next action.
     auto nextAction = std::next(currentAction);
-    if(nextAction == actions.end())
+    if(nextAction == mActions.end())
     {
       if(mWraparound)
       {
-        mCurrentlyHoveredAction = actions.front();
+        mCurrentlyHoveredAction = mActions.front().get();
       }
     }
     else
     {
-      mCurrentlyHoveredAction = (*nextAction);
+      mCurrentlyHoveredAction = (*nextAction).get();
     }
 
-    HandleActionHovered();
+    HandleActionHovered(*mCurrentlyHoveredAction);
 
     auto parent = GetParent();
     if(parent != nullptr)
@@ -76,27 +70,26 @@ void MenuLayoutComponent::HoverOverNextAction()
 /******************************************************************************/
 void MenuLayoutComponent::HoverOverPreviousAction()
 {
-  auto actions = GetActions();
-  auto currentAction = std::find(actions.begin(),
-                                 actions.end(),
+  auto currentAction = std::find(mActions.begin(),
+                                 mActions.end(),
                                  mCurrentlyHoveredAction);
-  if(currentAction != actions.end())
+  if(currentAction != mActions.end())
   {
     // If the current action is the first action, then loop around and hover
     // over the last action. Otherwise, hover over the previous action.
-    if(currentAction == actions.begin())
+    if(currentAction == mActions.begin())
     {
       if(mWraparound)
       {
-        mCurrentlyHoveredAction = actions.back();
+        mCurrentlyHoveredAction = mActions.back().get();
       }
     }
     else
     {
-      mCurrentlyHoveredAction = (*std::prev(currentAction));
+      mCurrentlyHoveredAction = (*std::prev(currentAction)).get();
     }
 
-    HandleActionHovered();
+    HandleActionHovered(*mCurrentlyHoveredAction);
 
     auto parent = GetParent();
     if(parent != nullptr)
@@ -114,7 +107,7 @@ void MenuLayoutComponent::ExecuteCurrentAction()
     if(mCurrentlyHoveredAction->IsEnabled())
     {
       mCurrentlyHoveredAction->Execute();
-      HandleActionExecuted();
+      HandleActionExecuted(*mCurrentlyHoveredAction);
 
       auto parent = GetParent();
       if(parent != nullptr)
@@ -123,26 +116,6 @@ void MenuLayoutComponent::ExecuteCurrentAction()
       }
     }
   }
-}
-
-/******************************************************************************/
-void MenuLayoutComponent::SetHidden(bool aHidden)
-{
-  mHidden = aHidden;
-  HandleHiddenStatusChanged(mHidden);
-}
-
-/******************************************************************************/
-std::vector<Barebones::MenuAction*> MenuLayoutComponent::GetActions()
-{
-  std::vector<MenuAction*> actions;
-
-  for(auto& action : mActions)
-  {
-    actions.emplace_back(action.get());
-  }
-
-  return actions;
 }
 
 /******************************************************************************/

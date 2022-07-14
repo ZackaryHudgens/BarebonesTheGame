@@ -1,4 +1,4 @@
-#include "MainMenuLayoutComponent.hpp"
+#include "BasicMenuLayoutComponent.hpp"
 
 #include <algorithm>
 
@@ -9,10 +9,10 @@
 #include "Colors.hpp"
 #include "Fonts.hpp"
 
-using Barebones::MainMenuLayoutComponent;
+using Barebones::BasicMenuLayoutComponent;
 
 /******************************************************************************/
-MainMenuLayoutComponent::MainMenuLayoutComponent()
+BasicMenuLayoutComponent::BasicMenuLayoutComponent()
   : MenuLayoutComponent()
   , mCursor(nullptr)
   , mHoveredTextBox(nullptr)
@@ -25,7 +25,7 @@ MainMenuLayoutComponent::MainMenuLayoutComponent()
 }
 
 /******************************************************************************/
-void MainMenuLayoutComponent::ProtectedInitialize()
+void BasicMenuLayoutComponent::Initialize()
 {
   auto parent = GetParent();
   if(parent != nullptr)
@@ -55,26 +55,13 @@ void MainMenuLayoutComponent::ProtectedInitialize()
 }
 
 /******************************************************************************/
-void MainMenuLayoutComponent::HandleHiddenStatusChanged(bool aHidden)
-{
-  auto parent = GetParent();
-  if(parent != nullptr)
-  {
-    auto parentPos = parent->GetPosition();
-    aHidden ? parentPos.z += 1.1 : parentPos.z -= 1.1;
-    parent->SetPosition(parentPos);
-  }
-}
-
-/******************************************************************************/
-void MainMenuLayoutComponent::HandleActionAdded()
+void BasicMenuLayoutComponent::HandleActionAdded(MenuAction& aAction)
 {
   auto parent = GetParent();
   if(parent != nullptr)
   {
     // Create a new GameObject with a TextBoxComponent, then add it as a child.
-    auto newAction = GetActions().back();
-    auto actionObject = std::make_unique<UrsineEngine::GameObject>(newAction->GetName());
+    auto actionObject = std::make_unique<UrsineEngine::GameObject>(aAction.GetName());
     actionObject->AddComponent(std::make_unique<TextBoxComponent>());
     parent->AddChild(std::move(actionObject));
 
@@ -97,7 +84,7 @@ void MainMenuLayoutComponent::HandleActionAdded()
     newActionTextBox->SetFont(DEFAULT_FONT_FAMILY, DEFAULT_FONT_STYLE);
     newActionTextBox->SetTextSize(BIG_FONT_SIZE);
     newActionTextBox->SetTextAlignment(TextAlignment::eCENTER);
-    newActionTextBox->SetText(newAction->GetName());
+    newActionTextBox->SetText(aAction.GetName());
 
     auto textShader = newActionTextBox->GetTextShader();
     if(textShader != nullptr)
@@ -108,18 +95,18 @@ void MainMenuLayoutComponent::HandleActionAdded()
 
     mTextBoxes.emplace_back(newActionTextBox);
     RepositionTextBoxes();
-    RepositionCursor();
+    RepositionCursor(aAction);
   }
 }
 
 /******************************************************************************/
-void MainMenuLayoutComponent::HandleActionHovered()
+void BasicMenuLayoutComponent::HandleActionHovered(MenuAction& aAction)
 {
-  RepositionCursor();
+  RepositionCursor(aAction);
 }
 
 /******************************************************************************/
-void MainMenuLayoutComponent::HandleActionEnabledChanged(MenuAction& aAction)
+void BasicMenuLayoutComponent::HandleActionEnabledChanged(MenuAction& aAction)
 {
   // Find the text box that corresponds to the action.
   auto actionName = aAction.GetName();
@@ -148,7 +135,7 @@ void MainMenuLayoutComponent::HandleActionEnabledChanged(MenuAction& aAction)
 }
 
 /******************************************************************************/
-void MainMenuLayoutComponent::RepositionTextBoxes()
+void BasicMenuLayoutComponent::RepositionTextBoxes()
 {
   auto overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
   auto overlayHeight = env.GetGraphicsOptions().mOverlayHeight;
@@ -172,35 +159,31 @@ void MainMenuLayoutComponent::RepositionTextBoxes()
 }
 
 /******************************************************************************/
-void MainMenuLayoutComponent::RepositionCursor()
+void BasicMenuLayoutComponent::RepositionCursor(MenuAction& aAction)
 {
-  auto action = GetCurrentlyHoveredAction();
-  if(action != nullptr)
+  // Find the text box that corresponds to the action.
+  auto actionName = aAction.GetName();
+
+  auto findTextBox = [&actionName](const TextBoxComponent* aTextBox)
   {
-    // Find the text box that corresponds to the action.
-    auto actionName = action->GetName();
+    return actionName == aTextBox->GetText();
+  };
 
-    auto findTextBox = [&actionName](const TextBoxComponent* aTextBox)
+  auto foundTextBox = std::find_if(mTextBoxes.begin(),
+                                   mTextBoxes.end(),
+                                   findTextBox);
+  if(foundTextBox != mTextBoxes.end())
+  {
+    // Move the cursor to the left of the text in the text box.
+    auto textBoxParent = (*foundTextBox)->GetParent();
+    if(textBoxParent != nullptr &&
+       mCursor != nullptr)
     {
-      return actionName == aTextBox->GetText();
-    };
+      auto cursorPos = textBoxParent->GetPosition();
 
-    auto foundTextBox = std::find_if(mTextBoxes.begin(),
-                                     mTextBoxes.end(),
-                                     findTextBox);
-    if(foundTextBox != mTextBoxes.end())
-    {
-      // Move the cursor to the left of the text in the text box.
-      auto textBoxParent = (*foundTextBox)->GetParent();
-      if(textBoxParent != nullptr &&
-         mCursor != nullptr)
-      {
-        auto cursorPos = textBoxParent->GetPosition();
-
-        double leftEdge = cursorPos.x - ((*foundTextBox)->GetWidth() / 2.0);
-        cursorPos.x = (leftEdge + mCursorHorizontalPadding);
-        mCursor->SetPosition(cursorPos);
-      }
+      double leftEdge = cursorPos.x - ((*foundTextBox)->GetWidth() / 2.0);
+      cursorPos.x = (leftEdge + mCursorHorizontalPadding);
+      mCursor->SetPosition(cursorPos);
     }
   }
 }

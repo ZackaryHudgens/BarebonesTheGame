@@ -21,6 +21,11 @@ namespace Barebones
       RewardsMenuLayoutComponent();
 
       /**
+       * Initializes the component.
+       */
+      void Initialize() override;
+
+      /**
        * Creates an action for the given character type.
        *
        * @param aType The type of character.
@@ -39,21 +44,20 @@ namespace Barebones
     protected:
 
       /**
-       * Initializes the component.
-       */
-      void ProtectedInitialize() override;
-
-      /**
-       * A handler function that gets called whenever the currently hovered
+       * A virtual function that gets called whenever the currently hovered
        * action changes.
+       *
+       * @param aAction The action that was hovered.
        */
-      void HandleActionHovered() override;
+      void HandleActionHovered(MenuAction& aAction) override;
 
       /**
-       * A handler function that gets called whenever an action is executed
+       * A virtual function that gets called whenever an action is executed
        * from this menu.
+       *
+       * @param aAction The action that was executed.
        */
-      void HandleActionExecuted() override;
+      void HandleActionExecuted(MenuAction& aAction) override;
 
     private:
 

@@ -3,15 +3,13 @@
 #include <Environment.hpp>
 #include <Scene.hpp>
 
-#include "MainMenuInputComponent.hpp"
-#include "MainMenuLayoutComponent.hpp"
-#include "MainMenuAudioComponent.hpp"
+#include "BasicMenuLayoutComponent.hpp"
+#include "BasicMenuInputComponent.hpp"
+#include "BasicMenuAudioComponent.hpp"
 #include "SkillMenuInputComponent.hpp"
 #include "SkillMenuLayoutComponent.hpp"
 #include "RewardsMenuInputComponent.hpp"
 #include "RewardsMenuLayoutComponent.hpp"
-#include "VictoryMenuLayoutComponent.hpp"
-#include "DefeatMenuLayoutComponent.hpp"
 
 #include "MenuAction.hpp"
 
@@ -30,186 +28,88 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
   {
     case MenuType::eMAIN:
     {
-      newMenu->AddComponent(std::make_unique<MainMenuInputComponent>());
-      newMenu->AddComponent(std::make_unique<MainMenuLayoutComponent>());
-      newMenu->AddComponent(std::make_unique<MainMenuAudioComponent>());
+      newMenu->AddComponent(std::make_unique<BasicMenuInputComponent>());
+      newMenu->AddComponent(std::make_unique<BasicMenuLayoutComponent>());
+      newMenu->AddComponent(std::make_unique<BasicMenuAudioComponent>());
 
       auto menuLayoutComponent = newMenu->GetFirstComponentOfType<MenuLayoutComponent>();
 
       // Add the start action.
-      menuLayoutComponent->AddAction(std::make_unique<MenuAction>("Start Game"));
-      auto startAction = menuLayoutComponent->GetActions().back();
-
+      auto startAction = std::make_unique<MenuAction>("Start Game");
       auto startFunction = []()
       {
         ScreenTransitionRequested.Notify(SceneType::eBOARD_ACT_ONE);
       };
       startAction->SetFunction(startFunction);
+      menuLayoutComponent->AddAction(std::move(startAction));
 
       // Add the options action.
-      menuLayoutComponent->AddAction(std::make_unique<MenuAction>("Options"));
-      auto optionsAction = menuLayoutComponent->GetActions().back();
-
+      auto optionsAction = std::make_unique<MenuAction>("Options");
       auto optionsFunction = []()
       {
-        auto scene = env.GetCurrentScene();
-        if(scene != nullptr)
-        {
-          auto newMenu = MenuFactory::CreateMenu(MenuType::eOPTIONS, "optionsMenu");
-          scene->AddObject(std::move(newMenu));
-        }
       };
       optionsAction->SetFunction(optionsFunction);
+      menuLayoutComponent->AddAction(std::move(optionsAction));
 
       // Add the exit action.
-      menuLayoutComponent->AddAction(std::make_unique<MenuAction>("Exit"));
-      auto exitAction = menuLayoutComponent->GetActions().back();
-
+      auto exitAction = std::make_unique<MenuAction>("Exit");
       auto exitFunction = []()
       {
         env.Exit();
       };
       exitAction->SetFunction(exitFunction);
+      menuLayoutComponent->AddAction(std::move(exitAction));
 
       break;
     }
     case MenuType::eOPTIONS:
     {
-      newMenu->AddComponent(std::make_unique<MainMenuInputComponent>());
-      newMenu->AddComponent(std::make_unique<MainMenuLayoutComponent>());
-      newMenu->AddComponent(std::make_unique<MainMenuAudioComponent>());
+      newMenu->AddComponent(std::make_unique<BasicMenuInputComponent>());
+      newMenu->AddComponent(std::make_unique<BasicMenuLayoutComponent>());
+      newMenu->AddComponent(std::make_unique<BasicMenuAudioComponent>());
 
       auto menuLayoutComponent = newMenu->GetFirstComponentOfType<MenuLayoutComponent>();
 
       // Add the resolution action.
-      menuLayoutComponent->AddAction(std::make_unique<MenuAction>("Resolution"));
-      auto resolutionAction = menuLayoutComponent->GetActions().back();
-
+      auto resolutionAction = std::make_unique<MenuAction>("Resolution");
       auto resolutionFunction = []()
       {
-        auto scene = env.GetCurrentScene();
-        if(scene != nullptr)
-        {
-          auto newMenu = MenuFactory::CreateMenu(MenuType::eRESOLUTION, "resolutionMenu");
-          scene->AddObject(std::move(newMenu));
-        }
       };
       resolutionAction->SetFunction(resolutionFunction);
+      menuLayoutComponent->AddAction(std::move(resolutionAction));
 
       // Add the window type action.
-      menuLayoutComponent->AddAction(std::make_unique<MenuAction>("Window Type"));
-      auto windowTypeAction = menuLayoutComponent->GetActions().back();
-
+      auto windowTypeAction = std::make_unique<MenuAction>("Window Type");
       auto windowTypeFunction = []()
       {
-        auto scene = env.GetCurrentScene();
-        if(scene != nullptr)
-        {
-          auto newMenu = MenuFactory::CreateMenu(MenuType::eWINDOW_TYPE, "windowTypeMenu");
-          scene->AddObject(std::move(newMenu));
-        }
       };
       windowTypeAction->SetFunction(windowTypeFunction);
+      menuLayoutComponent->AddAction(std::move(windowTypeAction));
 
       break;
     }
     case MenuType::eRESOLUTION:
     {
-      newMenu->AddComponent(std::make_unique<MainMenuInputComponent>());
-      newMenu->AddComponent(std::make_unique<MainMenuLayoutComponent>());
-      newMenu->AddComponent(std::make_unique<MainMenuAudioComponent>());
+      newMenu->AddComponent(std::make_unique<BasicMenuInputComponent>());
+      newMenu->AddComponent(std::make_unique<BasicMenuLayoutComponent>());
+      newMenu->AddComponent(std::make_unique<BasicMenuAudioComponent>());
 
       auto menuLayoutComponent = newMenu->GetFirstComponentOfType<MenuLayoutComponent>();
-
-      auto graphicsOptions = env.GetGraphicsOptions();
-
-      // Add an action for each supported resolution.
-      menuLayoutComponent->AddAction(std::make_unique<MenuAction>("1280x720"));
-
-      auto resolutionFunction = [graphicsOptions]()
-      {
-        UrsineEngine::GraphicsOptions newOptions = graphicsOptions;
-        newOptions.mWidth = 1280;
-        newOptions.mHeight = 720;
-
-        env.Initialize(newOptions);
-      };
-      menuLayoutComponent->GetActions().back()->SetFunction(resolutionFunction);
-
-      menuLayoutComponent->AddAction(std::make_unique<MenuAction>("1366x768"));
-
-      auto resolutionFunction2 = [graphicsOptions]()
-      {
-        UrsineEngine::GraphicsOptions newOptions = graphicsOptions;
-        newOptions.mWidth = 1366;
-        newOptions.mHeight = 768;
-
-        env.Initialize(newOptions);
-      };
-      menuLayoutComponent->GetActions().back()->SetFunction(resolutionFunction2);
-
-      menuLayoutComponent->AddAction(std::make_unique<MenuAction>("1600x900"));
-
-      auto resolutionFunction3 = [graphicsOptions]()
-      {
-        UrsineEngine::GraphicsOptions newOptions = graphicsOptions;
-        newOptions.mWidth = 1600;
-        newOptions.mHeight = 900;
-
-        env.Initialize(newOptions);
-      };
-      menuLayoutComponent->GetActions().back()->SetFunction(resolutionFunction3);
-
-      menuLayoutComponent->AddAction(std::make_unique<MenuAction>("1920x1080"));
-
-      auto resolutionFunction4 = [graphicsOptions]()
-      {
-        UrsineEngine::GraphicsOptions newOptions = graphicsOptions;
-        newOptions.mWidth = 1920;
-        newOptions.mHeight = 1080;
-
-        env.Initialize(newOptions);
-      };
-      menuLayoutComponent->GetActions().back()->SetFunction(resolutionFunction4);
-
-      menuLayoutComponent->AddAction(std::make_unique<MenuAction>("2560x1440"));
-
-      auto resolutionFunction6 = [graphicsOptions]()
-      {
-        UrsineEngine::GraphicsOptions newOptions = graphicsOptions;
-        newOptions.mWidth = 2560;
-        newOptions.mHeight = 1440;
-
-        env.Initialize(newOptions);
-      };
-      menuLayoutComponent->GetActions().back()->SetFunction(resolutionFunction6);
-
-      menuLayoutComponent->AddAction(std::make_unique<MenuAction>("3840x2160"));
-
-      auto resolutionFunction7 = [graphicsOptions]()
-      {
-        UrsineEngine::GraphicsOptions newOptions = graphicsOptions;
-        newOptions.mWidth = 3840;
-        newOptions.mHeight = 2160;
-
-        env.Initialize(newOptions);
-      };
-      menuLayoutComponent->GetActions().back()->SetFunction(resolutionFunction7);
 
       break;
     }
     case MenuType::eWINDOW_TYPE:
     {
-      newMenu->AddComponent(std::make_unique<MainMenuInputComponent>());
-      newMenu->AddComponent(std::make_unique<MainMenuLayoutComponent>());
-      newMenu->AddComponent(std::make_unique<MainMenuAudioComponent>());
+      newMenu->AddComponent(std::make_unique<BasicMenuInputComponent>());
+      newMenu->AddComponent(std::make_unique<BasicMenuLayoutComponent>());
+      newMenu->AddComponent(std::make_unique<BasicMenuAudioComponent>());
 
       auto menuLayoutComponent = newMenu->GetFirstComponentOfType<MenuLayoutComponent>();
 
       auto graphicsOptions = env.GetGraphicsOptions();
 
       // Add the windowed action.
-      menuLayoutComponent->AddAction(std::make_unique<MenuAction>("Windowed"));
+      auto windowedAction = std::make_unique<MenuAction>("Windowed");
       auto windowedFunction = [graphicsOptions]()
       {
         UrsineEngine::GraphicsOptions newOptions = graphicsOptions;
@@ -217,10 +117,11 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
 
         env.Initialize(newOptions);
       };
-      menuLayoutComponent->GetActions().back()->SetFunction(windowedFunction);
+      windowedAction->SetFunction(windowedFunction);
+      menuLayoutComponent->AddAction(std::move(windowedAction));
 
       // Add the fullscreen action.
-      menuLayoutComponent->AddAction(std::make_unique<MenuAction>("Fullscreen"));
+      auto fullscreenAction = std::make_unique<MenuAction>("Fullscreen");
       auto fullscreenFunction = [graphicsOptions]()
       {
         UrsineEngine::GraphicsOptions newOptions = graphicsOptions;
@@ -228,10 +129,11 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
 
         env.Initialize(newOptions);
       };
-      menuLayoutComponent->GetActions().back()->SetFunction(fullscreenFunction);
+      windowedAction->SetFunction(fullscreenFunction);
+      menuLayoutComponent->AddAction(std::move(fullscreenAction));
 
-      // Add the borderless action.
-      menuLayoutComponent->AddAction(std::make_unique<MenuAction>("Borderless"));
+      // Add the borderless fullscreen action.
+      auto borderlessAction = std::make_unique<MenuAction>("Borderless");
       auto borderlessFunction = [graphicsOptions]()
       {
         UrsineEngine::GraphicsOptions newOptions = graphicsOptions;
@@ -239,54 +141,48 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
 
         env.Initialize(newOptions);
       };
-      menuLayoutComponent->GetActions().back()->SetFunction(borderlessFunction);
+      borderlessAction->SetFunction(borderlessFunction);
+      menuLayoutComponent->AddAction(std::move(borderlessAction));
 
       break;
     }
     case MenuType::ePAUSE:
     {
-      newMenu->AddComponent(std::make_unique<MainMenuInputComponent>());
-      newMenu->AddComponent(std::make_unique<MainMenuLayoutComponent>());
-      newMenu->AddComponent(std::make_unique<MainMenuAudioComponent>());
+      newMenu->AddComponent(std::make_unique<BasicMenuInputComponent>());
+      newMenu->AddComponent(std::make_unique<BasicMenuLayoutComponent>());
+      newMenu->AddComponent(std::make_unique<BasicMenuAudioComponent>());
 
       auto menuLayoutComponent = newMenu->GetFirstComponentOfType<MenuLayoutComponent>();
 
       // Add the resume action.
-      menuLayoutComponent->AddAction(std::make_unique<MenuAction>("Resume"));
-      auto resumeFunction = [aName]()
+      auto resumeAction = std::make_unique<MenuAction>("Resume");
+      auto resumeFunction = [menuLayoutComponent]()
       {
-        auto scene = env.GetCurrentScene();
-        if(scene != nullptr)
+        auto parent = menuLayoutComponent->GetParent();
+        if(parent != nullptr)
         {
-          auto menuObject = scene->GetObject(aName);
-          if(menuObject != nullptr)
-          {
-            menuObject->ScheduleForDeletion();
-          }
+          parent->ScheduleForDeletion();
         }
       };
-      menuLayoutComponent->GetActions().back()->SetFunction(resumeFunction);
+      resumeAction->SetFunction(resumeFunction);
+      menuLayoutComponent->AddAction(std::move(resumeAction));
 
       // Add the options action.
-      menuLayoutComponent->AddAction(std::make_unique<MenuAction>("Options"));
+      auto optionsAction = std::make_unique<MenuAction>("Options");
       auto optionsFunction = []()
       {
-        auto scene = env.GetCurrentScene();
-        if(scene != nullptr)
-        {
-          auto newMenu = MenuFactory::CreateMenu(MenuType::eOPTIONS, "optionsMenu");
-          scene->AddObject(std::move(newMenu));
-        }
       };
-      menuLayoutComponent->GetActions().back()->SetFunction(optionsFunction);
+      optionsAction->SetFunction(optionsFunction);
+      menuLayoutComponent->AddAction(std::move(optionsAction));
 
       // Add the exit action.
-      menuLayoutComponent->AddAction(std::make_unique<MenuAction>("Exit to Title"));
+      auto exitAction = std::make_unique<MenuAction>("Exit to Title");
       auto exitFunction = []()
       {
         ScreenTransitionRequested.Notify(SceneType::eMAIN_MENU);
       };
-      menuLayoutComponent->GetActions().back()->SetFunction(exitFunction);
+      exitAction->SetFunction(exitFunction);
+      menuLayoutComponent->AddAction(std::move(exitAction));
 
       break;
     }
@@ -294,7 +190,7 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
     {
       newMenu->AddComponent(std::make_unique<SkillMenuInputComponent>());
       newMenu->AddComponent(std::make_unique<SkillMenuLayoutComponent>());
-      newMenu->AddComponent(std::make_unique<MainMenuAudioComponent>());
+      newMenu->AddComponent(std::make_unique<BasicMenuAudioComponent>());
 
       break;
     }
@@ -302,16 +198,8 @@ std::unique_ptr<UrsineEngine::GameObject> MenuFactory::CreateMenu(const MenuType
     {
       newMenu->AddComponent(std::make_unique<RewardsMenuLayoutComponent>());
       newMenu->AddComponent(std::make_unique<RewardsMenuInputComponent>());
-      newMenu->AddComponent(std::make_unique<MainMenuAudioComponent>());
+      newMenu->AddComponent(std::make_unique<BasicMenuAudioComponent>());
 
-      break;
-    }
-    case MenuType::eVICTORY:
-    {
-      break;
-    }
-    case MenuType::eDEFEAT:
-    {
       break;
     }
     default:

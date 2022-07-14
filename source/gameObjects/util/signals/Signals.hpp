@@ -17,7 +17,6 @@ namespace Barebones
   class PlayerBehaviorComponent;
   class Skill;
   class TurnDisplayComponent;
-  class MenuLayoutComponent;
   class MenuAction;
 
   /**
@@ -99,7 +98,6 @@ namespace Barebones
   /**
    * GUI Signals
    */
-  typedef UrsineEngine::SignalT<MenuLayoutComponent&> MenuLayoutComponentInitializedSignal;
   typedef UrsineEngine::SignalT<MenuAction&> MenuActionEnabledChangedSignal;
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&, MenuAction&> MenuActionHoveredSignal;
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&, MenuAction&> MenuActionExecutedSignal;
@@ -111,7 +109,6 @@ namespace Barebones
   typedef UrsineEngine::SignalT<UrsineEngine::GameObject&> ScreenTransitionFinishedSignal;
   typedef UrsineEngine::SignalT<const SceneType&> ScreenTransitionRequestedSignal;
 
-  extern MenuLayoutComponentInitializedSignal MenuLayoutComponentInitialized;
   extern MenuActionEnabledChangedSignal MenuActionEnabledChanged;
   extern MenuActionHoveredSignal MenuActionHovered;
   extern MenuActionExecutedSignal MenuActionExecuted;

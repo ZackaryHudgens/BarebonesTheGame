@@ -5,14 +5,14 @@
 
 namespace Barebones
 {
-  class MainMenuAudioComponent : public MenuAudioComponent
+  class BasicMenuAudioComponent : public MenuAudioComponent
   {
     public:
 
       /**
        * Constructor.
        */
-      MainMenuAudioComponent();
+      BasicMenuAudioComponent();
 
     protected:
 

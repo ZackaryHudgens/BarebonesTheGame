@@ -13,9 +13,7 @@ namespace Barebones
     eWINDOW_TYPE,
     ePAUSE,
     eSKILL,
-    eREWARDS,
-    eVICTORY,
-    eDEFEAT
+    eREWARDS
   };
 
   class MenuFactory

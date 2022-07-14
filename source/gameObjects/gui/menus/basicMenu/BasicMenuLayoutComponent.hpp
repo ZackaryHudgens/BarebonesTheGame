@@ -1,5 +1,5 @@
-#ifndef MAINMENULAYOUTCOMPONENT_HPP
-#define MAINMENULAYOUTCOMPONENT_HPP
+#ifndef BASICMENULAYOUTCOMPONENT_HPP
+#define BASICMENULAYOUTCOMPONENT_HPP
 
 #include "MenuLayoutComponent.hpp"
 
@@ -7,41 +7,37 @@
 
 namespace Barebones
 {
-  class MainMenuLayoutComponent : public MenuLayoutComponent
+  class BasicMenuLayoutComponent : public MenuLayoutComponent
   {
     public:
 
       /**
        * Constructor.
        */
-      MainMenuLayoutComponent();
-
-    protected:
+      BasicMenuLayoutComponent();
 
       /**
        * Initializes the component.
        */
-      virtual void ProtectedInitialize() override;
+      void Initialize() override;
 
-      /**
-       * A handler function that gets called whenever the hidden status of
-       * this menu changes.
-       *
-       * @param aHidden The new hidden status of the menu.
-       */
-      void HandleHiddenStatusChanged(bool aHidden) override;
+    protected:
 
       /**
        * A handler function that gets called whenever an action is added
        * to this menu.
+       *
+       * @param aAction The action that was added.
        */
-      void HandleActionAdded() override;
+      void HandleActionAdded(MenuAction& aAction) override;
 
       /**
        * A handler function that gets called whenever the currently hovered
        * action changes.
+       *
+       * @param aAction The action that was hovered.
        */
-      void HandleActionHovered() override;
+      void HandleActionHovered(MenuAction& aAction) override;
 
       /**
        * A handler function that gets called whenever an action in this menu
@@ -61,8 +57,10 @@ namespace Barebones
       /**
        * Repositions the cursor to be to the left of the currently
        * hovered action.
+       *
+       * @param aAction The currently hovered action.
        */
-      void RepositionCursor();
+      void RepositionCursor(MenuAction& aAction);
 
       UrsineEngine::GameObject* mCursor;
 

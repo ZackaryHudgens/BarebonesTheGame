@@ -1,18 +1,18 @@
-#ifndef MAINMENUINPUTCOMPONENT_HPP
-#define MAINMENUINPUTCOMPONENT_HPP
+#ifndef BASICMENUINPUTCOMPONENT_HPP
+#define BASICMENUINPUTCOMPONENT_HPP
 
 #include "InputComponent.hpp"
 
 namespace Barebones
 {
-  class MainMenuInputComponent : public InputComponent
+  class BasicMenuInputComponent : public InputComponent
   {
     public:
 
       /**
        * Constructor.
        */
-      MainMenuInputComponent();
+      BasicMenuInputComponent();
 
       /**
        * A handler function that gets called whenever the user presses

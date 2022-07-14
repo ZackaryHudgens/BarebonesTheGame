@@ -1,15 +1,15 @@
-#include "MainMenuAudioComponent.hpp"
+#include "BasicMenuAudioComponent.hpp"
 
-using Barebones::MainMenuAudioComponent;
+using Barebones::BasicMenuAudioComponent;
 
 /******************************************************************************/
-MainMenuAudioComponent::MainMenuAudioComponent()
+BasicMenuAudioComponent::BasicMenuAudioComponent()
   : MenuAudioComponent()
 {
 }
 
 /******************************************************************************/
-void MainMenuAudioComponent::HandleActionHovered(UrsineEngine::GameObject& aObject,
+void BasicMenuAudioComponent::HandleActionHovered(UrsineEngine::GameObject& aObject,
                                                  const MenuAction& aAction)
 {
   if(&aObject == GetParent())
@@ -19,7 +19,7 @@ void MainMenuAudioComponent::HandleActionHovered(UrsineEngine::GameObject& aObje
 }
 
 /******************************************************************************/
-void MainMenuAudioComponent::HandleActionExecuted(UrsineEngine::GameObject& aObject,
+void BasicMenuAudioComponent::HandleActionExecuted(UrsineEngine::GameObject& aObject,
                                                   const MenuAction& aAction)
 {
   if(&aObject == GetParent())

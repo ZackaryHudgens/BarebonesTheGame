@@ -17,23 +17,11 @@ namespace Barebones
       MenuLayoutComponent();
 
       /**
-       * Initializes the component.
-       */
-      void Initialize() override;
-
-      /**
        * Adds an action to this menu.
        *
        * @param aAction The action to add.
        */
       void AddAction(std::unique_ptr<MenuAction> aAction);
-
-      /**
-       * Returns the actions in this menu.
-       *
-       * @return A vector of actions in this menu.
-       */
-      std::vector<MenuAction*> GetActions();
 
       /**
        * Hovers over the next action in the list.
@@ -49,21 +37,6 @@ namespace Barebones
        * Executes the currently hovered action.
        */
       void ExecuteCurrentAction();
-
-      /**
-       * Sets whether this menu is hidden. In order for this function to
-       * do anything, HandleHiddenStatusChanged() needs to be overridden.
-       *
-       * @param aHidden The new hidden status of the menu.
-       */
-      void SetHidden(bool aHidden);
-
-      /**
-       * Returns the hidden status of this menu.
-       *
-       * @return The hidden status of this menu.
-       */
-      bool IsHidden() const { return mHidden; }
 
       /**
        * Sets whether to wrap around to the first/last action when using
@@ -84,35 +57,28 @@ namespace Barebones
     protected:
 
       /**
-       * A virtual function that gets called during Initialize().
-       */
-      virtual void ProtectedInitialize() {}
-
-      /**
-       * A virtual function that gets called whenever the hidden status of
-       * this menu changes.
-       *
-       * @param aHidden The new hidden status of the menu.
-       */
-      virtual void HandleHiddenStatusChanged(bool aHidden) {}
-
-      /**
        * A virtual function that gets called whenever an action is added
        * to this menu.
+       *
+       * @param aAction The action that was added.
        */
-      virtual void HandleActionAdded() {}
+      virtual void HandleActionAdded(MenuAction& aAction) {}
 
       /**
        * A virtual function that gets called whenever the currently hovered
        * action changes.
+       *
+       * @param aAction The action that was hovered.
        */
-      virtual void HandleActionHovered() {}
+      virtual void HandleActionHovered(MenuAction& aAction) {}
 
       /**
        * A virtual function that gets called whenever an action is executed
        * from this menu.
+       *
+       * @param aAction The action that was executed.
        */
-      virtual void HandleActionExecuted() {}
+      virtual void HandleActionExecuted(MenuAction& aAction) {}
 
       /**
        * A virtual function that gets called whenever an action in this menu
@@ -121,13 +87,6 @@ namespace Barebones
        * @param aAction The action that changed.
        */
       virtual void HandleActionEnabledChanged(MenuAction& aAction) {}
-
-      /**
-       * Returns the currently selected action.
-       *
-       * @return The currently selected action.
-       */
-      MenuAction* GetCurrentlyHoveredAction() { return mCurrentlyHoveredAction; }
 
     private:
 
@@ -142,7 +101,6 @@ namespace Barebones
       std::vector<std::unique_ptr<MenuAction>> mActions;
       MenuAction* mCurrentlyHoveredAction;
 
-      bool mHidden;
       bool mWraparound;
   };
 }

@@ -1,19 +1,19 @@
-#include "MainMenuInputComponent.hpp"
+#include "BasicMenuInputComponent.hpp"
 
 #include <GameObject.hpp>
 
 #include "MenuLayoutComponent.hpp"
 
-using Barebones::MainMenuInputComponent;
+using Barebones::BasicMenuInputComponent;
 
 /******************************************************************************/
-MainMenuInputComponent::MainMenuInputComponent()
+BasicMenuInputComponent::BasicMenuInputComponent()
   : InputComponent()
 {
 }
 
 /******************************************************************************/
-void MainMenuInputComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
+void BasicMenuInputComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCode,
                                                int aMods)
 {
   auto parent = GetParent();
@@ -54,7 +54,7 @@ void MainMenuInputComponent::HandleKeyPressed(const UrsineEngine::KeyCode& aCode
 }
 
 /******************************************************************************/
-void MainMenuInputComponent::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
+void BasicMenuInputComponent::HandleKeyRepeated(const UrsineEngine::KeyCode& aCode,
                                                 int aMods)
 {
   auto parent = GetParent();

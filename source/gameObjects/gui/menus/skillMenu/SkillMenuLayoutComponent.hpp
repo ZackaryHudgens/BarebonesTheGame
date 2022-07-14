@@ -17,30 +17,36 @@ namespace Barebones
        */
       SkillMenuLayoutComponent();
 
-    protected:
-
       /**
        * Initializes the component.
        */
-      void ProtectedInitialize() override;
+      void Initialize() override;
+
+    protected:
 
       /**
        * A handler function that gets called whenever an action is added
        * to this menu.
+       *
+       * @param aAction The action that was added.
        */
-      void HandleActionAdded() override;
+      void HandleActionAdded(MenuAction& aAction) override;
 
       /**
        * A handler function that gets called whenever the currently hovered
        * action changes.
+       *
+       * @param aAction The action that was hovered.
        */
-      void HandleActionHovered() override;
+      void HandleActionHovered(MenuAction& aAction) override;
 
       /**
        * A handler function that gets called whenever an action is executed
        * from this menu.
+       *
+       * @param aAction The action that was executed.
        */
-      void HandleActionExecuted() override;
+      void HandleActionExecuted(MenuAction& aAction) override;
 
     private:
 
