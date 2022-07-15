@@ -40,7 +40,98 @@ RewardsMenuLayoutComponent::RewardsMenuLayoutComponent()
 }
 
 /******************************************************************************/
-void RewardsMenuLayoutComponent::Initialize()
+void RewardsMenuLayoutComponent::CreateActionForCharacterType(const CharacterType& aType)
+{
+  // Add an action for the new character type.
+  std::stringstream nameStream;
+  nameStream << "characterAction_" << mCharacters.size();
+
+  auto newAction = std::make_unique<MenuAction>(nameStream.str());
+  auto characterType = aType;
+  auto actionFunction = [characterType]()
+  {
+    CharacterSelectedFromRewardsMenu.Notify(characterType);
+  };
+  newAction->SetFunction(actionFunction);
+  AddAction(std::move(newAction));
+
+  // Create a character of the given type, then add it to the parent
+  // as a child object.
+  auto character = CharacterFactory::CreateCharacter(aType, nameStream.str());
+  auto characterSprite = character->GetFirstComponentOfType<UrsineEngine::SpriteComponent>();
+  if(characterSprite != nullptr)
+  {
+    characterSprite->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
+    characterSprite->SetFrameOfAnimation(0);
+  }
+
+  character->SetScale(glm::vec3(mCharacterScalar,
+                                mCharacterScalar,
+                                1.0));
+
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    parent->AddChild(std::move(character));
+    mCharacters.emplace_back(GetActions().back(), parent->GetChildren().back());
+
+    if(mFocusedCharacter == nullptr)
+    {
+      mFocusedCharacter = mCharacters.back().second;
+      UpdateCharacterInfo();
+      CreateSkillTextBoxes();
+    }
+  }
+
+  // Reposition elements.
+  RepositionCharacters();
+  RepositionCursor();
+  RepositionCharacterInfo();
+}
+
+/******************************************************************************/
+void RewardsMenuLayoutComponent::SetShowMaxSizeWarning(bool aShowWarning)
+{
+  mShowWarning = aShowWarning;
+
+  auto parent = GetParent();
+  if(parent != nullptr)
+  {
+    // Create the warning text box.
+    auto warningObject = CreateTextBoxObject("warning");
+    auto warningTextBox = warningObject->GetFirstComponentOfType<TextBoxComponent>();
+
+    auto overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
+    auto overlayHeight = env.GetGraphicsOptions().mOverlayHeight;
+    auto horizontalCenter = overlayWidth / 2.0;
+
+    UrsineEngine::Texture backgroundTexture;
+    backgroundTexture.CreateTextureFromFile("resources/sprites/gui/menuBox.png");
+
+    warningTextBox->SetTexture(backgroundTexture);
+    warningTextBox->SetTextSize(MEDIUM_FONT_SIZE);
+
+    warningTextBox->SetWidth(overlayWidth);
+    warningTextBox->SetHeight(mDescriptionHeight);
+    warningTextBox->SetFixedWidth(true);
+    warningTextBox->SetFixedHeight(true);
+
+    warningTextBox->SetVerticalPadding(mDescriptionVerticalPadding);
+
+    std::stringstream descStream;
+    descStream << "Your magic can only sustain 7 skeletons at a time.";
+    descStream << " You'll have to get rid of one if you make another.";
+    warningTextBox->SetText(descStream.str());
+
+    warningObject->SetPosition(glm::vec3(horizontalCenter,
+                                         overlayHeight - (mDescriptionHeight * 1.5) - mTitleHeight,
+                                         0.0));
+    parent->AddChild(std::move(warningObject));
+  }
+}
+
+/******************************************************************************/
+void RewardsMenuLayoutComponent::ProtectedInitialize()
 {
   auto parent = GetParent();
   if(parent != nullptr)
@@ -171,143 +262,50 @@ void RewardsMenuLayoutComponent::Initialize()
 }
 
 /******************************************************************************/
-void RewardsMenuLayoutComponent::CreateActionForCharacterType(const CharacterType& aType)
+void RewardsMenuLayoutComponent::HandleActionHovered()
 {
-  // Add an action for the new character type.
-  std::stringstream nameStream;
-  nameStream << "characterAction_" << mCharacters.size();
-
-  auto newAction = std::make_unique<MenuAction>(nameStream.str());
-  auto characterType = aType;
-  auto actionFunction = [characterType]()
+  auto action = GetCurrentlyHoveredAction();
+  if(action != nullptr)
   {
-    CharacterSelectedFromRewardsMenu.Notify(characterType);
-  };
-  newAction->SetFunction(actionFunction);
-  AddAction(std::move(newAction));
-
-  // Create a character of the given type, then add it to the parent
-  // as a child object.
-  auto character = CharacterFactory::CreateCharacter(aType, nameStream.str());
-  auto characterSprite = character->GetFirstComponentOfType<UrsineEngine::SpriteComponent>();
-  if(characterSprite != nullptr)
-  {
-    characterSprite->SetCoordinateSystem(UrsineEngine::CoordinateSystem::eSCREEN_SPACE);
-    characterSprite->SetFrameOfAnimation(0);
-  }
-
-  character->SetScale(glm::vec3(mCharacterScalar,
-                                mCharacterScalar,
-                                1.0));
-
-  auto parent = GetParent();
-  if(parent != nullptr)
-  {
-    parent->AddChild(std::move(character));
-    mCharacters.emplace_back(GetActions().back(), parent->GetChildren().back());
-
-    if(mFocusedCharacter == nullptr)
+    auto findCharacter = [action](const CharacterActionPair& aPair)
     {
-      mFocusedCharacter = mCharacters.back().second;
+      return aPair.first == action;
+    };
+
+    auto foundCharacter = std::find_if(mCharacters.begin(),
+                                       mCharacters.end(),
+                                       findCharacter);
+    if(foundCharacter != mCharacters.end())
+    {
+      mFocusedCharacter = foundCharacter->second;
+
+      // Update the name and stats text.
       UpdateCharacterInfo();
+
+      // Reposition elements.
+      RepositionCharacters();
+      RepositionCursor();
+      RepositionCharacterInfo();
+
+      // Remove all skill text boxes, then create new ones for the
+      // focused character.
+      for(auto& skillTextBox : mSkillTextBoxes)
+      {
+        auto skillTextBoxObject = skillTextBox->GetParent();
+        if(skillTextBoxObject != nullptr)
+        {
+          skillTextBoxObject->ScheduleForDeletion();
+        }
+      }
+      mSkillTextBoxes.clear();
+
       CreateSkillTextBoxes();
     }
   }
-
-  // Reposition elements.
-  RepositionCharacters();
-  RepositionCursor();
-  RepositionCharacterInfo();
 }
 
 /******************************************************************************/
-void RewardsMenuLayoutComponent::SetShowMaxSizeWarning(bool aShowWarning)
-{
-  mShowWarning = aShowWarning;
-
-  auto parent = GetParent();
-  if(parent != nullptr)
-  {
-    if(mShowWarning)
-    {
-      // Create the warning text box.
-      auto warningObject = CreateTextBoxObject("warning");
-      auto warningTextBox = warningObject->GetFirstComponentOfType<TextBoxComponent>();
-
-      auto overlayWidth = env.GetGraphicsOptions().mOverlayWidth;
-      auto overlayHeight = env.GetGraphicsOptions().mOverlayHeight;
-      auto horizontalCenter = overlayWidth / 2.0;
-
-      UrsineEngine::Texture backgroundTexture;
-      backgroundTexture.CreateTextureFromFile("resources/sprites/gui/menuBox.png");
-
-      warningTextBox->SetTexture(backgroundTexture);
-      warningTextBox->SetTextSize(MEDIUM_FONT_SIZE);
-
-      warningTextBox->SetWidth(overlayWidth);
-      warningTextBox->SetHeight(mDescriptionHeight);
-      warningTextBox->SetFixedWidth(true);
-      warningTextBox->SetFixedHeight(true);
-
-      warningTextBox->SetVerticalPadding(mDescriptionVerticalPadding);
-
-      std::stringstream descStream;
-      descStream << "Your magic can only sustain 7 skeletons at a time.";
-      descStream << " You'll have to get rid of one if you make another.";
-      warningTextBox->SetText(descStream.str());
-
-      warningObject->SetPosition(glm::vec3(horizontalCenter,
-                                           overlayHeight - (mDescriptionHeight * 1.5) - mTitleHeight,
-                                           0.0));
-      parent->AddChild(std::move(warningObject));
-    }
-    else
-    {
-    }
-  }
-}
-
-/******************************************************************************/
-void RewardsMenuLayoutComponent::HandleActionHovered(MenuAction& aAction)
-{
-  auto findCharacter = [aAction](const CharacterActionPair& aPair)
-  {
-    return aPair.first == &aAction;
-  };
-
-  auto foundCharacter = std::find_if(mCharacters.begin(),
-                                     mCharacters.end(),
-                                     findCharacter);
-  if(foundCharacter != mCharacters.end())
-  {
-    mFocusedCharacter = foundCharacter->second;
-
-    // Update the name and stats text.
-    UpdateCharacterInfo();
-
-    // Reposition elements.
-    RepositionCharacters();
-    RepositionCursor();
-    RepositionCharacterInfo();
-
-    // Remove all skill text boxes, then create new ones for the
-    // focused character.
-    for(auto& skillTextBox : mSkillTextBoxes)
-    {
-      auto skillTextBoxObject = skillTextBox->GetParent();
-      if(skillTextBoxObject != nullptr)
-      {
-        skillTextBoxObject->ScheduleForDeletion();
-      }
-    }
-    mSkillTextBoxes.clear();
-
-    CreateSkillTextBoxes();
-  }
-}
-
-/******************************************************************************/
-void RewardsMenuLayoutComponent::HandleActionExecuted(MenuAction& aAction)
+void RewardsMenuLayoutComponent::HandleActionExecuted()
 {
   auto parent = GetParent();
   if(parent != nullptr)

@@ -15,9 +15,11 @@ file(GLOB GAME_SOURCES main.cpp
                        gameObjects/gui/hintDisplay/states/*.?pp
                        gameObjects/gui/infoPanel/*.?pp
                        gameObjects/gui/menus/*.?pp
+                       gameObjects/gui/menus/mainMenu/*.?pp
                        gameObjects/gui/menus/rewardsMenu/*.?pp
                        gameObjects/gui/menus/skillMenu/*.?pp
-                       gameObjects/gui/menus/basicMenu/*.?pp
+                       gameObjects/gui/menus/defeatMenu/*.?pp
+                       gameObjects/gui/menus/victoryMenu/*.?pp
                        gameObjects/gui/screenTransition/*.?pp
                        gameObjects/gui/screenTransition/states/*.?pp
                        gameObjects/skills/*.?pp
@@ -63,9 +65,11 @@ target_include_directories(barebones PUBLIC
                            gameObjects/gui/hintDisplay/states
                            gameObjects/gui/infoPanel
                            gameObjects/gui/menus
+                           gameObjects/gui/menus/mainMenu
                            gameObjects/gui/menus/rewardsMenu
                            gameObjects/gui/menus/skillMenu
-                           gameObjects/gui/menus/basicMenu
+                           gameObjects/gui/menus/defeatMenu
+                           gameObjects/gui/menus/victoryMenu
                            gameObjects/gui/screenTransition
                            gameObjects/gui/screenTransition/states
                            gameObjects/skills

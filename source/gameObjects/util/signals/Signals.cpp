@@ -50,6 +50,7 @@ Barebones::InputComponentInitializedSignal Barebones::InputComponentInitialized;
 /**
  * GUI Signals
  */
+Barebones::MenuLayoutComponentInitializedSignal Barebones::MenuLayoutComponentInitialized;
 Barebones::MenuActionEnabledChangedSignal Barebones::MenuActionEnabledChanged;
 Barebones::MenuActionHoveredSignal Barebones::MenuActionHovered;
 Barebones::MenuActionExecutedSignal Barebones::MenuActionExecuted;

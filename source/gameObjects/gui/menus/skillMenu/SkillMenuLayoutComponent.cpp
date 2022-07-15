@@ -27,7 +27,7 @@ SkillMenuLayoutComponent::SkillMenuLayoutComponent()
 }
 
 /******************************************************************************/
-void SkillMenuLayoutComponent::Initialize()
+void SkillMenuLayoutComponent::ProtectedInitialize()
 {
   auto parent = GetParent();
   if(parent != nullptr)
@@ -138,24 +138,26 @@ void SkillMenuLayoutComponent::Initialize()
 }
 
 /******************************************************************************/
-void SkillMenuLayoutComponent::HandleActionAdded(MenuAction& aAction)
+void SkillMenuLayoutComponent::HandleActionAdded()
 {
   UpdateCursors();
 }
 
 /******************************************************************************/
-void SkillMenuLayoutComponent::HandleActionHovered(MenuAction& aAction)
+void SkillMenuLayoutComponent::HandleActionHovered()
 {
-  if(mSkillNameTextBox != nullptr &&
+  auto action = GetCurrentlyHoveredAction();
+  if(action != nullptr &&
+     mSkillNameTextBox != nullptr &&
      mSkillDescriptionTextBox != nullptr)
   {
-    mSkillNameTextBox->SetText(aAction.GetName());
-    mSkillDescriptionTextBox->SetText(aAction.GetDescription());
+    mSkillNameTextBox->SetText(action->GetName());
+    mSkillDescriptionTextBox->SetText(action->GetDescription());
 
     // If the action is disabled, change the text color.
     auto skillTextShader = mSkillNameTextBox->GetTextShader();
     auto descriptionTextShader = mSkillDescriptionTextBox->GetTextShader();
-    if(!aAction.IsEnabled())
+    if(!action->IsEnabled())
     {
       if(skillTextShader != nullptr)
       {
@@ -190,7 +192,7 @@ void SkillMenuLayoutComponent::HandleActionHovered(MenuAction& aAction)
 }
 
 /******************************************************************************/
-void SkillMenuLayoutComponent::HandleActionExecuted(MenuAction& aAction)
+void SkillMenuLayoutComponent::HandleActionExecuted()
 {
   // When an action is executed from this menu, this menu is no longer needed.
   auto parent = GetParent();
@@ -203,7 +205,9 @@ void SkillMenuLayoutComponent::HandleActionExecuted(MenuAction& aAction)
 /******************************************************************************/
 void SkillMenuLayoutComponent::UpdateCursors()
 {
-  if(mSkillNameTextBox != nullptr &&
+  auto action = GetCurrentlyHoveredAction();
+  if(action != nullptr &&
+     mSkillNameTextBox != nullptr &&
      mSkillDescriptionTextBox != nullptr)
   {
     // Move the cursors to either side of the new text.
@@ -225,6 +229,37 @@ void SkillMenuLayoutComponent::UpdateCursors()
 
         mLeftCursor->SetPosition(cursorPos);
       }
+
+      // Change the cursor color, if necessary.
+      auto cursorMesh = mLeftCursor->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
+      if(cursorMesh != nullptr)
+      {
+        auto cursorShader = cursorMesh->GetCurrentShader();
+        if(cursorShader != nullptr)
+        {
+          cursorShader->Activate();
+
+          auto actionName = action->GetName();
+          auto actions = GetActions();
+          auto findAction = [actionName](const MenuAction* aAction)
+          {
+            return aAction->GetName() == actionName;
+          };
+
+          auto foundAction = std::find_if(actions.begin(),
+                                          actions.end(),
+                                          findAction);
+          if(foundAction == actions.begin())
+          {
+            cursorShader->SetVec4("fadeColor", glm::vec4(DARK_COLOR, 1.0));
+            cursorShader->SetFloat("fadeValue", 1.0);
+          }
+          else
+          {
+            cursorShader->SetFloat("fadeValue", 0.0);
+          }
+        }
+      }
     }
 
     if(mRightCursor != nullptr)
@@ -244,6 +279,37 @@ void SkillMenuLayoutComponent::UpdateCursors()
         }
 
         mRightCursor->SetPosition(cursorPos);
+      }
+
+      // Change the cursor color, if necessary.
+      auto cursorMesh = mRightCursor->GetFirstComponentOfType<UrsineEngine::MeshComponent>();
+      if(cursorMesh != nullptr)
+      {
+        auto cursorShader = cursorMesh->GetCurrentShader();
+        if(cursorShader != nullptr)
+        {
+          cursorShader->Activate();
+
+          auto actionName = action->GetName();
+          auto actions = GetActions();
+          auto findAction = [actionName](const MenuAction* aAction)
+          {
+            return aAction->GetName() == actionName;
+          };
+
+          auto foundAction = std::find_if(actions.begin(),
+                                          actions.end(),
+                                          findAction);
+          if(foundAction == std::prev(actions.end()))
+          {
+            cursorShader->SetVec4("fadeColor", glm::vec4(DARK_COLOR, 1.0));
+            cursorShader->SetFloat("fadeValue", 1.0);
+          }
+          else
+          {
+            cursorShader->SetFloat("fadeValue", 0.0);
+          }
+        }
       }
     }
   }
